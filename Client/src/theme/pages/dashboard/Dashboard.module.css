@@ -1,0 +1,12 @@
+.titre {
+  font-family: var(--font-display);
+  font-size: 24px;
+  color: var(--color-brand-dark);
+  margin: 0 0 4px;
+}
+
+.sousTitre {
+  color: #6B7280;
+  font-size: 14px;
+  margin: 0;
+}

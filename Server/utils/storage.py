@@ -1,0 +1,1 @@
+from cloudinary_storage.storage import RawMediaCloudinaryStorage

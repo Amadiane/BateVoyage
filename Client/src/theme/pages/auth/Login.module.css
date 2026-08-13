@@ -1,0 +1,279 @@
+.page {
+  min-height: 100vh;
+  display: flex;
+}
+
+.panneauMarque {
+  display: none;
+  width: 50%;
+  background-color: var(--color-brand-dark);
+  position: relative;
+  overflow: hidden;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 56px 64px;
+}
+
+@media (min-width: 1024px) {
+  .panneauMarque {
+    display: flex;
+  }
+}
+
+/* Filigrane repoussé et réduit — ne touche plus le texte de l'accroche */
+.motif {
+  position: absolute;
+  top: 8%;
+  right: -220px;
+  width: 480px;
+  height: 480px;
+  border-radius: 50%;
+  border: 60px solid var(--color-brand);
+  opacity: 0.06;
+  pointer-events: none;
+}
+
+.motifSecondaire {
+  position: absolute;
+  bottom: -160px;
+  left: -160px;
+  width: 280px;
+  height: 280px;
+  border-radius: 50%;
+  border: 36px solid var(--color-brand-light);
+  opacity: 0.05;
+  pointer-events: none;
+}
+
+.marqueHaut {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.logoMarque {
+  width: 64px;
+  height: 64px;
+  object-fit: contain;
+}
+
+/* Le sigle domine désormais visuellement le nom complet en dessous */
+.nomMarque {
+  font-family: var(--font-display);
+  font-size: 26px;
+  color: #fff;
+  letter-spacing: 0.03em;
+  margin: 0;
+}
+
+.nomMarqueSousTitre {
+  font-size: 11px;
+  color: var(--color-brand-light);
+  margin: 3px 0 0;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.blocAccroche {
+  position: relative;
+}
+
+.accroche {
+  font-family: var(--font-display);
+  font-size: 38px;
+  line-height: 1.25;
+  color: #fff;
+  margin: 0;
+  max-width: 420px;
+}
+
+.trait {
+  width: 56px;
+  height: 3px;
+  background-color: var(--color-brand);
+  margin: 28px 0 16px;
+  border-radius: 2px;
+}
+
+.slogan {
+  color: rgba(255, 255, 255, 0.55);
+  font-size: 13px;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  margin: 0 0 24px;
+}
+
+.contact {
+  display: flex;
+  gap: 20px;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.panneauFormulaire {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px;
+  background-color: #FBFBFC;
+}
+
+.carte {
+  width: 100%;
+  max-width: 380px;
+}
+
+/* Visible uniquement en dessous de 1024px, quand le panneau de marque
+   de gauche disparaît — évite le logo dupliqué sur desktop */
+.logoMobile {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 28px;
+}
+
+@media (min-width: 1024px) {
+  .logoMobile {
+    display: none;
+  }
+}
+
+.logoMobile img {
+  width: 36px;
+  height: 36px;
+  object-fit: contain;
+}
+
+.logoMobile p {
+  font-family: var(--font-display);
+  font-size: 18px;
+  color: var(--color-brand-dark);
+  margin: 0;
+}
+
+.titre {
+  font-family: var(--font-display);
+  font-size: 28px;
+  color: var(--color-brand-dark);
+  margin: 0 0 6px;
+}
+
+.sousTitre {
+  color: #6B7280;
+  font-size: 14px;
+  margin: 0 0 36px;
+}
+
+.formulaire {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.champ {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.label {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-ink);
+}
+
+.enveloppeInput {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  font-size: 14px;
+  background-color: #fff;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.input:focus {
+  outline: none;
+  border-color: var(--color-brand);
+  box-shadow: 0 0 0 3px var(--color-brand-pale);
+}
+
+/* Bouton "Afficher/Masquer" — coloré et en gras pour se distinguer
+   clairement d'un texte de placeholder */
+.boutonOeil {
+  position: absolute;
+  right: 12px;
+  background: none;
+  border: none;
+  padding: 4px 8px;
+  cursor: pointer;
+  color: var(--color-brand);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.boutonOeil:hover {
+  color: var(--color-brand-dark);
+  text-decoration: underline;
+}
+
+.ligneOptions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: -6px;
+}
+
+.lienMotDePasseOublie {
+  font-size: 13px;
+  color: var(--color-brand);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.lienMotDePasseOublie:hover {
+  text-decoration: underline;
+}
+
+.erreur {
+  font-size: 13px;
+  color: var(--color-error);
+  background-color: var(--color-error-bg);
+  border: 1px solid #FCA5A5;
+  border-radius: 10px;
+  padding: 10px 14px;
+  margin: 0;
+}
+
+.bouton {
+  padding: 13px;
+  border: none;
+  border-radius: 10px;
+  background-color: var(--color-brand-dark);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.15s ease, transform 0.1s ease;
+  margin-top: 4px;
+}
+
+.bouton:hover:not(:disabled) {
+  background-color: var(--color-brand);
+}
+
+.bouton:active:not(:disabled) {
+  transform: scale(0.99);
+}
+
+.bouton:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
