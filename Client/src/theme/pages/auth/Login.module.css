@@ -277,3 +277,35 @@
   opacity: 0.6;
   cursor: default;
 }
+
+.enteteMarque {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.enteteFormulaireMobile {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 28px;
+}
+
+@media (min-width: 1024px) {
+  .enteteFormulaireMobile {
+    display: none;
+  }
+}
+
+.enteteFormulaireDesktop {
+  display: none;
+  justify-content: flex-end;
+  margin-bottom: 20px;
+}
+
+@media (min-width: 1024px) {
+  .enteteFormulaireDesktop {
+    display: flex;
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "connexion": "Connexion",
+  "accedez_espace": "Accédez à votre espace de gestion",
+  "nom_utilisateur": "Nom d'utilisateur",
+  "mot_de_passe": "Mot de passe",
+  "se_connecter": "Se connecter",
+  "connexion_en_cours": "Connexion...",
+  "afficher": "Afficher",
+  "masquer": "Masquer",
+  "mot_de_passe_oublie": "Mot de passe oublié ?",
+  "identifiants_incorrects": "Identifiant ou mot de passe incorrect.",
+  "accroche_login": "De la préparation à La Mecque, jusqu'au retour.",
+  "tableau_de_bord": "Tableau de bord",
+  "pelerins": "Pèlerins",
+  "se_deconnecter": "Se déconnecter",
+
+  
+  "sexe_M": "Homme",
+  "sexe_F": "Femme",
+
+  "statut_inscrit": "Inscrit",
+  "statut_en_preparation": "En préparation",
+  "statut_valide": "Validé",
+  "statut_en_voyage": "En voyage",
+  "statut_retourne": "Retourné",
+  "statut_cloture": "Clôturé",
+
+  "visa_non_demande": "Non demandé",
+  "visa_en_cours": "En cours (Nusuk)",
+  "visa_obtenu": "Obtenu",
+  "visa_refuse": "Refusé"
+
+}

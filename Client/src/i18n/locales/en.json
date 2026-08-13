@@ -1,0 +1,32 @@
+{
+  "connexion": "Login",
+  "accedez_espace": "Access your management space",
+  "nom_utilisateur": "Username",
+  "mot_de_passe": "Password",
+  "se_connecter": "Sign in",
+  "connexion_en_cours": "Signing in...",
+  "afficher": "Show",
+  "masquer": "Hide",
+  "mot_de_passe_oublie": "Forgot password?",
+  "identifiants_incorrects": "Incorrect username or password.",
+  "accroche_login": "From preparation to Mecca, until the return home.",
+  "tableau_de_bord": "Dashboard",
+  "pelerins": "Pilgrims",
+  "se_deconnecter": "Log out",
+  
+  "sexe_M": "Male",
+  "sexe_F": "Female",
+
+  "statut_inscrit": "Registered",
+  "statut_en_preparation": "In preparation",
+  "statut_valide": "Approved",
+  "statut_en_voyage": "Traveling",
+  "statut_retourne": "Returned",
+  "statut_cloture": "Closed",
+
+  "visa_non_demande": "Not requested",
+  "visa_en_cours": "In progress (Nusuk)",
+  "visa_obtenu": "Obtained",
+  "visa_refuse": "Rejected"
+
+}

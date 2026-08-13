@@ -31,6 +31,7 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'corsheaders',
     'django_filters',
+    'xhtml2pdf',
 
     # Apps métier
     'utilisateurs',

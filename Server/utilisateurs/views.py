@@ -27,3 +27,17 @@ class UtilisateurViewSet(viewsets.ModelViewSet):
         if self.action == "create":
             return CreationUtilisateurSerializer
         return UtilisateurSerializer
+
+from rest_framework import generics
+
+class AgentsInscripteursView(generics.ListAPIView):
+    """Liste légère des agents pouvant être inscripteurs — accessible à tout
+    utilisateur connecté (contrairement à UtilisateurViewSet, réservé aux admins)."""
+    serializer_class = UtilisateurSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        return User.objects.filter(
+            role__in=["fondateur", "admin_general", "secretaire", "comptable"],
+            actif=True,
+        ).order_by("first_name")

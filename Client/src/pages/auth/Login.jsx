@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { useAuth } from "../../context/AuthContext";
 import { ENTREPRISE } from "../../config/config";
+import LanguageSwitcher from "../../components/LanguageSwitcher/LanguageSwitcher";
 import styles from "../../theme/pages/auth/Login.module.css";
 
 function Login() {
@@ -12,6 +14,7 @@ function Login() {
   const [envoi, setEnvoi] = useState(false);
   const { connecter } = useAuth();
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -21,7 +24,7 @@ function Login() {
       await connecter(username, password);
       navigate("/dashboard");
     } catch {
-      setErreur("Identifiant ou mot de passe incorrect.");
+      setErreur(t("identifiants_incorrects"));
     } finally {
       setEnvoi(false);
     }
@@ -33,16 +36,19 @@ function Login() {
         <div className={styles.motif} />
         <div className={styles.motifSecondaire} />
 
-        <div className={styles.marqueHaut}>
-          <img src={ENTREPRISE.logo} alt={ENTREPRISE.nomCourt} className={styles.logoMarque} />
-          <div>
-            <p className={styles.nomMarque}>{ENTREPRISE.nomCourt}</p>
-            <p className={styles.nomMarqueSousTitre}>{ENTREPRISE.nomComplet}</p>
+        <div className={styles.enteteMarque}>
+          <div className={styles.marqueHaut}>
+            <img src={ENTREPRISE.logo} alt={ENTREPRISE.nomCourt} className={styles.logoMarque} />
+            <div>
+              <p className={styles.nomMarque}>{ENTREPRISE.nomCourt}</p>
+              <p className={styles.nomMarqueSousTitre}>{ENTREPRISE.nomComplet}</p>
+            </div>
           </div>
+          <LanguageSwitcher variant="sombre" />
         </div>
 
         <div className={styles.blocAccroche}>
-          <p className={styles.accroche}>De la préparation à La Mecque, jusqu'au retour.</p>
+          <p className={styles.accroche}>{t("accroche_login")}</p>
           <div className={styles.trait} />
           <p className={styles.slogan}>{ENTREPRISE.slogan}</p>
           <div className={styles.contact}>
@@ -54,17 +60,24 @@ function Login() {
 
       <div className={styles.panneauFormulaire}>
         <div className={styles.carte}>
-          <div className={styles.logoMobile}>
-            <img src={ENTREPRISE.logo} alt={ENTREPRISE.nomCourt} />
-            <p>{ENTREPRISE.nomCourt}</p>
+          <div className={styles.enteteFormulaireMobile}>
+            <div className={styles.logoMobile}>
+              <img src={ENTREPRISE.logo} alt={ENTREPRISE.nomCourt} />
+              <p>{ENTREPRISE.nomCourt}</p>
+            </div>
+            <LanguageSwitcher />
           </div>
 
-          <h1 className={styles.titre}>Connexion</h1>
-          <p className={styles.sousTitre}>Accédez à votre espace de gestion</p>
+          <div className={styles.enteteFormulaireDesktop}>
+            <LanguageSwitcher />
+          </div>
+
+          <h1 className={styles.titre}>{t("connexion")}</h1>
+          <p className={styles.sousTitre}>{t("accedez_espace")}</p>
 
           <form onSubmit={handleSubmit} className={styles.formulaire}>
             <div className={styles.champ}>
-              <label className={styles.label}>Nom d'utilisateur</label>
+              <label className={styles.label}>{t("nom_utilisateur")}</label>
               <input
                 type="text"
                 value={username}
@@ -76,7 +89,7 @@ function Login() {
             </div>
 
             <div className={styles.champ}>
-              <label className={styles.label}>Mot de passe</label>
+              <label className={styles.label}>{t("mot_de_passe")}</label>
               <div className={styles.enveloppeInput}>
                 <input
                   type={motDePasseVisible ? "text" : "password"}
@@ -90,21 +103,21 @@ function Login() {
                   className={styles.boutonOeil}
                   onClick={() => setMotDePasseVisible((v) => !v)}
                 >
-                  {motDePasseVisible ? "Masquer" : "Afficher"}
+                  {motDePasseVisible ? t("masquer") : t("afficher")}
                 </button>
               </div>
             </div>
 
             <div className={styles.ligneOptions}>
               <a href="#" className={styles.lienMotDePasseOublie}>
-                Mot de passe oublié ?
+                {t("mot_de_passe_oublie")}
               </a>
             </div>
 
             {erreur && <p className={styles.erreur}>{erreur}</p>}
 
             <button type="submit" disabled={envoi} className={styles.bouton}>
-              {envoi ? "Connexion..." : "Se connecter"}
+              {envoi ? t("connexion_en_cours") : t("se_connecter")}
             </button>
           </form>
         </div>

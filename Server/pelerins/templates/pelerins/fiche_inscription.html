@@ -1,0 +1,45 @@
+<html>
+<head>
+<style>
+  @page { size: A4; margin: 2cm; }
+  body { font-family: Helvetica, Arial, sans-serif; font-size: 11px; color: #1F2937; }
+  .entete { text-align: center; border-bottom: 2px solid #0B3FA0; padding-bottom: 10px; margin-bottom: 16px; }
+  .entete h1 { font-size: 16px; color: #0B0E14; margin: 4px 0; }
+  .entete p { margin: 2px 0; color: #555; }
+  .titre-fiche { text-align: center; font-size: 14px; font-weight: bold; margin: 16px 0; color: #0B3FA0; }
+  table.donnees { width: 100%; border-collapse: collapse; margin-top: 10px; }
+  table.donnees td { padding: 6px 8px; border: 1px solid #ddd; }
+  table.donnees td.label { width: 35%; font-weight: bold; background-color: #EEF3FC; }
+  .pied { position: fixed; bottom: -1.5cm; left: 0; right: 0; text-align: center; font-size: 9px; color: #777; border-top: 1px solid #ddd; padding-top: 6px; }
+</style>
+</head>
+<body>
+
+  <div class="entete">
+    <h1>BATE VOYAGE GUINÉE (BVG)</h1>
+    <p>وكالة باتي للسفريات - العمرة والحج</p>
+    <p>Agence de voyage pour le HAJJ, TOURISME &amp; OUMRA</p>
+  </div>
+
+  <div class="titre-fiche">FICHE D'INSCRIPTION PÈLERIN — N° {{ p.numero_id }}</div>
+
+  <table class="donnees">
+    <tr><td class="label">Prénom</td><td>{{ p.prenom }}</td><td class="label">Nom</td><td>{{ p.nom }}</td></tr>
+    <tr><td class="label">Sexe</td><td>{{ p.sexe_display }}</td><td class="label">Date de naissance</td><td>{{ p.date_naissance }}</td></tr>
+    <tr><td class="label">Lieu de naissance</td><td>{{ p.lieu_naissance }}</td><td class="label">Groupe sanguin</td><td>{{ p.groupe_sanguin }}</td></tr>
+    <tr><td class="label">N° Passeport</td><td>{{ p.numero_passeport }}</td><td class="label">Statut visa</td><td>{{ p.statut_visa_display }}</td></tr>
+    <tr><td class="label">Émission passeport</td><td>{{ p.date_emission_passeport }}</td><td class="label">Expiration passeport</td><td>{{ p.date_expiration_passeport }}</td></tr>
+    <tr><td class="label">Commune</td><td>{{ p.commune }}</td><td class="label">Quartier</td><td>{{ p.quartier }}</td></tr>
+    <tr><td class="label">Nom du père</td><td>{{ p.nom_pere }}</td><td class="label">Nom de la mère</td><td>{{ p.nom_mere }}</td></tr>
+    <tr><td class="label">Téléphone</td><td>{{ p.telephone }}</td><td class="label">Téléphone d'urgence</td><td>{{ p.telephone_urgence }}</td></tr>
+    <tr><td class="label">Correspondant</td><td>{{ p.nom_correspondant }}</td><td class="label">Agence partenaire</td><td>{{ p.agence_partenaire|default:"—" }}</td></tr>
+    <tr><td class="label">Montant versé</td><td>{{ p.montant_verse }} GNF</td><td class="label">Inscripteur</td><td>{{ p.inscripteur.get_full_name }}</td></tr>
+    <tr><td class="label">Problème de santé</td><td colspan="3">{{ p.probleme_sante|default:"Aucun signalé" }}</td></tr>
+  </table>
+
+  <div class="pied">
+    620-116-076 / 622-656-040 — Guinée/Conakry, Matoto marché — batevoyage@gmail.com
+  </div>
+
+</body>
+</html>

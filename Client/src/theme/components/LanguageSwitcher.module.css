@@ -1,0 +1,45 @@
+.conteneur {
+  display: inline-flex;
+  gap: 2px;
+  padding: 3px;
+  border-radius: 8px;
+  background-color: #F3F4F6;
+}
+
+.sombre {
+  background-color: rgba(255, 255, 255, 0.08);
+}
+
+.bouton {
+  border: none;
+  background: none;
+  padding: 5px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  color: #6B7280;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.sombre .bouton {
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.bouton:hover {
+  color: var(--color-brand);
+}
+
+.sombre .bouton:hover {
+  color: #fff;
+}
+
+.actif {
+  background-color: #fff;
+  color: var(--color-brand-dark);
+}
+
+.sombre .actif {
+  background-color: var(--color-brand);
+  color: #fff;
+}

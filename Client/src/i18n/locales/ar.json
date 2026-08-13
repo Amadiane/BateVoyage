@@ -1,0 +1,32 @@
+{
+  "connexion": "تسجيل الدخول",
+  "accedez_espace": "الوصول إلى مساحة الإدارة الخاصة بك",
+  "nom_utilisateur": "اسم المستخدم",
+  "mot_de_passe": "كلمة المرور",
+  "se_connecter": "دخول",
+  "connexion_en_cours": "جارٍ تسجيل الدخول...",
+  "afficher": "إظهار",
+  "masquer": "إخفاء",
+  "mot_de_passe_oublie": "نسيت كلمة المرور؟",
+  "identifiants_incorrects": "اسم المستخدم أو كلمة المرور غير صحيحة.",
+  "accroche_login": "من التحضير إلى مكة المكرمة، حتى العودة.",
+  "tableau_de_bord": "لوحة التحكم",
+  "pelerins": "الحجاج",
+  "se_deconnecter": "تسجيل الخروج",
+  
+  "sexe_M": "ذكر",
+  "sexe_F": "أنثى",
+
+  "statut_inscrit": "مسجل",
+  "statut_en_preparation": "قيد التحضير",
+  "statut_valide": "مُعتمد",
+  "statut_en_voyage": "في السفر",
+  "statut_retourne": "عاد",
+  "statut_cloture": "مغلق",
+
+  "visa_non_demande": "لم يُطلب بعد",
+  "visa_en_cours": "قيد المعالجة (نُسُك)",
+  "visa_obtenu": "تم الحصول عليها",
+  "visa_refuse": "مرفوضة"
+
+}
