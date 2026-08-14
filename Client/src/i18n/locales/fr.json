@@ -91,7 +91,13 @@
   "type_pelerinage": "Pèlerinage (Hajj)",
   "type_oumra": "Omra",
   "type_tourisme": "Tourisme",
-  "aucun_pour_le_moment": "Aucun pour le moment"
+  "aucun_pour_le_moment": "Aucun pour le moment",
+
+  
+  "retour_liste": "Retour à la liste",
+  "dossier_complet": "Dossier complet",
+  "voir_document": "Voir le document"
+
 
 
 

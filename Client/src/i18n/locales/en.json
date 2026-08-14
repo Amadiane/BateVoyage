@@ -90,7 +90,12 @@
   "type_pelerinage": "Pilgrimage (Hajj)",
   "type_oumra": "Umrah",
   "type_tourisme": "Tourism",
-  "aucun_pour_le_moment": "None yet"
+  "aucun_pour_le_moment": "None yet",
+
+  "retour_liste": "Back to list",
+  "dossier_complet": "Complete file",
+  "voir_document": "View document"
+
 
 
 }

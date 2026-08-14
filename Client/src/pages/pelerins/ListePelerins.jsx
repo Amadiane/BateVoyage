@@ -93,7 +93,7 @@ function ListePelerins() {
               <tr><td colSpan={8} className={styles.etatVide}>{t("aucun_pelerin")}</td></tr>
             )}
             {!chargement && pelerins.map((p) => (
-              <tr key={p.id}>
+              <tr key={p.id} className={styles.ligneCliquable} onClick={() => navigate(`/pelerins/${p.id}`)}>
                 <td className={styles.cellId}>{p.numero_id}</td>
                 <td>
                   {p.photo ? (
@@ -115,7 +115,7 @@ function ListePelerins() {
                   </span>
                 </td>
                 <td className={styles.cellInscripteur}>{p.inscripteur_nom || "—"}</td>
-                <td className={styles.cellActions}>
+                <td className={styles.cellActions} onClick={(e) => e.stopPropagation()}>
                   <button onClick={() => navigate(`/pelerins/${p.id}/modifier`)} title={t("modifier")}>
                     ✎
                   </button>

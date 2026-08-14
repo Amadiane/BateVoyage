@@ -22,6 +22,7 @@ const CONFIG = {
   API_PELERINS: `${BASE_URL}/api/pelerins/`,
   API_PELERIN_DETAIL: (id) => `${BASE_URL}/api/pelerins/${id}/`,
   API_PELERIN_FICHE_PDF: (id) => `${BASE_URL}/api/pelerins/${id}/fiche-pdf/`,
+  API_PELERIN_DOCUMENT: (id, champ) => `${BASE_URL}/api/pelerins/${id}/document/${champ}/`,
 
   // --- Formules / Programmes ---
   API_PROGRAMMES: `${BASE_URL}/api/formules/programmes/`,

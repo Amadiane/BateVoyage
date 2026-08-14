@@ -168,3 +168,10 @@
   padding: 32px;
   color: #9CA3AF;
 }
+.ligneCliquable {
+  cursor: pointer;
+}
+
+.ligneCliquable:hover {
+  background-color: #F9FAFB;
+}

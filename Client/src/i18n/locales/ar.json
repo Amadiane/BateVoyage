@@ -90,7 +90,13 @@
   "type_pelerinage": "الحج",
   "type_oumra": "العمرة",
   "type_tourisme": "السياحة",
-  "aucun_pour_le_moment": "لا يوجد حاليًا"
+  "aucun_pour_le_moment": "لا يوجد حاليًا",
+
+  
+  "retour_liste": "العودة إلى القائمة",
+  "dossier_complet": "ملف مكتمل",
+  "voir_document": "عرض المستند"
+
 
 
 
