@@ -42,9 +42,11 @@
     margin-top: 2px;
   }
   .photo-pelerin {
-    width: 68px;
-    height: 68px;
-    border: 1px solid #E5E7EB;
+    width: 92px;
+    height: 92px;
+    object-fit: cover;
+    border: 1.5px solid #E5E7EB;
+    padding: 2px;
   }
   .ligne-separation {
     border-bottom: 2px solid #0B3FA0;
@@ -79,6 +81,31 @@
     width: 62%;
     color: #111827;
   }
+
+  .bloc-signatures { margin-top: 16px; }
+  .espaceur-vertical { height: 110px; }
+  .separateur-signatures {
+    border-top: 1px dashed #D1D5DB;
+    margin-bottom: 40px;
+  }
+  .table-signatures { width: 100%; border-collapse: collapse; }
+  .cellule-signature { width: 45%; vertical-align: top; }
+  .espace-signatures { width: 10%; }
+  .ligne-signature {
+    border-bottom: 1px solid #9CA3AF;
+    height: 42px;
+  }
+  .libelle-signature {
+    font-size: 10.5px;
+    font-weight: bold;
+    color: #4B5563;
+    margin-top: 6px;
+  }
+  .date-signature {
+    font-size: 10px;
+    color: #6B7280;
+    margin-top: 4px;
+  }
 </style>
 </head>
 <body>
@@ -97,7 +124,7 @@
         <div class="titre-fiche">FICHE D'INSCRIPTION PÈLERIN</div>
         <div class="sous-titre-fiche">N° de dossier : {{ p.numero_id }} — Date d'inscription : {{ p.date_inscription|date:"d/m/Y" }}</div>
       </td>
-      <td style="text-align: right; width: 90px;">
+      <td style="text-align: right; width: 110px;">
         {% if p.photo %}<img src="{{ p.photo.url }}" class="photo-pelerin" />{% endif %}
       </td>
     </tr>
@@ -109,10 +136,10 @@
     <table class="champs">
       <tr><td class="label">Prénom</td><td class="valeur">{{ p.prenom }}</td></tr>
       <tr><td class="label">Nom</td><td class="valeur">{{ p.nom }}</td></tr>
-      <tr><td class="label">Sexe</td><td class="valeur">{{ p.sexe_display|default:"—" }}</td></tr>
+      <tr><td class="label">Sexe</td><td class="valeur">{{ p.get_sexe_display|default:"—" }}</td></tr>
       <tr><td class="label">Date de naissance</td><td class="valeur">{{ p.date_naissance }}</td></tr>
       <tr><td class="label">Lieu de naissance</td><td class="valeur">{{ p.lieu_naissance }}</td></tr>
-      <tr><td class="label">Type de voyage</td><td class="valeur">{{ p.type_voyage_display|default:"—" }}</td></tr>
+      <tr><td class="label">Type de voyage</td><td class="valeur">{{ p.get_type_voyage_display|default:"—" }}</td></tr>
     </table>
   </div>
 
@@ -122,7 +149,7 @@
       <tr><td class="label">N° Passeport</td><td class="valeur">{{ p.numero_passeport }}</td></tr>
       <tr><td class="label">Émission passeport</td><td class="valeur">{{ p.date_emission_passeport }}</td></tr>
       <tr><td class="label">Expiration passeport</td><td class="valeur">{{ p.date_expiration_passeport }}</td></tr>
-      <tr><td class="label">Statut visa</td><td class="valeur">{{ p.statut_visa_display|default:"—" }}</td></tr>
+      <tr><td class="label">Statut visa</td><td class="valeur">{{ p.get_statut_visa_display|default:"—" }}</td></tr>
     </table>
   </div>
 
@@ -159,6 +186,26 @@
     <table class="champs">
       <tr><td class="label">Inscripteur</td><td class="valeur">{{ p.inscripteur.get_full_name|default:p.inscripteur.username }}</td></tr>
       <tr><td class="label">Montant versé</td><td class="valeur">{{ p.montant_verse }} GNF</td></tr>
+    </table>
+  </div>
+
+  <div class="section bloc-signatures">
+    <div class="espaceur-vertical"></div>
+    <div class="separateur-signatures"></div>
+    <table class="table-signatures">
+      <tr>
+        <td class="cellule-signature">
+          <div class="ligne-signature"></div>
+          <div class="libelle-signature">Signature du pèlerin</div>
+          <div class="date-signature">Date : ____ / ____ / ________</div>
+        </td>
+        <td class="espace-signatures"></td>
+        <td class="cellule-signature">
+          <div class="ligne-signature"></div>
+          <div class="libelle-signature">Signature de l'agent inscripteur</div>
+          <div class="date-signature">Date : ____ / ____ / ________</div>
+        </td>
+      </tr>
     </table>
   </div>
 
