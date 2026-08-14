@@ -95,7 +95,9 @@
   
   "retour_liste": "العودة إلى القائمة",
   "dossier_complet": "ملف مكتمل",
-  "voir_document": "عرض المستند"
+  "voir_document": "عرض المستند",
+
+  "champs_obligatoires_manquants": "يرجى ملء جميع الحقول المطلوبة في هذه الخطوة قبل المتابعة." 
 
 
 

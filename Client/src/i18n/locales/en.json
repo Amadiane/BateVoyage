@@ -94,7 +94,9 @@
 
   "retour_liste": "Back to list",
   "dossier_complet": "Complete file",
-  "voir_document": "View document"
+  "voir_document": "View document",
+
+  "champs_obligatoires_manquants": "Please fill in all required fields for this step before continuing."
 
 
 

@@ -214,5 +214,8 @@ button.lienDocument {
   border: none;
   cursor: pointer;
   font-family: inherit;
-  padding: 0;
+}
+
+button.boutonPrincipal, button.boutonDanger {
+  border: none;
 }

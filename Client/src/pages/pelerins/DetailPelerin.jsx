@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { pelerinService } from "../../services/pelerinService";
+import CONFIG from "../../config/config";
+import { ouvrirFichierProtege } from "../../utils/telechargement";
 import styles from "../../theme/pages/pelerins/DetailPelerin.module.css";
 
 function DetailPelerin() {
@@ -22,6 +24,14 @@ function DetailPelerin() {
     if (!window.confirm(t("confirmer_suppression"))) return;
     await pelerinService.supprimer(id);
     navigate("/pelerins");
+  };
+
+  const telechargerFiche = () => {
+    ouvrirFichierProtege(pelerinService.urlFichePdf(id), `fiche_${pelerin.numero_id}.pdf`);
+  };
+
+  const voirDocument = (champ, nomFichier) => {
+    ouvrirFichierProtege(CONFIG.API_PELERIN_DOCUMENT(id, champ), nomFichier);
   };
 
   if (chargement) return <p className={styles.chargement}>{t("chargement")}</p>;
@@ -61,9 +71,9 @@ function DetailPelerin() {
           <Link to={`/pelerins/${id}/modifier`} className={styles.boutonSecondaire}>
             {t("modifier")}
           </Link>
-          <a href={pelerinService.urlFichePdf(id)} target="_blank" rel="noreferrer" className={styles.boutonPrincipal}>
+          <button onClick={telechargerFiche} className={styles.boutonPrincipal}>
             {t("telecharger_fiche")}
-          </a>
+          </button>
           <button onClick={supprimer} className={styles.boutonDanger}>
             {t("supprimer")}
           </button>
@@ -83,9 +93,12 @@ function DetailPelerin() {
           <Ligne label={t("date_emission_passeport")} valeur={pelerin.date_emission_passeport} />
           <Ligne label={t("date_expiration_passeport")} valeur={pelerin.date_expiration_passeport} />
           {pelerin.scan_passeport && (
-            <a href={pelerin.scan_passeport} target="_blank" rel="noreferrer" className={styles.lienDocument}>
+            <button
+              className={styles.lienDocument}
+              onClick={() => voirDocument("scan_passeport", `passeport_${pelerin.numero_id}.pdf`)}
+            >
               📄 {t("voir_document")}
-            </a>
+            </button>
           )}
         </Section>
 
@@ -107,9 +120,12 @@ function DetailPelerin() {
           <Ligne label={t("groupe_sanguin")} valeur={pelerin.groupe_sanguin || "—"} />
           <Ligne label={t("probleme_sante")} valeur={pelerin.probleme_sante || t("aucun_si_neant")} />
           {pelerin.scan_certificat_medical && (
-            <a href={pelerin.scan_certificat_medical} target="_blank" rel="noreferrer" className={styles.lienDocument}>
+            <button
+              className={styles.lienDocument}
+              onClick={() => voirDocument("scan_certificat_medical", `certificat_medical_${pelerin.numero_id}.pdf`)}
+            >
               📄 {t("voir_document")}
-            </a>
+            </button>
           )}
         </Section>
 
@@ -118,9 +134,12 @@ function DetailPelerin() {
           <Ligne label={t("programme")} valeur={pelerin.programme ? pelerin.programme : t("aucun_pour_le_moment")} />
           <Ligne label={t("montant_verse")} valeur={`${pelerin.montant_verse || 0} GNF`} />
           {pelerin.scan_recu_versement && (
-            <a href={pelerin.scan_recu_versement} target="_blank" rel="noreferrer" className={styles.lienDocument}>
+            <button
+              className={styles.lienDocument}
+              onClick={() => voirDocument("scan_recu_versement", `recu_versement_${pelerin.numero_id}.pdf`)}
+            >
               📄 {t("voir_document")}
-            </a>
+            </button>
           )}
         </Section>
       </div>

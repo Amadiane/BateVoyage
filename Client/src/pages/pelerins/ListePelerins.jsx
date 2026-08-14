@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { pelerinService } from "../../services/pelerinService";
+import { ouvrirFichierProtege } from "../../utils/telechargement";
 import styles from "../../theme/pages/pelerins/ListePelerins.module.css";
 
 function ListePelerins() {
@@ -34,6 +35,10 @@ function ListePelerins() {
     if (!window.confirm(t("confirmer_suppression"))) return;
     await pelerinService.supprimer(id);
     charger();
+  };
+
+  const telechargerFiche = (p) => {
+    ouvrirFichierProtege(pelerinService.urlFichePdf(p.id), `fiche_${p.numero_id}.pdf`);
   };
 
   return (
@@ -119,9 +124,9 @@ function ListePelerins() {
                   <button onClick={() => navigate(`/pelerins/${p.id}/modifier`)} title={t("modifier")}>
                     ✎
                   </button>
-                  <a href={pelerinService.urlFichePdf(p.id)} target="_blank" rel="noreferrer" title={t("telecharger_fiche")}>
+                  <button onClick={() => telechargerFiche(p)} title={t("telecharger_fiche")}>
                     ⬇
-                  </a>
+                  </button>
                   <button onClick={() => supprimer(p.id)} title={t("supprimer")} className={styles.boutonSupprimer}>
                     ✕
                   </button>

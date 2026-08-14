@@ -1,44 +1,165 @@
 <html>
 <head>
 <style>
-  @page { size: A4; margin: 2cm; }
+  @page {
+    size: A4;
+    margin-top: 4.8cm;
+    margin-bottom: 2.6cm;
+    margin-left: 1.5cm;
+    margin-right: 1.5cm;
+
+    @frame header_frame {
+      -pdf-frame-content: header_content;
+      top: 1cm;
+      left: 1.5cm;
+      right: 1.5cm;
+      height: 3.6cm;
+    }
+
+    @frame footer_frame {
+      -pdf-frame-content: footer_content;
+      bottom: 0.7cm;
+      left: 1.5cm;
+      right: 1.5cm;
+      height: 1.6cm;
+    }
+  }
+
   body { font-family: Helvetica, Arial, sans-serif; font-size: 11px; color: #1F2937; }
-  .entete { text-align: center; border-bottom: 2px solid #0B3FA0; padding-bottom: 10px; margin-bottom: 16px; }
-  .entete h1 { font-size: 16px; color: #0B0E14; margin: 4px 0; }
-  .entete p { margin: 2px 0; color: #555; }
-  .titre-fiche { text-align: center; font-size: 14px; font-weight: bold; margin: 16px 0; color: #0B3FA0; }
-  table.donnees { width: 100%; border-collapse: collapse; margin-top: 10px; }
-  table.donnees td { padding: 6px 8px; border: 1px solid #ddd; }
-  table.donnees td.label { width: 35%; font-weight: bold; background-color: #EEF3FC; }
-  .pied { position: fixed; bottom: -1.5cm; left: 0; right: 0; text-align: center; font-size: 9px; color: #777; border-top: 1px solid #ddd; padding-top: 6px; }
+
+  #header_content img, #footer_content img { width: 100%; }
+
+  .bloc-titre { width: 100%; border-collapse: collapse; margin-bottom: 6px; }
+  .bloc-titre td { vertical-align: middle; }
+  .titre-fiche {
+    font-size: 15px;
+    font-weight: bold;
+    color: #0B3FA0;
+  }
+  .sous-titre-fiche {
+    font-size: 10px;
+    color: #6B7280;
+    margin-top: 2px;
+  }
+  .photo-pelerin {
+    width: 68px;
+    height: 68px;
+    border: 1px solid #E5E7EB;
+  }
+  .ligne-separation {
+    border-bottom: 2px solid #0B3FA0;
+    margin: 4px 0 14px;
+  }
+
+  .section { page-break-inside: avoid; margin-top: 16px; }
+  .section-titre {
+    font-size: 11px;
+    font-weight: bold;
+    color: #0B3FA0;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 1px solid #0B3FA0;
+    padding-bottom: 4px;
+    margin-bottom: 2px;
+  }
+
+  table.champs { width: 100%; border-collapse: collapse; }
+  table.champs td {
+    padding: 7px 4px;
+    border-bottom: 1px solid #F0F1F3;
+    font-size: 11px;
+  }
+  table.champs tr:nth-child(even) td { background-color: #FAFBFC; }
+  table.champs td.label {
+    width: 38%;
+    font-weight: bold;
+    color: #4B5563;
+  }
+  table.champs td.valeur {
+    width: 62%;
+    color: #111827;
+  }
 </style>
 </head>
 <body>
 
-  <div class="entete">
-    <h1>BATE VOYAGE GUINÉE (BVG)</h1>
-    <p>وكالة باتي للسفريات - العمرة والحج</p>
-    <p>Agence de voyage pour le HAJJ, TOURISME &amp; OUMRA</p>
+  <div id="header_content">
+    <img src="/static/pelerins/entete_bvg.png" />
   </div>
 
-  <div class="titre-fiche">FICHE D'INSCRIPTION PÈLERIN — N° {{ p.numero_id }}</div>
+  <div id="footer_content">
+    <img src="/static/pelerins/pied_bvg.png" />
+  </div>
 
-  <table class="donnees">
-    <tr><td class="label">Prénom</td><td>{{ p.prenom }}</td><td class="label">Nom</td><td>{{ p.nom }}</td></tr>
-    <tr><td class="label">Sexe</td><td>{{ p.sexe_display }}</td><td class="label">Date de naissance</td><td>{{ p.date_naissance }}</td></tr>
-    <tr><td class="label">Lieu de naissance</td><td>{{ p.lieu_naissance }}</td><td class="label">Groupe sanguin</td><td>{{ p.groupe_sanguin }}</td></tr>
-    <tr><td class="label">N° Passeport</td><td>{{ p.numero_passeport }}</td><td class="label">Statut visa</td><td>{{ p.statut_visa_display }}</td></tr>
-    <tr><td class="label">Émission passeport</td><td>{{ p.date_emission_passeport }}</td><td class="label">Expiration passeport</td><td>{{ p.date_expiration_passeport }}</td></tr>
-    <tr><td class="label">Commune</td><td>{{ p.commune }}</td><td class="label">Quartier</td><td>{{ p.quartier }}</td></tr>
-    <tr><td class="label">Nom du père</td><td>{{ p.nom_pere }}</td><td class="label">Nom de la mère</td><td>{{ p.nom_mere }}</td></tr>
-    <tr><td class="label">Téléphone</td><td>{{ p.telephone }}</td><td class="label">Téléphone d'urgence</td><td>{{ p.telephone_urgence }}</td></tr>
-    <tr><td class="label">Correspondant</td><td>{{ p.nom_correspondant }}</td><td class="label">Agence partenaire</td><td>{{ p.agence_partenaire|default:"—" }}</td></tr>
-    <tr><td class="label">Montant versé</td><td>{{ p.montant_verse }} GNF</td><td class="label">Inscripteur</td><td>{{ p.inscripteur.get_full_name }}</td></tr>
-    <tr><td class="label">Problème de santé</td><td colspan="3">{{ p.probleme_sante|default:"Aucun signalé" }}</td></tr>
+  <table class="bloc-titre">
+    <tr>
+      <td>
+        <div class="titre-fiche">FICHE D'INSCRIPTION PÈLERIN</div>
+        <div class="sous-titre-fiche">N° de dossier : {{ p.numero_id }} — Date d'inscription : {{ p.date_inscription|date:"d/m/Y" }}</div>
+      </td>
+      <td style="text-align: right; width: 90px;">
+        {% if p.photo %}<img src="{{ p.photo.url }}" class="photo-pelerin" />{% endif %}
+      </td>
+    </tr>
   </table>
+  <div class="ligne-separation"></div>
 
-  <div class="pied">
-    620-116-076 / 622-656-040 — Guinée/Conakry, Matoto marché — batevoyage@gmail.com
+  <div class="section">
+    <div class="section-titre">Identité</div>
+    <table class="champs">
+      <tr><td class="label">Prénom</td><td class="valeur">{{ p.prenom }}</td></tr>
+      <tr><td class="label">Nom</td><td class="valeur">{{ p.nom }}</td></tr>
+      <tr><td class="label">Sexe</td><td class="valeur">{{ p.sexe_display|default:"—" }}</td></tr>
+      <tr><td class="label">Date de naissance</td><td class="valeur">{{ p.date_naissance }}</td></tr>
+      <tr><td class="label">Lieu de naissance</td><td class="valeur">{{ p.lieu_naissance }}</td></tr>
+      <tr><td class="label">Type de voyage</td><td class="valeur">{{ p.type_voyage_display|default:"—" }}</td></tr>
+    </table>
+  </div>
+
+  <div class="section">
+    <div class="section-titre">Passeport &amp; Visa</div>
+    <table class="champs">
+      <tr><td class="label">N° Passeport</td><td class="valeur">{{ p.numero_passeport }}</td></tr>
+      <tr><td class="label">Émission passeport</td><td class="valeur">{{ p.date_emission_passeport }}</td></tr>
+      <tr><td class="label">Expiration passeport</td><td class="valeur">{{ p.date_expiration_passeport }}</td></tr>
+      <tr><td class="label">Statut visa</td><td class="valeur">{{ p.statut_visa_display|default:"—" }}</td></tr>
+    </table>
+  </div>
+
+  <div class="section">
+    <div class="section-titre">Adresse &amp; Filiation</div>
+    <table class="champs">
+      <tr><td class="label">Commune</td><td class="valeur">{{ p.commune }}</td></tr>
+      <tr><td class="label">Quartier</td><td class="valeur">{{ p.quartier }}</td></tr>
+      <tr><td class="label">Nom du père</td><td class="valeur">{{ p.nom_pere|default:"—" }}</td></tr>
+      <tr><td class="label">Nom de la mère</td><td class="valeur">{{ p.nom_mere|default:"—" }}</td></tr>
+    </table>
+  </div>
+
+  <div class="section">
+    <div class="section-titre">Contact</div>
+    <table class="champs">
+      <tr><td class="label">Téléphone</td><td class="valeur">{{ p.telephone }}</td></tr>
+      <tr><td class="label">Correspondant</td><td class="valeur">{{ p.nom_correspondant }}</td></tr>
+      <tr><td class="label">Téléphone d'urgence</td><td class="valeur">{{ p.telephone_urgence }}</td></tr>
+      <tr><td class="label">Agence partenaire</td><td class="valeur">{{ p.agence_partenaire|default:"—" }}</td></tr>
+    </table>
+  </div>
+
+  <div class="section">
+    <div class="section-titre">Santé</div>
+    <table class="champs">
+      <tr><td class="label">Groupe sanguin</td><td class="valeur">{{ p.groupe_sanguin|default:"—" }}</td></tr>
+      <tr><td class="label">Problème de santé</td><td class="valeur">{{ p.probleme_sante|default:"Aucun signalé" }}</td></tr>
+    </table>
+  </div>
+
+  <div class="section">
+    <div class="section-titre">Inscription</div>
+    <table class="champs">
+      <tr><td class="label">Inscripteur</td><td class="valeur">{{ p.inscripteur.get_full_name|default:p.inscripteur.username }}</td></tr>
+      <tr><td class="label">Montant versé</td><td class="valeur">{{ p.montant_verse }} GNF</td></tr>
+    </table>
   </div>
 
 </body>

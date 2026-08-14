@@ -96,7 +96,9 @@
   
   "retour_liste": "Retour à la liste",
   "dossier_complet": "Dossier complet",
-  "voir_document": "Voir le document"
+  "voir_document": "Voir le document",
+
+  "champs_obligatoires_manquants": "Merci de remplir tous les champs obligatoires de cette étape avant de continuer."
 
 
 

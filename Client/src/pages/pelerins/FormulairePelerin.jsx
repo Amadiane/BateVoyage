@@ -17,6 +17,18 @@ const VALEURS_INITIALES = {
   type_voyage: "", montant_verse: "", inscripteur: "", programme: "",
 };
 
+// Champs obligatoires par étape — utilisé pour bloquer "Suivant"/"Enregistrer"
+// tant qu'ils sont vides, puisque les boutons ne déclenchent pas la
+// validation HTML5 native (ils ne sont pas de type "submit").
+const CHAMPS_REQUIS_PAR_ETAPE = {
+  0: ["prenom", "nom", "sexe", "date_naissance", "lieu_naissance"],
+  1: ["numero_passeport", "date_emission_passeport", "date_expiration_passeport"],
+  2: ["commune", "quartier"],
+  3: ["telephone", "nom_correspondant", "telephone_correspondant"],
+  4: [],
+  5: ["type_voyage", "inscripteur"],
+};
+
 function FormulairePelerin() {
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -35,6 +47,7 @@ function FormulairePelerin() {
   const [programmes, setProgrammes] = useState([]);
   const [envoi, setEnvoi] = useState(false);
   const [erreur, setErreur] = useState("");
+  const [champsManquants, setChampsManquants] = useState([]);
 
   useEffect(() => {
     utilisateurService.listerAgentsInscripteurs().then(({ data }) => setAgents(data));
@@ -52,13 +65,36 @@ function FormulairePelerin() {
     }
   }, [id]);
 
-  const majChamp = (champ, valeur) => setValeurs((v) => ({ ...v, [champ]: valeur }));
+  const majChamp = (champ, valeur) => {
+    setValeurs((v) => ({ ...v, [champ]: valeur }));
+    setChampsManquants((liste) => liste.filter((c) => c !== champ));
+  };
   const majFichier = (champ, fichier) => setFichiers((f) => ({ ...f, [champ]: fichier }));
 
-  const suivant = () => setEtape((e) => Math.min(e + 1, ETAPES.length - 1));
-  const precedent = () => setEtape((e) => Math.max(e - 1, 0));
+  const validerEtape = (indexEtape) => {
+    const requis = CHAMPS_REQUIS_PAR_ETAPE[indexEtape] || [];
+    const manquants = requis.filter((champ) => !String(valeurs[champ] || "").trim());
+    setChampsManquants(manquants);
+    if (manquants.length > 0) {
+      setErreur(t("champs_obligatoires_manquants"));
+      return false;
+    }
+    setErreur("");
+    return true;
+  };
+
+  const suivant = () => {
+    if (!validerEtape(etape)) return;
+    setEtape((e) => Math.min(e + 1, ETAPES.length - 1));
+  };
+  const precedent = () => {
+    setErreur("");
+    setEtape((e) => Math.max(e - 1, 0));
+  };
 
   const handleSubmit = async () => {
+    if (!validerEtape(etape)) return;
+
     setErreur("");
     setEnvoi(true);
     try {
@@ -77,11 +113,21 @@ function FormulairePelerin() {
       }
       navigate("/pelerins");
     } catch (err) {
-      setErreur(t("erreur_enregistrement"));
+      const donneesErreur = err.response?.data;
+      if (donneesErreur && typeof donneesErreur === "object") {
+        const messages = Object.entries(donneesErreur)
+          .map(([champ, msgs]) => `${champ} : ${Array.isArray(msgs) ? msgs.join(" ") : msgs}`)
+          .join(" — ");
+        setErreur(messages || t("erreur_enregistrement"));
+      } else {
+        setErreur(t("erreur_enregistrement"));
+      }
     } finally {
       setEnvoi(false);
     }
   };
+
+  const estManquant = (champ) => champsManquants.includes(champ);
 
   return (
     <div className={styles.page}>
@@ -103,24 +149,24 @@ function FormulairePelerin() {
       <div className={styles.carte}>
         {etape === 0 && (
           <div className={styles.grille}>
-            <Champ label={t("prenom")}>
-              <input value={valeurs.prenom} onChange={(e) => majChamp("prenom", e.target.value)} required />
+            <Champ label={t("prenom")} manquant={estManquant("prenom")}>
+              <input value={valeurs.prenom} onChange={(e) => majChamp("prenom", e.target.value)} />
             </Champ>
-            <Champ label={t("nom")}>
-              <input value={valeurs.nom} onChange={(e) => majChamp("nom", e.target.value)} required />
+            <Champ label={t("nom")} manquant={estManquant("nom")}>
+              <input value={valeurs.nom} onChange={(e) => majChamp("nom", e.target.value)} />
             </Champ>
-            <Champ label={t("sexe")}>
-              <select value={valeurs.sexe} onChange={(e) => majChamp("sexe", e.target.value)} required>
+            <Champ label={t("sexe")} manquant={estManquant("sexe")}>
+              <select value={valeurs.sexe} onChange={(e) => majChamp("sexe", e.target.value)}>
                 <option value="">—</option>
                 <option value="M">{t("sexe_M")}</option>
                 <option value="F">{t("sexe_F")}</option>
               </select>
             </Champ>
-            <Champ label={t("date_naissance")}>
-              <input type="date" value={valeurs.date_naissance} onChange={(e) => majChamp("date_naissance", e.target.value)} required />
+            <Champ label={t("date_naissance")} manquant={estManquant("date_naissance")}>
+              <input type="date" value={valeurs.date_naissance} onChange={(e) => majChamp("date_naissance", e.target.value)} />
             </Champ>
-            <Champ label={t("lieu_naissance")}>
-              <input value={valeurs.lieu_naissance} onChange={(e) => majChamp("lieu_naissance", e.target.value)} required />
+            <Champ label={t("lieu_naissance")} manquant={estManquant("lieu_naissance")}>
+              <input value={valeurs.lieu_naissance} onChange={(e) => majChamp("lieu_naissance", e.target.value)} />
             </Champ>
             <Champ label={t("photo")}>
               <input type="file" accept="image/*" onChange={(e) => majFichier("photo", e.target.files[0])} />
@@ -130,8 +176,8 @@ function FormulairePelerin() {
 
         {etape === 1 && (
           <div className={styles.grille}>
-            <Champ label={t("numero_passeport")}>
-              <input value={valeurs.numero_passeport} onChange={(e) => majChamp("numero_passeport", e.target.value)} required />
+            <Champ label={t("numero_passeport")} manquant={estManquant("numero_passeport")}>
+              <input value={valeurs.numero_passeport} onChange={(e) => majChamp("numero_passeport", e.target.value)} />
             </Champ>
             <Champ label={t("statut_visa")}>
               <select value={valeurs.statut_visa} onChange={(e) => majChamp("statut_visa", e.target.value)}>
@@ -141,11 +187,11 @@ function FormulairePelerin() {
                 <option value="refuse">{t("visa_refuse")}</option>
               </select>
             </Champ>
-            <Champ label={t("date_emission_passeport")}>
-              <input type="date" value={valeurs.date_emission_passeport} onChange={(e) => majChamp("date_emission_passeport", e.target.value)} required />
+            <Champ label={t("date_emission_passeport")} manquant={estManquant("date_emission_passeport")}>
+              <input type="date" value={valeurs.date_emission_passeport} onChange={(e) => majChamp("date_emission_passeport", e.target.value)} />
             </Champ>
-            <Champ label={t("date_expiration_passeport")}>
-              <input type="date" value={valeurs.date_expiration_passeport} onChange={(e) => majChamp("date_expiration_passeport", e.target.value)} required />
+            <Champ label={t("date_expiration_passeport")} manquant={estManquant("date_expiration_passeport")}>
+              <input type="date" value={valeurs.date_expiration_passeport} onChange={(e) => majChamp("date_expiration_passeport", e.target.value)} />
             </Champ>
             <Champ label={t("scan_passeport")} pleineLargeur>
               <input type="file" accept="image/*,.pdf" onChange={(e) => majFichier("scan_passeport", e.target.files[0])} />
@@ -155,11 +201,11 @@ function FormulairePelerin() {
 
         {etape === 2 && (
           <div className={styles.grille}>
-            <Champ label={t("commune")}>
-              <input value={valeurs.commune} onChange={(e) => majChamp("commune", e.target.value)} required />
+            <Champ label={t("commune")} manquant={estManquant("commune")}>
+              <input value={valeurs.commune} onChange={(e) => majChamp("commune", e.target.value)} />
             </Champ>
-            <Champ label={t("quartier")}>
-              <input value={valeurs.quartier} onChange={(e) => majChamp("quartier", e.target.value)} required />
+            <Champ label={t("quartier")} manquant={estManquant("quartier")}>
+              <input value={valeurs.quartier} onChange={(e) => majChamp("quartier", e.target.value)} />
             </Champ>
             <Champ label={t("nom_pere")}>
               <input value={valeurs.nom_pere} onChange={(e) => majChamp("nom_pere", e.target.value)} />
@@ -172,14 +218,14 @@ function FormulairePelerin() {
 
         {etape === 3 && (
           <div className={styles.grille}>
-            <Champ label={t("telephone")}>
-              <input value={valeurs.telephone} onChange={(e) => majChamp("telephone", e.target.value)} required />
+            <Champ label={t("telephone")} manquant={estManquant("telephone")}>
+              <input value={valeurs.telephone} onChange={(e) => majChamp("telephone", e.target.value)} />
             </Champ>
-            <Champ label={t("nom_correspondant")}>
-              <input value={valeurs.nom_correspondant} onChange={(e) => majChamp("nom_correspondant", e.target.value)} required />
+            <Champ label={t("nom_correspondant")} manquant={estManquant("nom_correspondant")}>
+              <input value={valeurs.nom_correspondant} onChange={(e) => majChamp("nom_correspondant", e.target.value)} />
             </Champ>
-            <Champ label={t("telephone_correspondant")}>
-              <input value={valeurs.telephone_correspondant} onChange={(e) => majChamp("telephone_correspondant", e.target.value)} required />
+            <Champ label={t("telephone_correspondant")} manquant={estManquant("telephone_correspondant")}>
+              <input value={valeurs.telephone_correspondant} onChange={(e) => majChamp("telephone_correspondant", e.target.value)} />
             </Champ>
             <Champ label={t("agence_partenaire")}>
               <input value={valeurs.agence_partenaire} onChange={(e) => majChamp("agence_partenaire", e.target.value)} placeholder={t("si_applicable")} />
@@ -208,21 +254,21 @@ function FormulairePelerin() {
 
         {etape === 5 && (
           <div className={styles.grille}>
-            <Champ label={t("type_voyage")}>
-              <select value={valeurs.type_voyage} onChange={(e) => majChamp("type_voyage", e.target.value)} required>
+            <Champ label={t("type_voyage")} manquant={estManquant("type_voyage")}>
+              <select value={valeurs.type_voyage} onChange={(e) => majChamp("type_voyage", e.target.value)}>
                 <option value="">—</option>
                 <option value="pelerinage">{t("type_pelerinage")}</option>
                 <option value="oumra">{t("type_oumra")}</option>
                 <option value="tourisme">{t("type_tourisme")}</option>
               </select>
             </Champ>
-            <Champ label={t("inscripteur")}>
-              <select value={valeurs.inscripteur} onChange={(e) => majChamp("inscripteur", e.target.value)} required>
+            <Champ label={t("inscripteur")} manquant={estManquant("inscripteur")}>
+              <select value={valeurs.inscripteur} onChange={(e) => majChamp("inscripteur", e.target.value)}>
                 <option value="">—</option>
                 {agents.map((a) => (
-                <option key={a.id} value={a.id}>
+                  <option key={a.id} value={a.id}>
                     {(a.first_name || a.last_name) ? `${a.first_name} ${a.last_name}` : a.username}
-                </option>
+                  </option>
                 ))}
               </select>
             </Champ>
@@ -272,10 +318,13 @@ function FormulairePelerin() {
   );
 }
 
-function Champ({ label, children, pleineLargeur }) {
+function Champ({ label, children, pleineLargeur, manquant }) {
   return (
     <div style={pleineLargeur ? { gridColumn: "1 / -1" } : {}}>
-      <label className={styles.label}>{label}</label>
+      <label className={styles.label}>
+        {label}
+        {manquant && <span style={{ color: "#DC2626" }}> *</span>}
+      </label>
       {children}
     </div>
   );

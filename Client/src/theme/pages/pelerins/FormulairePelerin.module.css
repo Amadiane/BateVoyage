@@ -155,3 +155,8 @@
 .boutonSecondaire:hover {
   background-color: #F9FAFB;
 }
+
+.grille input:invalid,
+.grille select:invalid {
+  border-color: #FCA5A5;
+}
