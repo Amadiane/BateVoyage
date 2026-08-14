@@ -3,7 +3,7 @@ import logoTransparent from "../assets/images/logo-transparent.png";
 const BASE_URL =
   window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1"
     ? "http://127.0.0.1:8000"
-    : "https://batevoyage-api.onrender.com"; // à remplacer une fois déployé sur Render
+    : "https://batevoyage-api.onrender.com";
 
 const CONFIG = {
   BASE_URL,
@@ -13,29 +13,24 @@ const CONFIG = {
   API_REFRESH_TOKEN: `${BASE_URL}/api/auth/refresh/`,
   API_UTILISATEUR_MOI: `${BASE_URL}/api/utilisateurs/me/`,
 
-  // --- Utilisateurs (comptes employés) ---
+  // --- Utilisateurs ---
   API_UTILISATEURS: `${BASE_URL}/api/utilisateurs/comptes/`,
   API_UTILISATEUR_DETAIL: (id) => `${BASE_URL}/api/utilisateurs/comptes/${id}/`,
+  API_AGENTS_INSCRIPTEURS: `${BASE_URL}/api/utilisateurs/agents-inscripteurs/`,
 
   // --- Pèlerins ---
   API_PELERINS: `${BASE_URL}/api/pelerins/`,
   API_PELERIN_DETAIL: (id) => `${BASE_URL}/api/pelerins/${id}/`,
+  API_PELERIN_FICHE_PDF: (id) => `${BASE_URL}/api/pelerins/${id}/fiche-pdf/`,
 
-  // --- Modules à venir (décommenter/compléter au fur et à mesure) ---
-  // API_PROGRAMMES: `${BASE_URL}/api/formules/programmes/`,
-  // API_PAIEMENTS: `${BASE_URL}/api/paiements/`,
-  // API_DOCUMENTS: `${BASE_URL}/api/documents/`,
-  // API_GROUPES: `${BASE_URL}/api/groupes-vols/groupes/`,
+  // --- Formules / Programmes ---
+  API_PROGRAMMES: `${BASE_URL}/api/formules/programmes/`,
 
-  CLOUDINARY_NAME: "ton_cloud_name",
+  CLOUDINARY_NAME: "cqavxalu",
 };
 
 export default CONFIG;
 
-// ------------------------------------------------------------------
-// Identité de l'agence — utilisée dans l'app ET pour la conformité
-// visuelle des futurs PDF (devis, factures, badges pèlerins)
-// ------------------------------------------------------------------
 export const ENTREPRISE = {
   nomCourt: "BVG",
   nomComplet: "BATE VOYAGE GUINÉE",
@@ -47,9 +42,6 @@ export const ENTREPRISE = {
   logo: logoTransparent,
 };
 
-// ------------------------------------------------------------------
-// Menu par rôle (11 utilisateurs du système)
-// ------------------------------------------------------------------
 export const MENU_PAR_ROLE = {
   fondateur: ["dashboard", "pelerins", "utilisateurs", "documents", "paiements", "groupes"],
   admin_general: ["dashboard", "pelerins", "utilisateurs", "documents", "paiements", "groupes"],

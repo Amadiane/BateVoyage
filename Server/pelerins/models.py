@@ -44,6 +44,11 @@ class Pelerin(models.Model):
         OBTENU = "obtenu", "Obtenu"
         REFUSE = "refuse", "Refusé"
 
+    class TypeVoyage(models.TextChoices):
+        PELERINAGE = "pelerinage", "Pèlerinage (Hajj)"
+        OUMRA = "oumra", "Omra"
+        TOURISME = "tourisme", "Tourisme"
+
     # ---------- 1. Identifiant ----------
     numero_id = models.CharField(max_length=20, unique=True, editable=False)
 
@@ -85,7 +90,7 @@ class Pelerin(models.Model):
     inscripteur = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.PROTECT,
         related_name="pelerins_inscrits",
-        limit_choices_to={"role__in": ["fondateur", "admin_general", "secretaire", "comptable"]},
+        limit_choices_to={"role__in": ["fondateur", "admin_general", "secretaire", "comptable", "affaires_sociales"]},
     )
 
     # ---------- 15. Correspondant (= téléphone d'urgence) ----------
@@ -113,6 +118,11 @@ class Pelerin(models.Model):
     # ---------- 22-23. Santé ----------
     groupe_sanguin = models.CharField(max_length=3, choices=GroupeSanguin.choices, blank=True)
     probleme_sante = models.TextField(blank=True)
+
+    # ---------- Type de voyage (obligatoire) ----------
+    type_voyage = models.CharField(max_length=20, choices=TypeVoyage.choices)
+
+   
 
     # ---------- Rattachement programme (Hajj/Oumra) ----------
     programme = models.ForeignKey(

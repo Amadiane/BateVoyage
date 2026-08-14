@@ -1,0 +1,138 @@
+import { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+import { pelerinService } from "../../services/pelerinService";
+import styles from "../../theme/pages/pelerins/ListePelerins.module.css";
+
+function ListePelerins() {
+  const { t } = useTranslation();
+  const navigate = useNavigate();
+  const [pelerins, setPelerins] = useState([]);
+  const [chargement, setChargement] = useState(true);
+  const [recherche, setRecherche] = useState("");
+  const [filtreStatut, setFiltreStatut] = useState("");
+
+  const charger = async () => {
+    setChargement(true);
+    try {
+      const params = {};
+      if (recherche) params.search = recherche;
+      if (filtreStatut) params.statut = filtreStatut;
+      const { data } = await pelerinService.lister(params);
+      setPelerins(data);
+    } finally {
+      setChargement(false);
+    }
+  };
+
+  useEffect(() => {
+    const delai = setTimeout(charger, 300);
+    return () => clearTimeout(delai);
+  }, [recherche, filtreStatut]);
+
+  const supprimer = async (id) => {
+    if (!window.confirm(t("confirmer_suppression"))) return;
+    await pelerinService.supprimer(id);
+    charger();
+  };
+
+  return (
+    <div>
+      <div className={styles.entete}>
+        <div>
+          <h1 className={styles.titre}>{t("pelerins")}</h1>
+          <p className={styles.sousTitre}>{pelerins.length} {t("dossiers_enregistres")}</p>
+        </div>
+        <button className={styles.boutonPrincipal} onClick={() => navigate("/pelerins/nouveau")}>
+          + {t("nouveau_pelerin")}
+        </button>
+      </div>
+
+      <div className={styles.barreOutils}>
+        <input
+          type="text"
+          placeholder={t("rechercher_pelerin")}
+          value={recherche}
+          onChange={(e) => setRecherche(e.target.value)}
+          className={styles.champRecherche}
+        />
+        <select
+          value={filtreStatut}
+          onChange={(e) => setFiltreStatut(e.target.value)}
+          className={styles.selectFiltre}
+        >
+          <option value="">{t("tous_statuts")}</option>
+          <option value="inscrit">{t("statut_inscrit")}</option>
+          <option value="en_preparation">{t("statut_en_preparation")}</option>
+          <option value="valide">{t("statut_valide")}</option>
+          <option value="en_voyage">{t("statut_en_voyage")}</option>
+          <option value="retourne">{t("statut_retourne")}</option>
+          <option value="cloture">{t("statut_cloture")}</option>
+        </select>
+      </div>
+
+      <div className={styles.conteneurTableau}>
+        <table className={styles.tableau}>
+          <thead>
+            <tr>
+              <th>{t("id")}</th>
+              <th>{t("photo")}</th>
+              <th>{t("nom_complet")}</th>
+              <th>{t("telephone")}</th>
+              <th>{t("statut")}</th>
+              <th>{t("visa")}</th>
+              <th>{t("inscripteur")}</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            {chargement && (
+              <tr><td colSpan={8} className={styles.etatVide}>{t("chargement")}</td></tr>
+            )}
+            {!chargement && pelerins.length === 0 && (
+              <tr><td colSpan={8} className={styles.etatVide}>{t("aucun_pelerin")}</td></tr>
+            )}
+            {!chargement && pelerins.map((p) => (
+              <tr key={p.id}>
+                <td className={styles.cellId}>{p.numero_id}</td>
+                <td>
+                  {p.photo ? (
+                    <img src={p.photo} alt="" className={styles.miniature} />
+                  ) : (
+                    <div className={styles.miniaturePlaceholder}>{p.prenom?.[0]}{p.nom?.[0]}</div>
+                  )}
+                </td>
+                <td>{p.prenom} {p.nom}</td>
+                <td>{p.telephone}</td>
+                <td>
+                  <span className={`${styles.badge} ${styles["badge_" + p.statut]}`}>
+                    {t(`statut_${p.statut}`)}
+                  </span>
+                </td>
+                <td>
+                  <span className={`${styles.badge} ${styles["badgeVisa_" + p.statut_visa]}`}>
+                    {t(`visa_${p.statut_visa}`)}
+                  </span>
+                </td>
+                <td className={styles.cellInscripteur}>{p.inscripteur_nom || "—"}</td>
+                <td className={styles.cellActions}>
+                  <button onClick={() => navigate(`/pelerins/${p.id}/modifier`)} title={t("modifier")}>
+                    ✎
+                  </button>
+                  <a href={pelerinService.urlFichePdf(p.id)} target="_blank" rel="noreferrer" title={t("telecharger_fiche")}>
+                    ⬇
+                  </a>
+                  <button onClick={() => supprimer(p.id)} title={t("supprimer")} className={styles.boutonSupprimer}>
+                    ✕
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
+
+export default ListePelerins;

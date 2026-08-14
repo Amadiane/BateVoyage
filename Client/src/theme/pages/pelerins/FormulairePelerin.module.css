@@ -1,0 +1,157 @@
+.page {
+  max-width: 780px;
+}
+
+.titre {
+  font-family: var(--font-display);
+  font-size: 24px;
+  color: var(--color-brand-dark);
+  margin: 0 0 24px;
+}
+
+.etapes {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 24px;
+  overflow-x: auto;
+}
+
+.puceEtape {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background-color: #F3F4F6;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.numeroEtape {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background-color: #D1D5DB;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.libelleEtape {
+  font-size: 12px;
+  font-weight: 600;
+  color: #6B7280;
+}
+
+.puceActive {
+  background-color: var(--color-brand-pale);
+}
+
+.puceActive .numeroEtape {
+  background-color: var(--color-brand);
+}
+
+.puceActive .libelleEtape {
+  color: var(--color-brand-dark);
+}
+
+.puceComplete .numeroEtape {
+  background-color: #10B981;
+}
+
+.carte {
+  background-color: #fff;
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  padding: 28px;
+}
+
+.grille {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+}
+
+.label {
+  display: block;
+  font-size: 13px;
+  font-weight: 500;
+  margin-bottom: 6px;
+  color: var(--color-ink);
+}
+
+.grille input, .grille select, .grille textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  font-size: 14px;
+  font-family: inherit;
+}
+
+.grille input:focus, .grille select:focus, .grille textarea:focus {
+  outline: none;
+  border-color: var(--color-brand);
+  box-shadow: 0 0 0 3px var(--color-brand-pale);
+}
+
+.erreur {
+  font-size: 13px;
+  color: var(--color-error);
+  background-color: var(--color-error-bg);
+  border: 1px solid #FCA5A5;
+  border-radius: 8px;
+  padding: 10px 14px;
+  margin: 20px 0 0;
+}
+
+.navigation {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 28px;
+  padding-top: 20px;
+  border-top: 1px solid var(--color-border);
+}
+
+.groupeDroite {
+  display: flex;
+  gap: 10px;
+}
+
+.boutonPrincipal {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  background-color: var(--color-brand-dark);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.boutonPrincipal:hover:not(:disabled) {
+  background-color: var(--color-brand);
+}
+
+.boutonPrincipal:disabled {
+  opacity: 0.6;
+}
+
+.boutonSecondaire {
+  padding: 10px 20px;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  background-color: #fff;
+  color: var(--color-ink);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.boutonSecondaire:hover {
+  background-color: #F9FAFB;
+}

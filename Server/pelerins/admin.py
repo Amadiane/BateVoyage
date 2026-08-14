@@ -4,8 +4,8 @@ from .models import Pelerin, SequenceInscription
 
 @admin.register(Pelerin)
 class PelerinAdmin(admin.ModelAdmin):
-    list_display = ["numero_id", "nom", "prenom", "sexe", "statut", "statut_visa", "inscripteur", "dossier_complet"]
-    list_filter = ["statut", "statut_visa", "sexe", "programme"]
+    list_display = ["numero_id", "nom", "prenom", "type_voyage", "sexe", "statut", "statut_visa", "inscripteur", "dossier_complet"]
+    list_filter = ["type_voyage", "statut", "statut_visa", "sexe"]
     search_fields = ["nom", "prenom", "numero_id", "numero_passeport", "telephone"]
 
 
