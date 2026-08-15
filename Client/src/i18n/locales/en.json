@@ -96,7 +96,9 @@
   "dossier_complet": "Complete file",
   "voir_document": "View document",
 
-  "champs_obligatoires_manquants": "Please fill in all required fields for this step before continuing."
+  "champs_obligatoires_manquants": "Please fill in all required fields for this step before continuing.",
+
+  "telecharger": "Download"
 
 
 

@@ -219,3 +219,24 @@ button.lienDocument {
 button.boutonPrincipal, button.boutonDanger {
   border: none;
 }
+
+.actionsDocument {
+  display: flex;
+  gap: 16px;
+  margin-top: 4px;
+}
+
+button.lienDocument {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  color: var(--color-brand);
+  font-size: 13px;
+  font-weight: 600;
+  padding: 0;
+}
+
+button.lienDocument:hover {
+  text-decoration: underline;
+}

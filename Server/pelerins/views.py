@@ -50,8 +50,6 @@ class PelerinViewSet(viewsets.ModelViewSet):
 
     @action(detail=True, methods=["get"], url_path="document/(?P<champ>[^/.]+)")
     def document(self, request, pk=None, champ=None):
-        """Proxy sécurisé vers un document Cloudinary — masque l'URL réelle
-        et impose l'authentification, contrairement à un lien Cloudinary direct."""
         if champ not in CHAMPS_DOCUMENTS:
             raise Http404("Champ de document invalide.")
 
@@ -60,13 +58,28 @@ class PelerinViewSet(viewsets.ModelViewSet):
         if not fichier:
             raise Http404("Aucun document pour ce champ.")
 
-        reponse_cloudinary = requests.get(fichier.url, stream=True)
-        if reponse_cloudinary.status_code != 200:
-            return Response({"erreur": "Document introuvable sur le stockage."}, status=404)
+        reponse_cloudinary = requests.get(fichier.url)
 
-        content_type = reponse_cloudinary.headers.get("Content-Type", "application/octet-stream")
+        if reponse_cloudinary.status_code != 200:
+            return Response(
+                {"erreur": f"Cloudinary a renvoyé le statut {reponse_cloudinary.status_code} pour ce fichier."},
+                status=502,
+            )
+
+        content_type = reponse_cloudinary.headers.get("Content-Type", "")
+        contenu = reponse_cloudinary.content
+
+        if "text/html" in content_type or len(contenu) < 200:
+            return Response(
+                {"erreur": "Le fichier renvoyé par Cloudinary semble invalide ou vide."},
+                status=502,
+            )
+
+        # Nom réel du fichier stocké, avec sa vraie extension — ne jamais
+        # forcer une extension arbitraire côté frontend.
         nom_fichier = fichier.name.split("/")[-1]
 
-        response = HttpResponse(reponse_cloudinary.content, content_type=content_type)
+        response = HttpResponse(contenu, content_type=content_type or "application/octet-stream")
         response["Content-Disposition"] = f'inline; filename="{nom_fichier}"'
+        response["X-Nom-Fichier-Reel"] = nom_fichier
         return response

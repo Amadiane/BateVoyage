@@ -97,7 +97,9 @@
   "dossier_complet": "ملف مكتمل",
   "voir_document": "عرض المستند",
 
-  "champs_obligatoires_manquants": "يرجى ملء جميع الحقول المطلوبة في هذه الخطوة قبل المتابعة." 
+  "champs_obligatoires_manquants": "يرجى ملء جميع الحقول المطلوبة في هذه الخطوة قبل المتابعة.",
+
+  "telecharger": "تحميل"
 
 
 

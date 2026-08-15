@@ -82,12 +82,12 @@ WSGI_APPLICATION = 'Server.wsgi.application'
 # ------------------------------------------------------------------
 # Base de données (SQLite pour le développement — à remplacer en prod)
 # ------------------------------------------------------------------
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
 
 # ------------------------------------------------------------------
 # Utilisateur personnalisé
@@ -143,6 +143,8 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
 ]
 
+CORS_EXPOSE_HEADERS = ["X-Nom-Fichier-Reel"]
+
 import dj_database_url
 
 DATABASE_URL = config("DATABASE_URL", default=None)
@@ -190,6 +192,8 @@ SIMPLE_JWT = {
 }
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
 
 
 
