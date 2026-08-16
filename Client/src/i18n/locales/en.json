@@ -117,7 +117,26 @@
   "document_deja_enregistre": "Document already on file",
   "aucun_document": "No document",
   "remplacer_fichier": "Replace",
-  "choisir_fichier": "Choose a file"
+  "choisir_fichier": "Choose a file",
+
+  
+  "suivi_conformite_dossiers": "Compliance tracking for pilgrim files",
+  "dossiers_incomplets": "Incomplete files",
+  "passeports_a_surveiller": "Passports to watch",
+  "visas_en_attente": "Pending visas",
+  "champs_manquants": "Missing items",
+  "champ_numero_passeport": "Passport number",
+  "champ_scan_passeport": "Passport scan",
+  "champ_visa": "Visa",
+  "champ_certificat_medical": "Medical certificate",
+  "champ_photo": "Photo",
+  "aucun_dossier_incomplet": "All files are complete.",
+  "aucun_passeport_a_surveiller": "No passport expiring soon.",
+  "aucun_visa_en_attente": "No pending visas.",
+  "deja_expire": "Expired",
+  "expire_bientot": "Expiring soon",
+  "statut_visa_label": "Visa status"
+
 
 
 

@@ -118,7 +118,26 @@
   "document_deja_enregistre": "المستند مسجل بالفعل",
   "aucun_document": "لا يوجد مستند",
   "remplacer_fichier": "استبدال",
-  "choisir_fichier": "اختر ملفًا"
+  "choisir_fichier": "اختر ملفًا",
+
+  
+  "suivi_conformite_dossiers": "متابعة اكتمال ملفات الحجاج",
+  "dossiers_incomplets": "ملفات غير مكتملة",
+  "passeports_a_surveiller": "جوازات يجب متابعتها",
+  "visas_en_attente": "تأشيرات قيد الانتظار",
+  "champs_manquants": "عناصر ناقصة",
+  "champ_numero_passeport": "رقم الجواز",
+  "champ_scan_passeport": "نسخة الجواز",
+  "champ_visa": "التأشيرة",
+  "champ_certificat_medical": "الشهادة الطبية",
+  "champ_photo": "الصورة",
+  "aucun_dossier_incomplet": "جميع الملفات مكتملة.",
+  "aucun_passeport_a_surveiller": "لا يوجد جواز على وشك الانتهاء.",
+  "aucun_visa_en_attente": "لا توجد تأشيرات قيد الانتظار.",
+  "deja_expire": "منتهي",
+  "expire_bientot": "ينتهي قريبًا",
+  "statut_visa_label": "حالة التأشيرة"
+
 
 
 

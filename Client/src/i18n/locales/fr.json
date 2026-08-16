@@ -119,7 +119,26 @@
   "document_deja_enregistre": "Document déjà enregistré",
   "aucun_document": "Aucun document",
   "remplacer_fichier": "Remplacer",
-  "choisir_fichier": "Choisir un fichier"
+  "choisir_fichier": "Choisir un fichier",
+
+  
+  "suivi_conformite_dossiers": "Suivi de la conformité des dossiers pèlerins",
+  "dossiers_incomplets": "Dossiers incomplets",
+  "passeports_a_surveiller": "Passeports à surveiller",
+  "visas_en_attente": "Visas en attente",
+  "champs_manquants": "Éléments manquants",
+  "champ_numero_passeport": "N° Passeport",
+  "champ_scan_passeport": "Scan passeport",
+  "champ_visa": "Visa",
+  "champ_certificat_medical": "Certificat médical",
+  "champ_photo": "Photo",
+  "aucun_dossier_incomplet": "Tous les dossiers sont complets.",
+  "aucun_passeport_a_surveiller": "Aucun passeport n'expire prochainement.",
+  "aucun_visa_en_attente": "Aucun visa en attente.",
+  "deja_expire": "Expiré",
+  "expire_bientot": "Expire bientôt",
+  "statut_visa_label": "Statut visa"
+
 
 
 
