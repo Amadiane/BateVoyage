@@ -98,7 +98,28 @@
 
   "champs_obligatoires_manquants": "Please fill in all required fields for this step before continuing.",
 
-  "telecharger": "Download"
+  "telecharger": "Download",
+
+  
+  "menu_dashboard": "Dashboard",
+  "menu_pelerins": "Pilgrims",
+  "menu_pelerins_sante": "Health follow-up",
+  "menu_utilisateurs": "Users",
+  "menu_documents": "Documents",
+  "menu_paiements": "Payments",
+  "menu_groupes": "Groups & flights",
+  "menu_reclamations": "Complaints",
+  "menu_mon_dossier": "My file",
+  "bonjour": "Hello",
+  "connecte_en_tant_que": "Logged in as",
+
+  
+  "document_deja_enregistre": "Document already on file",
+  "aucun_document": "No document",
+  "remplacer_fichier": "Replace",
+  "choisir_fichier": "Choose a file"
+
+
 
 
 

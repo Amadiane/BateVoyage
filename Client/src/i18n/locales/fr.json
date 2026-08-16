@@ -100,7 +100,28 @@
 
   "champs_obligatoires_manquants": "Merci de remplir tous les champs obligatoires de cette étape avant de continuer.",
 
-  "telecharger": "Télécharger"
+  "telecharger": "Télécharger",
+
+  
+  "menu_dashboard": "Tableau de bord",
+  "menu_pelerins": "Pèlerins",
+  "menu_pelerins_sante": "Suivi santé",
+  "menu_utilisateurs": "Utilisateurs",
+  "menu_documents": "Documents",
+  "menu_paiements": "Paiements",
+  "menu_groupes": "Groupes & vols",
+  "menu_reclamations": "Réclamations",
+  "menu_mon_dossier": "Mon dossier",
+  "bonjour": "Bonjour",
+  "connecte_en_tant_que": "Connecté en tant que",
+
+  
+  "document_deja_enregistre": "Document déjà enregistré",
+  "aucun_document": "Aucun document",
+  "remplacer_fichier": "Remplacer",
+  "choisir_fichier": "Choisir un fichier"
+
+
 
 
 

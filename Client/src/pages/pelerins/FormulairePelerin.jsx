@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { pelerinService } from "../../services/pelerinService";
 import { utilisateurService } from "../../services/utilisateurService";
 import { programmeService } from "../../services/programmeService";
+import ChampFichier from "../../components/ChampFichier/ChampFichier";
 import styles from "../../theme/pages/pelerins/FormulairePelerin.module.css";
 
 const ETAPES = ["identite", "passeport", "adresse", "contact", "sante", "documents"];
@@ -17,9 +18,8 @@ const VALEURS_INITIALES = {
   type_voyage: "", montant_verse: "", inscripteur: "", programme: "",
 };
 
-// Champs obligatoires par étape — utilisé pour bloquer "Suivant"/"Enregistrer"
-// tant qu'ils sont vides, puisque les boutons ne déclenchent pas la
-// validation HTML5 native (ils ne sont pas de type "submit").
+const CHAMPS_FICHIERS = ["photo", "scan_passeport", "scan_certificat_medical", "scan_recu_versement"];
+
 const CHAMPS_REQUIS_PAR_ETAPE = {
   0: ["prenom", "nom", "sexe", "date_naissance", "lieu_naissance"],
   1: ["numero_passeport", "date_emission_passeport", "date_expiration_passeport"],
@@ -43,11 +43,16 @@ function FormulairePelerin() {
     scan_certificat_medical: null,
     scan_recu_versement: null,
   });
+  // URLs des documents déjà enregistrés (lecture seule, affichage uniquement —
+  // jamais renvoyées au serveur tant qu'aucun nouveau fichier n'est choisi).
+  const [documentsExistants, setDocumentsExistants] = useState({});
+
   const [agents, setAgents] = useState([]);
   const [programmes, setProgrammes] = useState([]);
   const [envoi, setEnvoi] = useState(false);
   const [erreur, setErreur] = useState("");
   const [champsManquants, setChampsManquants] = useState([]);
+  const [chargementInitial, setChargementInitial] = useState(modeEdition);
 
   useEffect(() => {
     utilisateurService.listerAgentsInscripteurs().then(({ data }) => setAgents(data));
@@ -55,12 +60,23 @@ function FormulairePelerin() {
 
     if (modeEdition) {
       pelerinService.obtenir(id).then(({ data }) => {
-        setValeurs({
-          ...VALEURS_INITIALES,
-          ...data,
-          inscripteur: data.inscripteur || "",
-          programme: data.programme || "",
+        // Ne charge QUE les champs texte connus — ne copie jamais l'objet
+        // API brut, pour ne pas mélanger les URLs de fichiers avec les
+        // champs texte (c'était la cause du bug de données écrasées).
+        const valeursTexte = {};
+        Object.keys(VALEURS_INITIALES).forEach((champ) => {
+          const val = data[champ];
+          valeursTexte[champ] = val === null || val === undefined ? VALEURS_INITIALES[champ] : val;
         });
+        setValeurs(valeursTexte);
+
+        const docs = {};
+        CHAMPS_FICHIERS.forEach((champ) => {
+          docs[champ] = data[champ] || null;
+        });
+        setDocumentsExistants(docs);
+
+        setChargementInitial(false);
       });
     }
   }, [id]);
@@ -99,11 +115,22 @@ function FormulairePelerin() {
     setEnvoi(true);
     try {
       const formData = new FormData();
-      Object.entries(valeurs).forEach(([cle, val]) => {
-        if (val !== null && val !== undefined && val !== "") formData.append(cle, val);
+
+      // On ne parcourt QUE les clés connues de VALEURS_INITIALES —
+      // jamais tout l'objet `valeurs` en aveugle — pour être certain
+      // qu'aucun champ fichier/URL ne s'y glisse jamais.
+      Object.keys(VALEURS_INITIALES).forEach((champ) => {
+        const val = valeurs[champ];
+        if (val !== null && val !== undefined && val !== "") {
+          formData.append(champ, val);
+        }
       });
-      Object.entries(fichiers).forEach(([cle, fichier]) => {
-        if (fichier) formData.append(cle, fichier);
+
+      // Seuls les fichiers explicitement choisis par l'utilisateur sont
+      // envoyés — un champ non touché reste donc intact côté serveur
+      // (PATCH ne modifie que ce qui est présent dans la requête).
+      Object.entries(fichiers).forEach(([champ, fichier]) => {
+        if (fichier) formData.append(champ, fichier);
       });
 
       if (modeEdition) {
@@ -128,6 +155,10 @@ function FormulairePelerin() {
   };
 
   const estManquant = (champ) => champsManquants.includes(champ);
+
+  if (chargementInitial) {
+    return <p className={styles.chargement}>{t("chargement")}</p>;
+  }
 
   return (
     <div className={styles.page}>
@@ -168,9 +199,12 @@ function FormulairePelerin() {
             <Champ label={t("lieu_naissance")} manquant={estManquant("lieu_naissance")}>
               <input value={valeurs.lieu_naissance} onChange={(e) => majChamp("lieu_naissance", e.target.value)} />
             </Champ>
-            <Champ label={t("photo")}>
-              <input type="file" accept="image/*" onChange={(e) => majFichier("photo", e.target.files[0])} />
-            </Champ>
+            <ChampFichier
+              label={t("photo")}
+              valeurActuelle={documentsExistants.photo}
+              onFichierChange={(f) => majFichier("photo", f)}
+              accept="image/*"
+            />
           </div>
         )}
 
@@ -193,9 +227,13 @@ function FormulairePelerin() {
             <Champ label={t("date_expiration_passeport")} manquant={estManquant("date_expiration_passeport")}>
               <input type="date" value={valeurs.date_expiration_passeport} onChange={(e) => majChamp("date_expiration_passeport", e.target.value)} />
             </Champ>
-            <Champ label={t("scan_passeport")} pleineLargeur>
-              <input type="file" accept="image/*,.pdf" onChange={(e) => majFichier("scan_passeport", e.target.files[0])} />
-            </Champ>
+            <div style={{ gridColumn: "1 / -1" }}>
+              <ChampFichier
+                label={t("scan_passeport")}
+                valeurActuelle={documentsExistants.scan_passeport}
+                onFichierChange={(f) => majFichier("scan_passeport", f)}
+              />
+            </div>
           </div>
         )}
 
@@ -246,9 +284,13 @@ function FormulairePelerin() {
             <Champ label={t("probleme_sante")} pleineLargeur>
               <textarea rows={3} value={valeurs.probleme_sante} onChange={(e) => majChamp("probleme_sante", e.target.value)} placeholder={t("aucun_si_neant")} />
             </Champ>
-            <Champ label={t("scan_certificat_medical")} pleineLargeur>
-              <input type="file" accept="image/*,.pdf" onChange={(e) => majFichier("scan_certificat_medical", e.target.files[0])} />
-            </Champ>
+            <div style={{ gridColumn: "1 / -1" }}>
+              <ChampFichier
+                label={t("scan_certificat_medical")}
+                valeurActuelle={documentsExistants.scan_certificat_medical}
+                onFichierChange={(f) => majFichier("scan_certificat_medical", f)}
+              />
+            </div>
           </div>
         )}
 
@@ -283,9 +325,13 @@ function FormulairePelerin() {
             <Champ label={t("montant_verse")}>
               <input type="number" step="0.01" value={valeurs.montant_verse} onChange={(e) => majChamp("montant_verse", e.target.value)} />
             </Champ>
-            <Champ label={t("scan_recu_versement")} pleineLargeur>
-              <input type="file" accept="image/*,.pdf" onChange={(e) => majFichier("scan_recu_versement", e.target.files[0])} />
-            </Champ>
+            <div style={{ gridColumn: "1 / -1" }}>
+              <ChampFichier
+                label={t("scan_recu_versement")}
+                valeurActuelle={documentsExistants.scan_recu_versement}
+                onFichierChange={(f) => majFichier("scan_recu_versement", f)}
+              />
+            </div>
           </div>
         )}
 

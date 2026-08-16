@@ -58,13 +58,13 @@ export const MENU_PAR_ROLE = {
 };
 
 export const ITEMS_MENU = {
-  dashboard: { label: "Tableau de bord", path: "/dashboard" },
-  pelerins: { label: "Pèlerins", path: "/pelerins" },
-  "pelerins-sante": { label: "Suivi santé", path: "/pelerins-sante" },
-  utilisateurs: { label: "Utilisateurs", path: "/utilisateurs" },
-  documents: { label: "Documents", path: "/documents" },
-  paiements: { label: "Paiements", path: "/paiements" },
-  groupes: { label: "Groupes & vols", path: "/groupes" },
-  reclamations: { label: "Réclamations", path: "/reclamations" },
-  "mon-dossier": { label: "Mon dossier", path: "/mon-dossier" },
+  dashboard: { cle: "menu_dashboard", path: "/dashboard" },
+  pelerins: { cle: "menu_pelerins", path: "/pelerins" },
+  "pelerins-sante": { cle: "menu_pelerins_sante", path: "/pelerins-sante" },
+  utilisateurs: { cle: "menu_utilisateurs", path: "/utilisateurs" },
+  documents: { cle: "menu_documents", path: "/documents" },
+  paiements: { cle: "menu_paiements", path: "/paiements" },
+  groupes: { cle: "menu_groupes", path: "/groupes" },
+  reclamations: { cle: "menu_reclamations", path: "/reclamations" },
+  "mon-dossier": { cle: "menu_mon_dossier", path: "/mon-dossier" },
 };

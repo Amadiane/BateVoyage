@@ -94,3 +94,8 @@
 .boutonDeconnexion:hover {
   background-color: rgba(255, 255, 255, 0.15);
 }
+
+.zoneLangue {
+  padding: 12px 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}

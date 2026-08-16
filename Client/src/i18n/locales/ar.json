@@ -99,7 +99,28 @@
 
   "champs_obligatoires_manquants": "يرجى ملء جميع الحقول المطلوبة في هذه الخطوة قبل المتابعة.",
 
-  "telecharger": "تحميل"
+  "telecharger": "تحميل",
+
+  
+  "menu_dashboard": "لوحة التحكم",
+  "menu_pelerins": "الحجاج",
+  "menu_pelerins_sante": "المتابعة الصحية",
+  "menu_utilisateurs": "المستخدمون",
+  "menu_documents": "المستندات",
+  "menu_paiements": "المدفوعات",
+  "menu_groupes": "المجموعات والرحلات",
+  "menu_reclamations": "الشكاوى",
+  "menu_mon_dossier": "ملفي",
+  "bonjour": "مرحبًا",
+  "connecte_en_tant_que": "متصل بصفة",
+
+  
+  "document_deja_enregistre": "المستند مسجل بالفعل",
+  "aucun_document": "لا يوجد مستند",
+  "remplacer_fichier": "استبدال",
+  "choisir_fichier": "اختر ملفًا"
+
+
 
 
 
