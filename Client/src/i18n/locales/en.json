@@ -162,7 +162,37 @@
   "repartition_statuts": "Status breakdown",
   "modules_a_venir": "Upcoming modules",
   "modules_a_venir_description": "These modules will be activated as system development progresses.",
-  "assistance_24_7": "24/7 Support"
+  "assistance_24_7": "24/7 Support",
+
+  "comptes_enregistres": "registered accounts",
+  "nouveau_utilisateur": "New user",
+  "modifier_utilisateur": "Edit user",
+  "rechercher_utilisateur": "Search a user...",
+  "tous_roles": "All roles",
+  "nom_utilisateur_champ": "Username",
+  "role": "Role",
+  "actif": "Active",
+  "inactif": "Inactive",
+  "aucun_utilisateur": "No user found",
+  "confirmer_suppression_utilisateur": "Confirm deletion of this account?",
+  "email": "Email",
+  "compte_actif": "Active account",
+  "reinitialiser_mot_de_passe": "Reset password",
+  "nouveau_mot_de_passe": "New password",
+  "valider": "Confirm",
+  "mot_de_passe_trop_court": "Password must be at least 6 characters.",
+  "mot_de_passe_modifie": "Password changed successfully.",
+  "role_fondateur": "Founder",
+  "role_admin_general": "General Administrator",
+  "role_comptable": "Accountant",
+  "role_secretaire": "Secretary",
+  "role_docteur": "Doctor",
+  "role_traducteur": "Translator",
+  "role_affaires_sociales": "Social Affairs",
+  "role_guide": "Guide",
+  "role_encadreur": "Supervisor",
+  "role_mounazim": "Mounazim",
+  "role_pelerin": "Pilgrim"
 
 
 

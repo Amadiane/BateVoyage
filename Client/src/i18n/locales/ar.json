@@ -163,7 +163,39 @@
   "repartition_statuts": "التوزيع حسب الحالة",
   "modules_a_venir": "وحدات قادمة",
   "modules_a_venir_description": "سيتم تفعيل هذه الوحدات تدريجيًا مع تطور النظام.",
-  "assistance_24_7": "الدعم على مدار الساعة"
+  "assistance_24_7": "الدعم على مدار الساعة",
+
+  
+  "comptes_enregistres": "حساب مسجل",
+  "nouveau_utilisateur": "مستخدم جديد",
+  "modifier_utilisateur": "تعديل المستخدم",
+  "rechercher_utilisateur": "البحث عن مستخدم...",
+  "tous_roles": "جميع الأدوار",
+  "nom_utilisateur_champ": "اسم المستخدم",
+  "role": "الدور",
+  "actif": "نشط",
+  "inactif": "غير نشط",
+  "aucun_utilisateur": "لا يوجد مستخدم",
+  "confirmer_suppression_utilisateur": "تأكيد حذف هذا الحساب؟",
+  "email": "البريد الإلكتروني",
+  "compte_actif": "حساب نشط",
+  "reinitialiser_mot_de_passe": "إعادة تعيين كلمة المرور",
+  "nouveau_mot_de_passe": "كلمة مرور جديدة",
+  "valider": "تأكيد",
+  "mot_de_passe_trop_court": "يجب أن تتكون كلمة المرور من 6 أحرف على الأقل.",
+  "mot_de_passe_modifie": "تم تغيير كلمة المرور بنجاح.",
+  "role_fondateur": "المؤسس",
+  "role_admin_general": "المدير العام",
+  "role_comptable": "المحاسب",
+  "role_secretaire": "السكرتير",
+  "role_docteur": "الطبيب",
+  "role_traducteur": "المترجم",
+  "role_affaires_sociales": "الشؤون الاجتماعية",
+  "role_guide": "المرشد",
+  "role_encadreur": "المشرف",
+  "role_mounazim": "المنظم",
+  "role_pelerin": "الحاج"
+
 
 
 

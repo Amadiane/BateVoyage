@@ -9,6 +9,8 @@ import FormulairePelerin from "./pages/pelerins/FormulairePelerin";
 import DetailPelerin from "./pages/pelerins/DetailPelerin";
 import PageDocuments from "./pages/documents/PageDocuments";
 import PageJournalActivite from "./pages/activite/PageJournalActivite";
+import ListeUtilisateurs from "./pages/utilisateurs/ListeUtilisateurs";
+import FormulaireUtilisateur from "./pages/utilisateurs/FormulaireUtilisateur";
 import "./globals.css";
 
 function App() {
@@ -31,6 +33,9 @@ function App() {
           <Route path="/pelerins/:id/modifier" element={<FormulairePelerin />} />
           <Route path="/documents" element={<PageDocuments />} />
           <Route path="/journal-activite" element={<PageJournalActivite />} />
+          <Route path="/utilisateurs" element={<ListeUtilisateurs />} />
+          <Route path="/utilisateurs/nouveau" element={<FormulaireUtilisateur />} />
+          <Route path="/utilisateurs/:id/modifier" element={<FormulaireUtilisateur />} />
         </Route>
 
         <Route path="/" element={<Navigate to="/dashboard" replace />} />

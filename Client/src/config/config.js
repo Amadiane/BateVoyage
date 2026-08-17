@@ -30,6 +30,8 @@ const CONFIG = {
 
   API_PELERIN_HISTORIQUE: (id) => `${BASE_URL}/api/pelerins/${id}/historique/`,
   API_JOURNAL_GLOBAL: `${BASE_URL}/api/activite/global/`,
+  API_UTILISATEUR_MOT_DE_PASSE: (id) => `${BASE_URL}/api/utilisateurs/comptes/${id}/mot-de-passe/`,
+  API_UTILISATEUR_HISTORIQUE: (id) => `${BASE_URL}/api/utilisateurs/comptes/${id}/historique/`,
 
   // --- Formules / Programmes ---
   API_PROGRAMMES: `${BASE_URL}/api/formules/programmes/`,

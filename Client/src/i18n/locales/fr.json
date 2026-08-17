@@ -164,7 +164,39 @@
   "repartition_statuts": "Répartition par statut",
   "modules_a_venir": "Modules à venir",
   "modules_a_venir_description": "Ces modules seront activés au fur et à mesure du développement du système.",
-  "assistance_24_7": "Assistance 24/7"
+  "assistance_24_7": "Assistance 24/7",
+
+  
+  "comptes_enregistres": "comptes enregistrés",
+  "nouveau_utilisateur": "Nouvel utilisateur",
+  "modifier_utilisateur": "Modifier l'utilisateur",
+  "rechercher_utilisateur": "Rechercher un utilisateur...",
+  "tous_roles": "Tous les rôles",
+  "nom_utilisateur_champ": "Nom d'utilisateur",
+  "role": "Rôle",
+  "actif": "Actif",
+  "inactif": "Inactif",
+  "aucun_utilisateur": "Aucun utilisateur trouvé",
+  "confirmer_suppression_utilisateur": "Confirmer la suppression de ce compte ?",
+  "email": "Email",
+  "compte_actif": "Compte actif",
+  "reinitialiser_mot_de_passe": "Réinitialiser le mot de passe",
+  "nouveau_mot_de_passe": "Nouveau mot de passe",
+  "valider": "Valider",
+  "mot_de_passe_trop_court": "Le mot de passe doit contenir au moins 6 caractères.",
+  "mot_de_passe_modifie": "Mot de passe modifié avec succès.",
+  "role_fondateur": "Fondateur",
+  "role_admin_general": "Administrateur Général",
+  "role_comptable": "Comptable",
+  "role_secretaire": "Secrétaire",
+  "role_docteur": "Docteur",
+  "role_traducteur": "Traducteur",
+  "role_affaires_sociales": "Affaires sociales",
+  "role_guide": "Guide",
+  "role_encadreur": "Encadreur",
+  "role_mounazim": "Mounazim",
+  "role_pelerin": "Pèlerin"
+
 
 
 
