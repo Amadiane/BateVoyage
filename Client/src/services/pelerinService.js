@@ -8,4 +8,5 @@ export const pelerinService = {
   modifier: (id, formData) => api.patch(CONFIG.API_PELERIN_DETAIL(id), formData),
   supprimer: (id) => api.delete(CONFIG.API_PELERIN_DETAIL(id)),
   urlFichePdf: (id) => CONFIG.API_PELERIN_FICHE_PDF(id),
+  obtenirHistorique: (id) => api.get(CONFIG.API_PELERIN_HISTORIQUE(id)),
 };

@@ -1,311 +1,275 @@
-.page {
-  min-height: 100vh;
-  display: flex;
+* {
+  box-sizing: border-box;
 }
 
-.panneauMarque {
-  display: none;
-  width: 50%;
-  background-color: var(--color-brand-dark);
+.container {
+  display: flex;
+  height: 100vh;
+  background: #f4f4f4;
+}
+
+/* ---------- Partie gauche ---------- */
+.left {
+  width: 55%;
   position: relative;
+  background-size: cover;
+  background-position: center;
   overflow: hidden;
-  flex-direction: column;
-  justify-content: space-between;
-  padding: 56px 64px;
 }
 
-@media (min-width: 1024px) {
-  .panneauMarque {
-    display: flex;
-  }
-}
-
-/* Filigrane repoussé et réduit — ne touche plus le texte de l'accroche */
-.motif {
+.overlay {
   position: absolute;
-  top: 8%;
-  right: -220px;
-  width: 480px;
-  height: 480px;
-  border-radius: 50%;
-  border: 60px solid var(--color-brand);
-  opacity: 0.06;
-  pointer-events: none;
+  inset: 0;
+  background: linear-gradient(
+    100deg,
+    rgba(11, 14, 20, 0.88),
+    rgba(11, 14, 20, 0.3)
+  );
 }
 
-.motifSecondaire {
+.topLogo {
   position: absolute;
-  bottom: -160px;
-  left: -160px;
-  width: 280px;
-  height: 280px;
-  border-radius: 50%;
-  border: 36px solid var(--color-brand-light);
-  opacity: 0.05;
-  pointer-events: none;
-}
-
-.marqueHaut {
-  position: relative;
+  top: 32px;
+  left: 40px;
+  right: 40px;
+  z-index: 5;
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 15px;
+  color: white;
+  font-weight: 600;
 }
 
-.logoMarque {
-  width: 64px;
-  height: 64px;
+.topLogo img {
+  width: 48px;
+  height: 48px;
   object-fit: contain;
 }
 
-/* Le sigle domine désormais visuellement le nom complet en dessous */
-.nomMarque {
+.langueTopLogo {
+  margin-left: auto;
+}
+
+.bottom {
+  position: absolute;
+  left: 40px;
+  right: 40px;
+  bottom: 40px;
+  color: white;
+  z-index: 5;
+}
+
+.bottom h2 {
   font-family: var(--font-display);
-  font-size: 26px;
-  color: #fff;
-  letter-spacing: 0.03em;
-  margin: 0;
+  font-size: 34px;
+  margin-bottom: 18px;
+  letter-spacing: 2px;
+  color: var(--color-gold);
 }
 
-.nomMarqueSousTitre {
-  font-size: 11px;
-  color: var(--color-brand-light);
-  margin: 3px 0 0;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-}
-
-.blocAccroche {
-  position: relative;
-}
-
-.accroche {
-  font-family: var(--font-display);
-  font-size: 38px;
-  line-height: 1.25;
-  color: #fff;
-  margin: 0;
-  max-width: 420px;
-}
-
-.trait {
-  width: 56px;
-  height: 3px;
-  background-color: var(--color-brand);
-  margin: 28px 0 16px;
-  border-radius: 2px;
-}
-
-.slogan {
-  color: rgba(255, 255, 255, 0.55);
-  font-size: 13px;
-  letter-spacing: 0.03em;
-  text-transform: uppercase;
-  margin: 0 0 24px;
-}
-
-.contact {
-  display: flex;
-  gap: 20px;
-  font-size: 12px;
-  color: rgba(255, 255, 255, 0.4);
-}
-
-.panneauFormulaire {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 32px;
-  background-color: #FBFBFC;
-}
-
-.carte {
-  width: 100%;
-  max-width: 380px;
-}
-
-/* Visible uniquement en dessous de 1024px, quand le panneau de marque
-   de gauche disparaît — évite le logo dupliqué sur desktop */
-.logoMobile {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 28px;
-}
-
-@media (min-width: 1024px) {
-  .logoMobile {
-    display: none;
-  }
-}
-
-.logoMobile img {
-  width: 36px;
-  height: 36px;
-  object-fit: contain;
-}
-
-.logoMobile p {
-  font-family: var(--font-display);
+.bottom p {
   font-size: 18px;
-  color: var(--color-brand-dark);
-  margin: 0;
+  line-height: 1.6;
+  font-weight: 300;
+  margin-bottom: 40px;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
-.titre {
-  font-family: var(--font-display);
-  font-size: 28px;
-  color: var(--color-brand-dark);
-  margin: 0 0 6px;
-}
-
-.sousTitre {
-  color: #6B7280;
-  font-size: 14px;
-  margin: 0 0 36px;
-}
-
-.formulaire {
+.features {
   display: flex;
-  flex-direction: column;
   gap: 18px;
 }
 
-.champ {
+.features div {
+  width: 100px;
+  height: 100px;
+  border: 2px solid var(--color-gold);
+  border-radius: 15px;
   display: flex;
   flex-direction: column;
-  gap: 7px;
-}
-
-.label {
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--color-ink);
-}
-
-.enveloppeInput {
-  position: relative;
-  display: flex;
+  justify-content: center;
   align-items: center;
+  font-size: 30px;
+  background-color: rgba(199, 164, 74, 0.1);
+  backdrop-filter: blur(5px);
+}
+
+.features span {
+  font-size: 12px;
+  margin-top: 8px;
+  font-weight: 600;
+}
+
+/* ---------- Partie droite ---------- */
+.right {
+  width: 45%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: white;
+}
+
+.card {
+  width: 440px;
+  max-width: 100%;
+  padding: 40px;
+  text-align: center;
+}
+
+.logo {
+  width: 90px;
+  height: 90px;
+  object-fit: contain;
+  margin-bottom: 10px;
+}
+
+.card h1 {
+  font-family: var(--font-display);
+  font-size: 34px;
+  color: var(--color-brand-dark);
+  font-weight: 700;
+  margin: 0;
+}
+
+.card h2 {
+  font-family: var(--font-display);
+  font-size: 38px;
+  color: var(--color-brand-dark);
+  margin: 0 0 10px;
+}
+
+.card h3 {
+  color: var(--color-gold-dark);
+  letter-spacing: 2px;
+  margin: 0 0 20px;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.subtitle {
+  color: #666;
+  margin-bottom: 30px;
+  font-size: 14px;
 }
 
 .input {
-  width: 100%;
-  padding: 12px 14px;
-  border: 1px solid var(--color-border);
+  height: 52px;
+  border: 1px solid #ddd;
+  display: flex;
+  align-items: center;
+  padding: 0 15px;
   border-radius: 10px;
-  font-size: 14px;
-  background-color: #fff;
+  margin-bottom: 18px;
+  position: relative;
   transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
-.input:focus {
-  outline: none;
+.input:focus-within {
   border-color: var(--color-brand);
   box-shadow: 0 0 0 3px var(--color-brand-pale);
 }
 
-/* Bouton "Afficher/Masquer" — coloré et en gras pour se distinguer
-   clairement d'un texte de placeholder */
+.input svg {
+  color: var(--color-brand);
+  font-size: 16px;
+  flex-shrink: 0;
+}
+
+.input input {
+  border: none;
+  outline: none;
+  flex: 1;
+  margin-left: 12px;
+  font-size: 14px;
+  background: transparent;
+}
+
 .boutonOeil {
-  position: absolute;
-  right: 12px;
   background: none;
   border: none;
-  padding: 4px 8px;
   cursor: pointer;
+  color: #9CA3AF;
+  font-size: 14px;
+  padding: 0;
+}
+
+.options {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 22px;
+  font-size: 13px;
+}
+
+.options label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #4B5563;
+}
+
+.options a {
+  text-decoration: none;
   color: var(--color-brand);
-  font-size: 12px;
   font-weight: 600;
 }
 
-.boutonOeil:hover {
-  color: var(--color-brand-dark);
-  text-decoration: underline;
-}
-
-.ligneOptions {
-  display: flex;
-  justify-content: flex-end;
-  margin-top: -6px;
-}
-
-.lienMotDePasseOublie {
-  font-size: 13px;
-  color: var(--color-brand);
-  text-decoration: none;
-  font-weight: 500;
-}
-
-.lienMotDePasseOublie:hover {
+.options a:hover {
   text-decoration: underline;
 }
 
 .erreur {
   font-size: 13px;
-  color: var(--color-error);
-  background-color: var(--color-error-bg);
-  border: 1px solid #FCA5A5;
+  color: #B91C1C;
+  background-color: #FEF2F2;
+  border: 1px solid #FECACA;
   border-radius: 10px;
   padding: 10px 14px;
-  margin: 0;
+  margin: 0 0 18px;
 }
 
-.bouton {
-  padding: 13px;
+.loginBtn {
+  width: 100%;
+  height: 52px;
+  background: linear-gradient(135deg, var(--color-brand-dark), var(--color-brand));
+  color: white;
   border: none;
   border-radius: 10px;
-  background-color: var(--color-brand-dark);
-  color: #fff;
-  font-size: 14px;
-  font-weight: 600;
+  font-size: 15px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
   cursor: pointer;
-  transition: background-color 0.15s ease, transform 0.1s ease;
-  margin-top: 4px;
+  transition: opacity 0.2s ease, transform 0.1s ease;
 }
 
-.bouton:hover:not(:disabled) {
-  background-color: var(--color-brand);
+.loginBtn:hover:not(:disabled) {
+  opacity: 0.9;
 }
 
-.bouton:active:not(:disabled) {
+.loginBtn:active:not(:disabled) {
   transform: scale(0.99);
 }
 
-.bouton:disabled {
+.loginBtn:disabled {
   opacity: 0.6;
   cursor: default;
 }
 
-.enteteMarque {
-  position: relative;
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
+.secure {
+  margin-top: 26px;
+  color: #9CA3AF;
+  font-size: 12.5px;
 }
 
-.enteteFormulaireMobile {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 28px;
-}
-
-@media (min-width: 1024px) {
-  .enteteFormulaireMobile {
+/* ---------- Responsive ---------- */
+@media (max-width: 900px) {
+  .left {
     display: none;
   }
-}
-
-.enteteFormulaireDesktop {
-  display: none;
-  justify-content: flex-end;
-  margin-bottom: 20px;
-}
-
-@media (min-width: 1024px) {
-  .enteteFormulaireDesktop {
-    display: flex;
+  .right {
+    width: 100%;
   }
 }

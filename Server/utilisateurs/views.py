@@ -7,6 +7,7 @@ from rest_framework.response import Response
 from django.contrib.auth import get_user_model
 from .serializers import UtilisateurSerializer, CreationUtilisateurSerializer
 from .permissions import EstFondateurOuAdmin
+from auditlog.context import set_actor
 
 User = get_user_model()
 
@@ -27,6 +28,18 @@ class UtilisateurViewSet(viewsets.ModelViewSet):
         if self.action == "create":
             return CreationUtilisateurSerializer
         return UtilisateurSerializer
+    def perform_create(self, serializer):
+        with set_actor(self.request.user):
+            serializer.save()
+
+    def perform_update(self, serializer):
+        with set_actor(self.request.user):
+            serializer.save()
+
+    def perform_destroy(self, instance):
+        with set_actor(self.request.user):
+            instance.delete()
+    
 
 from rest_framework import generics
 

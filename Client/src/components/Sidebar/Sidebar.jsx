@@ -16,7 +16,7 @@ function Sidebar() {
         <img src={ENTREPRISE.logo} alt={ENTREPRISE.nomCourt} className={styles.logo} />
         <div>
           <p className={styles.nom}>{ENTREPRISE.nomCourt}</p>
-          <p className={styles.sousTitre}>Hajj & Oumra — Conakry</p>
+          <p className={styles.sousTitre}>Hajj & Omra Management</p>
         </div>
       </div>
 
@@ -24,17 +24,24 @@ function Sidebar() {
         {cles.map((cle) => {
           const item = ITEMS_MENU[cle];
           if (!item) return null;
+          const Icone = item.icone;
           return (
             <NavLink
               key={cle}
               to={item.path}
               className={({ isActive }) => (isActive ? `${styles.lien} ${styles.lienActif}` : styles.lien)}
             >
+              {Icone && <Icone size={17} className={styles.iconeLien} />}
               {t(item.cle)}
             </NavLink>
           );
         })}
       </nav>
+
+      <div className={styles.assistance}>
+        <p className={styles.assistanceTitre}>📞 {t("assistance_24_7")}</p>
+        <p className={styles.assistanceNumero}>{ENTREPRISE.telephones[0]}</p>
+      </div>
 
       <div className={styles.zoneLangue}>
         <LanguageSwitcher variant="sombre" />

@@ -28,4 +28,5 @@ urlpatterns = [
     path('api/pelerins/', include('pelerins.urls')),
     path('api/formules/', include('formules.urls')), 
     path('api/documents/', include('documents.urls')),
+    path('api/activite/', include('activite.urls')),
 ]

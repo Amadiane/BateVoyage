@@ -23,6 +23,11 @@ from .models import Pelerin
 from .serializers import PelerinSerializer
 from .pdf_utils import link_callback  
 
+from django.contrib.contenttypes.models import ContentType
+from auditlog.models import LogEntry
+from activite.serializers import EntreeJournalDetailSerializer
+from auditlog.context import set_actor
+
 CHAMPS_DOCUMENTS = ["photo", "scan_passeport", "scan_certificat_medical", "scan_recu_versement"]
 
 
@@ -34,6 +39,18 @@ class PelerinViewSet(viewsets.ModelViewSet):
     search_fields = ["nom", "prenom", "numero_id", "numero_passeport", "telephone"]
 
     from .pdf_utils import link_callback
+
+    def perform_create(self, serializer):
+        with set_actor(self.request.user):
+            serializer.save()
+
+    def perform_update(self, serializer):
+        with set_actor(self.request.user):
+            serializer.save()
+
+    def perform_destroy(self, instance):
+        with set_actor(self.request.user):
+            instance.delete()
 
     @action(detail=True, methods=["get"], url_path="fiche-pdf")
     def fiche_pdf(self, request, pk=None):
@@ -83,3 +100,13 @@ class PelerinViewSet(viewsets.ModelViewSet):
         response["Content-Disposition"] = f'inline; filename="{nom_fichier}"'
         response["X-Nom-Fichier-Reel"] = nom_fichier
         return response
+    
+    @action(detail=True, methods=["get"], url_path="historique")
+    def historique(self, request, pk=None):
+        pelerin = self.get_object()
+        content_type = ContentType.objects.get_for_model(Pelerin)
+        entrees = LogEntry.objects.filter(
+            content_type=content_type, object_pk=str(pelerin.pk)
+        ).select_related("actor").order_by("-timestamp")
+        serializer = EntreeJournalDetailSerializer(entrees, many=True)
+        return Response(serializer.data)

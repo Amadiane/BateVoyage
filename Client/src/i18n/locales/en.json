@@ -135,7 +135,35 @@
   "aucun_visa_en_attente": "No pending visas.",
   "deja_expire": "Expired",
   "expire_bientot": "Expiring soon",
-  "statut_visa_label": "Visa status"
+  "statut_visa_label": "Visa status",
+
+  
+  "menu_journal": "Activity Log",
+  "journal_description": "Global history of all actions in the system",
+  "historique": "History",
+  "historique_du_dossier": "File history",
+  "aucun_historique": "No recorded action",
+  "action_creation": "Created",
+  "action_modification": "Modified",
+  "action_suppression": "Deleted",
+  "par": "by",
+  "action": "Action",
+  "modele": "Module",
+  "element": "Item",
+  "date_heure": "Date & time",
+
+  "bienvenue": "Welcome!",
+  "se_souvenir_de_moi": "Remember me",
+  "connexion_securisee": "Secure connection",
+  "service_qualite": "Quality service",
+
+  "total_pelerins": "Total pilgrims",
+  "montant_total_verse": "Total paid",
+  "repartition_statuts": "Status breakdown",
+  "modules_a_venir": "Upcoming modules",
+  "modules_a_venir_description": "These modules will be activated as system development progresses.",
+  "assistance_24_7": "24/7 Support"
+
 
 
 

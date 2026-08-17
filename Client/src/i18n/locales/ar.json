@@ -136,7 +136,35 @@
   "aucun_visa_en_attente": "لا توجد تأشيرات قيد الانتظار.",
   "deja_expire": "منتهي",
   "expire_bientot": "ينتهي قريبًا",
-  "statut_visa_label": "حالة التأشيرة"
+  "statut_visa_label": "حالة التأشيرة",
+
+  
+  "menu_journal": "سجل النشاط",
+  "journal_description": "السجل العام لجميع الإجراءات في النظام",
+  "historique": "السجل",
+  "historique_du_dossier": "سجل الملف",
+  "aucun_historique": "لا يوجد إجراء مسجل",
+  "action_creation": "إنشاء",
+  "action_modification": "تعديل",
+  "action_suppression": "حذف",
+  "par": "بواسطة",
+  "action": "الإجراء",
+  "modele": "الوحدة",
+  "element": "العنصر",
+  "date_heure": "التاريخ والوقت",
+
+  "bienvenue": "مرحبًا بك!",
+  "se_souvenir_de_moi": "تذكرني",
+  "connexion_securisee": "اتصال آمن",
+  "service_qualite": "خدمة ذات جودة",
+
+  "total_pelerins": "إجمالي الحجاج",
+  "montant_total_verse": "إجمالي المدفوعات",
+  "repartition_statuts": "التوزيع حسب الحالة",
+  "modules_a_venir": "وحدات قادمة",
+  "modules_a_venir_description": "سيتم تفعيل هذه الوحدات تدريجيًا مع تطور النظام.",
+  "assistance_24_7": "الدعم على مدار الساعة"
+
 
 
 

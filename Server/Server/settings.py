@@ -32,6 +32,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'django_filters',
     'xhtml2pdf',
+    'auditlog',
 
     # Apps métier
     'utilisateurs',
@@ -46,6 +47,7 @@ INSTALLED_APPS = [
     'communication',
     'reclamations',
     'reporting',
+    'activite',
 ]
 
 MIDDLEWARE = [
@@ -55,6 +57,7 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'auditlog.middleware.AuditlogMiddleware', 
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]

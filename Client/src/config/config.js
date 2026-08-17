@@ -1,4 +1,6 @@
 import logoTransparent from "../assets/images/logo-transparent.png";
+import { LayoutDashboard, Users, UserCog, FileText, ScrollText } from "lucide-react";
+
 
 const BASE_URL =
   window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1"
@@ -26,6 +28,9 @@ const CONFIG = {
 
   API_DOCUMENTS_TABLEAU_BORD: `${BASE_URL}/api/documents/tableau-bord/`,
 
+  API_PELERIN_HISTORIQUE: (id) => `${BASE_URL}/api/pelerins/${id}/historique/`,
+  API_JOURNAL_GLOBAL: `${BASE_URL}/api/activite/global/`,
+
   // --- Formules / Programmes ---
   API_PROGRAMMES: `${BASE_URL}/api/formules/programmes/`,
 
@@ -46,8 +51,8 @@ export const ENTREPRISE = {
 };
 
 export const MENU_PAR_ROLE = {
-  fondateur: ["dashboard", "pelerins", "utilisateurs", "documents", "paiements", "groupes"],
-  admin_general: ["dashboard", "pelerins", "utilisateurs", "documents", "paiements", "groupes"],
+  fondateur: ["dashboard", "pelerins", "utilisateurs", "documents", "paiements", "groupes", "journal"],
+  admin_general: ["dashboard", "pelerins", "utilisateurs", "documents", "paiements", "groupes", "journal"],
   comptable: ["dashboard", "paiements", "pelerins"],
   secretaire: ["dashboard", "pelerins", "documents"],
   docteur: ["dashboard", "pelerins-sante"],
@@ -60,13 +65,14 @@ export const MENU_PAR_ROLE = {
 };
 
 export const ITEMS_MENU = {
-  dashboard: { cle: "menu_dashboard", path: "/dashboard" },
-  pelerins: { cle: "menu_pelerins", path: "/pelerins" },
-  "pelerins-sante": { cle: "menu_pelerins_sante", path: "/pelerins-sante" },
-  utilisateurs: { cle: "menu_utilisateurs", path: "/utilisateurs" },
-  documents: { cle: "menu_documents", path: "/documents" },
-  paiements: { cle: "menu_paiements", path: "/paiements" },
-  groupes: { cle: "menu_groupes", path: "/groupes" },
-  reclamations: { cle: "menu_reclamations", path: "/reclamations" },
-  "mon-dossier": { cle: "menu_mon_dossier", path: "/mon-dossier" },
+  dashboard: { cle: "menu_dashboard", path: "/dashboard", icone: LayoutDashboard },
+  pelerins: { cle: "menu_pelerins", path: "/pelerins", icone: Users },
+  "pelerins-sante": { cle: "menu_pelerins_sante", path: "/pelerins-sante", icone: Users },
+  utilisateurs: { cle: "menu_utilisateurs", path: "/utilisateurs", icone: UserCog },
+  documents: { cle: "menu_documents", path: "/documents", icone: FileText },
+  paiements: { cle: "menu_paiements", path: "/paiements", icone: FileText },
+  groupes: { cle: "menu_groupes", path: "/groupes", icone: FileText },
+  reclamations: { cle: "menu_reclamations", path: "/reclamations", icone: FileText },
+  "mon-dossier": { cle: "menu_mon_dossier", path: "/mon-dossier", icone: FileText },
+  journal: { cle: "menu_journal", path: "/journal-activite", icone: ScrollText },
 };

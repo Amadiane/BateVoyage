@@ -1,9 +1,10 @@
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { pelerinService } from "../../services/pelerinService";
 import CONFIG from "../../config/config";
 import { ouvrirFichierProtege, telechargerFichierProtege } from "../../utils/telechargement";
+import HistoriquePelerin from "../../components/HistoriquePelerin/HistoriquePelerin";
 import styles from "../../theme/pages/pelerins/DetailPelerin.module.css";
 
 function DetailPelerin() {
@@ -12,6 +13,7 @@ function DetailPelerin() {
   const { t } = useTranslation();
   const [pelerin, setPelerin] = useState(null);
   const [chargement, setChargement] = useState(true);
+  const [historiqueOuvert, setHistoriqueOuvert] = useState(false);
 
   useEffect(() => {
     pelerinService.obtenir(id).then(({ data }) => {
@@ -72,6 +74,9 @@ function DetailPelerin() {
         </div>
 
         <div className={styles.actionsEntete}>
+          <button onClick={() => setHistoriqueOuvert(true)} className={styles.boutonSecondaire}>
+            🕓 {t("historique")}
+          </button>
           <Link to={`/pelerins/${id}/modifier`} className={styles.boutonSecondaire}>
             {t("modifier")}
           </Link>
@@ -162,6 +167,10 @@ function DetailPelerin() {
           )}
         </Section>
       </div>
+
+      {historiqueOuvert && (
+        <HistoriquePelerin pelerinId={id} onFermer={() => setHistoriqueOuvert(false)} />
+      )}
     </div>
   );
 }

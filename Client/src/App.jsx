@@ -8,6 +8,7 @@ import ListePelerins from "./pages/pelerins/ListePelerins";
 import FormulairePelerin from "./pages/pelerins/FormulairePelerin";
 import DetailPelerin from "./pages/pelerins/DetailPelerin";
 import PageDocuments from "./pages/documents/PageDocuments";
+import PageJournalActivite from "./pages/activite/PageJournalActivite";
 import "./globals.css";
 
 function App() {
@@ -29,6 +30,7 @@ function App() {
           <Route path="/pelerins/:id" element={<DetailPelerin />} />
           <Route path="/pelerins/:id/modifier" element={<FormulairePelerin />} />
           <Route path="/documents" element={<PageDocuments />} />
+          <Route path="/journal-activite" element={<PageJournalActivite />} />
         </Route>
 
         <Route path="/" element={<Navigate to="/dashboard" replace />} />

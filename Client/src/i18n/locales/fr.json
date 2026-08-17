@@ -137,7 +137,36 @@
   "aucun_visa_en_attente": "Aucun visa en attente.",
   "deja_expire": "Expiré",
   "expire_bientot": "Expire bientôt",
-  "statut_visa_label": "Statut visa"
+  "statut_visa_label": "Statut visa",
+  
+  "menu_journal": "Journal d'activité",
+  "journal_description": "Historique global de toutes les actions sur le système",
+  "historique": "Historique",
+  "historique_du_dossier": "Historique du dossier",
+  "aucun_historique": "Aucune action enregistrée",
+  "action_creation": "Création",
+  "action_modification": "Modification",
+  "action_suppression": "Suppression",
+  "par": "par",
+  "action": "Action",
+  "modele": "Module",
+  "element": "Élément",
+  "date_heure": "Date & heure",
+
+  
+  "bienvenue": "Bienvenue !",
+  "se_souvenir_de_moi": "Se souvenir de moi",
+  "connexion_securisee": "Connexion sécurisée",
+  "service_qualite": "Service de qualité",
+
+  "total_pelerins": "Total pèlerins",
+  "montant_total_verse": "Total versé",
+  "repartition_statuts": "Répartition par statut",
+  "modules_a_venir": "Modules à venir",
+  "modules_a_venir_description": "Ces modules seront activés au fur et à mesure du développement du système.",
+  "assistance_24_7": "Assistance 24/7"
+
+
 
 
 

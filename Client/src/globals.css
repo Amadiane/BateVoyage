@@ -11,6 +11,10 @@
   --color-error: #DC2626;
   --color-error-bg: #FEF2F2;
 
+  --color-gold: #C7A44A;
+  --color-gold-dark: #A88530;
+  --color-gold-pale: #FBF6EA;
+
   --font-display: "Marcellus", serif;
   --font-body: "Inter", sans-serif;
 }
