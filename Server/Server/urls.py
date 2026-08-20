@@ -31,5 +31,6 @@ urlpatterns = [
     path('api/documents/', include('documents.urls')),
     path('api/activite/', include('activite.urls')),
     path('api/paiements/', include('paiements.urls')),
+    path('api/groupes-vols/', include('groupes_vols.urls')),
     
 ]

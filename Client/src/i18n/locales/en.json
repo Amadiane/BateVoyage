@@ -269,7 +269,29 @@
   "section_tarifs": "Pricing",
   "aide_date_limite_paiement": "Date by which the balance must be fully paid (used for payment alerts).",
   "prix_programme": "Program price",
-  "aide_prix_programme": "Total amount owed per pilgrim for this program (used to calculate the remaining balance)."
+  "aide_prix_programme": "Total amount owed per pilgrim for this program (used to calculate the remaining balance).",
+  "groupes": "Groups", "vols": "Flights", "groupe": "Group",
+  "nouveau_groupe": "New group", "modifier_groupe": "Edit group",
+  "groupes_enregistres": "registered groups", "aucun_groupe": "No group registered",
+  "confirmer_suppression_groupe": "Confirm deletion of this group?",
+  "nom_groupe": "Group name", "vol_aller": "Outbound flight", "vol_retour": "Return flight",
+  "aller": "Outbound", "retour": "Return", "voir_manifeste": "View manifest",
+  "telecharger_manifeste": "Download manifest",
+  "aucun_pelerin_dans_groupe": "No pilgrim in this group",
+  "nouveau_vol": "New flight", "modifier_vol": "Edit flight",
+  "vols_enregistres": "registered flights", "aucun_vol": "No flight registered",
+  "confirmer_suppression_vol": "Confirm deletion of this flight?",
+  "compagnie": "Airline", "numero_vol": "Flight number", "date_vol": "Flight date",
+  "heure_vol": "Flight time", "aeroport_depart": "Departure airport", "aeroport_arrivee": "Arrival airport",
+  "trajet": "Route",
+  "encadreur": "Supervisor",
+    "ajouter_pelerins": "Add pilgrims",
+  "ajouter_pelerins_groupe": "Add pilgrims to group",
+  "aucun_pelerin_disponible": "No pilgrim available",
+  "selectionnes": "selected",
+  "ajouter": "Add",
+  "retirer_du_groupe": "Remove from group",
+  "confirmer_retrait_groupe": "Remove this pilgrim from the group?"
 
 
 

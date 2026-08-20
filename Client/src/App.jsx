@@ -13,6 +13,8 @@ import FormulaireUtilisateur from "./pages/utilisateurs/FormulaireUtilisateur";
 import PageJournalActivite from "./pages/activite/PageJournalActivite";
 import ListePaiements from "./pages/paiements/ListePaiements";
 import ListeProgrammes from "./pages/programmes/ListeProgrammes";
+import PageGroupesVols from "./pages/groupes/PageGroupesVols";
+import DetailGroupe from "./pages/groupes/DetailGroupe";
 import "./globals.css";
 
 const ROLES_FINANCIERS = ["fondateur", "admin_general", "comptable", "secretaire"];
@@ -37,6 +39,8 @@ function App() {
           <Route path="/pelerins/nouveau" element={<FormulairePelerin />} />
           <Route path="/pelerins/:id" element={<DetailPelerin />} />
           <Route path="/pelerins/:id/modifier" element={<FormulairePelerin />} />
+          <Route path="/groupes" element={<PageGroupesVols />} />
+          <Route path="/groupes/:id" element={<DetailGroupe />} />
 
           <Route path="/documents" element={<PageDocuments />} />
 

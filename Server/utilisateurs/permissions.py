@@ -1,4 +1,5 @@
 from rest_framework.permissions import BasePermission
+from rest_framework.permissions import SAFE_METHODS
 
 class EstFondateurOuAdmin(BasePermission):
     def has_permission(self, request, view):
@@ -31,3 +32,16 @@ class EstGestionnaireFinancier(BasePermission):
         return request.user.is_authenticated and request.user.role in [
             "fondateur", "admin_general", "comptable", "secretaire",
         ]
+
+
+
+
+class EstGestionnaireLogistique(BasePermission):
+    """Lecture ouverte à tout connecté (utile aux guides/encadreurs sur
+    le terrain), écriture réservée à l'équipe administrative."""
+    def has_permission(self, request, view):
+        if not request.user.is_authenticated:
+            return False
+        if request.method in SAFE_METHODS:
+            return True
+        return request.user.role in ["fondateur", "admin_general", "secretaire"]

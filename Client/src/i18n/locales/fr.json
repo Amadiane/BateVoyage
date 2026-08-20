@@ -272,7 +272,29 @@
   "section_tarifs": "Tarification",
   "aide_date_limite_paiement": "Date à laquelle le solde doit être intégralement réglé (utilisée pour les alertes de paiement).",
   "prix_programme": "Prix du programme",
-  "aide_prix_programme": "Montant total dû par pèlerin pour ce programme (utilisé pour calculer le reste à payer)."
+  "aide_prix_programme": "Montant total dû par pèlerin pour ce programme (utilisé pour calculer le reste à payer).",
+  "groupes": "Groupes", "vols": "Vols", "groupe": "Groupe",
+  "nouveau_groupe": "Nouveau groupe", "modifier_groupe": "Modifier le groupe",
+  "groupes_enregistres": "groupes enregistrés", "aucun_groupe": "Aucun groupe enregistré",
+  "confirmer_suppression_groupe": "Confirmer la suppression de ce groupe ?",
+  "nom_groupe": "Nom du groupe", "vol_aller": "Vol aller", "vol_retour": "Vol retour",
+  "aller": "Aller", "retour": "Retour", "voir_manifeste": "Voir le manifeste",
+  "telecharger_manifeste": "Télécharger le manifeste",
+  "aucun_pelerin_dans_groupe": "Aucun pèlerin dans ce groupe",
+  "nouveau_vol": "Nouveau vol", "modifier_vol": "Modifier le vol",
+  "vols_enregistres": "vols enregistrés", "aucun_vol": "Aucun vol enregistré",
+  "confirmer_suppression_vol": "Confirmer la suppression de ce vol ?",
+  "compagnie": "Compagnie", "numero_vol": "N° de vol", "date_vol": "Date du vol",
+  "heure_vol": "Heure du vol", "aeroport_depart": "Aéroport de départ", "aeroport_arrivee": "Aéroport d'arrivée",
+  "trajet": "Trajet",
+  "encadreur": "Encadreur",
+    "ajouter_pelerins": "Ajouter des pèlerins",
+  "ajouter_pelerins_groupe": "Ajouter des pèlerins au groupe",
+  "aucun_pelerin_disponible": "Aucun pèlerin disponible",
+  "selectionnes": "sélectionné(s)",
+  "ajouter": "Ajouter",
+  "retirer_du_groupe": "Retirer du groupe",
+  "confirmer_retrait_groupe": "Retirer ce pèlerin du groupe ?"
 
 
 

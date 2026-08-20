@@ -271,7 +271,29 @@
   "section_tarifs": "التسعير",
   "aide_date_limite_paiement": "التاريخ الذي يجب فيه سداد الرصيد بالكامل (يُستخدم لتنبيهات الدفع).",
   "prix_programme": "سعر البرنامج",
-  "aide_prix_programme": "المبلغ الإجمالي المستحق لكل حاج لهذا البرنامج (يُستخدم لحساب الرصيد المتبقي)."
+  "aide_prix_programme": "المبلغ الإجمالي المستحق لكل حاج لهذا البرنامج (يُستخدم لحساب الرصيد المتبقي).",
+  "groupes": "المجموعات", "vols": "الرحلات", "groupe": "المجموعة",
+  "nouveau_groupe": "مجموعة جديدة", "modifier_groupe": "تعديل المجموعة",
+  "groupes_enregistres": "مجموعة مسجلة", "aucun_groupe": "لا توجد مجموعة مسجلة",
+  "confirmer_suppression_groupe": "تأكيد حذف هذه المجموعة؟",
+  "nom_groupe": "اسم المجموعة", "vol_aller": "رحلة الذهاب", "vol_retour": "رحلة العودة",
+  "aller": "ذهاب", "retour": "عودة", "voir_manifeste": "عرض القائمة",
+  "telecharger_manifeste": "تحميل القائمة",
+  "aucun_pelerin_dans_groupe": "لا يوجد حاج في هذه المجموعة",
+  "nouveau_vol": "رحلة جديدة", "modifier_vol": "تعديل الرحلة",
+  "vols_enregistres": "رحلة مسجلة", "aucun_vol": "لا توجد رحلة مسجلة",
+  "confirmer_suppression_vol": "تأكيد حذف هذه الرحلة؟",
+  "compagnie": "شركة الطيران", "numero_vol": "رقم الرحلة", "date_vol": "تاريخ الرحلة",
+  "heure_vol": "وقت الرحلة", "aeroport_depart": "مطار المغادرة", "aeroport_arrivee": "مطار الوصول",
+  "trajet": "المسار",
+  "encadreur": "المشرف",
+    "ajouter_pelerins": "إضافة حجاج",
+  "ajouter_pelerins_groupe": "إضافة حجاج إلى المجموعة",
+  "aucun_pelerin_disponible": "لا يوجد حاج متاح",
+  "selectionnes": "محدد",
+  "ajouter": "إضافة",
+  "retirer_du_groupe": "إزالة من المجموعة",
+  "confirmer_retrait_groupe": "إزالة هذا الحاج من المجموعة؟"
 
   
 

@@ -1,0 +1,39 @@
+.entete { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+.sousTitre { color: #6B7280; font-size: 13px; margin: 0; }
+
+.boutonPrincipal {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 10px 18px; border: none; border-radius: 8px;
+  background-color: var(--color-brand-dark); color: #fff;
+  font-size: 14px; font-weight: 600; cursor: pointer;
+}
+.boutonPrincipal:hover:not(:disabled) { background-color: var(--color-brand); }
+.boutonPrincipal:disabled { opacity: 0.6; }
+
+.conteneurTableau { background-color: #fff; border-radius: 12px; border: 1px solid var(--color-border); overflow: hidden; }
+.tableau { width: 100%; border-collapse: collapse; font-size: 13px; }
+.tableau th { text-align: left; padding: 12px 16px; background-color: #F9FAFB; color: #6B7280; font-weight: 600; font-size: 12px; text-transform: uppercase; border-bottom: 1px solid var(--color-border); }
+.tableau td { padding: 11px 16px; border-bottom: 1px solid #F3F4F6; }
+.cellNumero { font-family: monospace; font-weight: 600; color: var(--color-brand-dark); }
+.etatVide { text-align: center; padding: 32px; color: #9CA3AF; }
+
+.cellActions { display: flex; gap: 4px; }
+.cellActions button { width: 26px; height: 26px; border: 1px solid var(--color-border); border-radius: 6px; background: #fff; cursor: pointer; }
+.cellActions button:hover { background-color: #F9FAFB; }
+.boutonSupprimer:hover { background-color: #FEE2E2 !important; border-color: #FCA5A5 !important; }
+
+.superposition { position: fixed; inset: 0; background-color: rgba(11,14,20,0.55); display: flex; align-items: center; justify-content: center; z-index: 50; padding: 24px; }
+.panneau { width: 460px; max-width: 100%; max-height: 90vh; overflow-y: auto; background-color: #fff; border-radius: 16px; padding: 26px; }
+.enteteModal { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+.enteteModal h2 { font-family: var(--font-display); font-size: 18px; color: var(--color-brand-dark); margin: 0; }
+.boutonFermer { background: none; border: none; cursor: pointer; color: #6B7280; }
+
+.formulaire { display: flex; flex-direction: column; gap: 16px; }
+.champ label { display: block; font-size: 12.5px; font-weight: 600; color: #4B5563; margin-bottom: 6px; }
+.champ input { width: 100%; padding: 10px 12px; border: 1px solid var(--color-border); border-radius: 8px; font-size: 14px; }
+.champ input:focus { outline: none; border-color: var(--color-brand); box-shadow: 0 0 0 3px var(--color-brand-pale); }
+.ligneDeuxColonnes { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.erreur { font-size: 13px; color: #B91C1C; background-color: #FEF2F2; border: 1px solid #FECACA; border-radius: 8px; padding: 10px 14px; }
+.navigationModal { display: flex; justify-content: flex-end; gap: 10px; margin-top: 8px; padding-top: 16px; border-top: 1px solid #F3F4F6; }
+.boutonSecondaire { padding: 10px 18px; border: 1px solid var(--color-border); border-radius: 8px; background-color: #fff; color: var(--color-ink); font-size: 14px; cursor: pointer; }
+.boutonSecondaire:hover { background-color: #F9FAFB; }

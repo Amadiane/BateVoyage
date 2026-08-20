@@ -16,6 +16,7 @@ class PelerinSerializer(serializers.ModelSerializer):
     prix_programme = serializers.SerializerMethodField()
     statut_paiement = serializers.CharField(read_only=True)
     jours_avant_echeance_paiement = serializers.IntegerField(read_only=True)
+    groupe_nom = serializers.CharField(source="groupe.nom", read_only=True)
 
     class Meta:
         model = Pelerin

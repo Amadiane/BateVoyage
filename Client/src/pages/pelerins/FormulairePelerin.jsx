@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { pelerinService } from "../../services/pelerinService";
 import { utilisateurService } from "../../services/utilisateurService";
 import { programmeService } from "../../services/programmeService";
+import { groupeService } from "../../services/groupeService";
 import ChampFichier from "../../components/ChampFichier/ChampFichier";
 import styles from "../../theme/pages/pelerins/FormulairePelerin.module.css";
 
@@ -15,7 +16,7 @@ const VALEURS_INITIALES = {
   commune: "", quartier: "", nom_pere: "", nom_mere: "",
   telephone: "", nom_correspondant: "", telephone_correspondant: "", agence_partenaire: "",
   groupe_sanguin: "", probleme_sante: "",
-  type_voyage: "", montant_verse: "", mode_paiement: "", inscripteur: "", programme: "",
+  type_voyage: "", montant_verse: "", mode_paiement: "", inscripteur: "", programme: "", groupe: "",
 };
 
 const CHAMPS_FICHIERS = ["photo", "scan_passeport", "scan_certificat_medical", "scan_recu_versement"];
@@ -48,6 +49,7 @@ function FormulairePelerin() {
 
   const [agents, setAgents] = useState([]);
   const [programmes, setProgrammes] = useState([]);
+  const [groupes, setGroupes] = useState([]);
   const [envoi, setEnvoi] = useState(false);
   const [erreur, setErreur] = useState("");
   const [champsManquants, setChampsManquants] = useState([]);
@@ -56,6 +58,7 @@ function FormulairePelerin() {
   useEffect(() => {
     utilisateurService.listerAgentsInscripteurs().then(({ data }) => setAgents(data));
     programmeService.lister().then(({ data }) => setProgrammes(data));
+    groupeService.lister().then(({ data }) => setGroupes(data));
 
     if (modeEdition) {
       pelerinService.obtenir(id).then(({ data }) => {
@@ -113,9 +116,6 @@ function FormulairePelerin() {
     try {
       const formData = new FormData();
       Object.keys(VALEURS_INITIALES).forEach((champ) => {
-        // En modification, on n'envoie jamais montant_verse/mode_paiement —
-        // ces deux champs ne servent qu'à créer le tout premier versement,
-        // les suivants passent uniquement par "Ajouter un paiement".
         if (modeEdition && (champ === "montant_verse" || champ === "mode_paiement")) return;
 
         const val = valeurs[champ];
@@ -314,6 +314,14 @@ function FormulairePelerin() {
                 <option value="">{t("aucun_pour_le_moment")}</option>
                 {programmes.map((p) => (
                   <option key={p.id} value={p.id}>{p.nom}</option>
+                ))}
+              </select>
+            </Champ>
+            <Champ label={t("groupe")}>
+              <select value={valeurs.groupe} onChange={(e) => majChamp("groupe", e.target.value)}>
+                <option value="">{t("aucun_pour_le_moment")}</option>
+                {groupes.map((g) => (
+                  <option key={g.id} value={g.id}>{g.nom}</option>
                 ))}
               </select>
             </Champ>

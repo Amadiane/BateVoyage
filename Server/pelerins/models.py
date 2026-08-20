@@ -134,6 +134,9 @@ class Pelerin(models.Model):
     programme = models.ForeignKey(
         "formules.Programme", on_delete=models.SET_NULL, null=True, blank=True, related_name="pelerins"
     )
+    groupe = models.ForeignKey(
+        "groupes_vols.Groupe", on_delete=models.SET_NULL, null=True, blank=True, related_name="pelerins"
+    )
 
     statut = models.CharField(max_length=20, choices=Statut.choices, default=Statut.INSCRIT)
     date_inscription = models.DateTimeField(auto_now_add=True)
