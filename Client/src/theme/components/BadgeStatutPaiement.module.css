@@ -1,0 +1,11 @@
+.badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.statut_complet { background-color: #DCFCE7; color: #166534; }
+.statut_a_surveiller { background-color: #FEF3C7; color: #92400E; }
+.statut_en_retard { background-color: #FEE2E2; color: #991B1B; }

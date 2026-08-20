@@ -30,5 +30,6 @@ urlpatterns = [
     path('api/formules/', include('formules.urls')), 
     path('api/documents/', include('documents.urls')),
     path('api/activite/', include('activite.urls')),
+    path('api/paiements/', include('paiements.urls')),
     
 ]

@@ -5,9 +5,11 @@ from rest_framework import viewsets, permissions
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from xhtml2pdf import pisa
+from .pdf_utils import link_callback
 
 from .models import Pelerin
 from .serializers import PelerinSerializer
+
 
 
 
@@ -38,11 +40,22 @@ class PelerinViewSet(viewsets.ModelViewSet):
     filterset_fields = ["statut", "statut_visa", "sexe", "type_voyage", "inscripteur", "programme"]
     search_fields = ["nom", "prenom", "numero_id", "numero_passeport", "telephone"]
 
-    from .pdf_utils import link_callback
+    
 
     def perform_create(self, serializer):
         with set_actor(self.request.user):
-            serializer.save()
+            pelerin = serializer.save()
+            if pelerin.montant_verse and float(pelerin.montant_verse) > 0:
+                from paiements.models import Paiement
+                from django.utils import timezone
+                Paiement.objects.create(
+                    pelerin=pelerin,
+                    montant=pelerin.montant_verse,
+                    mode_paiement=pelerin.mode_paiement or Paiement.ModePaiement.ESPECES,
+                    date_paiement=timezone.now().date(),
+                    enregistre_par=self.request.user,
+                    notes="Versement initial à l'inscription",
+                )
 
     def perform_update(self, serializer):
         with set_actor(self.request.user):
@@ -110,3 +123,15 @@ class PelerinViewSet(viewsets.ModelViewSet):
         ).select_related("actor").order_by("-timestamp")
         serializer = EntreeJournalDetailSerializer(entrees, many=True)
         return Response(serializer.data)
+
+    @action(detail=True, methods=["get"], url_path="verifier-suppression")
+    def verifier_suppression(self, request, pk=None):
+        pelerin = self.get_object()
+        nb_paiements = pelerin.paiements.count()
+        total_paiements = pelerin.montant_total_verse
+        return Response({
+            "nb_paiements": nb_paiements,
+            "total_paiements": total_paiements,
+        })
+
+

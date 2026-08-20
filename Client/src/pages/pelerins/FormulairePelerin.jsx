@@ -15,7 +15,7 @@ const VALEURS_INITIALES = {
   commune: "", quartier: "", nom_pere: "", nom_mere: "",
   telephone: "", nom_correspondant: "", telephone_correspondant: "", agence_partenaire: "",
   groupe_sanguin: "", probleme_sante: "",
-  type_voyage: "", montant_verse: "", inscripteur: "", programme: "",
+  type_voyage: "", montant_verse: "", mode_paiement: "", inscripteur: "", programme: "",
 };
 
 const CHAMPS_FICHIERS = ["photo", "scan_passeport", "scan_certificat_medical", "scan_recu_versement"];
@@ -43,9 +43,8 @@ function FormulairePelerin() {
     scan_certificat_medical: null,
     scan_recu_versement: null,
   });
-  // URLs des documents déjà enregistrés (lecture seule, affichage uniquement —
-  // jamais renvoyées au serveur tant qu'aucun nouveau fichier n'est choisi).
   const [documentsExistants, setDocumentsExistants] = useState({});
+  const [montantTotalExistant, setMontantTotalExistant] = useState(0);
 
   const [agents, setAgents] = useState([]);
   const [programmes, setProgrammes] = useState([]);
@@ -60,15 +59,13 @@ function FormulairePelerin() {
 
     if (modeEdition) {
       pelerinService.obtenir(id).then(({ data }) => {
-        // Ne charge QUE les champs texte connus — ne copie jamais l'objet
-        // API brut, pour ne pas mélanger les URLs de fichiers avec les
-        // champs texte (c'était la cause du bug de données écrasées).
         const valeursTexte = {};
         Object.keys(VALEURS_INITIALES).forEach((champ) => {
           const val = data[champ];
           valeursTexte[champ] = val === null || val === undefined ? VALEURS_INITIALES[champ] : val;
         });
         setValeurs(valeursTexte);
+        setMontantTotalExistant(data.montant_total_verse || 0);
 
         const docs = {};
         CHAMPS_FICHIERS.forEach((champ) => {
@@ -115,20 +112,18 @@ function FormulairePelerin() {
     setEnvoi(true);
     try {
       const formData = new FormData();
-
-      // On ne parcourt QUE les clés connues de VALEURS_INITIALES —
-      // jamais tout l'objet `valeurs` en aveugle — pour être certain
-      // qu'aucun champ fichier/URL ne s'y glisse jamais.
       Object.keys(VALEURS_INITIALES).forEach((champ) => {
+        // En modification, on n'envoie jamais montant_verse/mode_paiement —
+        // ces deux champs ne servent qu'à créer le tout premier versement,
+        // les suivants passent uniquement par "Ajouter un paiement".
+        if (modeEdition && (champ === "montant_verse" || champ === "mode_paiement")) return;
+
         const val = valeurs[champ];
         if (val !== null && val !== undefined && val !== "") {
           formData.append(champ, val);
         }
       });
 
-      // Seuls les fichiers explicitement choisis par l'utilisateur sont
-      // envoyés — un champ non touché reste donc intact côté serveur
-      // (PATCH ne modifie que ce qui est présent dans la requête).
       Object.entries(fichiers).forEach(([champ, fichier]) => {
         if (fichier) formData.append(champ, fichier);
       });
@@ -322,16 +317,38 @@ function FormulairePelerin() {
                 ))}
               </select>
             </Champ>
-            <Champ label={t("montant_verse")}>
-              <input type="number" step="0.01" value={valeurs.montant_verse} onChange={(e) => majChamp("montant_verse", e.target.value)} />
-            </Champ>
-            <div style={{ gridColumn: "1 / -1" }}>
-              <ChampFichier
-                label={t("scan_recu_versement")}
-                valeurActuelle={documentsExistants.scan_recu_versement}
-                onFichierChange={(f) => majFichier("scan_recu_versement", f)}
-              />
-            </div>
+
+            {!modeEdition && (
+              <>
+                <Champ label={t("montant_verse")}>
+                  <input type="number" step="0.01" value={valeurs.montant_verse} onChange={(e) => majChamp("montant_verse", e.target.value)} />
+                </Champ>
+                <Champ label={t("mode_paiement")}>
+                  <select value={valeurs.mode_paiement} onChange={(e) => majChamp("mode_paiement", e.target.value)}>
+                    <option value="">—</option>
+                    <option value="especes">{t("mode_especes")}</option>
+                    <option value="orange_money">{t("mode_orange_money")}</option>
+                    <option value="virement">{t("mode_virement")}</option>
+                  </select>
+                </Champ>
+                <div style={{ gridColumn: "1 / -1" }}>
+                  <ChampFichier
+                    label={t("scan_recu_versement")}
+                    valeurActuelle={documentsExistants.scan_recu_versement}
+                    onFichierChange={(f) => majFichier("scan_recu_versement", f)}
+                  />
+                </div>
+              </>
+            )}
+
+            {modeEdition && (
+              <div className={styles.noteMontant} style={{ gridColumn: "1 / -1" }}>
+                <p className={styles.texteNoteMontant}>
+                  💰 {t("montant_deja_verse")} : <strong>{montantTotalExistant.toLocaleString("fr-FR")} GNF</strong>
+                </p>
+                <p className={styles.texteNoteMontantSecondaire}>{t("note_ajout_paiement")}</p>
+              </div>
+            )}
           </div>
         )}
 

@@ -246,3 +246,22 @@
     display: none;
   }
 }
+
+.noteMontant {
+  background-color: var(--color-brand-pale);
+  border: 1px solid rgba(11, 63, 160, 0.15);
+  border-radius: 10px;
+  padding: 14px 16px;
+}
+
+.texteNoteMontant {
+  font-size: 14px;
+  color: var(--color-brand-dark);
+  margin: 0 0 4px;
+}
+
+.texteNoteMontantSecondaire {
+  font-size: 12.5px;
+  color: #6B7280;
+  margin: 0;
+}

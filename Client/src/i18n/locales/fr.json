@@ -195,7 +195,55 @@
   "role_guide": "Guide",
   "role_encadreur": "Encadreur",
   "role_mounazim": "Mounazim",
-  "role_pelerin": "Pèlerin"
+  "role_pelerin": "Pèlerin",
+
+  "mode_paiement": "Mode de paiement",
+  "mode_especes": "Espèces",
+  "mode_orange_money": "Orange Money",
+  "mode_virement": "Virement bancaire",
+  "nouveau_paiement": "Nouveau paiement",
+  "ajouter_paiement": "Ajouter un paiement",
+  "historique_paiements": "Historique des paiements",
+  "aucun_paiement": "Aucun paiement enregistré",
+  "montant": "Montant",
+  "date_paiement": "Date du paiement",
+  "reference_transaction": "Référence de transaction",
+  "notes": "Notes",
+  "versements_enregistres": "versements enregistrés",
+  "total_periode": "Total affiché",
+  "rechercher_paiement": "Rechercher (pèlerin, référence)...",
+  "tous_modes": "Tous les modes",
+  "pelerin": "Pèlerin",
+  "enregistre_par": "Enregistré par",
+
+
+
+  "montant_deja_verse": "Montant déjà versé",
+  "note_ajout_paiement": "Pour ajouter un nouveau versement, utilisez le bouton \"Ajouter un paiement\" depuis la fiche du pèlerin.",
+
+  "modifier_paiement": "Modifier le paiement",
+  "telecharger_recu": "Télécharger le reçu",
+  "confirmer_suppression_paiement": "Confirmer la suppression de ce paiement ?",
+  "avertissement_suppression_paiements": "Ce pèlerin a {{nombre}} paiement(s) pour un total de {{total}} GNF. Supprimer ce dossier effacera aussi tout son historique de paiements. Continuer ?",
+  "reste_a_payer_estime": "Reste à payer (estimé)",
+  "total_general": "Total général",
+  "total_ce_mois": "Total ce mois",
+  "versements_ce_mois": "Versements ce mois",
+  "exporter_csv": "Exporter CSV",
+  "motif_suppression_paiement": "Pourquoi supprimez-vous ce paiement ?",
+  "motif_obligatoire": "Un motif est requis pour supprimer un paiement.",
+  "statut_paiement_complet": "Payé intégralement",
+  "statut_paiement_a_surveiller": "À surveiller",
+  "statut_paiement_en_retard": "En retard",
+  "statut_paiement_label": "Statut paiement",
+  "tous_statuts_paiement": "Tous statuts paiement",
+  "jours_avant_depart": "Jours avant départ",
+  "transactions": "Transactions",
+  "suivi_des_soldes": "Suivi des soldes",
+  "aucun_resultat": "Aucun résultat",
+  "jours_restants_avant_depart": "{{jours}} jour(s) avant le départ",
+  "depart_deja_passe": "Date de départ déjà passée"
+
 
 
 

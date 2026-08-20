@@ -15,6 +15,8 @@ const COULEURS_STATUT = {
   cloture: "#6B7280",
 };
 
+const ROLES_VOIENT_FINANCES = ["fondateur", "admin_general", "comptable", "secretaire"];
+
 function Dashboard() {
   const { t } = useTranslation();
   const { utilisateur } = useAuth();
@@ -22,14 +24,19 @@ function Dashboard() {
   const [docs, setDocs] = useState(null);
   const [chargement, setChargement] = useState(true);
 
+  const peutVoirFinances = ROLES_VOIENT_FINANCES.includes(utilisateur?.role);
+
   useEffect(() => {
-    Promise.all([pelerinService.lister(), documentService.obtenirTableauBord()]).then(
-      ([resPelerins, resDocs]) => {
-        setPelerins(resPelerins.data);
-        setDocs(resDocs.data);
-        setChargement(false);
-      }
-    );
+    const requetes = [pelerinService.lister()];
+    if (peutVoirFinances) {
+      requetes.push(documentService.obtenirTableauBord());
+    }
+
+    Promise.all(requetes).then(([resPelerins, resDocs]) => {
+      setPelerins(resPelerins.data);
+      if (resDocs) setDocs(resDocs.data);
+      setChargement(false);
+    });
   }, []);
 
   if (chargement) return <p className={styles.chargement}>{t("chargement")}</p>;
@@ -41,7 +48,9 @@ function Dashboard() {
     }, {})
   ).map(([statut, valeur]) => ({ statut, valeur }));
 
-  const montantTotal = pelerins.reduce((s, p) => s + parseFloat(p.montant_verse || 0), 0);
+  const montantTotal = peutVoirFinances
+    ? pelerins.reduce((s, p) => s + parseFloat(p.montant_total_verse || 0), 0)
+    : null;
 
   return (
     <div>
@@ -54,9 +63,14 @@ function Dashboard() {
 
       <div className={styles.cartesStat}>
         <CarteStat chiffre={pelerins.length} label={t("total_pelerins")} couleur="brand" />
-        <CarteStat chiffre={docs?.total_dossiers_incomplets ?? 0} label={t("dossiers_incomplets")} couleur="avertissement" />
-        <CarteStat chiffre={docs?.visas_en_attente?.length ?? 0} label={t("visas_en_attente")} couleur="or" />
-        <CarteStat chiffre={`${montantTotal.toLocaleString("fr-FR")} GNF`} label={t("montant_total_verse")} couleur="succes" />
+
+        {peutVoirFinances && (
+          <>
+            <CarteStat chiffre={docs?.total_dossiers_incomplets ?? 0} label={t("dossiers_incomplets")} couleur="avertissement" />
+            <CarteStat chiffre={docs?.visas_en_attente?.length ?? 0} label={t("visas_en_attente")} couleur="or" />
+            <CarteStat chiffre={`${montantTotal.toLocaleString("fr-FR")} GNF`} label={t("montant_total_verse")} couleur="succes" />
+          </>
+        )}
       </div>
 
       <div className={styles.grillePrincipale}>

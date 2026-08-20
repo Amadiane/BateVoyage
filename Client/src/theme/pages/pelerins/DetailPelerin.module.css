@@ -240,3 +240,102 @@ button.lienDocument {
 button.lienDocument:hover {
   text-decoration: underline;
 }
+
+.lignePaiement {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 13px;
+  padding: 6px 0;
+  border-bottom: 1px solid #F3F4F6;
+}
+
+.etatVideMini {
+  font-size: 13px;
+  color: #9CA3AF;
+  margin: 8px 0;
+}
+
+.totalPaiements {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 12px;
+  background-color: var(--color-brand-pale);
+  border-radius: 8px;
+  margin-bottom: 10px;
+  font-size: 13.5px;
+  color: var(--color-brand-dark);
+}
+
+.lignePaiement {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 13px;
+  padding: 6px 0;
+  border-bottom: 1px solid #F3F4F6;
+}
+
+.etatVideMini {
+  font-size: 13px;
+  color: #9CA3AF;
+  margin: 8px 0;
+}
+
+.resteAPayer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 12px;
+  background-color: #FFF7ED;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  font-size: 13.5px;
+}
+
+.resteRouge { color: #B91C1C; }
+.resteVert { color: #166534; }
+
+.lignePaiementDetail {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 0;
+  border-bottom: 1px solid #F3F4F6;
+}
+
+.infoPaiement {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.actionsPaiement {
+  display: flex;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.miniBouton, .miniBoutonDanger {
+  width: 26px;
+  height: 26px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  background: #fff;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.miniBouton:hover { background-color: #F9FAFB; }
+.miniBoutonDanger:hover { background-color: #FEE2E2; border-color: #FCA5A5; }
+
+.infoDepart {
+  font-size: 12px;
+  color: #6B7280;
+  margin: -4px 0 10px;
+}

@@ -194,7 +194,57 @@
   "role_guide": "المرشد",
   "role_encadreur": "المشرف",
   "role_mounazim": "المنظم",
-  "role_pelerin": "الحاج"
+  "role_pelerin": "الحاج",
+
+  "mode_paiement": "طريقة الدفع",
+  "mode_especes": "نقدًا",
+  "mode_orange_money": "أورانج موني",
+  "mode_virement": "تحويل بنكي",
+  "nouveau_paiement": "دفعة جديدة",
+  "ajouter_paiement": "إضافة دفعة",
+  "historique_paiements": "سجل المدفوعات",
+  "aucun_paiement": "لا توجد دفعة مسجلة",
+  "montant": "المبلغ",
+  "date_paiement": "تاريخ الدفع",
+  "reference_transaction": "مرجع المعاملة",
+  "notes": "ملاحظات",
+  "versements_enregistres": "دفعة مسجلة",
+  "total_periode": "الإجمالي المعروض",
+  "rechercher_paiement": "بحث (حاج، مرجع)...",
+  "tous_modes": "جميع الطرق",
+  "pelerin": "الحاج",
+  "enregistre_par": "سجّلها",
+
+  
+ 
+  "montant_deja_verse": "المبلغ المدفوع مسبقًا",
+  "note_ajout_paiement": "لإضافة دفعة جديدة، استخدم زر \"إضافة دفعة\" من ملف الحاج.",
+
+  "modifier_paiement": "تعديل الدفعة",
+  "telecharger_recu": "تحميل الإيصال",
+  "confirmer_suppression_paiement": "تأكيد حذف هذه الدفعة؟",
+  "avertissement_suppression_paiements": "لدى هذا الحاج {{nombre}} دفعة (دفعات) بمجموع {{total}} GNF. سيؤدي حذف هذا الملف أيضًا إلى مسح كامل سجل مدفوعاته. متابعة؟",
+  "reste_a_payer_estime": "المبلغ المتبقي (تقديري)",
+  "total_general": "الإجمالي العام",
+  "total_ce_mois": "إجمالي هذا الشهر",
+  "versements_ce_mois": "دفعات هذا الشهر",
+  "exporter_csv": "تصدير CSV",
+  "motif_suppression_paiement": "لماذا تحذف هذه الدفعة؟",
+  "motif_obligatoire": "السبب مطلوب لحذف الدفعة.",
+  "statut_paiement_complet": "مدفوع بالكامل",
+  "statut_paiement_a_surveiller": "يتطلب المتابعة",
+  "statut_paiement_en_retard": "متأخر",
+  "statut_paiement_label": "حالة الدفع",
+  "tous_statuts_paiement": "جميع حالات الدفع",
+  "jours_avant_depart": "أيام قبل المغادرة",
+  "transactions": "المعاملات",
+  "suivi_des_soldes": "متابعة الأرصدة",
+  "aucun_resultat": "لا توجد نتائج",
+  "jours_restants_avant_depart": "{{jours}} يوم قبل المغادرة",
+  "depart_deja_passe": "تاريخ المغادرة قد مضى بالفعل"
+
+  
+
 
 
 

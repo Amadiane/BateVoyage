@@ -1,0 +1,311 @@
+.entete {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+
+.titre {
+  font-family: var(--font-display);
+  font-size: 24px;
+  color: var(--color-brand-dark);
+  margin: 0 0 4px;
+}
+
+.sousTitre {
+  color: #6B7280;
+  font-size: 13px;
+  margin: 0;
+}
+
+.carteTotal {
+  background-color: var(--color-brand-dark);
+  border-radius: 12px;
+  padding: 14px 22px;
+  text-align: right;
+}
+
+.labelTotal {
+  font-size: 11px;
+  color: var(--color-gold);
+  margin: 0 0 2px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.chiffreTotal {
+  font-family: var(--font-display);
+  font-size: 20px;
+  color: #fff;
+  margin: 0;
+}
+
+.cartesResume {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+.carteResumeItem {
+  background-color: #fff;
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  padding: 16px;
+}
+
+.chiffreResume {
+  font-family: var(--font-display);
+  font-size: 20px;
+  color: var(--color-brand-dark);
+  margin: 0 0 2px;
+}
+
+.labelResume {
+  font-size: 11.5px;
+  color: #6B7280;
+  margin: 0;
+}
+
+.barreOutils {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.champRecherche {
+  flex: 1;
+  max-width: 320px;
+  padding: 9px 14px;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+.selectFiltre {
+  padding: 9px 14px;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  font-size: 14px;
+  background-color: #fff;
+}
+
+.conteneurTableau {
+  background-color: #fff;
+  border-radius: 12px;
+  border: 1px solid var(--color-border);
+  overflow: hidden;
+}
+
+.tableau {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.tableau th {
+  text-align: left;
+  padding: 12px 16px;
+  background-color: #F9FAFB;
+  color: #6B7280;
+  font-weight: 600;
+  font-size: 12px;
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.tableau td {
+  padding: 11px 16px;
+  border-bottom: 1px solid #F3F4F6;
+}
+
+.ligneCliquable {
+  cursor: pointer;
+}
+
+.ligneCliquable:hover {
+  background-color: #F9FAFB;
+}
+
+.cellId {
+  font-family: monospace;
+  font-weight: 600;
+  color: var(--color-brand-dark);
+}
+
+.cellMontant {
+  font-weight: 600;
+  color: var(--color-brand-dark);
+}
+
+.cellAgent {
+  color: #6B7280;
+}
+
+.cellActions {
+  display: flex;
+  gap: 4px;
+}
+
+.cellActions button {
+  width: 26px;
+  height: 26px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  background: #fff;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.cellActions button:hover {
+  background-color: #F9FAFB;
+}
+
+.boutonSupprimer:hover {
+  background-color: #FEE2E2 !important;
+  border-color: #FCA5A5 !important;
+}
+
+.badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.mode_especes { background-color: #DCFCE7; color: #166534; }
+.mode_orange_money { background-color: #FFEDD5; color: #9A3412; }
+.mode_virement { background-color: #DBEAFE; color: #1E40AF; }
+
+.etatVide {
+  text-align: center;
+  padding: 32px;
+  color: #9CA3AF;
+}
+
+.champDate {
+  padding: 9px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+.boutonExport {
+  padding: 9px 16px;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  background-color: #fff;
+  color: var(--color-brand-dark);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.boutonExport:hover {
+  background-color: #F9FAFB;
+}
+
+.groupeDroiteEntete {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.boutonExport {
+  padding: 9px 16px;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  background-color: #fff;
+  color: var(--color-brand-dark);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.boutonExport:hover {
+  background-color: #F9FAFB;
+}
+
+.champDate {
+  padding: 9px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+.cellRecu {
+  font-family: monospace;
+  font-weight: 600;
+  color: var(--color-brand);
+  font-size: 12px;
+}
+
+.cartesResume {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+.carteResumeItem {
+  background-color: #fff;
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  padding: 16px;
+}
+
+.chiffreResume {
+  font-family: var(--font-display);
+  font-size: 20px;
+  color: var(--color-brand-dark);
+  margin: 0 0 2px;
+}
+
+.labelResume {
+  font-size: 11.5px;
+  color: #6B7280;
+  margin: 0;
+}
+
+.cellActions {
+  display: flex;
+  gap: 4px;
+}
+
+.cellActions button {
+  width: 26px;
+  height: 26px;
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  background: #fff;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.cellActions button:hover { background-color: #F9FAFB; }
+.boutonSupprimer:hover { background-color: #FEE2E2 !important; border-color: #FCA5A5 !important; }
+
+.ongletsVue {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.ongletVue, .ongletVueActif {
+  padding: 10px 18px;
+  border: none;
+  background: none;
+  font-size: 13.5px;
+  font-weight: 600;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+}
+
+.ongletVue { color: #6B7280; }
+.ongletVueActif { color: var(--color-brand); border-bottom-color: var(--color-brand); }

@@ -44,6 +44,11 @@ class Pelerin(models.Model):
         OBTENU = "obtenu", "Obtenu"
         REFUSE = "refuse", "Refusé"
 
+    class ModePaiement(models.TextChoices):
+        ESPECES = "especes", "Espèces"
+        ORANGE_MONEY = "orange_money", "Orange Money"
+        VIREMENT = "virement", "Virement bancaire"
+
     class TypeVoyage(models.TextChoices):
         PELERINAGE = "pelerinage", "Pèlerinage (Hajj)"
         OUMRA = "oumra", "Omra"
@@ -81,6 +86,7 @@ class Pelerin(models.Model):
 
     # ---------- 13. Versement ----------
     montant_verse = models.DecimalField(max_digits=12, decimal_places=2, default=0)
+    mode_paiement = models.CharField(max_length=20, choices=ModePaiement.choices, blank=True)
     scan_recu_versement = models.FileField(
         upload_to="pelerins/recus/", storage=RawMediaCloudinaryStorage(),
         blank=True, null=True
@@ -157,6 +163,40 @@ class Pelerin(models.Model):
             self.numero_id = self._generer_numero_id()
         super().save(*args, **kwargs)
 
+    @property
+    def montant_total_verse(self):
+        total = self.paiements.aggregate(total=models.Sum("montant"))["total"]
+        return total or 0
+
+        SEUIL_RETARD_JOURS = 15
+    SEUIL_SURVEILLANCE_JOURS = 45
+
+    @property
+    def jours_avant_depart(self):
+        if not self.programme or not self.programme.date_depart:
+            return None
+        from django.utils import timezone
+        delta = self.programme.date_depart - timezone.now().date()
+        return delta.days
+
+    @property
+    def statut_paiement(self):
+        reste = None
+        if self.programme and self.programme.prix_double:
+            reste = float(self.programme.prix_double) - float(self.montant_total_verse)
+
+        if reste is not None and reste <= 0:
+            return "complet"
+
+        jours = self.jours_avant_depart
+        if jours is None:
+            return "indetermine"
+        if jours < self.SEUIL_RETARD_JOURS:
+            return "en_retard"
+        if jours < self.SEUIL_SURVEILLANCE_JOURS:
+            return "a_surveiller"
+        return "normal"
+
     @staticmethod
     def _generer_numero_id():
         annee_courante = str(timezone.now().year)[-2:]  # ex: "26" pour 2026
@@ -167,3 +207,4 @@ class Pelerin(models.Model):
             sequence.dernier_numero += 1
             sequence.save()
             return f"BVG-{sequence.dernier_numero:03d}-P{annee_courante}"
+    

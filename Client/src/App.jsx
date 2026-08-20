@@ -8,10 +8,14 @@ import ListePelerins from "./pages/pelerins/ListePelerins";
 import FormulairePelerin from "./pages/pelerins/FormulairePelerin";
 import DetailPelerin from "./pages/pelerins/DetailPelerin";
 import PageDocuments from "./pages/documents/PageDocuments";
-import PageJournalActivite from "./pages/activite/PageJournalActivite";
 import ListeUtilisateurs from "./pages/utilisateurs/ListeUtilisateurs";
 import FormulaireUtilisateur from "./pages/utilisateurs/FormulaireUtilisateur";
+import PageJournalActivite from "./pages/activite/PageJournalActivite";
+import ListePaiements from "./pages/paiements/ListePaiements";
 import "./globals.css";
+
+const ROLES_FINANCIERS = ["fondateur", "admin_general", "comptable", "secretaire"];
+const ROLES_ADMIN = ["fondateur", "admin_general"];
 
 function App() {
   return (
@@ -27,15 +31,56 @@ function App() {
           }
         >
           <Route path="/dashboard" element={<Dashboard />} />
+
           <Route path="/pelerins" element={<ListePelerins />} />
           <Route path="/pelerins/nouveau" element={<FormulairePelerin />} />
           <Route path="/pelerins/:id" element={<DetailPelerin />} />
           <Route path="/pelerins/:id/modifier" element={<FormulairePelerin />} />
+
           <Route path="/documents" element={<PageDocuments />} />
-          <Route path="/journal-activite" element={<PageJournalActivite />} />
-          <Route path="/utilisateurs" element={<ListeUtilisateurs />} />
-          <Route path="/utilisateurs/nouveau" element={<FormulaireUtilisateur />} />
-          <Route path="/utilisateurs/:id/modifier" element={<FormulaireUtilisateur />} />
+
+          <Route
+            path="/paiements"
+            element={
+              <ProtectedRoute rolesAutorises={ROLES_FINANCIERS}>
+                <ListePaiements />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/utilisateurs"
+            element={
+              <ProtectedRoute rolesAutorises={ROLES_ADMIN}>
+                <ListeUtilisateurs />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/utilisateurs/nouveau"
+            element={
+              <ProtectedRoute rolesAutorises={ROLES_ADMIN}>
+                <FormulaireUtilisateur />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/utilisateurs/:id/modifier"
+            element={
+              <ProtectedRoute rolesAutorises={ROLES_ADMIN}>
+                <FormulaireUtilisateur />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/journal-activite"
+            element={
+              <ProtectedRoute rolesAutorises={ROLES_ADMIN}>
+                <PageJournalActivite />
+              </ProtectedRoute>
+            }
+          />
         </Route>
 
         <Route path="/" element={<Navigate to="/dashboard" replace />} />

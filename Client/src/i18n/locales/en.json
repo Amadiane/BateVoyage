@@ -192,7 +192,55 @@
   "role_guide": "Guide",
   "role_encadreur": "Supervisor",
   "role_mounazim": "Mounazim",
-  "role_pelerin": "Pilgrim"
+  "role_pelerin": "Pilgrim",
+
+  "mode_paiement": "Payment method",
+  "mode_especes": "Cash",
+  "mode_orange_money": "Orange Money",
+  "mode_virement": "Bank transfer",
+  "nouveau_paiement": "New payment",
+  "ajouter_paiement": "Add a payment",
+  "historique_paiements": "Payment history",
+  "aucun_paiement": "No payment recorded",
+  "montant": "Amount",
+  "date_paiement": "Payment date",
+  "reference_transaction": "Transaction reference",
+  "notes": "Notes",
+  "versements_enregistres": "recorded payments",
+  "total_periode": "Displayed total",
+  "rechercher_paiement": "Search (pilgrim, reference)...",
+  "tous_modes": "All methods",
+  "pelerin": "Pilgrim",
+  "enregistre_par": "Recorded by",
+
+  
+ 
+  "montant_deja_verse": "Amount already paid",
+  "note_ajout_paiement": "To add a new payment, use the \"Add a payment\" button from the pilgrim's file.",
+
+  "modifier_paiement": "Edit payment",
+  "telecharger_recu": "Download receipt",
+  "confirmer_suppression_paiement": "Confirm deletion of this payment?",
+  "avertissement_suppression_paiements": "This pilgrim has {{nombre}} payment(s) totaling {{total}} GNF. Deleting this file will also erase its entire payment history. Continue?",
+  "reste_a_payer_estime": "Remaining balance (estimated)",
+  "total_general": "Grand total",
+  "total_ce_mois": "This month's total",
+  "versements_ce_mois": "Payments this month",
+  "exporter_csv": "Export CSV",
+  "motif_suppression_paiement": "Why are you deleting this payment?",
+  "motif_obligatoire": "A reason is required to delete a payment.",
+  "statut_paiement_complet": "Fully paid",
+  "statut_paiement_a_surveiller": "To watch",
+  "statut_paiement_en_retard": "Overdue",
+  "statut_paiement_label": "Payment status",
+  "tous_statuts_paiement": "All payment statuses",
+  "jours_avant_depart": "Days before departure",
+  "transactions": "Transactions",
+  "suivi_des_soldes": "Balance tracking",
+  "aucun_resultat": "No results",
+  "jours_restants_avant_depart": "{{jours}} day(s) before departure",
+  "depart_deja_passe": "Departure date already passed"
+
 
 
 

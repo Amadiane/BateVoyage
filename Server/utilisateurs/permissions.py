@@ -23,3 +23,11 @@ class EstEncadrementTerrain(BasePermission):
 class EstPelerin(BasePermission):
     def has_permission(self, request, view):
         return request.user.is_authenticated and request.user.role == "pelerin"
+
+class EstGestionnaireFinancier(BasePermission):
+    """Fondateur, Admin Général, Comptable, Secrétaire — les seuls
+    habilités à créer/modifier/supprimer des paiements."""
+    def has_permission(self, request, view):
+        return request.user.is_authenticated and request.user.role in [
+            "fondateur", "admin_general", "comptable", "secretaire",
+        ]

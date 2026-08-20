@@ -2,7 +2,8 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { pelerinService } from "../../services/pelerinService";
-import { ouvrirFichierProtege } from "../../utils/telechargement";
+import BadgeStatutPaiement from "../../components/BadgeStatutPaiement/BadgeStatutPaiement";
+import { ouvrirFichierProtege, telechargerFichierProtege } from "../../utils/telechargement";
 import styles from "../../theme/pages/pelerins/ListePelerins.module.css";
 
 function ListePelerins() {
@@ -12,6 +13,7 @@ function ListePelerins() {
   const [chargement, setChargement] = useState(true);
   const [recherche, setRecherche] = useState("");
   const [filtreStatut, setFiltreStatut] = useState("");
+  const [filtreStatutPaiement, setFiltreStatutPaiement] = useState("");
 
   const charger = async () => {
     setChargement(true);
@@ -38,15 +40,21 @@ function ListePelerins() {
   };
 
   const telechargerFiche = (p) => {
-    ouvrirFichierProtege(pelerinService.urlFichePdf(p.id), `fiche_${p.numero_id}.pdf`);
+    telechargerFichierProtege(pelerinService.urlFichePdf(p.id), `fiche_${p.numero_id}.pdf`);
   };
+
+  // Le statut paiement est une propriété calculée côté backend, non
+  // filtrable via django-filter — le filtre s'applique donc côté client.
+  const pelerinsAffiches = filtreStatutPaiement
+    ? pelerins.filter((p) => p.statut_paiement === filtreStatutPaiement)
+    : pelerins;
 
   return (
     <div>
       <div className={styles.entete}>
         <div>
           <h1 className={styles.titre}>{t("pelerins")}</h1>
-          <p className={styles.sousTitre}>{pelerins.length} {t("dossiers_enregistres")}</p>
+          <p className={styles.sousTitre}>{pelerinsAffiches.length} {t("dossiers_enregistres")}</p>
         </div>
         <button className={styles.boutonPrincipal} onClick={() => navigate("/pelerins/nouveau")}>
           + {t("nouveau_pelerin")}
@@ -74,6 +82,16 @@ function ListePelerins() {
           <option value="retourne">{t("statut_retourne")}</option>
           <option value="cloture">{t("statut_cloture")}</option>
         </select>
+        <select
+          value={filtreStatutPaiement}
+          onChange={(e) => setFiltreStatutPaiement(e.target.value)}
+          className={styles.selectFiltre}
+        >
+          <option value="">{t("tous_statuts_paiement")}</option>
+          <option value="complet">{t("statut_paiement_complet")}</option>
+          <option value="a_surveiller">{t("statut_paiement_a_surveiller")}</option>
+          <option value="en_retard">{t("statut_paiement_en_retard")}</option>
+        </select>
       </div>
 
       <div className={styles.conteneurTableau}>
@@ -86,18 +104,19 @@ function ListePelerins() {
               <th>{t("telephone")}</th>
               <th>{t("statut")}</th>
               <th>{t("visa")}</th>
+              <th>{t("statut_paiement_label")}</th>
               <th>{t("inscripteur")}</th>
               <th></th>
             </tr>
           </thead>
           <tbody>
             {chargement && (
-              <tr><td colSpan={8} className={styles.etatVide}>{t("chargement")}</td></tr>
+              <tr><td colSpan={9} className={styles.etatVide}>{t("chargement")}</td></tr>
             )}
-            {!chargement && pelerins.length === 0 && (
-              <tr><td colSpan={8} className={styles.etatVide}>{t("aucun_pelerin")}</td></tr>
+            {!chargement && pelerinsAffiches.length === 0 && (
+              <tr><td colSpan={9} className={styles.etatVide}>{t("aucun_pelerin")}</td></tr>
             )}
-            {!chargement && pelerins.map((p) => (
+            {!chargement && pelerinsAffiches.map((p) => (
               <tr key={p.id} className={styles.ligneCliquable} onClick={() => navigate(`/pelerins/${p.id}`)}>
                 <td className={styles.cellId}>{p.numero_id}</td>
                 <td>
@@ -119,6 +138,7 @@ function ListePelerins() {
                     {t(`visa_${p.statut_visa}`)}
                   </span>
                 </td>
+                <td><BadgeStatutPaiement statut={p.statut_paiement} /></td>
                 <td className={styles.cellInscripteur}>{p.inscripteur_nom || "—"}</td>
                 <td className={styles.cellActions} onClick={(e) => e.stopPropagation()}>
                   <button onClick={() => navigate(`/pelerins/${p.id}/modifier`)} title={t("modifier")}>

@@ -8,8 +8,14 @@ class PelerinSerializer(serializers.ModelSerializer):
     statut_display = serializers.CharField(source="get_statut_display", read_only=True)
     statut_visa_display = serializers.CharField(source="get_statut_visa_display", read_only=True)
     type_voyage_display = serializers.CharField(source="get_type_voyage_display", read_only=True)
+    mode_paiement_display = serializers.CharField(source="get_mode_paiement_display", read_only=True)
+    montant_total_verse = serializers.DecimalField(max_digits=12, decimal_places=2, read_only=True)
     telephone_urgence = serializers.CharField(read_only=True)
     dossier_complet = serializers.BooleanField(read_only=True)
+    reste_a_payer = serializers.SerializerMethodField()
+    prix_programme = serializers.SerializerMethodField()
+    statut_paiement = serializers.CharField(read_only=True)
+    jours_avant_depart = serializers.IntegerField(read_only=True)
 
     class Meta:
         model = Pelerin
@@ -21,3 +27,14 @@ class PelerinSerializer(serializers.ModelSerializer):
             return None
         nom_complet = obj.inscripteur.get_full_name()
         return nom_complet if nom_complet.strip() else obj.inscripteur.username
+
+    def get_prix_programme(self, obj):
+        if obj.programme and obj.programme.prix_double:
+            return obj.programme.prix_double
+        return None
+
+    def get_reste_a_payer(self, obj):
+        prix = self.get_prix_programme(obj)
+        if prix is None:
+            return None
+        return float(prix) - float(obj.montant_total_verse)

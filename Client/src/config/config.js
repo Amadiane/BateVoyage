@@ -33,6 +33,16 @@ const CONFIG = {
   API_UTILISATEUR_MOT_DE_PASSE: (id) => `${BASE_URL}/api/utilisateurs/comptes/${id}/mot-de-passe/`,
   API_UTILISATEUR_HISTORIQUE: (id) => `${BASE_URL}/api/utilisateurs/comptes/${id}/historique/`,
 
+  API_PAIEMENTS: `${BASE_URL}/api/paiements/`,
+  API_PAIEMENT_DETAIL: (id) => `${BASE_URL}/api/paiements/${id}/`,
+
+  API_PAIEMENT_RECU_SCAN: (id) => `${BASE_URL}/api/paiements/${id}/recu-scan/`,
+  API_PAIEMENT_RECU_PDF: (id) => `${BASE_URL}/api/paiements/${id}/recu-pdf/`,
+  API_RESUME_FINANCIER: `${BASE_URL}/api/paiements/resume-financier/`,
+  API_PELERIN_VERIFIER_SUPPRESSION: (id) => `${BASE_URL}/api/pelerins/${id}/verifier-suppression/`,
+  API_PAIEMENTS_EXPORT_CSV: `${BASE_URL}/api/paiements/export-csv/`,
+  API_SUIVI_SOLDES: `${BASE_URL}/api/paiements/suivi-soldes/`,
+
   // --- Formules / Programmes ---
   API_PROGRAMMES: `${BASE_URL}/api/formules/programmes/`,
 
@@ -64,6 +74,8 @@ export const MENU_PAR_ROLE = {
   encadreur: ["dashboard", "groupes"],
   mounazim: ["dashboard", "groupes"],
   pelerin: ["mon-dossier"],
+
+  
 };
 
 export const ITEMS_MENU = {
