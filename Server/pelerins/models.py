@@ -137,6 +137,9 @@ class Pelerin(models.Model):
     groupe = models.ForeignKey(
         "groupes_vols.Groupe", on_delete=models.SET_NULL, null=True, blank=True, related_name="pelerins"
     )
+    chambre = models.ForeignKey(
+        "hebergement.Chambre", on_delete=models.SET_NULL, null=True, blank=True, related_name="pelerins"
+    )
 
     statut = models.CharField(max_length=20, choices=Statut.choices, default=Statut.INSCRIT)
     date_inscription = models.DateTimeField(auto_now_add=True)

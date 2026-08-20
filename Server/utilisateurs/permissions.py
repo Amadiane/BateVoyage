@@ -45,3 +45,15 @@ class EstGestionnaireLogistique(BasePermission):
         if request.method in SAFE_METHODS:
             return True
         return request.user.role in ["fondateur", "admin_general", "secretaire"]
+
+
+class EstGestionnaireReclamations(BasePermission):
+    """Fondateur, Admin Général, Affaires sociales — habilités à gérer
+    les réclamations. Les autres rôles authentifiés ne peuvent que
+    consulter (utile aux agents qui créent une réclamation pour un pèlerin)."""
+    def has_permission(self, request, view):
+        if not request.user.is_authenticated:
+            return False
+        if request.method in SAFE_METHODS:
+            return True
+        return request.user.role in ["fondateur", "admin_general", "affaires_sociales"]

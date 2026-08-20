@@ -32,5 +32,7 @@ urlpatterns = [
     path('api/activite/', include('activite.urls')),
     path('api/paiements/', include('paiements.urls')),
     path('api/groupes-vols/', include('groupes_vols.urls')),
+    path('api/hebergement/', include('hebergement.urls')),
+    path('api/reclamations/', include('reclamations.urls')),
     
 ]

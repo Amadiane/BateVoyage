@@ -15,6 +15,9 @@ import ListePaiements from "./pages/paiements/ListePaiements";
 import ListeProgrammes from "./pages/programmes/ListeProgrammes";
 import PageGroupesVols from "./pages/groupes/PageGroupesVols";
 import DetailGroupe from "./pages/groupes/DetailGroupe";
+import PageHebergement from "./pages/hebergement/PageHebergement";
+import DetailHotel from "./pages/hebergement/DetailHotel";
+import DetailChambre from "./pages/hebergement/DetailChambre";
 import "./globals.css";
 
 const ROLES_FINANCIERS = ["fondateur", "admin_general", "comptable", "secretaire"];
@@ -41,6 +44,9 @@ function App() {
           <Route path="/pelerins/:id/modifier" element={<FormulairePelerin />} />
           <Route path="/groupes" element={<PageGroupesVols />} />
           <Route path="/groupes/:id" element={<DetailGroupe />} />
+          <Route path="/hebergement" element={<PageHebergement />} />
+          <Route path="/hebergement/:id" element={<DetailHotel />} />
+          <Route path="/hebergement/chambre/:id" element={<DetailChambre />} />
 
           <Route path="/documents" element={<PageDocuments />} />
 

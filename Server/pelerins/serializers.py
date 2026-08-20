@@ -17,6 +17,7 @@ class PelerinSerializer(serializers.ModelSerializer):
     statut_paiement = serializers.CharField(read_only=True)
     jours_avant_echeance_paiement = serializers.IntegerField(read_only=True)
     groupe_nom = serializers.CharField(source="groupe.nom", read_only=True)
+    chambre_info = serializers.SerializerMethodField()
 
     class Meta:
         model = Pelerin
@@ -39,3 +40,10 @@ class PelerinSerializer(serializers.ModelSerializer):
         if prix is None:
             return None
         return float(prix) - float(obj.montant_total_verse)
+
+        
+
+    def get_chambre_info(self, obj):
+        if not obj.chambre:
+            return None
+        return f"{obj.chambre.hotel.nom} — Ch. {obj.chambre.numero}"

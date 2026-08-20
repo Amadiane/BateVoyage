@@ -291,7 +291,23 @@
   "selectionnes": "selected",
   "ajouter": "Add",
   "retirer_du_groupe": "Remove from group",
-  "confirmer_retrait_groupe": "Remove this pilgrim from the group?"
+  "confirmer_retrait_groupe": "Remove this pilgrim from the group?",
+  
+  "menu_hebergement": "Accommodation", "hotels_enregistres": "registered hotels",
+  "nouvel_hotel": "New hotel", "modifier_hotel": "Edit hotel", "aucun_hotel": "No hotel registered",
+  "confirmer_suppression_hotel": "Confirm deletion of this hotel?",
+  "nom_hotel": "Hotel name", "ville": "City", "ville_mecque": "Mecca", "ville_medine": "Medina",
+  "adresse": "Address", "date_debut_sejour": "Stay start", "date_fin_sejour": "Stay end",
+  "cout_contrat": "Contract cost", "chambres": "rooms",
+  "nouvelle_chambre": "New room", "modifier_chambre": "Edit room", "aucune_chambre": "No room",
+  "confirmer_suppression_chambre": "Confirm deletion of this room?",
+  "numero_chambre": "Room number", "type_chambre_label": "Room type",
+  "type_individuelle": "Single", "type_double": "Double", "type_triple": "Triple", "type_quadruple": "Quadruple",
+  "numero_chambre_deja_utilise": "This room number already exists for this hotel.",
+  "ajouter_pelerins_chambre": "Add pilgrims to room", "places_restantes": "Remaining spots",
+  "occupants": "occupants", "aucun_pelerin_dans_chambre": "No pilgrim in this room",
+  "retirer_de_chambre": "Remove from room", "confirmer_retrait_chambre": "Remove this pilgrim from the room?"
+
 
 
 

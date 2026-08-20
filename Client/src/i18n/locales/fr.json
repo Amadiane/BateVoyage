@@ -294,7 +294,23 @@
   "selectionnes": "sélectionné(s)",
   "ajouter": "Ajouter",
   "retirer_du_groupe": "Retirer du groupe",
-  "confirmer_retrait_groupe": "Retirer ce pèlerin du groupe ?"
+  "confirmer_retrait_groupe": "Retirer ce pèlerin du groupe ?",
+  
+  "menu_hebergement": "Hébergement", "hotels_enregistres": "hôtels enregistrés",
+  "nouvel_hotel": "Nouvel hôtel", "modifier_hotel": "Modifier l'hôtel", "aucun_hotel": "Aucun hôtel enregistré",
+  "confirmer_suppression_hotel": "Confirmer la suppression de cet hôtel ?",
+  "nom_hotel": "Nom de l'hôtel", "ville": "Ville", "ville_mecque": "Mecque", "ville_medine": "Médine",
+  "adresse": "Adresse", "date_debut_sejour": "Début du séjour", "date_fin_sejour": "Fin du séjour",
+  "cout_contrat": "Coût du contrat", "chambres": "chambres",
+  "nouvelle_chambre": "Nouvelle chambre", "modifier_chambre": "Modifier la chambre", "aucune_chambre": "Aucune chambre",
+  "confirmer_suppression_chambre": "Confirmer la suppression de cette chambre ?",
+  "numero_chambre": "Numéro de chambre", "type_chambre_label": "Type de chambre",
+  "type_individuelle": "Individuelle", "type_double": "Double", "type_triple": "Triple", "type_quadruple": "Quadruple",
+  "numero_chambre_deja_utilise": "Ce numéro de chambre existe déjà pour cet hôtel.",
+  "ajouter_pelerins_chambre": "Ajouter des pèlerins à la chambre", "places_restantes": "Places restantes",
+  "occupants": "occupants", "aucun_pelerin_dans_chambre": "Aucun pèlerin dans cette chambre",
+  "retirer_de_chambre": "Retirer de la chambre", "confirmer_retrait_chambre": "Retirer ce pèlerin de la chambre ?"
+
 
 
 

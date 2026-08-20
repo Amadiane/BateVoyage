@@ -1,0 +1,20 @@
+.chargement { padding: 32px; text-align: center; color: #9CA3AF; }
+.retour { background: none; border: none; color: #6B7280; font-size: 13px; cursor: pointer; padding: 0; margin-bottom: 20px; }
+.retour:hover { color: var(--color-brand); }
+
+.entete { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+.titre { font-family: var(--font-display); font-size: 20px; color: var(--color-brand-dark); margin: 0 0 4px; }
+.sousTitre { color: #6B7280; font-size: 13px; margin: 0; }
+
+.boutonPrincipal { display: inline-flex; align-items: center; gap: 8px; padding: 10px 18px; border: none; border-radius: 8px; background-color: var(--color-brand-dark); color: #fff; font-size: 13.5px; font-weight: 600; cursor: pointer; }
+.boutonPrincipal:hover { background-color: var(--color-brand); }
+
+.conteneurTableau { background-color: #fff; border-radius: 12px; border: 1px solid var(--color-border); overflow: hidden; }
+.tableau { width: 100%; border-collapse: collapse; font-size: 13px; }
+.tableau th { text-align: left; padding: 12px 16px; background-color: #F9FAFB; color: #6B7280; font-weight: 600; font-size: 12px; text-transform: uppercase; border-bottom: 1px solid var(--color-border); }
+.tableau td { padding: 11px 16px; border-bottom: 1px solid #F3F4F6; }
+.cellId { font-family: monospace; font-weight: 600; color: var(--color-brand-dark); }
+.etatVide { text-align: center; padding: 32px; color: #9CA3AF; }
+
+.boutonRetirer { width: 26px; height: 26px; display: inline-flex; align-items: center; justify-content: center; border: 1px solid var(--color-border); border-radius: 6px; background: #fff; cursor: pointer; color: #6B7280; }
+.boutonRetirer:hover { background-color: #FEE2E2; border-color: #FCA5A5; color: #B91C1C; }

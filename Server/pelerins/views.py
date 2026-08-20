@@ -37,7 +37,7 @@ class PelerinViewSet(viewsets.ModelViewSet):
     queryset = Pelerin.objects.select_related("inscripteur", "programme").all()
     serializer_class = PelerinSerializer
     permission_classes = [permissions.IsAuthenticated]
-    filterset_fields = ["statut", "statut_visa", "sexe", "type_voyage", "inscripteur", "programme", "groupe"]
+    filterset_fields = ["statut", "statut_visa", "sexe", "type_voyage", "inscripteur", "programme", "groupe", "chambre"]
     search_fields = ["nom", "prenom", "numero_id", "numero_passeport", "telephone"]
 
     

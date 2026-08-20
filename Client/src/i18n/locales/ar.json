@@ -293,7 +293,23 @@
   "selectionnes": "محدد",
   "ajouter": "إضافة",
   "retirer_du_groupe": "إزالة من المجموعة",
-  "confirmer_retrait_groupe": "إزالة هذا الحاج من المجموعة؟"
+  "confirmer_retrait_groupe": "إزالة هذا الحاج من المجموعة؟",
+  
+  "menu_hebergement": "الإقامة", "hotels_enregistres": "فندق مسجل",
+  "nouvel_hotel": "فندق جديد", "modifier_hotel": "تعديل الفندق", "aucun_hotel": "لا يوجد فندق مسجل",
+  "confirmer_suppression_hotel": "تأكيد حذف هذا الفندق؟",
+  "nom_hotel": "اسم الفندق", "ville": "المدينة", "ville_mecque": "مكة المكرمة", "ville_medine": "المدينة المنورة",
+  "adresse": "العنوان", "date_debut_sejour": "بداية الإقامة", "date_fin_sejour": "نهاية الإقامة",
+  "cout_contrat": "تكلفة العقد", "chambres": "غرف",
+  "nouvelle_chambre": "غرفة جديدة", "modifier_chambre": "تعديل الغرفة", "aucune_chambre": "لا توجد غرفة",
+  "confirmer_suppression_chambre": "تأكيد حذف هذه الغرفة؟",
+  "numero_chambre": "رقم الغرفة", "type_chambre_label": "نوع الغرفة",
+  "type_individuelle": "فردية", "type_double": "مزدوجة", "type_triple": "ثلاثية", "type_quadruple": "رباعية",
+  "numero_chambre_deja_utilise": "رقم هذه الغرفة موجود بالفعل لهذا الفندق.",
+  "ajouter_pelerins_chambre": "إضافة حجاج إلى الغرفة", "places_restantes": "الأماكن المتبقية",
+  "occupants": "نزلاء", "aucun_pelerin_dans_chambre": "لا يوجد حاج في هذه الغرفة",
+  "retirer_de_chambre": "إزالة من الغرفة", "confirmer_retrait_chambre": "إزالة هذا الحاج من الغرفة؟"
+
 
   
 

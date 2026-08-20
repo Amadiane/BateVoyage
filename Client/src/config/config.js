@@ -49,6 +49,12 @@ const CONFIG = {
   API_GROUPE_MANIFESTE_PDF: (id) => `${BASE_URL}/api/groupes-vols/groupes/${id}/manifeste-pdf/`,
   API_GROUPE_AFFECTER_PELERINS: (id) => `${BASE_URL}/api/groupes-vols/groupes/${id}/affecter-pelerins/`,
   API_GROUPE_RETIRER_PELERIN: (id) => `${BASE_URL}/api/groupes-vols/groupes/${id}/retirer-pelerin/`,
+  API_HOTELS: `${BASE_URL}/api/hebergement/hotels/`,
+  API_HOTEL_DETAIL: (id) => `${BASE_URL}/api/hebergement/hotels/${id}/`,
+  API_CHAMBRES: `${BASE_URL}/api/hebergement/chambres/`,
+  API_CHAMBRE_DETAIL: (id) => `${BASE_URL}/api/hebergement/chambres/${id}/`,
+  API_CHAMBRE_AFFECTER: (id) => `${BASE_URL}/api/hebergement/chambres/${id}/affecter-pelerins/`,
+  API_CHAMBRE_RETIRER: (id) => `${BASE_URL}/api/hebergement/chambres/${id}/retirer-pelerin/`,
 
   // --- Formules / Programmes ---
   API_PROGRAMMES: `${BASE_URL}/api/formules/programmes/`,
@@ -81,6 +87,12 @@ export const MENU_PAR_ROLE = {
   encadreur: ["dashboard", "groupes"],
   mounazim: ["dashboard", "groupes"],
   pelerin: ["mon-dossier"],
+  fondateur: ["dashboard", "pelerins", "utilisateurs", "documents", "paiements", "programmes", "groupes", "hebergement", "journal"],
+  admin_general: ["dashboard", "pelerins", "utilisateurs", "documents", "paiements", "programmes", "groupes", "hebergement", "journal"],
+  secretaire: ["dashboard", "pelerins", "documents", "groupes", "hebergement"],
+  guide: ["dashboard", "groupes", "hebergement"],
+  encadreur: ["dashboard", "groupes", "hebergement"],
+  mounazim: ["dashboard", "groupes", "hebergement"],
 };
 
 export const ITEMS_MENU = {
@@ -95,4 +107,5 @@ export const ITEMS_MENU = {
   "mon-dossier": { cle: "menu_mon_dossier", path: "/mon-dossier", icone: FileText },
   journal: { cle: "menu_journal", path: "/journal-activite", icone: ScrollText },
   programmes: { cle: "menu_programmes", path: "/programmes" },
+  hebergement: { cle: "menu_hebergement", path: "/hebergement" },
 };
