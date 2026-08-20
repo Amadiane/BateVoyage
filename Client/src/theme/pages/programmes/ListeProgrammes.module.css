@@ -1,0 +1,308 @@
+.entete {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+
+.titre {
+  font-family: var(--font-display);
+  font-size: 24px;
+  color: var(--color-brand-dark);
+  margin: 0 0 4px;
+}
+
+.sousTitre {
+  color: #6B7280;
+  font-size: 13px;
+  margin: 0;
+}
+
+.boutonPrincipal {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
+  border: none;
+  border-radius: 8px;
+  background-color: var(--color-brand-dark);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.boutonPrincipal:hover:not(:disabled) { background-color: var(--color-brand); }
+.boutonPrincipal:disabled { opacity: 0.6; }
+
+.grilleCartes {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
+  gap: 16px;
+}
+
+.etatVide {
+  text-align: center;
+  padding: 40px;
+  color: #9CA3AF;
+  grid-column: 1 / -1;
+}
+
+.carteProgramme {
+  background-color: #fff;
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  padding: 22px;
+  transition: box-shadow 0.15s ease, transform 0.15s ease;
+}
+
+.carteProgramme:hover {
+  box-shadow: 0 8px 24px rgba(11, 14, 20, 0.06);
+  transform: translateY(-2px);
+}
+
+.bandeauCarte {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.badgeType {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.type_hajj { background-color: #E0E7FF; color: #3730A3; }
+.type_oumra_ramadan, .type_oumra_classique { background-color: #DCFCE7; color: #166534; }
+
+.actionsCarte {
+  display: flex;
+  gap: 6px;
+}
+
+.actionsCarte button {
+  width: 28px;
+  height: 28px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--color-border);
+  border-radius: 7px;
+  background: #fff;
+  cursor: pointer;
+  color: #4B5563;
+  transition: background-color 0.15s ease;
+}
+
+.actionsCarte button:hover { background-color: #F9FAFB; }
+.boutonSupprimer:hover { background-color: #FEE2E2 !important; border-color: #FCA5A5 !important; color: #B91C1C !important; }
+
+.nomProgramme {
+  font-family: var(--font-display);
+  font-size: 18px;
+  color: var(--color-brand-dark);
+  margin: 0 0 12px;
+}
+
+.ligneInfo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12.5px;
+  color: #6B7280;
+  margin-bottom: 6px;
+}
+
+.iconeInfo {
+  color: var(--color-brand);
+  flex-shrink: 0;
+}
+
+.echeancePaiement {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #92400E;
+  background-color: #FFFBEB;
+  border: 1px solid #FDE68A;
+  padding: 7px 10px;
+  border-radius: 8px;
+  margin: 10px 0;
+}
+
+.prixGrille {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 12px;
+  background-color: #F9FAFB;
+  border-radius: 10px;
+  margin-top: 10px;
+}
+
+.prixItem {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12.5px;
+  color: #4B5563;
+}
+
+.prixItem strong {
+  color: var(--color-brand-dark);
+}
+
+/* ---------- Modal ---------- */
+.superposition {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(11, 14, 20, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 50;
+  padding: 24px;
+}
+
+.panneau {
+  width: 520px;
+  max-width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  background-color: #fff;
+  border-radius: 18px;
+  padding: 28px;
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.2);
+}
+
+.enteteModal {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 22px;
+}
+
+.enteteModal h2 {
+  font-family: var(--font-display);
+  font-size: 19px;
+  color: var(--color-brand-dark);
+  margin: 0;
+}
+
+.boutonFermer {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #6B7280;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+}
+
+.boutonFermer:hover {
+  background-color: #F3F4F6;
+}
+
+.formulaire {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.sectionTitre {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--color-brand);
+  margin-top: 6px;
+  padding-top: 12px;
+  border-top: 1px solid #F3F4F6;
+}
+
+.champ label {
+  display: block;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #4B5563;
+  margin-bottom: 6px;
+}
+
+.champ input, .champ select {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1.5px solid #E5E7EB;
+  border-radius: 9px;
+  font-size: 14px;
+  font-family: inherit;
+  background-color: #FCFCFD;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.champ input:focus, .champ select:focus {
+  outline: none;
+  border-color: var(--color-brand);
+  background-color: #fff;
+  box-shadow: 0 0 0 3px var(--color-brand-pale);
+}
+
+.aideChamp {
+  font-size: 11.5px;
+  color: #9CA3AF;
+  margin: 6px 0 0;
+}
+
+.ligneDeuxColonnes {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.ligneTroisColonnes {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 12px;
+}
+
+.erreur {
+  font-size: 13px;
+  color: #B91C1C;
+  background-color: #FEF2F2;
+  border: 1px solid #FECACA;
+  border-radius: 9px;
+  padding: 10px 14px;
+}
+
+.navigationModal {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 8px;
+  padding-top: 16px;
+  border-top: 1px solid #F3F4F6;
+}
+
+.boutonSecondaire {
+  padding: 10px 18px;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  background-color: #fff;
+  color: var(--color-ink);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.boutonSecondaire:hover {
+  background-color: #F9FAFB;
+}

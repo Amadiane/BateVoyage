@@ -63,9 +63,9 @@ export const ENTREPRISE = {
 };
 
 export const MENU_PAR_ROLE = {
-  fondateur: ["dashboard", "pelerins", "utilisateurs", "documents", "paiements", "groupes", "journal"],
-  admin_general: ["dashboard", "pelerins", "utilisateurs", "documents", "paiements", "groupes", "journal"],
-  comptable: ["dashboard", "paiements", "pelerins"],
+  fondateur: ["dashboard", "pelerins", "utilisateurs", "documents", "paiements", "programmes", "groupes", "journal"],
+  admin_general: ["dashboard", "pelerins", "utilisateurs", "documents", "paiements", "programmes", "groupes", "journal"],
+  comptable: ["dashboard", "paiements", "programmes", "pelerins"],
   secretaire: ["dashboard", "pelerins", "documents"],
   docteur: ["dashboard", "pelerins-sante"],
   traducteur: ["dashboard", "documents"],
@@ -74,8 +74,6 @@ export const MENU_PAR_ROLE = {
   encadreur: ["dashboard", "groupes"],
   mounazim: ["dashboard", "groupes"],
   pelerin: ["mon-dossier"],
-
-  
 };
 
 export const ITEMS_MENU = {
@@ -89,4 +87,5 @@ export const ITEMS_MENU = {
   reclamations: { cle: "menu_reclamations", path: "/reclamations", icone: FileText },
   "mon-dossier": { cle: "menu_mon_dossier", path: "/mon-dossier", icone: FileText },
   journal: { cle: "menu_journal", path: "/journal-activite", icone: ScrollText },
+  programmes: { cle: "menu_programmes", path: "/programmes" },
 };

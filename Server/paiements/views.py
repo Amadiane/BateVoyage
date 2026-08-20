@@ -156,7 +156,7 @@ class SuiviSoldesView(APIView):
                 "numero_id": p.numero_id,
                 "nom_complet": f"{p.prenom} {p.nom}",
                 "montant_total_verse": p.montant_total_verse,
-                "jours_avant_depart": p.jours_avant_depart,
+                "jours_avant_depart": p.jours_avant_echeance_paiement,
                 "programme": p.programme.nom if p.programme else None,
             })
 

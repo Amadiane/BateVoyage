@@ -168,27 +168,27 @@ class Pelerin(models.Model):
         total = self.paiements.aggregate(total=models.Sum("montant"))["total"]
         return total or 0
 
-        SEUIL_RETARD_JOURS = 15
+    SEUIL_RETARD_JOURS = 15
     SEUIL_SURVEILLANCE_JOURS = 45
 
     @property
-    def jours_avant_depart(self):
-        if not self.programme or not self.programme.date_depart:
+    def jours_avant_echeance_paiement(self):
+        if not self.programme or not self.programme.date_limite_paiement:
             return None
         from django.utils import timezone
-        delta = self.programme.date_depart - timezone.now().date()
+        delta = self.programme.date_limite_paiement - timezone.now().date()
         return delta.days
 
     @property
     def statut_paiement(self):
         reste = None
-        if self.programme and self.programme.prix_double:
-            reste = float(self.programme.prix_double) - float(self.montant_total_verse)
+        if self.programme and self.programme.prix:
+            reste = float(self.programme.prix) - float(self.montant_total_verse)
 
         if reste is not None and reste <= 0:
             return "complet"
 
-        jours = self.jours_avant_depart
+        jours = self.jours_avant_echeance_paiement
         if jours is None:
             return "indetermine"
         if jours < self.SEUIL_RETARD_JOURS:
@@ -196,7 +196,7 @@ class Pelerin(models.Model):
         if jours < self.SEUIL_SURVEILLANCE_JOURS:
             return "a_surveiller"
         return "normal"
-
+        
     @staticmethod
     def _generer_numero_id():
         annee_courante = str(timezone.now().year)[-2:]  # ex: "26" pour 2026

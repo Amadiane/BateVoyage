@@ -15,7 +15,7 @@ class PelerinSerializer(serializers.ModelSerializer):
     reste_a_payer = serializers.SerializerMethodField()
     prix_programme = serializers.SerializerMethodField()
     statut_paiement = serializers.CharField(read_only=True)
-    jours_avant_depart = serializers.IntegerField(read_only=True)
+    jours_avant_echeance_paiement = serializers.IntegerField(read_only=True)
 
     class Meta:
         model = Pelerin
@@ -29,8 +29,8 @@ class PelerinSerializer(serializers.ModelSerializer):
         return nom_complet if nom_complet.strip() else obj.inscripteur.username
 
     def get_prix_programme(self, obj):
-        if obj.programme and obj.programme.prix_double:
-            return obj.programme.prix_double
+        if obj.programme and obj.programme.prix:
+            return obj.programme.prix
         return None
 
     def get_reste_a_payer(self, obj):

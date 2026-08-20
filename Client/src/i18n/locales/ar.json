@@ -241,7 +241,37 @@
   "suivi_des_soldes": "متابعة الأرصدة",
   "aucun_resultat": "لا توجد نتائج",
   "jours_restants_avant_depart": "{{jours}} يوم قبل المغادرة",
-  "depart_deja_passe": "تاريخ المغادرة قد مضى بالفعل"
+  "depart_deja_passe": "تاريخ المغادرة قد مضى بالفعل",
+
+  "menu_programmes": "البرامج",
+  "programmes_enregistres": "برنامج مسجل",
+  "nouveau_programme": "برنامج جديد",
+  "modifier_programme": "تعديل البرنامج",
+  "aucun_programme": "لا يوجد برنامج مسجل",
+  "confirmer_suppression_programme": "تأكيد حذف هذا البرنامج؟",
+  "nom_programme": "اسم البرنامج",
+  "type_hajj": "الحج",
+  "type_oumra_ramadan": "عمرة رمضان",
+  "type_oumra_classique": "عمرة عادية",
+  "date_depart": "تاريخ المغادرة",
+  "date_retour": "تاريخ العودة",
+  "capacite_max": "السعة القصوى",
+  "prix_double": "سعر الغرفة المزدوجة",
+  "prix_triple": "سعر الغرفة الثلاثية",
+  "prix_quadruple": "سعر الغرفة الرباعية",
+  "chambre_double": "غرفة مزدوجة",
+  "chambre_triple": "غرفة ثلاثية",
+  "chambre_quadruple": "غرفة رباعية",
+  "capacite": "السعة",
+  "date_limite_paiement": "الموعد النهائي للدفع",
+  "echeance_paiement": "استحقاق الدفع",
+  "jours_avant_echeance": "أيام قبل الاستحقاق",
+  "type_programme_label": "نوع البرنامج",
+  "section_dates": "تواريخ الرحلة",
+  "section_tarifs": "التسعير",
+  "aide_date_limite_paiement": "التاريخ الذي يجب فيه سداد الرصيد بالكامل (يُستخدم لتنبيهات الدفع).",
+  "prix_programme": "سعر البرنامج",
+  "aide_prix_programme": "المبلغ الإجمالي المستحق لكل حاج لهذا البرنامج (يُستخدم لحساب الرصيد المتبقي)."
 
   
 

@@ -12,6 +12,7 @@ import ListeUtilisateurs from "./pages/utilisateurs/ListeUtilisateurs";
 import FormulaireUtilisateur from "./pages/utilisateurs/FormulaireUtilisateur";
 import PageJournalActivite from "./pages/activite/PageJournalActivite";
 import ListePaiements from "./pages/paiements/ListePaiements";
+import ListeProgrammes from "./pages/programmes/ListeProgrammes";
 import "./globals.css";
 
 const ROLES_FINANCIERS = ["fondateur", "admin_general", "comptable", "secretaire"];
@@ -82,6 +83,14 @@ function App() {
             }
           />
         </Route>
+        <Route
+          path="/programmes"
+          element={
+            <ProtectedRoute rolesAutorises={["fondateur", "admin_general", "comptable"]}>
+              <ListeProgrammes />
+            </ProtectedRoute>
+          }
+        />
 
         <Route path="/" element={<Navigate to="/dashboard" replace />} />
       </Routes>

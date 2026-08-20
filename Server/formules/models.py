@@ -11,10 +11,11 @@ class Programme(models.Model):
     type_programme = models.CharField(max_length=20, choices=Type.choices)
     date_depart = models.DateField()
     date_retour = models.DateField()
-    capacite_max = models.IntegerField()
-    prix_double = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
-    prix_triple = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
-    prix_quadruple = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    date_limite_paiement = models.DateField(
+        null=True, blank=True,
+        help_text="Date à laquelle le solde doit être intégralement payé"
+    )
+    prix = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
 
     def __str__(self):
         return f"{self.nom} ({self.get_type_programme_display()})"

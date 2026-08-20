@@ -242,7 +242,37 @@
   "suivi_des_soldes": "Suivi des soldes",
   "aucun_resultat": "Aucun résultat",
   "jours_restants_avant_depart": "{{jours}} jour(s) avant le départ",
-  "depart_deja_passe": "Date de départ déjà passée"
+  "depart_deja_passe": "Date de départ déjà passée",
+
+  "menu_programmes": "Programmes",
+  "programmes_enregistres": "programmes enregistrés",
+  "nouveau_programme": "Nouveau programme",
+  "modifier_programme": "Modifier le programme",
+  "aucun_programme": "Aucun programme enregistré",
+  "confirmer_suppression_programme": "Confirmer la suppression de ce programme ?",
+  "nom_programme": "Nom du programme",
+  "type_hajj": "Hajj",
+  "type_oumra_ramadan": "Omra Ramadan",
+  "type_oumra_classique": "Omra classique",
+  "date_depart": "Date de départ",
+  "date_retour": "Date de retour",
+  "capacite_max": "Capacité maximale",
+  "prix_double": "Prix chambre double",
+  "prix_triple": "Prix chambre triple",
+  "prix_quadruple": "Prix chambre quadruple",
+  "chambre_double": "Chambre double",
+  "chambre_triple": "Chambre triple",
+  "chambre_quadruple": "Chambre quadruple",
+  "capacite": "Capacité",
+  "date_limite_paiement": "Date limite de paiement",
+  "echeance_paiement": "Échéance paiement",
+  "jours_avant_echeance": "Jours avant échéance",
+  "type_programme_label": "Type de programme",
+  "section_dates": "Dates du voyage",
+  "section_tarifs": "Tarification",
+  "aide_date_limite_paiement": "Date à laquelle le solde doit être intégralement réglé (utilisée pour les alertes de paiement).",
+  "prix_programme": "Prix du programme",
+  "aide_prix_programme": "Montant total dû par pèlerin pour ce programme (utilisé pour calculer le reste à payer)."
 
 
 

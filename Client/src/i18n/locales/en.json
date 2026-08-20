@@ -239,7 +239,37 @@
   "suivi_des_soldes": "Balance tracking",
   "aucun_resultat": "No results",
   "jours_restants_avant_depart": "{{jours}} day(s) before departure",
-  "depart_deja_passe": "Departure date already passed"
+  "depart_deja_passe": "Departure date already passed",
+
+  "menu_programmes": "Programs",
+  "programmes_enregistres": "registered programs",
+  "nouveau_programme": "New program",
+  "modifier_programme": "Edit program",
+  "aucun_programme": "No program registered",
+  "confirmer_suppression_programme": "Confirm deletion of this program?",
+  "nom_programme": "Program name",
+  "type_hajj": "Hajj",
+  "type_oumra_ramadan": "Ramadan Umrah",
+  "type_oumra_classique": "Regular Umrah",
+  "date_depart": "Departure date",
+  "date_retour": "Return date",
+  "capacite_max": "Maximum capacity",
+  "prix_double": "Double room price",
+  "prix_triple": "Triple room price",
+  "prix_quadruple": "Quadruple room price",
+  "chambre_double": "Double room",
+  "chambre_triple": "Triple room",
+  "chambre_quadruple": "Quadruple room",
+  "capacite": "Capacity",
+  "date_limite_paiement": "Payment deadline",
+  "echeance_paiement": "Payment due",
+  "jours_avant_echeance": "Days before deadline",
+    "type_programme_label": "Program type",
+  "section_dates": "Trip dates",
+  "section_tarifs": "Pricing",
+  "aide_date_limite_paiement": "Date by which the balance must be fully paid (used for payment alerts).",
+  "prix_programme": "Program price",
+  "aide_prix_programme": "Total amount owed per pilgrim for this program (used to calculate the remaining balance)."
 
 
 
