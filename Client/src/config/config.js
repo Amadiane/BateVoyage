@@ -55,6 +55,8 @@ const CONFIG = {
   API_CHAMBRE_DETAIL: (id) => `${BASE_URL}/api/hebergement/chambres/${id}/`,
   API_CHAMBRE_AFFECTER: (id) => `${BASE_URL}/api/hebergement/chambres/${id}/affecter-pelerins/`,
   API_CHAMBRE_RETIRER: (id) => `${BASE_URL}/api/hebergement/chambres/${id}/retirer-pelerin/`,
+  API_RECLAMATIONS: `${BASE_URL}/api/reclamations/`,
+  API_RECLAMATION_DETAIL: (id) => `${BASE_URL}/api/reclamations/${id}/`,
 
   // --- Formules / Programmes ---
   API_PROGRAMMES: `${BASE_URL}/api/formules/programmes/`,
@@ -76,8 +78,6 @@ export const ENTREPRISE = {
 };
 
 export const MENU_PAR_ROLE = {
-  fondateur: ["dashboard", "pelerins", "utilisateurs", "documents", "paiements", "programmes", "groupes", "journal"],
-  admin_general: ["dashboard", "pelerins", "utilisateurs", "documents", "paiements", "programmes", "groupes", "journal"],
   comptable: ["dashboard", "paiements", "programmes", "pelerins"],
   secretaire: ["dashboard", "pelerins", "documents"],
   docteur: ["dashboard", "pelerins-sante"],
@@ -93,6 +93,9 @@ export const MENU_PAR_ROLE = {
   guide: ["dashboard", "groupes", "hebergement"],
   encadreur: ["dashboard", "groupes", "hebergement"],
   mounazim: ["dashboard", "groupes", "hebergement"],
+  fondateur: ["dashboard", "pelerins", "utilisateurs", "documents", "paiements", "programmes", "groupes", "hebergement", "reclamations", "journal"],
+  admin_general: ["dashboard", "pelerins", "utilisateurs", "documents", "paiements", "programmes", "groupes", "hebergement", "reclamations", "journal"],
+  affaires_sociales: ["dashboard", "reclamations", "pelerins"],
 };
 
 export const ITEMS_MENU = {
@@ -108,4 +111,5 @@ export const ITEMS_MENU = {
   journal: { cle: "menu_journal", path: "/journal-activite", icone: ScrollText },
   programmes: { cle: "menu_programmes", path: "/programmes" },
   hebergement: { cle: "menu_hebergement", path: "/hebergement" },
+  reclamations: { cle: "menu_reclamations", path: "/reclamations" },
 };

@@ -309,7 +309,17 @@
   "numero_chambre_deja_utilise": "Ce numéro de chambre existe déjà pour cet hôtel.",
   "ajouter_pelerins_chambre": "Ajouter des pèlerins à la chambre", "places_restantes": "Places restantes",
   "occupants": "occupants", "aucun_pelerin_dans_chambre": "Aucun pèlerin dans cette chambre",
-  "retirer_de_chambre": "Retirer de la chambre", "confirmer_retrait_chambre": "Retirer ce pèlerin de la chambre ?"
+  "retirer_de_chambre": "Retirer de la chambre", "confirmer_retrait_chambre": "Retirer ce pèlerin de la chambre ?",
+
+  
+  "reclamations_enregistrees": "réclamations enregistrées", "nouvelle_reclamation": "Nouvelle réclamation",
+  "rechercher_reclamation": "Rechercher (sujet, pèlerin)...", "toutes_priorites": "Toutes priorités",
+  "aucune_reclamation": "Aucune réclamation enregistrée", "sujet": "Sujet", "priorite": "Priorité",
+  "assigne_a": "Assigné à", "date": "Date", "description": "Description",
+  "priorite_basse": "Basse", "priorite_normale": "Normale", "priorite_haute": "Haute", "priorite_urgente": "Urgente",
+  "statut_reclam_nouvelle": "Nouvelle", "statut_reclam_en_cours": "En cours", "statut_reclam_resolue": "Résolue", "statut_reclam_fermee": "Fermée",
+  "cree_par": "Créée par", "reponse_agence": "Réponse de l'agence", "saisir_reponse": "Saisir la réponse..."
+
 
 
 

@@ -306,7 +306,16 @@
   "numero_chambre_deja_utilise": "This room number already exists for this hotel.",
   "ajouter_pelerins_chambre": "Add pilgrims to room", "places_restantes": "Remaining spots",
   "occupants": "occupants", "aucun_pelerin_dans_chambre": "No pilgrim in this room",
-  "retirer_de_chambre": "Remove from room", "confirmer_retrait_chambre": "Remove this pilgrim from the room?"
+  "retirer_de_chambre": "Remove from room", "confirmer_retrait_chambre": "Remove this pilgrim from the room?",
+  
+  "reclamations_enregistrees": "recorded complaints", "nouvelle_reclamation": "New complaint",
+  "rechercher_reclamation": "Search (subject, pilgrim)...", "toutes_priorites": "All priorities",
+  "aucune_reclamation": "No complaint recorded", "sujet": "Subject", "priorite": "Priority",
+  "assigne_a": "Assigned to", "date": "Date", "description": "Description",
+  "priorite_basse": "Low", "priorite_normale": "Normal", "priorite_haute": "High", "priorite_urgente": "Urgent",
+  "statut_reclam_nouvelle": "New", "statut_reclam_en_cours": "In progress", "statut_reclam_resolue": "Resolved", "statut_reclam_fermee": "Closed",
+  "cree_par": "Created by", "reponse_agence": "Agency response", "saisir_reponse": "Enter response..."
+
 
 
 

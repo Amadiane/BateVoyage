@@ -18,6 +18,7 @@ import DetailGroupe from "./pages/groupes/DetailGroupe";
 import PageHebergement from "./pages/hebergement/PageHebergement";
 import DetailHotel from "./pages/hebergement/DetailHotel";
 import DetailChambre from "./pages/hebergement/DetailChambre";
+import ListeReclamations from "./pages/reclamations/ListeReclamations";
 import "./globals.css";
 
 const ROLES_FINANCIERS = ["fondateur", "admin_general", "comptable", "secretaire"];
@@ -47,6 +48,7 @@ function App() {
           <Route path="/hebergement" element={<PageHebergement />} />
           <Route path="/hebergement/:id" element={<DetailHotel />} />
           <Route path="/hebergement/chambre/:id" element={<DetailChambre />} />
+          
 
           <Route path="/documents" element={<PageDocuments />} />
 
@@ -94,6 +96,14 @@ function App() {
           />
         </Route>
         <Route
+          path="/reclamations"
+          element={
+            <ProtectedRoute rolesAutorises={["fondateur", "admin_general", "affaires_sociales"]}>
+              <ListeReclamations />
+            </ProtectedRoute>
+          }
+        />
+          <Route
           path="/programmes"
           element={
             <ProtectedRoute rolesAutorises={["fondateur", "admin_general", "comptable"]}>

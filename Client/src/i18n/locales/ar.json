@@ -308,7 +308,16 @@
   "numero_chambre_deja_utilise": "رقم هذه الغرفة موجود بالفعل لهذا الفندق.",
   "ajouter_pelerins_chambre": "إضافة حجاج إلى الغرفة", "places_restantes": "الأماكن المتبقية",
   "occupants": "نزلاء", "aucun_pelerin_dans_chambre": "لا يوجد حاج في هذه الغرفة",
-  "retirer_de_chambre": "إزالة من الغرفة", "confirmer_retrait_chambre": "إزالة هذا الحاج من الغرفة؟"
+  "retirer_de_chambre": "إزالة من الغرفة", "confirmer_retrait_chambre": "إزالة هذا الحاج من الغرفة؟",
+  
+  "reclamations_enregistrees": "شكوى مسجلة", "nouvelle_reclamation": "شكوى جديدة",
+  "rechercher_reclamation": "بحث (الموضوع، الحاج)...", "toutes_priorites": "جميع الأولويات",
+  "aucune_reclamation": "لا توجد شكوى مسجلة", "sujet": "الموضوع", "priorite": "الأولوية",
+  "assigne_a": "مُسندة إلى", "date": "التاريخ", "description": "الوصف",
+  "priorite_basse": "منخفضة", "priorite_normale": "عادية", "priorite_haute": "عالية", "priorite_urgente": "عاجلة",
+  "statut_reclam_nouvelle": "جديدة", "statut_reclam_en_cours": "قيد المعالجة", "statut_reclam_resolue": "محلولة", "statut_reclam_fermee": "مغلقة",
+  "cree_par": "أنشأها", "reponse_agence": "رد الوكالة", "saisir_reponse": "أدخل الرد..."
+
 
 
   

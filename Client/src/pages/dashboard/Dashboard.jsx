@@ -4,6 +4,9 @@ import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
 import { useAuth } from "../../context/AuthContext";
 import { pelerinService } from "../../services/pelerinService";
 import { documentService } from "../../services/documentService";
+import { reclamationService } from "../../services/reclamationService";
+import { groupeService } from "../../services/groupeService";
+import { hotelService } from "../../services/hotelService";
 import styles from "../../theme/pages/dashboard/Dashboard.module.css";
 
 const COULEURS_STATUT = {
@@ -16,25 +19,47 @@ const COULEURS_STATUT = {
 };
 
 const ROLES_VOIENT_FINANCES = ["fondateur", "admin_general", "comptable", "secretaire"];
+const ROLES_VOIENT_RECLAMATIONS = ["fondateur", "admin_general", "affaires_sociales"];
+const ROLES_VOIENT_LOGISTIQUE = ["fondateur", "admin_general", "secretaire", "guide", "encadreur", "mounazim"];
 
 function Dashboard() {
   const { t } = useTranslation();
   const { utilisateur } = useAuth();
   const [pelerins, setPelerins] = useState([]);
   const [docs, setDocs] = useState(null);
+  const [reclamationsOuvertes, setReclamationsOuvertes] = useState(null);
+  const [nbGroupes, setNbGroupes] = useState(null);
+  const [occupationHebergement, setOccupationHebergement] = useState(null);
   const [chargement, setChargement] = useState(true);
 
   const peutVoirFinances = ROLES_VOIENT_FINANCES.includes(utilisateur?.role);
+  const peutVoirReclamations = ROLES_VOIENT_RECLAMATIONS.includes(utilisateur?.role);
+  const peutVoirLogistique = ROLES_VOIENT_LOGISTIQUE.includes(utilisateur?.role);
 
   useEffect(() => {
     const requetes = [pelerinService.lister()];
-    if (peutVoirFinances) {
-      requetes.push(documentService.obtenirTableauBord());
+
+    if (peutVoirFinances) requetes.push(documentService.obtenirTableauBord());
+    if (peutVoirReclamations) {
+      requetes.push(reclamationService.lister({ statut: "nouvelle" }));
+    }
+    if (peutVoirLogistique) {
+      requetes.push(groupeService.lister());
+      requetes.push(hotelService.lister());
     }
 
-    Promise.all(requetes).then(([resPelerins, resDocs]) => {
-      setPelerins(resPelerins.data);
-      if (resDocs) setDocs(resDocs.data);
+    Promise.all(requetes).then((resultats) => {
+      let index = 0;
+      setPelerins(resultats[index++].data);
+      if (peutVoirFinances) setDocs(resultats[index++].data);
+      if (peutVoirReclamations) setReclamationsOuvertes(resultats[index++].data.length);
+      if (peutVoirLogistique) {
+        setNbGroupes(resultats[index++].data.length);
+        const hotels = resultats[index++].data;
+        const capaciteTotale = hotels.reduce((s, h) => s + (h.capacite_totale || 0), 0);
+        const occupantsTotal = hotels.reduce((s, h) => s + (h.occupants_totaux || 0), 0);
+        setOccupationHebergement({ capaciteTotale, occupantsTotal });
+      }
       setChargement(false);
     });
   }, []);
@@ -71,6 +96,23 @@ function Dashboard() {
             <CarteStat chiffre={`${montantTotal.toLocaleString("fr-FR")} GNF`} label={t("montant_total_verse")} couleur="succes" />
           </>
         )}
+
+        {peutVoirReclamations && (
+          <CarteStat chiffre={reclamationsOuvertes} label={t("reclamations_nouvelles")} couleur="danger" />
+        )}
+
+        {peutVoirLogistique && (
+          <>
+            <CarteStat chiffre={nbGroupes} label={t("groupes_actifs")} couleur="brand" />
+            {occupationHebergement && (
+              <CarteStat
+                chiffre={`${occupationHebergement.occupantsTotal}/${occupationHebergement.capaciteTotale}`}
+                label={t("occupation_hebergement")}
+                couleur="or"
+              />
+            )}
+          </>
+        )}
       </div>
 
       <div className={styles.grillePrincipale}>
@@ -105,7 +147,7 @@ function Dashboard() {
         <div className={styles.cartePrincipale}>
           <h2 className={styles.titreCarte}>{t("modules_a_venir")}</h2>
           <div className={styles.badgesAVenir}>
-            {["Hajj", "Omra", "Vols", "Hôtels", "Transport", "Rapports"].map((m) => (
+            {["Transport terrestre", "Rapports avancés"].map((m) => (
               <span key={m} className={styles.badgeAVenir}>{m}</span>
             ))}
           </div>
