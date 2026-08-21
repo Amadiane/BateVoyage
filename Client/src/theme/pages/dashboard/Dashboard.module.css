@@ -69,8 +69,9 @@
 }
 
 .carteStat:hover {
-  box-shadow: 0 8px 20px rgba(11,14,20,0.06);
-  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(11,14,20,0.08);
+  transform: translateY(-3px);
+  border-color: var(--color-brand);
 }
 
 .iconeCercle {

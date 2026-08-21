@@ -101,26 +101,68 @@ function Dashboard() {
         </div>
       </div>
 
-      {/* ---------- Cartes statistiques ---------- */}
+      {/* ---------- Cartes statistiques (cliquables) ---------- */}
       <div className={styles.cartesStat}>
-        <CarteStat icone={Users} chiffre={pelerins.length} label={t("total_pelerins")} couleur="bleu" />
+        <CarteStat
+          icone={Users}
+          chiffre={pelerins.length}
+          label={t("total_pelerins")}
+          couleur="bleu"
+          onClick={() => navigate("/pelerins")}
+        />
 
         {peutVoirFinances && (
           <>
-            <CarteStat icone={FileWarning} chiffre={docs?.total_dossiers_incomplets ?? 0} label={t("dossiers_incomplets")} couleur="orange" />
-            <CarteStat icone={Clock} chiffre={docs?.visas_en_attente?.length ?? 0} label={t("visas_en_attente")} couleur="or" />
-            <CarteStat icone={Wallet} chiffre={`${montantTotal.toLocaleString("fr-FR")} GNF`} label={t("montant_total_verse")} couleur="vert" />
+            <CarteStat
+              icone={FileWarning}
+              chiffre={docs?.total_dossiers_incomplets ?? 0}
+              label={t("dossiers_incomplets")}
+              couleur="orange"
+              onClick={() => navigate("/documents")}
+            />
+            <CarteStat
+              icone={Clock}
+              chiffre={docs?.visas_en_attente?.length ?? 0}
+              label={t("visas_en_attente")}
+              couleur="or"
+              onClick={() => navigate("/documents")}
+            />
+            <CarteStat
+              icone={Wallet}
+              chiffre={`${montantTotal.toLocaleString("fr-FR")} GNF`}
+              label={t("montant_total_verse")}
+              couleur="vert"
+              onClick={() => navigate("/paiements")}
+            />
           </>
         )}
 
         {peutVoirReclamations && (
-          <CarteStat icone={MessageSquareWarning} chiffre={reclamationsOuvertes} label={t("reclamations_nouvelles")} couleur="rouge" />
+          <CarteStat
+            icone={MessageSquareWarning}
+            chiffre={reclamationsOuvertes}
+            label={t("reclamations_nouvelles")}
+            couleur="rouge"
+            onClick={() => navigate("/reclamations")}
+          />
         )}
 
         {peutVoirLogistique && (
           <>
-            <CarteStat icone={Plane} chiffre={groupes.length} label={t("groupes_actifs")} couleur="violet" />
-            <CarteStat icone={Building2} chiffre={hotels.length} label={t("hotels_enregistres")} couleur="bleu" />
+            <CarteStat
+              icone={Plane}
+              chiffre={groupes.length}
+              label={t("groupes_actifs")}
+              couleur="violet"
+              onClick={() => navigate("/groupes")}
+            />
+            <CarteStat
+              icone={Building2}
+              chiffre={hotels.length}
+              label={t("hotels_enregistres")}
+              couleur="bleu"
+              onClick={() => navigate("/hebergement")}
+            />
           </>
         )}
       </div>
@@ -184,6 +226,7 @@ function Dashboard() {
         )}
       </div>
 
+      {/* ---------- Grille secondaire ---------- */}
       {(peutVoirLogistique || peutVoirFinances) && (
         <div className={styles.grilleSecondaire}>
           {peutVoirLogistique && (
@@ -232,9 +275,9 @@ function Dashboard() {
   );
 }
 
-function CarteStat({ icone: Icone, chiffre, label, couleur }) {
+function CarteStat({ icone: Icone, chiffre, label, couleur, onClick }) {
   return (
-    <div className={styles.carteStat}>
+    <div className={styles.carteStat} onClick={onClick} style={onClick ? { cursor: "pointer" } : {}}>
       <div className={`${styles.iconeCercle} ${styles["cercle_" + couleur]}`}>
         <Icone size={18} />
       </div>

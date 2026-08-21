@@ -33,3 +33,11 @@ body {
 input, button {
   font-family: inherit;
 }
+
+* {
+  min-width: 0;
+}
+
+.body, html {
+  overflow-x: hidden;
+}
