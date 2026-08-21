@@ -1,9 +1,10 @@
 from rest_framework import serializers
-from django.contrib.auth import get_user_model
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.exceptions import AuthenticationFailed
+from django.contrib.auth import get_user_model
 
 User = get_user_model()
+
 
 class UtilisateurSerializer(serializers.ModelSerializer):
     role_display = serializers.CharField(source="get_role_display", read_only=True)
@@ -21,7 +22,7 @@ class CreationUtilisateurSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ["username", "first_name", "last_name", "email",
-                  "telephone", "role", "password"]
+                  "telephone", "photo", "role", "password"]
 
     def create(self, validated_data):
         password = validated_data.pop("password")
@@ -33,9 +34,6 @@ class CreationUtilisateurSerializer(serializers.ModelSerializer):
 
 class ModifierMotDePasseSerializer(serializers.Serializer):
     nouveau_mot_de_passe = serializers.CharField(min_length=6, write_only=True)
-
-
-
 
 
 class ConnexionSerializer(TokenObtainPairSerializer):

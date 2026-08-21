@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { utilisateurService } from "../../services/utilisateurService";
+import ChampFichier from "../../components/ChampFichier/ChampFichier";
 import styles from "../../theme/pages/utilisateurs/FormulaireUtilisateur.module.css";
 
 const ROLES = [
@@ -21,6 +22,8 @@ function FormulaireUtilisateur() {
 
   const [valeurs, setValeurs] = useState(VALEURS_INITIALES);
   const [motDePasse, setMotDePasse] = useState("");
+  const [photoExistante, setPhotoExistante] = useState(null);
+  const [nouvellePhoto, setNouvellePhoto] = useState(null);
   const [nouveauMotDePasse, setNouveauMotDePasse] = useState("");
   const [envoi, setEnvoi] = useState(false);
   const [envoiMotDePasse, setEnvoiMotDePasse] = useState(false);
@@ -35,6 +38,7 @@ function FormulaireUtilisateur() {
           username: data.username, first_name: data.first_name, last_name: data.last_name,
           email: data.email, telephone: data.telephone || "", role: data.role, actif: data.actif,
         });
+        setPhotoExistante(data.photo || null);
         setChargementInitial(false);
       });
     }
@@ -47,10 +51,17 @@ function FormulaireUtilisateur() {
     setErreur("");
     setEnvoi(true);
     try {
+      const formData = new FormData();
+      Object.entries(valeurs).forEach(([champ, val]) => {
+        if (val !== null && val !== undefined && val !== "") formData.append(champ, val);
+      });
+      if (!modeEdition) formData.append("password", motDePasse);
+      if (nouvellePhoto) formData.append("photo", nouvellePhoto);
+
       if (modeEdition) {
-        await utilisateurService.modifierCompte(id, valeurs);
+        await utilisateurService.modifierCompte(id, formData);
       } else {
-        await utilisateurService.creerCompte({ ...valeurs, password: motDePasse });
+        await utilisateurService.creerCompte(formData);
       }
       navigate("/utilisateurs");
     } catch (err) {
@@ -95,6 +106,15 @@ function FormulaireUtilisateur() {
       <div className={styles.carte}>
         <form onSubmit={handleSubmit}>
           <div className={styles.grille}>
+            <div style={{ gridColumn: "1 / -1" }}>
+              <ChampFichier
+                label={t("photo")}
+                valeurActuelle={photoExistante}
+                onFichierChange={setNouvellePhoto}
+                accept="image/*"
+              />
+            </div>
+
             <Champ label={t("prenom")}>
               <input value={valeurs.first_name} onChange={(e) => majChamp("first_name", e.target.value)} required />
             </Champ>
@@ -176,7 +196,7 @@ function FormulaireUtilisateur() {
 function Champ({ label, children, pleineLargeur }) {
   return (
     <div style={pleineLargeur ? { gridColumn: "1 / -1" } : {}}>
-      <label className={pleineLargeur ? undefined : undefined}>{label}</label>
+      <label>{label}</label>
       {children}
     </div>
   );
