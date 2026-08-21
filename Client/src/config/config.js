@@ -1,5 +1,6 @@
 import logoTransparent from "../assets/images/logo-transparent.png";
-import { LayoutDashboard, Users, UserCog, FileText, ScrollText } from "lucide-react";
+import { LayoutDashboard, Users, UserCog, FileText, ScrollText, Calendar, Plane, Hotel, MessageSquareWarning } from "lucide-react";
+
 
 
 const BASE_URL =
@@ -100,6 +101,8 @@ export const MENU_PAR_ROLE = {
   affaires_sociales: ["dashboard", "reclamations", "pelerins"],
 };
 
+
+
 export const ITEMS_MENU = {
   dashboard: { cle: "menu_dashboard", path: "/dashboard", icone: LayoutDashboard },
   pelerins: { cle: "menu_pelerins", path: "/pelerins", icone: Users },
@@ -107,11 +110,10 @@ export const ITEMS_MENU = {
   utilisateurs: { cle: "menu_utilisateurs", path: "/utilisateurs", icone: UserCog },
   documents: { cle: "menu_documents", path: "/documents", icone: FileText },
   paiements: { cle: "menu_paiements", path: "/paiements", icone: FileText },
-  groupes: { cle: "menu_groupes", path: "/groupes", icone: FileText },
-  reclamations: { cle: "menu_reclamations", path: "/reclamations", icone: FileText },
+  programmes: { cle: "menu_programmes", path: "/programmes", icone: Calendar },
+  groupes: { cle: "menu_groupes", path: "/groupes", icone: Plane },
+  hebergement: { cle: "menu_hebergement", path: "/hebergement", icone: Hotel },
+  reclamations: { cle: "menu_reclamations", path: "/reclamations", icone: MessageSquareWarning },
   "mon-dossier": { cle: "menu_mon_dossier", path: "/mon-dossier", icone: FileText },
   journal: { cle: "menu_journal", path: "/journal-activite", icone: ScrollText },
-  programmes: { cle: "menu_programmes", path: "/programmes" },
-  hebergement: { cle: "menu_hebergement", path: "/hebergement" },
-  reclamations: { cle: "menu_reclamations", path: "/reclamations" },
 };
