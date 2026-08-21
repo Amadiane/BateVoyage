@@ -13,17 +13,18 @@ import FormulaireUtilisateur from "./pages/utilisateurs/FormulaireUtilisateur";
 import PageJournalActivite from "./pages/activite/PageJournalActivite";
 import ListePaiements from "./pages/paiements/ListePaiements";
 import ListeProgrammes from "./pages/programmes/ListeProgrammes";
+import DetailProgramme from "./pages/programmes/DetailProgramme";
 import PageGroupesVols from "./pages/groupes/PageGroupesVols";
 import DetailGroupe from "./pages/groupes/DetailGroupe";
 import PageHebergement from "./pages/hebergement/PageHebergement";
 import DetailHotel from "./pages/hebergement/DetailHotel";
 import DetailChambre from "./pages/hebergement/DetailChambre";
 import ListeReclamations from "./pages/reclamations/ListeReclamations";
-import DetailProgramme from "./pages/programmes/DetailProgramme";
 import "./globals.css";
 
 const ROLES_FINANCIERS = ["fondateur", "admin_general", "comptable", "secretaire"];
 const ROLES_ADMIN = ["fondateur", "admin_general"];
+const ROLES_RECLAMATIONS = ["fondateur", "admin_general", "affaires_sociales"];
 
 function App() {
   return (
@@ -40,20 +41,16 @@ function App() {
         >
           <Route path="/dashboard" element={<Dashboard />} />
 
+          {/* Pèlerins */}
           <Route path="/pelerins" element={<ListePelerins />} />
           <Route path="/pelerins/nouveau" element={<FormulairePelerin />} />
           <Route path="/pelerins/:id" element={<DetailPelerin />} />
           <Route path="/pelerins/:id/modifier" element={<FormulairePelerin />} />
-          <Route path="/groupes" element={<PageGroupesVols />} />
-          <Route path="/groupes/:id" element={<DetailGroupe />} />
-          <Route path="/hebergement" element={<PageHebergement />} />
-          <Route path="/hebergement/:id" element={<DetailHotel />} />
-          <Route path="/hebergement/chambre/:id" element={<DetailChambre />} />
-          <Route path="/programmes/:id" element={<DetailProgramme />} />
-          
 
+          {/* Documents */}
           <Route path="/documents" element={<PageDocuments />} />
 
+          {/* Paiements */}
           <Route
             path="/paiements"
             element={
@@ -63,6 +60,44 @@ function App() {
             }
           />
 
+          {/* Programmes / Activités */}
+          <Route
+            path="/programmes"
+            element={
+              <ProtectedRoute rolesAutorises={ROLES_FINANCIERS}>
+                <ListeProgrammes />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/programmes/:id"
+            element={
+              <ProtectedRoute rolesAutorises={ROLES_FINANCIERS}>
+                <DetailProgramme />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* Groupes & Vols */}
+          <Route path="/groupes" element={<PageGroupesVols />} />
+          <Route path="/groupes/:id" element={<DetailGroupe />} />
+
+          {/* Hébergement */}
+          <Route path="/hebergement" element={<PageHebergement />} />
+          <Route path="/hebergement/:id" element={<DetailHotel />} />
+          <Route path="/hebergement/chambre/:id" element={<DetailChambre />} />
+
+          {/* Réclamations */}
+          <Route
+            path="/reclamations"
+            element={
+              <ProtectedRoute rolesAutorises={ROLES_RECLAMATIONS}>
+                <ListeReclamations />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* Utilisateurs */}
           <Route
             path="/utilisateurs"
             element={
@@ -88,6 +123,7 @@ function App() {
             }
           />
 
+          {/* Journal d'activité */}
           <Route
             path="/journal-activite"
             element={
@@ -97,22 +133,6 @@ function App() {
             }
           />
         </Route>
-        <Route
-          path="/reclamations"
-          element={
-            <ProtectedRoute rolesAutorises={["fondateur", "admin_general", "affaires_sociales"]}>
-              <ListeReclamations />
-            </ProtectedRoute>
-          }
-        />
-          <Route
-          path="/programmes"
-          element={
-            <ProtectedRoute rolesAutorises={["fondateur", "admin_general", "comptable"]}>
-              <ListeProgrammes />
-            </ProtectedRoute>
-          }
-        />
 
         <Route path="/" element={<Navigate to="/dashboard" replace />} />
       </Routes>
