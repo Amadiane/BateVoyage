@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { pelerinService } from "../../services/pelerinService";
+import { telechargerFichierProtege } from "../../utils/telechargement";
 import BadgeStatutPaiement from "../../components/BadgeStatutPaiement/BadgeStatutPaiement";
-import { ouvrirFichierProtege, telechargerFichierProtege } from "../../utils/telechargement";
 import styles from "../../theme/pages/pelerins/ListePelerins.module.css";
 
 function ListePelerins() {
@@ -33,18 +33,18 @@ function ListePelerins() {
     return () => clearTimeout(delai);
   }, [recherche, filtreStatut]);
 
-  const supprimer = async (id) => {
+  const supprimer = async (id, e) => {
+    e.stopPropagation();
     if (!window.confirm(t("confirmer_suppression"))) return;
     await pelerinService.supprimer(id);
     charger();
   };
 
-  const telechargerFiche = (p) => {
+  const telechargerFiche = (p, e) => {
+    e.stopPropagation();
     telechargerFichierProtege(pelerinService.urlFichePdf(p.id), `fiche_${p.numero_id}.pdf`);
   };
 
-  // Le statut paiement est une propriété calculée côté backend, non
-  // filtrable via django-filter — le filtre s'applique donc côté client.
   const pelerinsAffiches = filtreStatutPaiement
     ? pelerins.filter((p) => p.statut_paiement === filtreStatutPaiement)
     : pelerins;
@@ -69,11 +69,7 @@ function ListePelerins() {
           onChange={(e) => setRecherche(e.target.value)}
           className={styles.champRecherche}
         />
-        <select
-          value={filtreStatut}
-          onChange={(e) => setFiltreStatut(e.target.value)}
-          className={styles.selectFiltre}
-        >
+        <select value={filtreStatut} onChange={(e) => setFiltreStatut(e.target.value)} className={styles.selectFiltre}>
           <option value="">{t("tous_statuts")}</option>
           <option value="inscrit">{t("statut_inscrit")}</option>
           <option value="en_preparation">{t("statut_en_preparation")}</option>
@@ -82,11 +78,7 @@ function ListePelerins() {
           <option value="retourne">{t("statut_retourne")}</option>
           <option value="cloture">{t("statut_cloture")}</option>
         </select>
-        <select
-          value={filtreStatutPaiement}
-          onChange={(e) => setFiltreStatutPaiement(e.target.value)}
-          className={styles.selectFiltre}
-        >
+        <select value={filtreStatutPaiement} onChange={(e) => setFiltreStatutPaiement(e.target.value)} className={styles.selectFiltre}>
           <option value="">{t("tous_statuts_paiement")}</option>
           <option value="complet">{t("statut_paiement_complet")}</option>
           <option value="a_surveiller">{t("statut_paiement_a_surveiller")}</option>
@@ -138,16 +130,18 @@ function ListePelerins() {
                     {t(`visa_${p.statut_visa}`)}
                   </span>
                 </td>
-                <td><BadgeStatutPaiement statut={p.statut_paiement} /></td>
+                <td>
+                  <BadgeStatutPaiement statut={p.statut_paiement} />
+                </td>
                 <td className={styles.cellInscripteur}>{p.inscripteur_nom || "—"}</td>
                 <td className={styles.cellActions} onClick={(e) => e.stopPropagation()}>
                   <button onClick={() => navigate(`/pelerins/${p.id}/modifier`)} title={t("modifier")}>
                     ✎
                   </button>
-                  <button onClick={() => telechargerFiche(p)} title={t("telecharger_fiche")}>
+                  <button onClick={(e) => telechargerFiche(p, e)} title={t("telecharger_fiche")}>
                     ⬇
                   </button>
-                  <button onClick={() => supprimer(p.id)} title={t("supprimer")} className={styles.boutonSupprimer}>
+                  <button onClick={(e) => supprimer(p.id, e)} title={t("supprimer")} className={styles.boutonSupprimer}>
                     ✕
                   </button>
                 </td>

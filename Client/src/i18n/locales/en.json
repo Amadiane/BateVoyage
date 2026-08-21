@@ -314,7 +314,16 @@
   "assigne_a": "Assigned to", "date": "Date", "description": "Description",
   "priorite_basse": "Low", "priorite_normale": "Normal", "priorite_haute": "High", "priorite_urgente": "Urgent",
   "statut_reclam_nouvelle": "New", "statut_reclam_en_cours": "In progress", "statut_reclam_resolue": "Resolved", "statut_reclam_fermee": "Closed",
-  "cree_par": "Created by", "reponse_agence": "Agency response", "saisir_reponse": "Enter response..."
+  "cree_par": "Created by", "reponse_agence": "Agency response", "saisir_reponse": "Enter response...",
+  
+  "nouvelle_activite": "New campaign", "toutes_annees": "All years", "tous_types": "All types",
+  "annee": "Year", "archive": "Archive", "actif": "Active",
+  "marquer_archive": "Mark as archived (past campaign)",
+  "aide_archive": "Archived campaigns no longer appear in payment alerts or deadlines.",
+  "ajouter_pelerins_activite": "Add pilgrims to campaign",
+  "aucun_pelerin_dans_activite": "No pilgrim in this campaign",
+  "retirer_de_activite": "Remove from campaign", "confirmer_retrait_activite": "Remove this pilgrim from this campaign?"
+
 
 
 

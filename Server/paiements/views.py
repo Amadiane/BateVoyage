@@ -143,7 +143,7 @@ class SuiviSoldesView(APIView):
     permission_classes = [EstGestionnaireFinancier]
 
     def get(self, request):
-        pelerins = Pelerin.objects.exclude(statut=Pelerin.Statut.CLOTURE).select_related("programme")
+        pelerins = Pelerin.objects.exclude(statut=Pelerin.Statut.CLOTURE).exclude(programme__est_archive=True).select_related("programme")
 
         resultat = {"complet": [], "a_surveiller": [], "en_retard": [], "indetermine": []}
 

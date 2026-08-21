@@ -316,7 +316,17 @@
   "assigne_a": "مُسندة إلى", "date": "التاريخ", "description": "الوصف",
   "priorite_basse": "منخفضة", "priorite_normale": "عادية", "priorite_haute": "عالية", "priorite_urgente": "عاجلة",
   "statut_reclam_nouvelle": "جديدة", "statut_reclam_en_cours": "قيد المعالجة", "statut_reclam_resolue": "محلولة", "statut_reclam_fermee": "مغلقة",
-  "cree_par": "أنشأها", "reponse_agence": "رد الوكالة", "saisir_reponse": "أدخل الرد..."
+  "cree_par": "أنشأها", "reponse_agence": "رد الوكالة", "saisir_reponse": "أدخل الرد...",
+
+  
+  "nouvelle_activite": "نشاط جديد", "toutes_annees": "جميع السنوات", "tous_types": "جميع الأنواع",
+  "annee": "السنة", "archive": "أرشيف", "actif": "نشط",
+  "marquer_archive": "وضع علامة كأرشيف (حملة سابقة)",
+  "aide_archive": "الحملات المؤرشفة لم تعد تظهر في تنبيهات الدفع أو المواعيد النهائية.",
+  "ajouter_pelerins_activite": "إضافة حجاج إلى النشاط",
+  "aucun_pelerin_dans_activite": "لا يوجد حاج في هذا النشاط",
+  "retirer_de_activite": "إزالة من النشاط", "confirmer_retrait_activite": "إزالة هذا الحاج من هذا النشاط؟"
+
 
 
 

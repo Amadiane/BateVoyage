@@ -187,6 +187,9 @@ class Pelerin(models.Model):
 
     @property
     def statut_paiement(self):
+        if self.programme and self.programme.est_archive:
+            return "archive"
+
         reste = None
         if self.programme and self.programme.prix:
             reste = float(self.programme.prix) - float(self.montant_total_verse)

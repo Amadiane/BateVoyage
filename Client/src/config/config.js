@@ -57,6 +57,8 @@ const CONFIG = {
   API_CHAMBRE_RETIRER: (id) => `${BASE_URL}/api/hebergement/chambres/${id}/retirer-pelerin/`,
   API_RECLAMATIONS: `${BASE_URL}/api/reclamations/`,
   API_RECLAMATION_DETAIL: (id) => `${BASE_URL}/api/reclamations/${id}/`,
+  API_PROGRAMME_AFFECTER: (id) => `${BASE_URL}/api/formules/programmes/${id}/affecter-pelerins/`,
+  API_PROGRAMME_RETIRER: (id) => `${BASE_URL}/api/formules/programmes/${id}/retirer-pelerin/`,
 
   // --- Formules / Programmes ---
   API_PROGRAMMES: `${BASE_URL}/api/formules/programmes/`,

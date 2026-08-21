@@ -1,18 +1,22 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { Plus, Pencil, Trash2, X, CalendarDays, Clock, Wallet } from "lucide-react";
+import { Plus, Pencil, Trash2, X, CalendarDays, Clock, Wallet, Archive } from "lucide-react";
 import { programmeService } from "../../services/programmeService";
 import styles from "../../theme/pages/programmes/ListeProgrammes.module.css";
 
 const VALEURS_INITIALES = {
-  nom: "", type_programme: "", date_depart: "", date_retour: "",
-  date_limite_paiement: "", prix: "",
+  nom: "", type_programme: "", annee: new Date().getFullYear(),
+  date_depart: "", date_retour: "", date_limite_paiement: "", prix: "", est_archive: false,
 };
 
 function ListeProgrammes() {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const [programmes, setProgrammes] = useState([]);
   const [chargement, setChargement] = useState(true);
+  const [filtreAnnee, setFiltreAnnee] = useState("");
+  const [filtreType, setFiltreType] = useState("");
   const [modalOuverte, setModalOuverte] = useState(false);
   const [programmeAModifier, setProgrammeAModifier] = useState(null);
   const [valeurs, setValeurs] = useState(VALEURS_INITIALES);
@@ -21,15 +25,18 @@ function ListeProgrammes() {
 
   const charger = () => {
     setChargement(true);
-    programmeService.lister().then(({ data }) => {
+    const params = {};
+    if (filtreAnnee) params.annee = filtreAnnee;
+    if (filtreType) params.type_programme = filtreType;
+    programmeService.lister(params).then(({ data }) => {
       setProgrammes(data);
       setChargement(false);
     });
   };
 
-  useEffect(() => {
-    charger();
-  }, []);
+  useEffect(() => { charger(); }, [filtreAnnee, filtreType]);
+
+  const anneesDisponibles = [...new Set(programmes.map((p) => p.annee))].sort((a, b) => b - a);
 
   const ouvrirNouveau = () => {
     setProgrammeAModifier(null);
@@ -38,15 +45,14 @@ function ListeProgrammes() {
     setModalOuverte(true);
   };
 
-  const ouvrirModification = (p) => {
+  const ouvrirModification = (p, e) => {
+    e.stopPropagation();
     setProgrammeAModifier(p);
     setValeurs({
-      nom: p.nom,
-      type_programme: p.type_programme,
-      date_depart: p.date_depart,
-      date_retour: p.date_retour,
-      date_limite_paiement: p.date_limite_paiement || "",
-      prix: p.prix || "",
+      nom: p.nom, type_programme: p.type_programme, annee: p.annee,
+      date_depart: p.date_depart, date_retour: p.date_retour,
+      date_limite_paiement: p.date_limite_paiement || "", prix: p.prix || "",
+      est_archive: p.est_archive,
     });
     setErreur("");
     setModalOuverte(true);
@@ -61,7 +67,7 @@ function ListeProgrammes() {
     try {
       const donnees = { ...valeurs };
       Object.keys(donnees).forEach((k) => {
-        if (donnees[k] === "") delete donnees[k];
+        if (donnees[k] === "" && k !== "est_archive") delete donnees[k];
       });
 
       if (programmeAModifier) {
@@ -86,7 +92,8 @@ function ListeProgrammes() {
     }
   };
 
-  const supprimer = async (id) => {
+  const supprimer = async (id, e) => {
+    e.stopPropagation();
     if (!window.confirm(t("confirmer_suppression_programme"))) return;
     await programmeService.supprimer(id);
     charger();
@@ -100,29 +107,37 @@ function ListeProgrammes() {
           <p className={styles.sousTitre}>{programmes.length} {t("programmes_enregistres")}</p>
         </div>
         <button className={styles.boutonPrincipal} onClick={ouvrirNouveau}>
-          <Plus size={16} /> {t("nouveau_programme")}
+          <Plus size={16} /> {t("nouvelle_activite")}
         </button>
+      </div>
+
+      <div className={styles.barreOutils}>
+        <select value={filtreAnnee} onChange={(e) => setFiltreAnnee(e.target.value)} className={styles.selectFiltre}>
+          <option value="">{t("toutes_annees")}</option>
+          {anneesDisponibles.map((a) => <option key={a} value={a}>{a}</option>)}
+        </select>
+        <select value={filtreType} onChange={(e) => setFiltreType(e.target.value)} className={styles.selectFiltre}>
+          <option value="">{t("tous_types")}</option>
+          <option value="hajj">{t("type_hajj")}</option>
+          <option value="oumra_ramadan">{t("type_oumra_ramadan")}</option>
+          <option value="oumra_classique">{t("type_oumra_classique")}</option>
+        </select>
       </div>
 
       <div className={styles.grilleCartes}>
         {chargement && <p className={styles.etatVide}>{t("chargement")}</p>}
-        {!chargement && programmes.length === 0 && (
-          <p className={styles.etatVide}>{t("aucun_programme")}</p>
-        )}
+        {!chargement && programmes.length === 0 && <p className={styles.etatVide}>{t("aucun_programme")}</p>}
         {!chargement && programmes.map((p) => (
-          <div key={p.id} className={styles.carteProgramme}>
+          <div key={p.id} className={styles.carteProgramme} onClick={() => navigate(`/programmes/${p.id}`)}>
             <div className={styles.bandeauCarte}>
               <span className={`${styles.badgeType} ${styles["type_" + p.type_programme]}`}>
-                {t(`type_${p.type_programme}`)}
+                {t(`type_${p.type_programme}`)} {p.annee}
               </span>
-              <div className={styles.actionsCarte}>
-                <button onClick={() => ouvrirModification(p)} title={t("modifier")}>
-                  <Pencil size={13} />
-                </button>
-                <button onClick={() => supprimer(p.id)} title={t("supprimer")} className={styles.boutonSupprimer}>
-                  <Trash2 size={13} />
-                </button>
-              </div>
+              {p.est_archive ? (
+                <span className={styles.badgeArchive}><Archive size={11} /> {t("archive")}</span>
+              ) : (
+                <span className={styles.badgeActif}>{t("actif")}</span>
+              )}
             </div>
 
             <h3 className={styles.nomProgramme}>{p.nom}</h3>
@@ -139,12 +154,20 @@ function ListeProgrammes() {
               </div>
             )}
 
-            {p.date_limite_paiement && (
+            {!p.est_archive && p.date_limite_paiement && (
               <div className={styles.echeancePaiement}>
                 <Clock size={13} />
                 <span>{t("echeance_paiement")} : {p.date_limite_paiement}</span>
               </div>
             )}
+
+            <div className={styles.piedCarte}>
+              <span className={styles.nbPelerins}>{p.nb_pelerins} {t("pelerins")}</span>
+              <div className={styles.actionsCarte}>
+                <button onClick={(e) => ouvrirModification(p, e)} title={t("modifier")}><Pencil size={13} /></button>
+                <button onClick={(e) => supprimer(p.id, e)} title={t("supprimer")} className={styles.boutonSupprimer}><Trash2 size={13} /></button>
+              </div>
+            </div>
           </div>
         ))}
       </div>
@@ -153,26 +176,30 @@ function ListeProgrammes() {
         <div className={styles.superposition} onClick={() => setModalOuverte(false)}>
           <div className={styles.panneau} onClick={(e) => e.stopPropagation()}>
             <div className={styles.enteteModal}>
-              <h2>{programmeAModifier ? t("modifier_programme") : t("nouveau_programme")}</h2>
-              <button className={styles.boutonFermer} onClick={() => setModalOuverte(false)}>
-                <X size={16} />
-              </button>
+              <h2>{programmeAModifier ? t("modifier_programme") : t("nouvelle_activite")}</h2>
+              <button className={styles.boutonFermer} onClick={() => setModalOuverte(false)}><X size={16} /></button>
             </div>
 
             <form onSubmit={handleSubmit} className={styles.formulaire}>
               <div className={styles.champ}>
                 <label>{t("nom_programme")}</label>
-                <input value={valeurs.nom} onChange={(e) => majChamp("nom", e.target.value)} required placeholder="Hajj 2027 — Groupe A" />
+                <input value={valeurs.nom} onChange={(e) => majChamp("nom", e.target.value)} required placeholder="Hajj 2024" />
               </div>
 
-              <div className={styles.champ}>
-                <label>{t("type_programme_label")}</label>
-                <select value={valeurs.type_programme} onChange={(e) => majChamp("type_programme", e.target.value)} required>
-                  <option value="">—</option>
-                  <option value="hajj">{t("type_hajj")}</option>
-                  <option value="oumra_ramadan">{t("type_oumra_ramadan")}</option>
-                  <option value="oumra_classique">{t("type_oumra_classique")}</option>
-                </select>
+              <div className={styles.ligneDeuxColonnes}>
+                <div className={styles.champ}>
+                  <label>{t("type_programme_label")}</label>
+                  <select value={valeurs.type_programme} onChange={(e) => majChamp("type_programme", e.target.value)} required>
+                    <option value="">—</option>
+                    <option value="hajj">{t("type_hajj")}</option>
+                    <option value="oumra_ramadan">{t("type_oumra_ramadan")}</option>
+                    <option value="oumra_classique">{t("type_oumra_classique")}</option>
+                  </select>
+                </div>
+                <div className={styles.champ}>
+                  <label>{t("annee")}</label>
+                  <input type="number" value={valeurs.annee} onChange={(e) => majChamp("annee", e.target.value)} required />
+                </div>
               </div>
 
               <div className={styles.sectionTitre}>{t("section_dates")}</div>
@@ -188,27 +215,31 @@ function ListeProgrammes() {
               </div>
 
               <div className={styles.champ}>
-                <label>{t("date_limite_paiement")}</label>
-                <input type="date" value={valeurs.date_limite_paiement} onChange={(e) => majChamp("date_limite_paiement", e.target.value)} />
-                <p className={styles.aideChamp}>{t("aide_date_limite_paiement")}</p>
+                <label className={styles.labelCheckbox}>
+                  <input type="checkbox" checked={valeurs.est_archive} onChange={(e) => majChamp("est_archive", e.target.checked)} />
+                  {t("marquer_archive")}
+                </label>
+                <p className={styles.aideChamp}>{t("aide_archive")}</p>
               </div>
+
+              {!valeurs.est_archive && (
+                <div className={styles.champ}>
+                  <label>{t("date_limite_paiement")}</label>
+                  <input type="date" value={valeurs.date_limite_paiement} onChange={(e) => majChamp("date_limite_paiement", e.target.value)} />
+                </div>
+              )}
 
               <div className={styles.sectionTitre}>{t("section_tarifs")}</div>
               <div className={styles.champ}>
                 <label>{t("prix_programme")}</label>
-                <input type="number" step="0.01" value={valeurs.prix} onChange={(e) => majChamp("prix", e.target.value)} placeholder="Ex: 25000000" />
-                <p className={styles.aideChamp}>{t("aide_prix_programme")}</p>
+                <input type="number" step="0.01" value={valeurs.prix} onChange={(e) => majChamp("prix", e.target.value)} />
               </div>
 
               {erreur && <p className={styles.erreur}>{erreur}</p>}
 
               <div className={styles.navigationModal}>
-                <button type="button" className={styles.boutonSecondaire} onClick={() => setModalOuverte(false)}>
-                  {t("annuler")}
-                </button>
-                <button type="submit" className={styles.boutonPrincipal} disabled={envoi}>
-                  {envoi ? t("enregistrement") : t("enregistrer")}
-                </button>
+                <button type="button" className={styles.boutonSecondaire} onClick={() => setModalOuverte(false)}>{t("annuler")}</button>
+                <button type="submit" className={styles.boutonPrincipal} disabled={envoi}>{envoi ? t("enregistrement") : t("enregistrer")}</button>
               </div>
             </form>
           </div>

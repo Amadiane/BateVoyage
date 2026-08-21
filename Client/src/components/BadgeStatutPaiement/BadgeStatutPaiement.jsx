@@ -3,7 +3,7 @@ import styles from "../../theme/components/BadgeStatutPaiement.module.css";
 
 function BadgeStatutPaiement({ statut }) {
   const { t } = useTranslation();
-  if (!statut || statut === "normal" || statut === "indetermine") return null;
+  if (!statut || statut === "normal" || statut === "indetermine" || statut === "archive") return null;
 
   return (
     <span className={`${styles.badge} ${styles["statut_" + statut]}`}>

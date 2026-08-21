@@ -318,7 +318,18 @@
   "assigne_a": "Assigné à", "date": "Date", "description": "Description",
   "priorite_basse": "Basse", "priorite_normale": "Normale", "priorite_haute": "Haute", "priorite_urgente": "Urgente",
   "statut_reclam_nouvelle": "Nouvelle", "statut_reclam_en_cours": "En cours", "statut_reclam_resolue": "Résolue", "statut_reclam_fermee": "Fermée",
-  "cree_par": "Créée par", "reponse_agence": "Réponse de l'agence", "saisir_reponse": "Saisir la réponse..."
+  "cree_par": "Créée par", "reponse_agence": "Réponse de l'agence", "saisir_reponse": "Saisir la réponse...",
+
+  
+  "nouvelle_activite": "Nouvelle activité", "toutes_annees": "Toutes les années", "tous_types": "Tous les types",
+  "annee": "Année", "archive": "Archive", 
+  "marquer_archive": "Marquer comme archive (campagne passée)",
+  "aide_archive": "Les campagnes archivées n'apparaissent plus dans les alertes de paiement ni les échéances.",
+  "ajouter_pelerins_activite": "Ajouter des pèlerins à l'activité",
+  "aucun_pelerin_dans_activite": "Aucun pèlerin dans cette activité",
+  "retirer_de_activite": "Retirer de l'activité", "confirmer_retrait_activite": "Retirer ce pèlerin de cette activité ?"
+
+
 
 
 
