@@ -41,3 +41,12 @@ input, button {
 .body, html {
   overflow-x: hidden;
 }
+
+.conteneur-tableau-responsive {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.conteneur-tableau-responsive table {
+  min-width: 640px;
+}

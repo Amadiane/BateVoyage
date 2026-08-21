@@ -21,13 +21,19 @@
   background-color: #fff;
   border-radius: 12px;
   border: 1px solid var(--color-border);
-  overflow: hidden;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .tableau {
   width: 100%;
+  min-width: 720px;
   border-collapse: collapse;
   font-size: 13px;
+}
+
+.tableau td, .tableau th {
+  white-space: nowrap;
 }
 
 .tableau th {
@@ -71,4 +77,10 @@
   text-align: center;
   padding: 32px;
   color: #9CA3AF;
+}
+
+@media (max-width: 900px) {
+  .titre {
+    margin-top: 8px;
+  }
 }
