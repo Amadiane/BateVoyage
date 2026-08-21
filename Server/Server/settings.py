@@ -142,9 +142,14 @@ STATICFILES_STORAGE = "django.contrib.staticfiles.storage.StaticFilesStorage"
 # ------------------------------------------------------------------
 # CORS — autoriser le frontend React (Client)
 # ------------------------------------------------------------------
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:5173",
-]
+# ------------------------------------------------------------------
+# CORS — autoriser le frontend en production ET en local
+# ------------------------------------------------------------------
+CORS_ALLOWED_ORIGINS = config(
+    'CORS_ALLOWED_ORIGINS',
+    default='http://localhost:5173'
+).split(',')
+
 
 CORS_EXPOSE_HEADERS = ["X-Nom-Fichier-Reel"]
 
