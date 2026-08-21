@@ -1,8 +1,8 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
-import { Users, FileWarning, Clock, Wallet, MessageSquareWarning, Plane, Building2 } from "lucide-react";
+import { Users, FileWarning, Clock, Wallet, MessageSquareWarning, Plane, Building2, Bell, ChevronDown, LogOut, User } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
 import { pelerinService } from "../../services/pelerinService";
 import { documentService } from "../../services/documentService";
@@ -29,7 +29,7 @@ const ROLES_VOIENT_LOGISTIQUE = ["fondateur", "admin_general", "secretaire", "gu
 function Dashboard() {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { utilisateur } = useAuth();
+  const { utilisateur, deconnecter } = useAuth();
   const [pelerins, setPelerins] = useState([]);
   const [docs, setDocs] = useState(null);
   const [reclamationsOuvertes, setReclamationsOuvertes] = useState(0);
@@ -37,6 +37,8 @@ function Dashboard() {
   const [hotels, setHotels] = useState([]);
   const [resumeFinancier, setResumeFinancier] = useState(null);
   const [chargement, setChargement] = useState(true);
+  const [menuOuvert, setMenuOuvert] = useState(false);
+  const menuRef = useRef(null);
 
   const peutVoirFinances = ROLES_VOIENT_FINANCES.includes(utilisateur?.role);
   const peutVoirReclamations = ROLES_VOIENT_RECLAMATIONS.includes(utilisateur?.role);
@@ -70,6 +72,16 @@ function Dashboard() {
     });
   }, []);
 
+  useEffect(() => {
+    function fermerSiExterieur(e) {
+      if (menuRef.current && !menuRef.current.contains(e.target)) {
+        setMenuOuvert(false);
+      }
+    }
+    document.addEventListener("mousedown", fermerSiExterieur);
+    return () => document.removeEventListener("mousedown", fermerSiExterieur);
+  }, []);
+
   if (chargement) return <p className={styles.chargement}>{t("chargement")}</p>;
 
   const repartition = Object.entries(
@@ -89,15 +101,53 @@ function Dashboard() {
     .sort((a, b) => new Date(a.vol_aller_detail.date_vol) - new Date(b.vol_aller_detail.date_vol))
     .slice(0, 4);
 
+  const dateAujourdhui = aujourdhui.toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" });
+  const initiales = `${utilisateur?.first_name?.[0] || ""}${utilisateur?.last_name?.[0] || utilisateur?.username?.[0] || ""}`.toUpperCase();
+
   return (
     <div>
-      {/* ---------- Bandeau de bienvenue ---------- */}
+      {/* ---------- Bandeau héro ---------- */}
       <div className={styles.hero} style={{ backgroundImage: `url(${imageKaaba})` }}>
         <div className={styles.heroOverlay} />
-        <div className={styles.heroContenu}>
-          <p className={styles.heroVerset}>وَأَتِمُّوا الْحَجَّ وَالْعُمْرَةَ لِلَّهِ</p>
-          <h1 className={styles.heroTitre}>{t("bienvenue")}, {utilisateur?.first_name || utilisateur?.username}</h1>
-          <p className={styles.heroSousTitre}>{t("connecte_en_tant_que")} {utilisateur?.role_display}</p>
+
+        <div className={styles.heroLigne}>
+          <div className={styles.heroContenu}>
+            <p className={styles.heroVerset}>وَأَتِمُّوا الْحَجَّ وَالْعُمْرَةَ لِلَّهِ</p>
+            <h1 className={styles.heroTitre}>{t("bienvenue_virgule")} {utilisateur?.first_name || utilisateur?.username}</h1>
+            <p className={styles.heroSousTitre}>{t("connecte_en_tant_que")} {utilisateur?.role_display}</p>
+          </div>
+
+          <div className={styles.heroDroite}>
+            <span className={styles.heroDate}>{dateAujourdhui}</span>
+
+            <button className={styles.heroBoutonNotif}>
+              <Bell size={16} />
+            </button>
+
+            <div className={styles.heroMenuProfil} ref={menuRef}>
+              <button className={styles.heroBoutonProfil} onClick={() => setMenuOuvert((v) => !v)}>
+                {utilisateur?.photo ? (
+                  <img src={utilisateur.photo} alt="" className={styles.heroPhotoProfil} />
+                ) : (
+                  <div className={styles.heroAvatarInitiales}>{initiales || <User size={14} />}</div>
+                )}
+                <span className={styles.heroNomProfil}>{utilisateur?.first_name || utilisateur?.username}</span>
+                <ChevronDown size={13} className={`${styles.heroChevron} ${menuOuvert ? styles.heroChevronOuvert : ""}`} />
+              </button>
+
+              {menuOuvert && (
+                <div className={styles.heroDropdown}>
+                  <div className={styles.heroDropdownEntete}>
+                    <p className={styles.heroDropdownNom}>{utilisateur?.first_name} {utilisateur?.last_name}</p>
+                    <p className={styles.heroDropdownRole}>{utilisateur?.role_display}</p>
+                  </div>
+                  <button className={styles.heroDropdownDeconnexion} onClick={deconnecter}>
+                    <LogOut size={14} /> {t("se_deconnecter")}
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
         </div>
       </div>
 

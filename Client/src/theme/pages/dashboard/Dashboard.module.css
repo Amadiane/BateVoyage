@@ -8,7 +8,7 @@
 .hero {
   position: relative;
   border-radius: 16px;
-  overflow: hidden;
+  overflow: visible;
   min-height: 110px;
   background-size: cover;
   background-position: center 30%;
@@ -20,13 +20,23 @@
 .heroOverlay {
   position: absolute;
   inset: 0;
+  border-radius: 16px;
   background: linear-gradient(100deg, rgba(11,14,20,0.92) 20%, rgba(11,14,20,0.55) 70%, rgba(11,14,20,0.3) 100%);
 }
 
-.heroContenu {
+.heroLigne {
   position: relative;
-  padding: 18px 24px;
   z-index: 1;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 18px 24px;
+  gap: 16px;
+}
+
+.heroContenu {
+  min-width: 0;
 }
 
 .heroVerset {
@@ -47,6 +57,152 @@
   color: rgba(255,255,255,0.75);
   font-size: 12.5px;
   margin: 0;
+}
+
+.heroDroite {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.heroDate {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: #fff;
+  background-color: rgba(255,255,255,0.12);
+  backdrop-filter: blur(4px);
+  padding: 8px 12px;
+  border-radius: 8px;
+  text-transform: capitalize;
+  white-space: nowrap;
+}
+
+.heroBoutonNotif {
+  width: 34px;
+  height: 34px;
+  border-radius: 9px;
+  border: none;
+  background-color: rgba(255,255,255,0.12);
+  backdrop-filter: blur(4px);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.heroBoutonNotif:hover {
+  background-color: rgba(255,255,255,0.2);
+}
+
+.heroMenuProfil {
+  position: relative;
+}
+
+.heroBoutonProfil {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 5px 10px 5px 5px;
+  background-color: rgba(255,255,255,0.12);
+  backdrop-filter: blur(4px);
+  border: none;
+  border-radius: 9px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.heroBoutonProfil:hover {
+  background-color: rgba(255,255,255,0.2);
+}
+
+.heroPhotoProfil {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.heroAvatarInitiales {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background-color: var(--color-gold);
+  color: var(--color-brand-dark);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.heroNomProfil {
+  font-size: 12px;
+  font-weight: 600;
+  color: #fff;
+}
+
+.heroChevron {
+  color: rgba(255,255,255,0.7);
+  transition: transform 0.15s ease;
+  flex-shrink: 0;
+}
+
+.heroChevronOuvert {
+  transform: rotate(180deg);
+}
+
+.heroDropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  width: 190px;
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+  overflow: hidden;
+  z-index: 100;
+}
+
+.heroDropdownEntete {
+  padding: 12px 14px;
+  border-bottom: 1px solid #F3F4F6;
+}
+
+.heroDropdownNom {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-ink);
+  margin: 0;
+}
+
+.heroDropdownRole {
+  font-size: 11px;
+  color: var(--color-gold-dark);
+  margin: 2px 0 0;
+}
+
+.heroDropdownDeconnexion {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #B91C1C;
+  font-size: 13px;
+  font-weight: 500;
+  text-align: left;
+}
+
+.heroDropdownDeconnexion:hover {
+  background-color: #FEF2F2;
 }
 
 /* ---------- Cartes statistiques ---------- */
@@ -275,5 +431,16 @@
 @media (max-width: 900px) {
   .grillePrincipale, .grilleSecondaire {
     grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .heroLigne {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .heroDroite {
+    width: 100%;
+    justify-content: space-between;
   }
 }
