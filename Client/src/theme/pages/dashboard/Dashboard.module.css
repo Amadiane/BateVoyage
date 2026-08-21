@@ -7,12 +7,12 @@
 /* ---------- Bandeau héro ---------- */
 .hero {
   position: relative;
-  border-radius: 18px;
+  border-radius: 16px;
   overflow: hidden;
-  min-height: 160px;
+  min-height: 110px;
   background-size: cover;
   background-position: center 30%;
-  margin-bottom: 24px;
+  margin-bottom: 16px;
   display: flex;
   align-items: center;
 }
@@ -25,45 +25,45 @@
 
 .heroContenu {
   position: relative;
-  padding: 28px 32px;
+  padding: 18px 24px;
   z-index: 1;
 }
 
 .heroVerset {
   color: var(--color-gold);
-  font-size: 15px;
-  margin: 0 0 8px;
+  font-size: 13px;
+  margin: 0 0 5px;
   direction: rtl;
 }
 
 .heroTitre {
   font-family: var(--font-display);
-  font-size: 26px;
+  font-size: 21px;
   color: #fff;
-  margin: 0 0 4px;
+  margin: 0 0 3px;
 }
 
 .heroSousTitre {
   color: rgba(255,255,255,0.75);
-  font-size: 13.5px;
+  font-size: 12.5px;
   margin: 0;
 }
 
 /* ---------- Cartes statistiques ---------- */
 .cartesStat {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
-  gap: 14px;
-  margin-bottom: 24px;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 12px;
+  margin-bottom: 16px;
 }
 
 .carteStat {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 12px;
   background-color: #fff;
-  border-radius: 14px;
-  padding: 18px;
+  border-radius: 12px;
+  padding: 14px;
   border: 1px solid var(--color-border);
   transition: box-shadow 0.15s ease, transform 0.15s ease;
 }
@@ -75,9 +75,9 @@
 }
 
 .iconeCercle {
-  width: 42px;
-  height: 42px;
-  border-radius: 12px;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -93,14 +93,14 @@
 
 .chiffreStat {
   font-family: var(--font-display);
-  font-size: 20px;
+  font-size: 17px;
   color: var(--color-brand-dark);
-  margin: 0 0 2px;
+  margin: 0 0 1px;
   line-height: 1.1;
 }
 
 .labelStat {
-  font-size: 11.5px;
+  font-size: 11px;
   color: #6B7280;
   margin: 0;
 }
@@ -109,20 +109,20 @@
 .grillePrincipale {
   display: grid;
   grid-template-columns: 1.2fr 1fr;
-  gap: 16px;
-  margin-bottom: 16px;
+  gap: 14px;
+  margin-bottom: 14px;
 }
 
 .grilleSecondaire {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 16px;
+  gap: 14px;
 }
 
 .cartePrincipale {
   background-color: #fff;
-  border-radius: 14px;
-  padding: 22px;
+  border-radius: 12px;
+  padding: 16px;
   border: 1px solid var(--color-border);
 }
 
@@ -130,15 +130,15 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 14px;
+  margin-bottom: 10px;
 }
 
 .titreCarte {
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 700;
   text-transform: uppercase;
   color: var(--color-brand-dark);
-  margin: 0 0 14px;
+  margin: 0 0 10px;
   letter-spacing: 0.02em;
 }
 
@@ -158,20 +158,26 @@
 .lienVoirTout:hover { text-decoration: underline; }
 
 /* ---------- Graphique statuts ---------- */
-.zoneGraphique { display: flex; align-items: center; gap: 16px; }
-.legende { display: flex; flex-direction: column; gap: 7px; }
-.itemLegende { display: flex; align-items: center; gap: 8px; font-size: 12px; color: #4B5563; }
+.zoneGraphique { display: flex; align-items: center; gap: 14px; }
+.legende { display: flex; flex-direction: column; gap: 6px; }
+.itemLegende { display: flex; align-items: center; gap: 8px; font-size: 11.5px; color: #4B5563; }
 .pucelegende { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
-.etatVide { text-align: center; padding: 24px; color: #9CA3AF; font-size: 13px; }
+.etatVide { text-align: center; padding: 20px; color: #9CA3AF; font-size: 12.5px; }
 
 /* ---------- Prochains départs ---------- */
-.listeDeparts { display: flex; flex-direction: column; gap: 4px; }
+.listeDeparts {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  max-height: 180px;
+  overflow-y: auto;
+}
 
 .ligneDepart {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 10px 8px;
+  padding: 8px;
   border-radius: 10px;
   cursor: pointer;
   transition: background-color 0.15s ease;
@@ -180,8 +186,8 @@
 .ligneDepart:hover { background-color: #F9FAFB; }
 
 .dateDepart {
-  width: 44px;
-  height: 44px;
+  width: 40px;
+  height: 40px;
   border-radius: 10px;
   background-color: var(--color-brand-pale);
   display: flex;
@@ -191,15 +197,15 @@
   flex-shrink: 0;
 }
 
-.jourDepart { font-size: 15px; font-weight: 700; color: var(--color-brand-dark); line-height: 1; }
-.moisDepart { font-size: 9px; color: var(--color-brand); text-transform: uppercase; font-weight: 600; }
+.jourDepart { font-size: 14px; font-weight: 700; color: var(--color-brand-dark); line-height: 1; }
+.moisDepart { font-size: 8.5px; color: var(--color-brand); text-transform: uppercase; font-weight: 600; }
 
 .infosDepart { flex: 1; min-width: 0; }
-.nomGroupeDepart { font-size: 13px; font-weight: 600; color: var(--color-ink); margin: 0; }
-.trajetDepart { font-size: 11.5px; color: #9CA3AF; margin: 2px 0 0; }
+.nomGroupeDepart { font-size: 12.5px; font-weight: 600; color: var(--color-ink); margin: 0; }
+.trajetDepart { font-size: 11px; color: #9CA3AF; margin: 2px 0 0; }
 
 .nbPelerinsDepart {
-  font-size: 11px;
+  font-size: 10.5px;
   font-weight: 700;
   color: var(--color-brand);
   background-color: var(--color-brand-pale);
@@ -209,13 +215,19 @@
 }
 
 /* ---------- Réservations hôtels ---------- */
-.listeHotels { display: flex; flex-direction: column; gap: 4px; }
+.listeHotels {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  max-height: 180px;
+  overflow-y: auto;
+}
 
 .ligneHotel {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 10px 8px;
+  padding: 8px;
   border-radius: 10px;
   cursor: pointer;
   transition: background-color 0.15s ease;
@@ -228,11 +240,11 @@
 .ville_medine { background-color: #166534; }
 
 .infosHotel { flex: 1; min-width: 0; }
-.nomHotel { font-size: 13px; font-weight: 600; color: var(--color-ink); margin: 0; }
-.villeHotel { font-size: 11.5px; color: #9CA3AF; margin: 2px 0 0; }
+.nomHotel { font-size: 12.5px; font-weight: 600; color: var(--color-ink); margin: 0; }
+.villeHotel { font-size: 11px; color: #9CA3AF; margin: 2px 0 0; }
 
 .occupationHotel {
-  font-size: 11px;
+  font-size: 10.5px;
   font-weight: 700;
   color: var(--color-gold-dark);
   background-color: var(--color-gold-pale);
@@ -242,23 +254,23 @@
 }
 
 /* ---------- Résumé financier ---------- */
-.blocsFinance { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.blocsFinance { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 
 .blocFinance {
   background-color: #F9FAFB;
   border-radius: 10px;
-  padding: 16px;
+  padding: 14px;
   text-align: center;
 }
 
 .chiffreFinance {
   font-family: var(--font-display);
-  font-size: 18px;
+  font-size: 16px;
   color: var(--color-brand-dark);
-  margin: 0 0 4px;
+  margin: 0 0 3px;
 }
 
-.labelFinance { font-size: 11px; color: #6B7280; margin: 0; }
+.labelFinance { font-size: 10.5px; color: #6B7280; margin: 0; }
 
 @media (max-width: 900px) {
   .grillePrincipale, .grilleSecondaire {

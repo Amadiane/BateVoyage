@@ -1,0 +1,170 @@
+.entete {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin-bottom: 16px;
+  gap: 12px;
+}
+
+.zoneDate {
+  padding: 8px 14px;
+  background-color: #fff;
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+}
+
+.date {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--color-brand-dark);
+  text-transform: capitalize;
+}
+
+.zoneDroite {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.boutonNotification {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  border: 1px solid var(--color-border);
+  background-color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #4B5563;
+  position: relative;
+}
+
+.boutonNotification:hover {
+  background-color: #F9FAFB;
+}
+
+.menuProfil {
+  position: relative;
+}
+
+.boutonProfil {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px 6px 6px;
+  background-color: #fff;
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.boutonProfil:hover {
+  background-color: #F9FAFB;
+}
+
+.photoProfil {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.avatarInitiales {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background-color: var(--color-brand-pale);
+  color: var(--color-brand);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.infosProfil {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  line-height: 1.2;
+}
+
+.nomProfil {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--color-ink);
+}
+
+.roleProfil {
+  font-size: 10.5px;
+  color: #9CA3AF;
+}
+
+.chevron {
+  color: #9CA3AF;
+  transition: transform 0.15s ease;
+}
+
+.chevronOuvert {
+  transform: rotate(180deg);
+}
+
+.dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  width: 200px;
+  background-color: #fff;
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+  overflow: hidden;
+  z-index: 30;
+}
+
+.dropdownEntete {
+  padding: 12px 14px;
+  border-bottom: 1px solid #F3F4F6;
+}
+
+.dropdownNom {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-ink);
+  margin: 0;
+}
+
+.dropdownRole {
+  font-size: 11px;
+  color: var(--color-gold-dark);
+  margin: 2px 0 0;
+}
+
+.dropdownDeconnexion {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #B91C1C;
+  font-size: 13px;
+  font-weight: 500;
+  text-align: left;
+}
+
+.dropdownDeconnexion:hover {
+  background-color: #FEF2F2;
+}
+
+@media (max-width: 640px) {
+  .infosProfil {
+    display: none;
+  }
+  .zoneDate {
+    display: none;
+  }
+}

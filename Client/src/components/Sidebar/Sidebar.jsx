@@ -13,15 +13,14 @@ function Sidebar({ ouverte, onFermer }) {
 
   return (
     <aside className={`${styles.sidebar} ${ouverte ? styles.sidebarOuverte : ""}`}>
-      <div className={styles.header}>
+      <button className={styles.boutonFermerMobile} onClick={onFermer}>
+        <X size={18} />
+      </button>
+
+      <div className={styles.blocLogo}>
         <img src={ENTREPRISE.logo} alt={ENTREPRISE.nomCourt} className={styles.logo} />
-        <div>
-          <p className={styles.nom}>{ENTREPRISE.nomCourt}</p>
-          <p className={styles.sousTitre}>Hajj & Omra Management</p>
-        </div>
-        <button className={styles.boutonFermerMobile} onClick={onFermer}>
-          <X size={18} />
-        </button>
+        <p className={styles.nomMarque}>{ENTREPRISE.nomComplet}</p>
+        <p className={styles.sousTitreMarque}>HAJJ & OMRA MANAGEMENT SYSTEM</p>
       </div>
 
       <nav className={styles.menu}>
@@ -42,11 +41,6 @@ function Sidebar({ ouverte, onFermer }) {
           );
         })}
       </nav>
-
-      <div className={styles.assistance}>
-        <p className={styles.assistanceTitre}>📞 {t("assistance_24_7")}</p>
-        <p className={styles.assistanceNumero}>{ENTREPRISE.telephones[0]}</p>
-      </div>
 
       <div className={styles.zoneLangue}>
         <LanguageSwitcher variant="sombre" />

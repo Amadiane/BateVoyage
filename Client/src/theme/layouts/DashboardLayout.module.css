@@ -1,13 +1,15 @@
 .conteneur {
   display: flex;
-  min-height: 100vh;
+  height: 100vh;
+  overflow: hidden; /* empêche la page entière de défiler */
 }
 
 .contenu {
   flex: 1;
-  min-height: 100vh;
-  padding: 32px;
-  min-width: 0; /* évite le débordement horizontal des enfants (tableaux, cartes) */
+  height: 100vh;
+  overflow-y: auto; /* seul le contenu défile, pas la sidebar */
+  padding: 28px;
+  min-width: 0;
 }
 
 .boutonMenuMobile {

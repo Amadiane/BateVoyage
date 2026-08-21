@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { Outlet } from "react-router-dom";
-import { Menu, X } from "lucide-react";
+import { Menu } from "lucide-react";
 import Sidebar from "../components/Sidebar/Sidebar";
+import EnteteApp from "../components/EnteteApp/EnteteApp";
 import styles from "../theme/layouts/DashboardLayout.module.css";
 
 function DashboardLayout() {
@@ -20,6 +21,7 @@ function DashboardLayout() {
       )}
 
       <main className={styles.contenu}>
+        <EnteteApp />
         <Outlet />
       </main>
     </div>
