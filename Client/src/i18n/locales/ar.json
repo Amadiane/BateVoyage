@@ -325,7 +325,21 @@
   "aide_archive": "الحملات المؤرشفة لم تعد تظهر في تنبيهات الدفع أو المواعيد النهائية.",
   "ajouter_pelerins_activite": "إضافة حجاج إلى النشاط",
   "aucun_pelerin_dans_activite": "لا يوجد حاج في هذا النشاط",
-  "retirer_de_activite": "إزالة من النشاط", "confirmer_retrait_activite": "إزالة هذا الحاج من هذا النشاط؟"
+  "retirer_de_activite": "إزالة من النشاط", "confirmer_retrait_activite": "إزالة هذا الحاج من هذا النشاط؟",
+
+  
+  "reclamations_nouvelles": "شكاوى جديدة",
+  "groupes_actifs": "المجموعات",
+  "occupation_hebergement": "إشغال الإقامة",
+  "prochains_departs": "الرحلات القادمة",
+  "reservations_hotels": "حجوزات الفنادق",
+  "resume_financier": "الملخص المالي",
+  "aucun_depart_a_venir": "لا توجد رحلة مجدولة",
+  "aucun_hotel_enregistre": "لا يوجد فندق مسجل",
+  "voir_tout": "عرض الكل",
+  "total_general_court": "إجمالي المحصّل",
+  "ce_mois": "هذا الشهر"
+
 
 
 

@@ -327,7 +327,21 @@
   "aide_archive": "Les campagnes archivées n'apparaissent plus dans les alertes de paiement ni les échéances.",
   "ajouter_pelerins_activite": "Ajouter des pèlerins à l'activité",
   "aucun_pelerin_dans_activite": "Aucun pèlerin dans cette activité",
-  "retirer_de_activite": "Retirer de l'activité", "confirmer_retrait_activite": "Retirer ce pèlerin de cette activité ?"
+  "retirer_de_activite": "Retirer de l'activité", "confirmer_retrait_activite": "Retirer ce pèlerin de cette activité ?",
+
+  
+  "reclamations_nouvelles": "Réclamations nouvelles",
+  "groupes_actifs": "Groupes",
+  "occupation_hebergement": "Occupation hébergement",
+  "prochains_departs": "Prochains départs",
+  "reservations_hotels": "Réservations hôtels",
+  "resume_financier": "Résumé financier",
+  "aucun_depart_a_venir": "Aucun départ programmé",
+  "aucun_hotel_enregistre": "Aucun hôtel enregistré",
+  "voir_tout": "Voir tout",
+  "total_general_court": "Total encaissé",
+  "ce_mois": "Ce mois-ci"
+
 
 
 

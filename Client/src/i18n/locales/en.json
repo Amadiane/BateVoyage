@@ -322,7 +322,21 @@
   "aide_archive": "Archived campaigns no longer appear in payment alerts or deadlines.",
   "ajouter_pelerins_activite": "Add pilgrims to campaign",
   "aucun_pelerin_dans_activite": "No pilgrim in this campaign",
-  "retirer_de_activite": "Remove from campaign", "confirmer_retrait_activite": "Remove this pilgrim from this campaign?"
+  "retirer_de_activite": "Remove from campaign", "confirmer_retrait_activite": "Remove this pilgrim from this campaign?",
+
+  
+  "reclamations_nouvelles": "New complaints",
+  "groupes_actifs": "Groups",
+  "occupation_hebergement": "Accommodation occupancy",
+  "prochains_departs": "Upcoming departures",
+  "reservations_hotels": "Hotel bookings",
+  "resume_financier": "Financial summary",
+  "aucun_depart_a_venir": "No scheduled departure",
+  "aucun_hotel_enregistre": "No hotel registered",
+  "voir_tout": "View all",
+  "total_general_court": "Total collected",
+  "ce_mois": "This month"
+
 
 
 
