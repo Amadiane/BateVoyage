@@ -5,7 +5,7 @@ import { LayoutDashboard, Users, UserCog, FileText, ScrollText } from "lucide-re
 const BASE_URL =
   window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1"
     ? "http://127.0.0.1:8000"
-    : "https://batevoyage-api.onrender.com";
+    : "https://batevoyage.onrender.com";
 
 const CONFIG = {
   BASE_URL,
