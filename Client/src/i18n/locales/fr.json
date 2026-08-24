@@ -341,7 +341,11 @@
   "voir_tout": "Voir tout",
   "total_general_court": "Total encaissé",
   "ce_mois": "Ce mois-ci",
-  "bienvenue_virgule": "Bienvenue,"
+  "bienvenue_virgule": "Bienvenue,",
+  
+  "aucune_agence": "Aucune (agence propre)",
+  "avertissement_changement_username": "Modifier ce champ changera l'identifiant de connexion de cet employé."
+
 
 
 

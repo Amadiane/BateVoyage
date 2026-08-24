@@ -2,7 +2,7 @@ import { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
-import { Users, FileWarning, Clock, Wallet, MessageSquareWarning, Plane, Building2, Bell, ChevronDown, LogOut, User } from "lucide-react";
+import { Users, FileWarning, FileClock, Wallet, MessageSquareWarning, Plane, Building2, Bell, ChevronDown, LogOut, User } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
 import { pelerinService } from "../../services/pelerinService";
 import { documentService } from "../../services/documentService";
@@ -171,7 +171,7 @@ function Dashboard() {
               onClick={() => navigate("/documents")}
             />
             <CarteStat
-              icone={Clock}
+              icone={FileClock}
               chiffre={docs?.visas_en_attente?.length ?? 0}
               label={t("visas_en_attente")}
               couleur="or"

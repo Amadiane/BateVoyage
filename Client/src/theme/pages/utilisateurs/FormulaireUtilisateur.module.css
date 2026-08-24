@@ -145,3 +145,9 @@
   font-size: 13px;
   color: var(--color-brand);
 }
+
+.avertissementUsername {
+  font-size: 11px;
+  color: #92400E;
+  margin: 4px 0 0;
+}

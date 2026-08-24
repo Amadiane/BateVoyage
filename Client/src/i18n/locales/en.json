@@ -336,7 +336,11 @@
   "voir_tout": "View all",
   "total_general_court": "Total collected",
   "ce_mois": "This month",
-  "bienvenue_virgule": "Welcome,"
+  "bienvenue_virgule": "Welcome,",
+  
+  "aucune_agence": "None (own agency)",
+  "avertissement_changement_username": "Changing this field will alter this employee's login identifier."
+
 
 
 

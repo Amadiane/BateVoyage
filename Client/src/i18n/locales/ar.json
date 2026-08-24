@@ -340,7 +340,11 @@
   "total_general_court": "إجمالي المحصّل",
   "ce_mois": "هذا الشهر",
 
-  "bienvenue_virgule": "مرحبًا,"
+  "bienvenue_virgule": "مرحبًا,",
+  
+  "aucune_agence": "لا يوجد (وكالتنا)",
+  "avertissement_changement_username": "تغيير هذا الحقل سيغير معرف تسجيل الدخول لهذا الموظف."
+
 
 
 

@@ -10,6 +10,16 @@ import styles from "../../theme/pages/pelerins/FormulairePelerin.module.css";
 
 const ETAPES = ["identite", "passeport", "adresse", "contact", "sante", "documents"];
 
+const AGENCES_PARTENAIRES = [
+  "BATE VOYAGE GUINÉE",
+  "UNION VOYAGES GUINÉE",
+  "NOUR-MAKKAH",
+  "INTER-DJIGUI",
+  "MOHAMED FADIGA",
+  "MANDENG VOYAGE GUINÉE",
+  "WARASSIMASSA",
+];
+
 const VALEURS_INITIALES = {
   prenom: "", nom: "", sexe: "", date_naissance: "", lieu_naissance: "",
   numero_passeport: "", date_emission_passeport: "", date_expiration_passeport: "", statut_visa: "non_demande",
@@ -261,7 +271,12 @@ function FormulairePelerin() {
               <input value={valeurs.telephone_correspondant} onChange={(e) => majChamp("telephone_correspondant", e.target.value)} />
             </Champ>
             <Champ label={t("agence_partenaire")}>
-              <input value={valeurs.agence_partenaire} onChange={(e) => majChamp("agence_partenaire", e.target.value)} placeholder={t("si_applicable")} />
+              <select value={valeurs.agence_partenaire} onChange={(e) => majChamp("agence_partenaire", e.target.value)}>
+                <option value="">{t("aucune_agence")}</option>
+                {AGENCES_PARTENAIRES.map((a) => (
+                  <option key={a} value={a}>{a}</option>
+                ))}
+              </select>
             </Champ>
           </div>
         )}

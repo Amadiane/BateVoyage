@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { Eye, EyeOff } from "lucide-react";
 import { utilisateurService } from "../../services/utilisateurService";
 import ChampFichier from "../../components/ChampFichier/ChampFichier";
 import styles from "../../theme/pages/utilisateurs/FormulaireUtilisateur.module.css";
@@ -22,6 +23,7 @@ function FormulaireUtilisateur() {
 
   const [valeurs, setValeurs] = useState(VALEURS_INITIALES);
   const [motDePasse, setMotDePasse] = useState("");
+  const [motDePasseVisible, setMotDePasseVisible] = useState(false);
   const [photoExistante, setPhotoExistante] = useState(null);
   const [nouvellePhoto, setNouvellePhoto] = useState(null);
   const [nouveauMotDePasse, setNouveauMotDePasse] = useState("");
@@ -121,9 +123,13 @@ function FormulaireUtilisateur() {
             <Champ label={t("nom")}>
               <input value={valeurs.last_name} onChange={(e) => majChamp("last_name", e.target.value)} required />
             </Champ>
-            <Champ label={t("nom_utilisateur_champ")}>
-              <input value={valeurs.username} onChange={(e) => majChamp("username", e.target.value)} required disabled={modeEdition} />
-            </Champ>
+
+            <div>
+              <label>{t("nom_utilisateur_champ")}</label>
+              <input value={valeurs.username} onChange={(e) => majChamp("username", e.target.value)} required />
+              {modeEdition && <p className={styles.avertissementUsername}>⚠️ {t("avertissement_changement_username")}</p>}
+            </div>
+
             <Champ label={t("email")}>
               <input type="email" value={valeurs.email} onChange={(e) => majChamp("email", e.target.value)} />
             </Champ>
@@ -139,7 +145,27 @@ function FormulaireUtilisateur() {
 
             {!modeEdition && (
               <Champ label={t("mot_de_passe")} pleineLargeur>
-                <input type="password" value={motDePasse} onChange={(e) => setMotDePasse(e.target.value)} required minLength={6} />
+                <div style={{ position: "relative" }}>
+                  <input
+                    type={motDePasseVisible ? "text" : "password"}
+                    value={motDePasse}
+                    onChange={(e) => setMotDePasse(e.target.value)}
+                    required
+                    minLength={6}
+                    style={{ paddingRight: 38, width: "100%" }}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setMotDePasseVisible((v) => !v)}
+                    style={{
+                      position: "absolute", right: 10, top: "50%", transform: "translateY(-50%)",
+                      background: "none", border: "none", cursor: "pointer", color: "#9CA3AF",
+                      display: "flex", alignItems: "center",
+                    }}
+                  >
+                    {motDePasseVisible ? <EyeOff size={16} /> : <Eye size={16} />}
+                  </button>
+                </div>
               </Champ>
             )}
 
