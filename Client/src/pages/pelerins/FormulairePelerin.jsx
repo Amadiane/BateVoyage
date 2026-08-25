@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { pelerinService } from "../../services/pelerinService";
@@ -6,6 +6,7 @@ import { utilisateurService } from "../../services/utilisateurService";
 import { programmeService } from "../../services/programmeService";
 import { groupeService } from "../../services/groupeService";
 import ChampFichier from "../../components/ChampFichier/ChampFichier";
+import { creerGestionnaireEntree } from "../../utils/navigationClavier";
 import styles from "../../theme/pages/pelerins/FormulairePelerin.module.css";
 
 const ETAPES = ["identite", "passeport", "adresse", "contact", "sante", "documents"];
@@ -45,6 +46,9 @@ function FormulairePelerin() {
   const navigate = useNavigate();
   const { id } = useParams();
   const modeEdition = Boolean(id);
+
+  const carteRef = useRef(null);
+  const gererEntree = creerGestionnaireEntree(carteRef);
 
   const [etape, setEtape] = useState(0);
   const [valeurs, setValeurs] = useState(VALEURS_INITIALES);
@@ -182,7 +186,7 @@ function FormulairePelerin() {
         ))}
       </div>
 
-      <div className={styles.carte}>
+      <div className={styles.carte} ref={carteRef} onKeyDown={gererEntree}>
         {etape === 0 && (
           <div className={styles.grille}>
             <Champ label={t("prenom")} manquant={estManquant("prenom")}>
@@ -388,12 +392,12 @@ function FormulairePelerin() {
               </button>
             )}
             {etape < ETAPES.length - 1 && (
-              <button type="button" className={styles.boutonPrincipal} onClick={suivant}>
+              <button type="button" className={styles.boutonPrincipal} onClick={suivant} data-bouton-suivant>
                 {t("suivant")}
               </button>
             )}
             {etape === ETAPES.length - 1 && (
-              <button type="button" className={styles.boutonPrincipal} onClick={handleSubmit} disabled={envoi}>
+              <button type="button" className={styles.boutonPrincipal} onClick={handleSubmit} disabled={envoi} data-bouton-suivant>
                 {envoi ? t("enregistrement") : t("enregistrer")}
               </button>
             )}

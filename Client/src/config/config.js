@@ -1,8 +1,5 @@
 import logoTransparent from "../assets/images/logo-transparent.png";
-import { LayoutDashboard, Users, UserCog, FileText, ScrollText, Calendar, Plane, Hotel, MessageSquareWarning } from "lucide-react";
-
-
-
+import { LayoutDashboard, Users, UserCog, FileText, ScrollText, Calendar, Plane, Hotel, MessageSquareWarning, Ticket, Car, Package } from "lucide-react";
 const BASE_URL =
   window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1"
     ? "http://127.0.0.1:8000"
@@ -81,31 +78,27 @@ export const ENTREPRISE = {
 };
 
 export const MENU_PAR_ROLE = {
-  comptable: ["dashboard", "paiements", "programmes", "pelerins"],
-  secretaire: ["dashboard", "pelerins", "documents"],
+  fondateur: ["dashboard", "hajj", "oumra", "utilisateurs", "documents", "paiements", "programmes", "groupes", "hebergement", "reclamations", "journal"],
+  admin_general: ["dashboard", "hajj", "oumra", "utilisateurs", "documents", "paiements", "programmes", "groupes", "hebergement", "reclamations", "journal"],
+  comptable: ["dashboard", "paiements", "programmes", "hajj", "oumra"],
+  secretaire: ["dashboard", "hajj", "oumra", "documents"],
   docteur: ["dashboard", "pelerins-sante"],
   traducteur: ["dashboard", "documents"],
-  affaires_sociales: ["dashboard", "reclamations", "pelerins"],
+  affaires_sociales: ["dashboard", "reclamations", "hajj", "oumra"],
   guide: ["dashboard", "groupes"],
   encadreur: ["dashboard", "groupes"],
   mounazim: ["dashboard", "groupes"],
   pelerin: ["mon-dossier"],
-  fondateur: ["dashboard", "pelerins", "utilisateurs", "documents", "paiements", "programmes", "groupes", "hebergement", "journal"],
-  admin_general: ["dashboard", "pelerins", "utilisateurs", "documents", "paiements", "programmes", "groupes", "hebergement", "journal"],
-  secretaire: ["dashboard", "pelerins", "documents", "groupes", "hebergement"],
-  guide: ["dashboard", "groupes", "hebergement"],
-  encadreur: ["dashboard", "groupes", "hebergement"],
-  mounazim: ["dashboard", "groupes", "hebergement"],
-  fondateur: ["dashboard", "pelerins", "utilisateurs", "documents", "paiements", "programmes", "groupes", "hebergement", "reclamations", "journal"],
-  admin_general: ["dashboard", "pelerins", "utilisateurs", "documents", "paiements", "programmes", "groupes", "hebergement", "reclamations", "journal"],
-  affaires_sociales: ["dashboard", "reclamations", "pelerins"],
 };
+
+
 
 
 
 export const ITEMS_MENU = {
   dashboard: { cle: "menu_dashboard", path: "/dashboard", icone: LayoutDashboard },
-  pelerins: { cle: "menu_pelerins", path: "/pelerins", icone: Users },
+  hajj: { cle: "menu_hajj", path: "/hajj", icone: Users },
+  oumra: { cle: "menu_oumra", path: "/oumra", icone: Users },
   "pelerins-sante": { cle: "menu_pelerins_sante", path: "/pelerins-sante", icone: Users },
   utilisateurs: { cle: "menu_utilisateurs", path: "/utilisateurs", icone: UserCog },
   documents: { cle: "menu_documents", path: "/documents", icone: FileText },

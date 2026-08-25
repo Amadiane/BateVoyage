@@ -1,9 +1,10 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Eye, EyeOff } from "lucide-react";
 import { utilisateurService } from "../../services/utilisateurService";
 import ChampFichier from "../../components/ChampFichier/ChampFichier";
+import { creerGestionnaireEntree } from "../../utils/navigationClavier";
 import styles from "../../theme/pages/utilisateurs/FormulaireUtilisateur.module.css";
 
 const ROLES = [
@@ -20,6 +21,9 @@ function FormulaireUtilisateur() {
   const navigate = useNavigate();
   const { id } = useParams();
   const modeEdition = Boolean(id);
+
+  const carteRef = useRef(null);
+  const gererEntree = creerGestionnaireEntree(carteRef);
 
   const [valeurs, setValeurs] = useState(VALEURS_INITIALES);
   const [motDePasse, setMotDePasse] = useState("");
@@ -105,7 +109,7 @@ function FormulaireUtilisateur() {
     <div className={styles.page}>
       <h1 className={styles.titre}>{modeEdition ? t("modifier_utilisateur") : t("nouveau_utilisateur")}</h1>
 
-      <div className={styles.carte}>
+      <div className={styles.carte} ref={carteRef} onKeyDown={gererEntree}>
         <form onSubmit={handleSubmit}>
           <div className={styles.grille}>
             <div style={{ gridColumn: "1 / -1" }}>
@@ -185,7 +189,7 @@ function FormulaireUtilisateur() {
             <button type="button" className={styles.boutonSecondaire} onClick={() => navigate("/utilisateurs")}>
               {t("annuler")}
             </button>
-            <button type="submit" className={styles.boutonPrincipal} disabled={envoi}>
+            <button type="submit" className={styles.boutonPrincipal} disabled={envoi} data-bouton-suivant>
               {envoi ? t("enregistrement") : t("enregistrer")}
             </button>
           </div>

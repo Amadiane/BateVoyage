@@ -2,11 +2,11 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { pelerinService } from "../../services/pelerinService";
-import { telechargerFichierProtege } from "../../utils/telechargement";
+import { ouvrirFichierProtege, telechargerFichierProtege } from "../../utils/telechargement";
 import BadgeStatutPaiement from "../../components/BadgeStatutPaiement/BadgeStatutPaiement";
 import styles from "../../theme/pages/pelerins/ListePelerins.module.css";
 
-function ListePelerins() {
+function ListePelerins({ typeVoyageFixe, titreCle }) {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [pelerins, setPelerins] = useState([]);
@@ -21,6 +21,7 @@ function ListePelerins() {
       const params = {};
       if (recherche) params.search = recherche;
       if (filtreStatut) params.statut = filtreStatut;
+      if (typeVoyageFixe) params.type_voyage = typeVoyageFixe;
       const { data } = await pelerinService.lister(params);
       setPelerins(data);
     } finally {
@@ -31,7 +32,11 @@ function ListePelerins() {
   useEffect(() => {
     const delai = setTimeout(charger, 300);
     return () => clearTimeout(delai);
-  }, [recherche, filtreStatut]);
+  }, [recherche, filtreStatut, typeVoyageFixe]);
+
+  const pelerinsAffiches = filtreStatutPaiement
+    ? pelerins.filter((p) => p.statut_paiement === filtreStatutPaiement)
+    : pelerins;
 
   const supprimer = async (id, e) => {
     e.stopPropagation();
@@ -45,15 +50,11 @@ function ListePelerins() {
     telechargerFichierProtege(pelerinService.urlFichePdf(p.id), `fiche_${p.numero_id}.pdf`);
   };
 
-  const pelerinsAffiches = filtreStatutPaiement
-    ? pelerins.filter((p) => p.statut_paiement === filtreStatutPaiement)
-    : pelerins;
-
   return (
     <div>
       <div className={styles.entete}>
         <div>
-          <h1 className={styles.titre}>{t("pelerins")}</h1>
+          <h1 className={styles.titre}>{t(titreCle || "menu_pelerins")}</h1>
           <p className={styles.sousTitre}>{pelerinsAffiches.length} {t("dossiers_enregistres")}</p>
         </div>
         <button className={styles.boutonPrincipal} onClick={() => navigate("/pelerins/nouveau")}>
@@ -130,20 +131,12 @@ function ListePelerins() {
                     {t(`visa_${p.statut_visa}`)}
                   </span>
                 </td>
-                <td>
-                  <BadgeStatutPaiement statut={p.statut_paiement} />
-                </td>
+                <td><BadgeStatutPaiement statut={p.statut_paiement} /></td>
                 <td className={styles.cellInscripteur}>{p.inscripteur_nom || "—"}</td>
                 <td className={styles.cellActions} onClick={(e) => e.stopPropagation()}>
-                  <button onClick={() => navigate(`/pelerins/${p.id}/modifier`)} title={t("modifier")}>
-                    ✎
-                  </button>
-                  <button onClick={(e) => telechargerFiche(p, e)} title={t("telecharger_fiche")}>
-                    ⬇
-                  </button>
-                  <button onClick={(e) => supprimer(p.id, e)} title={t("supprimer")} className={styles.boutonSupprimer}>
-                    ✕
-                  </button>
+                  <button onClick={() => navigate(`/pelerins/${p.id}/modifier`)} title={t("modifier")}>✎</button>
+                  <button onClick={(e) => telechargerFiche(p, e)} title={t("telecharger_fiche")}>⬇</button>
+                  <button onClick={(e) => supprimer(p.id, e)} title={t("supprimer")} className={styles.boutonSupprimer}>✕</button>
                 </td>
               </tr>
             ))}

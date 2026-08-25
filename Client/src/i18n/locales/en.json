@@ -339,7 +339,17 @@
   "bienvenue_virgule": "Welcome,",
   
   "aucune_agence": "None (own agency)",
-  "avertissement_changement_username": "Changing this field will alter this employee's login identifier."
+  "avertissement_changement_username": "Changing this field will alter this employee's login identifier.",
+
+  
+  "menu_hajj": "Hajj",
+  "menu_oumra": "Umrah",
+  "modules_a_venir_titre": "Upcoming modules",
+  "billetterie": "Ticketing",
+  "location": "Rental",
+  "import_export": "Import / Export",
+  "bientot": "Soon"
+
 
 
 

@@ -1,15 +1,18 @@
 import { NavLink } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { X } from "lucide-react";
+import { X, Ticket, Car, Package } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
 import { MENU_PAR_ROLE, ITEMS_MENU, ENTREPRISE } from "../../config/config";
 import LanguageSwitcher from "../LanguageSwitcher/LanguageSwitcher";
 import styles from "../../theme/components/Sidebar.module.css";
 
+const ROLES_VOIENT_MODULES_FUTURS = ["fondateur", "admin_general"];
+
 function Sidebar({ ouverte, onFermer }) {
   const { t } = useTranslation();
   const { utilisateur, deconnecter } = useAuth();
   const cles = MENU_PAR_ROLE[utilisateur?.role] || [];
+  const voitModulesFuturs = ROLES_VOIENT_MODULES_FUTURS.includes(utilisateur?.role);
 
   return (
     <aside className={`${styles.sidebar} ${ouverte ? styles.sidebarOuverte : ""}`}>
@@ -40,6 +43,27 @@ function Sidebar({ ouverte, onFermer }) {
             </NavLink>
           );
         })}
+
+        {voitModulesFuturs && (
+          <div className={styles.sectionFuture}>
+            <p className={styles.titreSectionFuture}>{t("modules_a_venir_titre")}</p>
+            <div className={styles.lienDesactive}>
+              <Ticket size={17} className={styles.iconeLien} />
+              {t("billetterie")}
+              <span className={styles.badgeBientot}>{t("bientot")}</span>
+            </div>
+            <div className={styles.lienDesactive}>
+              <Car size={17} className={styles.iconeLien} />
+              {t("location")}
+              <span className={styles.badgeBientot}>{t("bientot")}</span>
+            </div>
+            <div className={styles.lienDesactive}>
+              <Package size={17} className={styles.iconeLien} />
+              {t("import_export")}
+              <span className={styles.badgeBientot}>{t("bientot")}</span>
+            </div>
+          </div>
+        )}
       </nav>
 
       <div className={styles.zoneLangue}>

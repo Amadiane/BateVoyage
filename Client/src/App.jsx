@@ -41,8 +41,10 @@ function App() {
         >
           <Route path="/dashboard" element={<Dashboard />} />
 
-          {/* Pèlerins */}
+          {/* Pèlerins — Hajj / Oumra séparés dans le menu, même liste filtrée */}
           <Route path="/pelerins" element={<ListePelerins />} />
+          <Route path="/hajj" element={<ListePelerins typeVoyageFixe="pelerinage" titreCle="menu_hajj" />} />
+          <Route path="/oumra" element={<ListePelerins typeVoyageFixe="oumra" titreCle="menu_oumra" />} />
           <Route path="/pelerins/nouveau" element={<FormulairePelerin />} />
           <Route path="/pelerins/:id" element={<DetailPelerin />} />
           <Route path="/pelerins/:id/modifier" element={<FormulairePelerin />} />

@@ -343,7 +343,17 @@
   "bienvenue_virgule": "مرحبًا,",
   
   "aucune_agence": "لا يوجد (وكالتنا)",
-  "avertissement_changement_username": "تغيير هذا الحقل سيغير معرف تسجيل الدخول لهذا الموظف."
+  "avertissement_changement_username": "تغيير هذا الحقل سيغير معرف تسجيل الدخول لهذا الموظف.",
+
+  
+  "menu_hajj": "الحج",
+  "menu_oumra": "العمرة",
+  "modules_a_venir_titre": "وحدات قادمة",
+  "billetterie": "التذاكر",
+  "location": "التأجير",
+  "import_export": "استيراد / تصدير",
+  "bientot": "قريبًا"
+
 
 
 
