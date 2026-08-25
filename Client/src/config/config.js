@@ -1,5 +1,5 @@
 import logoTransparent from "../assets/images/logo-transparent.png";
-import { LayoutDashboard, Users, UserCog, FileText, ScrollText, Calendar, Plane, Hotel, MessageSquareWarning, Ticket, Car, Package } from "lucide-react";
+import { LayoutDashboard, Users, UserCog, FileText, ScrollText, Calendar, Plane, Hotel, MessageSquareWarning, Ticket, Car, Package, Wallet } from "lucide-react";
 const BASE_URL =
   window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1"
     ? "http://127.0.0.1:8000"
@@ -57,6 +57,16 @@ const CONFIG = {
   API_RECLAMATION_DETAIL: (id) => `${BASE_URL}/api/reclamations/${id}/`,
   API_PROGRAMME_AFFECTER: (id) => `${BASE_URL}/api/formules/programmes/${id}/affecter-pelerins/`,
   API_PROGRAMME_RETIRER: (id) => `${BASE_URL}/api/formules/programmes/${id}/retirer-pelerin/`,
+  API_BONS_SORTIE: `${BASE_URL}/api/comptabilite/bons-sortie/`,
+  API_BON_SORTIE_DETAIL: (id) => `${BASE_URL}/api/comptabilite/bons-sortie/${id}/`,
+  API_DEPENSES: `${BASE_URL}/api/comptabilite/depenses/`,
+  API_DEPENSE_DETAIL: (id) => `${BASE_URL}/api/comptabilite/depenses/${id}/`,
+  API_DETTES_FOURNISSEURS: `${BASE_URL}/api/comptabilite/dettes-fournisseurs/`,
+  API_DETTE_FOURNISSEUR_DETAIL: (id) => `${BASE_URL}/api/comptabilite/dettes-fournisseurs/${id}/`,
+  API_RESUME_COMPTABILITE: `${BASE_URL}/api/comptabilite/resume/`,
+  API_BON_SORTIE_HISTORIQUE: (id) => `${BASE_URL}/api/comptabilite/bons-sortie/${id}/historique/`,
+  API_DEPENSE_HISTORIQUE: (id) => `${BASE_URL}/api/comptabilite/depenses/${id}/historique/`,
+  API_DETTE_FOURNISSEUR_HISTORIQUE: (id) => `${BASE_URL}/api/comptabilite/dettes-fournisseurs/${id}/historique/`,
 
   // --- Formules / Programmes ---
   API_PROGRAMMES: `${BASE_URL}/api/formules/programmes/`,
@@ -78,9 +88,9 @@ export const ENTREPRISE = {
 };
 
 export const MENU_PAR_ROLE = {
-  fondateur: ["dashboard", "hajj", "oumra", "utilisateurs", "documents", "paiements", "programmes", "groupes", "hebergement", "reclamations", "journal"],
-  admin_general: ["dashboard", "hajj", "oumra", "utilisateurs", "documents", "paiements", "programmes", "groupes", "hebergement", "reclamations", "journal"],
-  comptable: ["dashboard", "paiements", "programmes", "hajj", "oumra"],
+  fondateur: ["dashboard", "hajj", "oumra", "utilisateurs", "documents", "paiements", "programmes", "groupes", "hebergement", "reclamations", "journal", "comptabilite"],
+  admin_general: ["dashboard", "hajj", "oumra", "utilisateurs", "documents", "paiements", "programmes", "groupes", "hebergement", "reclamations", "journal", "comptabilite"],
+  comptable: ["dashboard", "paiements", "programmes", "hajj", "oumra","comptabilite"],
   secretaire: ["dashboard", "hajj", "oumra", "documents"],
   docteur: ["dashboard", "pelerins-sante"],
   traducteur: ["dashboard", "documents"],
@@ -109,4 +119,5 @@ export const ITEMS_MENU = {
   reclamations: { cle: "menu_reclamations", path: "/reclamations", icone: MessageSquareWarning },
   "mon-dossier": { cle: "menu_mon_dossier", path: "/mon-dossier", icone: FileText },
   journal: { cle: "menu_journal", path: "/journal-activite", icone: ScrollText },
+  comptabilite: { cle: "menu_comptabilite", path: "/comptabilite", icone: Wallet },
 };

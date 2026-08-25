@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'reclamations',
     'reporting',
     'activite',
+    'comptabilite',
 ]
 
 MIDDLEWARE = [

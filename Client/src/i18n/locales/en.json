@@ -348,7 +348,45 @@
   "billetterie": "Ticketing",
   "location": "Rental",
   "import_export": "Import / Export",
-  "bientot": "Soon"
+  "bientot": "Soon",
+
+  
+  "menu_comptabilite": "Accounting",
+  "comptabilite_description": "Agency's expense vouchers, expenses, and supplier debts",
+  "creances_en_attente": "Pending receivables",
+  "total_depenses": "Total expenses",
+  "dettes_fournisseurs": "Supplier debts",
+  "bons_sortie": "Expense vouchers",
+  "depenses": "Expenses",
+  "nouveau_bon_sortie": "New expense voucher",
+  "beneficiaire": "Recipient",
+  "montant": "Amount",
+  "motif": "Reason",
+  "date": "Date",
+  "numero_bon": "Voucher No.",
+  "tous": "All",
+  "justifie": "Justified",
+  "non_justifie": "Not justified",
+  "marquer_justifie": "Mark as justified",
+  "nouvelle_depense": "New expense",
+  "categorie": "Category",
+  "description": "Description",
+  "categorie_loyer": "Rent",
+  "categorie_salaires": "Salaries",
+  "categorie_fournitures": "Supplies",
+  "categorie_transport": "Transport",
+  "categorie_communication": "Communication",
+  "categorie_autre": "Other",
+  "nouvelle_dette": "New debt",
+  "fournisseur": "Supplier",
+  "date_echeance": "Due date",
+  "soldee": "Settled",
+  "non_soldee": "Not settled",
+  "marquer_soldee": "Mark as settled",
+  "details_dette": "Debt details",
+  "date_paiement": "Payment date",
+  "aucun_resultat": "No results"
+
 
 
 

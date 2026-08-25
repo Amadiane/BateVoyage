@@ -352,7 +352,45 @@
   "billetterie": "التذاكر",
   "location": "التأجير",
   "import_export": "استيراد / تصدير",
-  "bientot": "قريبًا"
+  "bientot": "قريبًا",
+
+  
+  "menu_comptabilite": "المحاسبة",
+  "comptabilite_description": "سندات الصرف، المصاريف، وديون الموردين الخاصة بالوكالة",
+  "creances_en_attente": "الديون المستحقة (لم تُسدَّد بعد)",
+  "total_depenses": "إجمالي المصاريف",
+  "dettes_fournisseurs": "ديون الموردين",
+  "bons_sortie": "سندات الصرف",
+  "depenses": "المصاريف",
+  "nouveau_bon_sortie": "سند صرف جديد",
+  "beneficiaire": "المستفيد",
+  "montant": "المبلغ",
+  "motif": "السبب",
+  "date": "التاريخ",
+  "numero_bon": "رقم السند",
+  "tous": "الكل",
+  "justifie": "مُبرَّر",
+  "non_justifie": "غير مُبرَّر",
+  "marquer_justifie": "وضع علامة كمُبرَّر",
+  "nouvelle_depense": "مصروف جديد",
+  "categorie": "الفئة",
+  "description": "الوصف",
+  "categorie_loyer": "الإيجار",
+  "categorie_salaires": "الرواتب",
+  "categorie_fournitures": "اللوازم",
+  "categorie_transport": "النقل",
+  "categorie_communication": "الاتصالات",
+  "categorie_autre": "أخرى",
+  "nouvelle_dette": "دين جديد",
+  "fournisseur": "المورد",
+  "date_echeance": "تاريخ الاستحقاق",
+  "soldee": "مُسددة",
+  "non_soldee": "غير مُسددة",
+  "marquer_soldee": "وضع علامة كمُسددة",
+  "details_dette": "تفاصيل الدين",
+  "date_paiement": "تاريخ السداد",
+  "aucun_resultat": "لا توجد نتائج"
+
 
 
 

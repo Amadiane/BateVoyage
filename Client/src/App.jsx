@@ -20,6 +20,7 @@ import PageHebergement from "./pages/hebergement/PageHebergement";
 import DetailHotel from "./pages/hebergement/DetailHotel";
 import DetailChambre from "./pages/hebergement/DetailChambre";
 import ListeReclamations from "./pages/reclamations/ListeReclamations";
+import PageComptabilite from "./pages/comptabilite/PageComptabilite";
 import "./globals.css";
 
 const ROLES_FINANCIERS = ["fondateur", "admin_general", "comptable", "secretaire"];
@@ -58,6 +59,16 @@ function App() {
             element={
               <ProtectedRoute rolesAutorises={ROLES_FINANCIERS}>
                 <ListePaiements />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* Comptabilité */}
+          <Route
+            path="/comptabilite"
+            element={
+              <ProtectedRoute rolesAutorises={ROLES_FINANCIERS}>
+                <PageComptabilite />
               </ProtectedRoute>
             }
           />

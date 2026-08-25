@@ -353,7 +353,43 @@
   "billetterie": "Billetterie",
   "location": "Location",
   "import_export": "Import / Export",
-  "bientot": "Bientôt"
+  "bientot": "Bientôt",
+
+  
+  "menu_comptabilite": "Comptabilité",
+  "comptabilite_description": "Bons de sortie, dépenses et dettes fournisseurs de l'agence",
+  "creances_en_attente": "Créances en attente",
+  "total_depenses": "Total dépenses",
+  "dettes_fournisseurs": "Dettes fournisseurs",
+  "bons_sortie": "Bons de sortie",
+  "depenses": "Dépenses",
+  "nouveau_bon_sortie": "Nouveau bon de sortie",
+  "beneficiaire": "Bénéficiaire",
+  "montant": "Montant",
+  "motif": "Motif",
+  "date": "Date",
+  "numero_bon": "N° Bon",
+  "tous": "Tous",
+  "justifie": "Justifié",
+  "non_justifie": "Non justifié",
+  "marquer_justifie": "Marquer comme justifié",
+  "nouvelle_depense": "Nouvelle dépense",
+  "categorie": "Catégorie",
+  "description": "Description",
+  "categorie_loyer": "Loyer",
+  "categorie_salaires": "Salaires",
+  "categorie_fournitures": "Fournitures",
+  "categorie_transport": "Transport",
+  "categorie_communication": "Communication",
+  "categorie_autre": "Autre",
+  "nouvelle_dette": "Nouvelle dette",
+  "fournisseur": "Fournisseur",
+  "date_echeance": "Date d'échéance",
+  "soldee": "Soldée",
+  "non_soldee": "Non soldée",
+  "marquer_soldee": "Marquer comme soldée",
+  "details_dette": "Détails de la dette"
+ 
 
 
 
