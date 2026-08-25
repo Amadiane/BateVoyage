@@ -1,0 +1,34 @@
+.page { max-width: 720px; }
+.titre { font-family: var(--font-display); font-size: 24px; color: var(--color-brand-dark); margin: 0 0 20px; }
+.chargement { padding: 32px; text-align: center; color: #9CA3AF; }
+
+.carte { background-color: #fff; border: 1px solid var(--color-border); border-radius: 14px; padding: 26px; }
+
+.sectionTitre {
+  font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em;
+  color: var(--color-brand); margin-top: 20px; padding-top: 16px; border-top: 1px solid #F3F4F6;
+}
+.carte > form > .sectionTitre:first-child { margin-top: 0; padding-top: 0; border-top: none; }
+
+.grille { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 12px; }
+
+.champ { margin-top: 16px; }
+.champ label { display: block; font-size: 12.5px; font-weight: 600; color: #4B5563; margin-bottom: 6px; }
+.champ input, .champ select { width: 100%; padding: 10px 12px; border: 1px solid var(--color-border); border-radius: 8px; font-size: 14px; }
+.champ input:focus, .champ select:focus { outline: none; border-color: var(--color-brand); box-shadow: 0 0 0 3px var(--color-brand-pale); }
+
+.groupeLangues { display: flex; flex-wrap: wrap; gap: 10px; }
+.checkboxLangue { display: flex; align-items: center; gap: 6px; font-size: 13px; padding: 7px 12px; border: 1px solid var(--color-border); border-radius: 8px; cursor: pointer; }
+
+.erreur { font-size: 13px; color: #B91C1C; background-color: #FEF2F2; border: 1px solid #FECACA; border-radius: 8px; padding: 10px 14px; margin-top: 16px; }
+
+.navigation { display: flex; justify-content: flex-end; gap: 10px; margin-top: 24px; padding-top: 18px; border-top: 1px solid var(--color-border); }
+.boutonPrincipal { padding: 10px 20px; border: none; border-radius: 8px; background-color: var(--color-brand-dark); color: #fff; font-size: 14px; font-weight: 600; cursor: pointer; }
+.boutonPrincipal:hover:not(:disabled) { background-color: var(--color-brand); }
+.boutonPrincipal:disabled { opacity: 0.6; }
+.boutonSecondaire { padding: 10px 20px; border: 1px solid var(--color-border); border-radius: 8px; background-color: #fff; color: var(--color-ink); font-size: 14px; cursor: pointer; }
+.boutonSecondaire:hover { background-color: #F9FAFB; }
+
+@media (max-width: 640px) {
+  .grille { grid-template-columns: 1fr; }
+}

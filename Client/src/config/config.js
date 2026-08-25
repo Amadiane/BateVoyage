@@ -67,6 +67,8 @@ const CONFIG = {
   API_BON_SORTIE_HISTORIQUE: (id) => `${BASE_URL}/api/comptabilite/bons-sortie/${id}/historique/`,
   API_DEPENSE_HISTORIQUE: (id) => `${BASE_URL}/api/comptabilite/depenses/${id}/historique/`,
   API_DETTE_FOURNISSEUR_HISTORIQUE: (id) => `${BASE_URL}/api/comptabilite/dettes-fournisseurs/${id}/historique/`,
+  API_PERSONNEL: `${BASE_URL}/api/personnel/`,
+  API_PERSONNEL_DETAIL: (id) => `${BASE_URL}/api/personnel/${id}/`,
 
   // --- Formules / Programmes ---
   API_PROGRAMMES: `${BASE_URL}/api/formules/programmes/`,
@@ -88,8 +90,8 @@ export const ENTREPRISE = {
 };
 
 export const MENU_PAR_ROLE = {
-  fondateur: ["dashboard", "hajj", "oumra", "utilisateurs", "documents", "paiements", "programmes", "groupes", "hebergement", "reclamations", "journal", "comptabilite"],
-  admin_general: ["dashboard", "hajj", "oumra", "utilisateurs", "documents", "paiements", "programmes", "groupes", "hebergement", "reclamations", "journal", "comptabilite"],
+  fondateur: ["dashboard", "hajj", "oumra", "utilisateurs", "documents", "paiements", "programmes", "groupes", "hebergement", "reclamations", "journal", "comptabilite", "personnel"],
+  admin_general: ["dashboard", "hajj", "oumra", "utilisateurs", "documents", "paiements", "programmes", "groupes", "hebergement", "reclamations", "journal", "comptabilite", "personnel"],
   comptable: ["dashboard", "paiements", "programmes", "hajj", "oumra","comptabilite"],
   secretaire: ["dashboard", "hajj", "oumra", "documents"],
   docteur: ["dashboard", "pelerins-sante"],
@@ -120,4 +122,5 @@ export const ITEMS_MENU = {
   "mon-dossier": { cle: "menu_mon_dossier", path: "/mon-dossier", icone: FileText },
   journal: { cle: "menu_journal", path: "/journal-activite", icone: ScrollText },
   comptabilite: { cle: "menu_comptabilite", path: "/comptabilite", icone: Wallet },
+  personnel: { cle: "menu_personnel", path: "/personnel", icone: UserCog },
 };

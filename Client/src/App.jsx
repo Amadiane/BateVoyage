@@ -21,6 +21,8 @@ import DetailHotel from "./pages/hebergement/DetailHotel";
 import DetailChambre from "./pages/hebergement/DetailChambre";
 import ListeReclamations from "./pages/reclamations/ListeReclamations";
 import PageComptabilite from "./pages/comptabilite/PageComptabilite";
+import ListePersonnel from "./pages/personnel/ListePersonnel";
+import FormulairePersonnel from "./pages/personnel/FormulairePersonnel";
 import "./globals.css";
 
 const ROLES_FINANCIERS = ["fondateur", "admin_general", "comptable", "secretaire"];
@@ -135,6 +137,30 @@ function App() {
               </ProtectedRoute>
             }
           />
+          <Route
+  path="/personnel"
+  element={
+    <ProtectedRoute rolesAutorises={ROLES_ADMIN}>
+      <ListePersonnel />
+    </ProtectedRoute>
+  }
+/>
+<Route
+  path="/personnel/nouveau"
+  element={
+    <ProtectedRoute rolesAutorises={ROLES_ADMIN}>
+      <FormulairePersonnel />
+    </ProtectedRoute>
+      }
+    />
+    <Route
+      path="/personnel/:id"
+      element={
+        <ProtectedRoute rolesAutorises={ROLES_ADMIN}>
+          <FormulairePersonnel />
+        </ProtectedRoute>
+      }
+    />
 
           {/* Journal d'activité */}
           <Route
