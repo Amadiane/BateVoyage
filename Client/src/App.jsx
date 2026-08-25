@@ -23,6 +23,7 @@ import ListeReclamations from "./pages/reclamations/ListeReclamations";
 import PageComptabilite from "./pages/comptabilite/PageComptabilite";
 import ListePersonnel from "./pages/personnel/ListePersonnel";
 import FormulairePersonnel from "./pages/personnel/FormulairePersonnel";
+import PageModelesDocuments from "./pages/modeles-documents/PageModelesDocuments";
 import "./globals.css";
 
 const ROLES_FINANCIERS = ["fondateur", "admin_general", "comptable", "secretaire"];
@@ -44,7 +45,7 @@ function App() {
         >
           <Route path="/dashboard" element={<Dashboard />} />
 
-          {/* Pèlerins — Hajj / Oumra séparés dans le menu, même liste filtrée */}
+          {/* Pèlerins — Hajj / Oumra */}
           <Route path="/pelerins" element={<ListePelerins />} />
           <Route path="/hajj" element={<ListePelerins typeVoyageFixe="pelerinage" titreCle="menu_hajj" />} />
           <Route path="/oumra" element={<ListePelerins typeVoyageFixe="oumra" titreCle="menu_oumra" />} />
@@ -52,7 +53,7 @@ function App() {
           <Route path="/pelerins/:id" element={<DetailPelerin />} />
           <Route path="/pelerins/:id/modifier" element={<FormulairePelerin />} />
 
-          {/* Documents */}
+          {/* Documents (conformité dossiers) */}
           <Route path="/documents" element={<PageDocuments />} />
 
           {/* Paiements */}
@@ -112,6 +113,42 @@ function App() {
             }
           />
 
+          {/* Personnel (Guides/Encadreurs/Docteurs/Mounazim) */}
+          <Route
+            path="/personnel"
+            element={
+              <ProtectedRoute rolesAutorises={ROLES_ADMIN}>
+                <ListePersonnel />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/personnel/nouveau"
+            element={
+              <ProtectedRoute rolesAutorises={ROLES_ADMIN}>
+                <FormulairePersonnel />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/personnel/:id"
+            element={
+              <ProtectedRoute rolesAutorises={ROLES_ADMIN}>
+                <FormulairePersonnel />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* Modèles de documents générés */}
+          <Route
+            path="/modeles-documents"
+            element={
+              <ProtectedRoute rolesAutorises={ROLES_ADMIN}>
+                <PageModelesDocuments />
+              </ProtectedRoute>
+            }
+          />
+
           {/* Utilisateurs */}
           <Route
             path="/utilisateurs"
@@ -137,30 +174,6 @@ function App() {
               </ProtectedRoute>
             }
           />
-          <Route
-  path="/personnel"
-  element={
-    <ProtectedRoute rolesAutorises={ROLES_ADMIN}>
-      <ListePersonnel />
-    </ProtectedRoute>
-  }
-/>
-<Route
-  path="/personnel/nouveau"
-  element={
-    <ProtectedRoute rolesAutorises={ROLES_ADMIN}>
-      <FormulairePersonnel />
-    </ProtectedRoute>
-      }
-    />
-    <Route
-      path="/personnel/:id"
-      element={
-        <ProtectedRoute rolesAutorises={ROLES_ADMIN}>
-          <FormulairePersonnel />
-        </ProtectedRoute>
-      }
-    />
 
           {/* Journal d'activité */}
           <Route

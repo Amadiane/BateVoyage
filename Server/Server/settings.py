@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'activite',
     'comptabilite',
     'personnel',
+    'documents_generes',
 ]
 
 MIDDLEWARE = [

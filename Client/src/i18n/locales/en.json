@@ -430,7 +430,19 @@
   "role_guide": "Guide",
   "role_encadreur": "Supervisor",
   "role_docteur": "Doctor",
-  "role_mounazim": "Mounazim"
+  "role_mounazim": "Mounazim",
+
+  
+  "menu_modeles_documents": "Document templates",
+  "modeles_documents_description": "Customize the content of automatically generated documents",
+  "aide_placeholders": "Use {{ p.prenom }}, {{ p.nom }}, {{ p.numero_id }}, {{ aujourdhui }}, etc. to insert pilgrim data.",
+  "modele_enregistre": "Template saved successfully.",
+  "documents_administratifs": "Administrative documents",
+  "attestation_inscription": "Registration certificate",
+  "attestation_paiement": "Payment certificate",
+  "contrat": "Service agreement",
+  "attestation_sante": "Health certificate"
+
 
 
 

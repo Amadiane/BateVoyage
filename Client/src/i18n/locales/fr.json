@@ -432,7 +432,19 @@
   "role_guide": "Guide",
   "role_encadreur": "Encadreur",
   "role_docteur": "Docteur",
-  "role_mounazim": "Mounazim"
+  "role_mounazim": "Mounazim",
+
+  
+  "menu_modeles_documents": "Modèles de documents",
+  "modeles_documents_description": "Personnalisez le contenu des documents générés automatiquement",
+  "aide_placeholders": "Utilisez {{ p.prenom }}, {{ p.nom }}, {{ p.numero_id }}, {{ aujourdhui }}, etc. pour insérer les données du pèlerin.",
+  "modele_enregistre": "Modèle enregistré avec succès.",
+  "documents_administratifs": "Documents administratifs",
+  "attestation_inscription": "Attestation d'inscription",
+  "attestation_paiement": "Attestation de paiement",
+  "contrat": "Contrat de prestation",
+  "attestation_sante": "Attestation de santé"
+
 
  
 

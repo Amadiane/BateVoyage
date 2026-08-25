@@ -3,11 +3,11 @@ import { useParams, useNavigate, Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { pelerinService } from "../../services/pelerinService";
 import { paiementService } from "../../services/paiementService";
+import { documentsGeneresService } from "../../services/documentsGeneresService";
 import CONFIG from "../../config/config";
 import { ouvrirFichierProtege, telechargerFichierProtege } from "../../utils/telechargement";
 import HistoriquePelerin from "../../components/HistoriquePelerin/HistoriquePelerin";
 import ModalNouveauPaiement from "../../components/ModalNouveauPaiement/ModalNouveauPaiement";
-import BadgeStatutPaiement from "../../components/BadgeStatutPaiement/BadgeStatutPaiement";
 import styles from "../../theme/pages/pelerins/DetailPelerin.module.css";
 
 function DetailPelerin() {
@@ -79,6 +79,10 @@ function DetailPelerin() {
     telechargerFichierProtege(CONFIG.API_PELERIN_DOCUMENT(id, champ), nomFichier);
   };
 
+  const telechargerDocumentGenere = (type, nom) => {
+    telechargerFichierProtege(documentsGeneresService.urlDocumentGenere(id, type), `${nom}_${pelerin.numero_id}.pdf`);
+  };
+
   if (chargement) return <p className={styles.chargement}>{t("chargement")}</p>;
   if (!pelerin) return <p className={styles.chargement}>{t("aucun_pelerin")}</p>;
 
@@ -108,7 +112,6 @@ function DetailPelerin() {
               {pelerin.dossier_complet && (
                 <span className={`${styles.badge} ${styles.badgeComplet}`}>{t("dossier_complet")}</span>
               )}
-              <BadgeStatutPaiement statut={pelerin.statut_paiement} />
             </div>
           </div>
         </div>
@@ -208,14 +211,6 @@ function DetailPelerin() {
             </div>
           )}
 
-          {pelerin.jours_avant_depart !== null && pelerin.jours_avant_depart !== undefined && (
-            <p className={styles.infoDepart}>
-              {pelerin.jours_avant_depart >= 0
-                ? t("jours_restants_avant_depart", { jours: pelerin.jours_avant_depart })
-                : t("depart_deja_passe")}
-            </p>
-          )}
-
           {paiements.length === 0 ? (
             <p className={styles.etatVideMini}>{t("aucun_paiement")}</p>
           ) : (
@@ -272,6 +267,29 @@ function DetailPelerin() {
           >
             + {t("ajouter_paiement")}
           </button>
+        </Section>
+
+        <Section titre={t("documents_administratifs")}>
+          <div className={styles.actionsDocument}>
+            <button className={styles.lienDocument} onClick={() => telechargerDocumentGenere("attestation_inscription", "attestation_inscription")}>
+              📄 {t("attestation_inscription")}
+            </button>
+          </div>
+          <div className={styles.actionsDocument}>
+            <button className={styles.lienDocument} onClick={() => telechargerDocumentGenere("attestation_paiement", "attestation_paiement")}>
+              📄 {t("attestation_paiement")}
+            </button>
+          </div>
+          <div className={styles.actionsDocument}>
+            <button className={styles.lienDocument} onClick={() => telechargerDocumentGenere("contrat", "contrat")}>
+              📄 {t("contrat")}
+            </button>
+          </div>
+          <div className={styles.actionsDocument}>
+            <button className={styles.lienDocument} onClick={() => telechargerDocumentGenere("attestation_sante", "attestation_sante")}>
+              📄 {t("attestation_sante")}
+            </button>
+          </div>
         </Section>
       </div>
 

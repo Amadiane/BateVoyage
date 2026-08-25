@@ -69,6 +69,9 @@ const CONFIG = {
   API_DETTE_FOURNISSEUR_HISTORIQUE: (id) => `${BASE_URL}/api/comptabilite/dettes-fournisseurs/${id}/historique/`,
   API_PERSONNEL: `${BASE_URL}/api/personnel/`,
   API_PERSONNEL_DETAIL: (id) => `${BASE_URL}/api/personnel/${id}/`,
+  API_MODELES_DOCUMENTS: `${BASE_URL}/api/documents-generes/modeles/`,
+  API_MODELE_DOCUMENT_DETAIL: (type) => `${BASE_URL}/api/documents-generes/modeles/${type}/`,
+  API_PELERIN_DOCUMENT_GENERE: (id, type) => `${BASE_URL}/api/pelerins/${id}/document-genere/${type}/`,
 
   // --- Formules / Programmes ---
   API_PROGRAMMES: `${BASE_URL}/api/formules/programmes/`,
@@ -90,8 +93,8 @@ export const ENTREPRISE = {
 };
 
 export const MENU_PAR_ROLE = {
-  fondateur: ["dashboard", "hajj", "oumra", "utilisateurs", "documents", "paiements", "programmes", "groupes", "hebergement", "reclamations", "journal", "comptabilite", "personnel"],
-  admin_general: ["dashboard", "hajj", "oumra", "utilisateurs", "documents", "paiements", "programmes", "groupes", "hebergement", "reclamations", "journal", "comptabilite", "personnel"],
+  fondateur: ["dashboard", "hajj", "oumra", "utilisateurs", "documents", "paiements", "programmes", "groupes", "hebergement", "reclamations", "journal", "comptabilite", "personnel", "modeles_documents"],
+  admin_general: ["dashboard", "hajj", "oumra", "utilisateurs", "documents", "paiements", "programmes", "groupes", "hebergement", "reclamations", "journal", "comptabilite", "personnel", "modeles_documents"],
   comptable: ["dashboard", "paiements", "programmes", "hajj", "oumra","comptabilite"],
   secretaire: ["dashboard", "hajj", "oumra", "documents"],
   docteur: ["dashboard", "pelerins-sante"],
@@ -123,4 +126,5 @@ export const ITEMS_MENU = {
   journal: { cle: "menu_journal", path: "/journal-activite", icone: ScrollText },
   comptabilite: { cle: "menu_comptabilite", path: "/comptabilite", icone: Wallet },
   personnel: { cle: "menu_personnel", path: "/personnel", icone: UserCog },
+  modeles_documents: { cle: "menu_modeles_documents", path: "/modeles-documents", icone: FileText },
 };

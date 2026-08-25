@@ -1,0 +1,24 @@
+.titre { font-family: var(--font-display); font-size: 24px; color: var(--color-brand-dark); margin: 0 0 4px; }
+.sousTitre { color: #6B7280; font-size: 13px; margin: 0 0 20px; }
+.chargement { padding: 32px; text-align: center; color: #9CA3AF; }
+
+.onglets { display: flex; gap: 4px; margin-bottom: 16px; border-bottom: 1px solid var(--color-border); flex-wrap: wrap; }
+.onglet, .ongletActif { padding: 10px 16px; border: none; background: none; font-size: 13px; font-weight: 600; cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -1px; }
+.onglet { color: #6B7280; }
+.ongletActif { color: var(--color-brand); border-bottom-color: var(--color-brand); }
+
+.carte { background-color: #fff; border: 1px solid var(--color-border); border-radius: 12px; padding: 20px; }
+.aide { font-size: 12px; color: #6B7280; background-color: #F9FAFB; padding: 10px 12px; border-radius: 8px; margin: 0 0 12px; }
+
+.zoneTexte {
+  width: 100%; padding: 14px; border: 1px solid var(--color-border); border-radius: 8px;
+  font-family: monospace; font-size: 13px; line-height: 1.6; resize: vertical;
+}
+.zoneTexte:focus { outline: none; border-color: var(--color-brand); box-shadow: 0 0 0 3px var(--color-brand-pale); }
+
+.message { font-size: 13px; color: var(--color-brand); margin: 10px 0 0; }
+
+.navigation { display: flex; justify-content: flex-end; margin-top: 14px; }
+.boutonPrincipal { padding: 10px 20px; border: none; border-radius: 8px; background-color: var(--color-brand-dark); color: #fff; font-size: 14px; font-weight: 600; cursor: pointer; }
+.boutonPrincipal:hover:not(:disabled) { background-color: var(--color-brand); }
+.boutonPrincipal:disabled { opacity: 0.6; }

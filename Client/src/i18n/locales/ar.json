@@ -434,7 +434,19 @@
   "role_guide": "المرشد",
   "role_encadreur": "المشرف",
   "role_docteur": "الطبيب",
-  "role_mounazim": "المنظم"
+  "role_mounazim": "المنظم",
+
+  
+  "menu_modeles_documents": "نماذج المستندات",
+  "modeles_documents_description": "خصّص محتوى المستندات التي يتم إنشاؤها تلقائيًا",
+  "aide_placeholders": "استخدم {{ p.prenom }}، {{ p.nom }}، {{ p.numero_id }}، {{ aujourdhui }}، وغيرها لإدراج بيانات الحاج.",
+  "modele_enregistre": "تم حفظ النموذج بنجاح.",
+  "documents_administratifs": "المستندات الإدارية",
+  "attestation_inscription": "شهادة التسجيل",
+  "attestation_paiement": "شهادة الدفع",
+  "contrat": "عقد الخدمة",
+  "attestation_sante": "الشهادة الصحية"
+
 
 
 
