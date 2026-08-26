@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     'comptabilite',
     'personnel',
     'documents_generes',
+    'configuration',
 ]
 
 MIDDLEWARE = [

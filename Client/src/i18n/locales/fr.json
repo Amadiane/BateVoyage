@@ -464,7 +464,13 @@
   "documents_description": "Suivi de la conformité des dossiers pèlerins",
   "passeports_a_surveiller": "Passeports à surveiller",
   "elements_manquants": "Éléments manquants",
-  "aucun_resultat": "Aucun résultat"
+  "aucun_resultat": "Aucun résultat",
+
+  
+  "menu_modules_visibles": "Modules visibles",
+  "modules_visibles_titre": "Gestion des modules visibles",
+  "modules_visibles_description": "Activez un module à la fois pour guider la validation avec le client, sans surcharger son menu."
+
 
 
 

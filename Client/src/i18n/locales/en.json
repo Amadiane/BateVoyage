@@ -462,7 +462,13 @@
   "documents_description": "Track pilgrim file compliance",
   "passeports_a_surveiller": "Passports to watch",
   "elements_manquants": "Missing items",
-  "aucun_resultat": "No results"
+  "aucun_resultat": "No results",
+
+  
+  "menu_modules_visibles": "Visible modules",
+  "modules_visibles_titre": "Manage visible modules",
+  "modules_visibles_description": "Enable one module at a time to guide validation with the client, without overwhelming their menu."
+
 
 
 

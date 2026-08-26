@@ -165,7 +165,7 @@ function Dashboard() {
           <>
             <CarteStat
               icone={FileWarning}
-              chiffre={docs?.total_dossiers_incomplets ?? 0}
+              chiffre={docs?.total_dossiers_incomplets ?? docs?.dossiers_incomplets?.length ?? 0}
               label={t("dossiers_incomplets")}
               couleur="orange"
               onClick={() => navigate("/documents")}

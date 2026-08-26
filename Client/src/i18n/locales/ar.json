@@ -465,7 +465,13 @@
   "documents_description": "متابعة اكتمال ملفات الحجاج",
   "passeports_a_surveiller": "جوازات تتطلب المتابعة",
   "elements_manquants": "العناصر الناقصة",
-  "aucun_resultat": "لا توجد نتائج"
+  "aucun_resultat": "لا توجد نتائج",
+
+  
+  "menu_modules_visibles": "الوحدات المرئية",
+  "modules_visibles_titre": "إدارة الوحدات المرئية",
+  "modules_visibles_description": "فعّل وحدة واحدة في كل مرة لتوجيه عملية التحقق مع العميل، دون إثقال قائمته."
+
 
 
 

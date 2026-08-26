@@ -72,6 +72,8 @@ const CONFIG = {
   API_MODELES_DOCUMENTS: `${BASE_URL}/api/documents-generes/modeles/`,
   API_MODELE_DOCUMENT_DETAIL: (type) => `${BASE_URL}/api/documents-generes/modeles/${type}/`,
   API_PELERIN_DOCUMENT_GENERE: (id, type) => `${BASE_URL}/api/pelerins/${id}/document-genere/${type}/`,
+  API_MODULES_SYSTEME: `${BASE_URL}/api/configuration/modules/`,
+  API_MODULE_SYSTEME_DETAIL: (id) => `${BASE_URL}/api/configuration/modules/${id}/`,
 
   // --- Formules / Programmes ---
   API_PROGRAMMES: `${BASE_URL}/api/formules/programmes/`,
@@ -93,7 +95,7 @@ export const ENTREPRISE = {
 };
 
 export const MENU_PAR_ROLE = {
-  fondateur: ["dashboard", "hajj", "oumra", "utilisateurs", "documents", "paiements", "programmes", "groupes", "hebergement", "reclamations", "journal", "comptabilite", "personnel", "modeles_documents"],
+  fondateur: ["dashboard", "hajj", "oumra", "utilisateurs", "documents", "paiements", "programmes", "groupes", "hebergement", "reclamations", "journal", "comptabilite", "personnel", "modeles_documents", "modules_visibles"],
   admin_general: ["dashboard", "hajj", "oumra", "utilisateurs", "documents", "paiements", "programmes", "groupes", "hebergement", "reclamations", "journal", "comptabilite", "personnel", "modeles_documents"],
   comptable: ["dashboard", "paiements", "programmes", "hajj", "oumra","comptabilite"],
   secretaire: ["dashboard", "hajj", "oumra", "documents"],
@@ -127,4 +129,5 @@ export const ITEMS_MENU = {
   comptabilite: { cle: "menu_comptabilite", path: "/comptabilite", icone: Wallet },
   personnel: { cle: "menu_personnel", path: "/personnel", icone: UserCog },
   modeles_documents: { cle: "menu_modeles_documents", path: "/modeles-documents", icone: FileText },
+  modules_visibles: { cle: "menu_modules_visibles", path: "/parametres/modules", icone: FileText },
 };

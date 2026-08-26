@@ -24,6 +24,7 @@ import PageComptabilite from "./pages/comptabilite/PageComptabilite";
 import ListePersonnel from "./pages/personnel/ListePersonnel";
 import FormulairePersonnel from "./pages/personnel/FormulairePersonnel";
 import PageModelesDocuments from "./pages/modeles-documents/PageModelesDocuments";
+import PageModulesVisibles from "./pages/parametres/PageModulesVisibles";
 import "./globals.css";
 
 const ROLES_FINANCIERS = ["fondateur", "admin_general", "comptable", "secretaire"];
@@ -62,6 +63,14 @@ function App() {
             element={
               <ProtectedRoute rolesAutorises={ROLES_FINANCIERS}>
                 <ListePaiements />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/parametres/modules"
+            element={
+              <ProtectedRoute rolesAutorises={ROLES_ADMIN}>
+                <PageModulesVisibles />
               </ProtectedRoute>
             }
           />

@@ -1,8 +1,10 @@
+import { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { X, Ticket, Car, Package, LogOut } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
 import { MENU_PAR_ROLE, ITEMS_MENU, ENTREPRISE } from "../../config/config";
+import { configurationService } from "../../services/configurationService";
 import LanguageSwitcher from "../LanguageSwitcher/LanguageSwitcher";
 import styles from "../../theme/components/Sidebar.module.css";
 
@@ -11,7 +13,30 @@ const ROLES_VOIENT_MODULES_FUTURS = ["fondateur", "admin_general"];
 function Sidebar({ ouverte, onFermer }) {
   const { t } = useTranslation();
   const { utilisateur, deconnecter } = useAuth();
-  const cles = MENU_PAR_ROLE[utilisateur?.role] || [];
+  const [clesActives, setClesActives] = useState(null);
+
+  const chargerModulesActifs = () => {
+  configurationService.listerModules().then(({ data }) => {
+    setClesActives(new Set(data.filter((m) => m.actif).map((m) => m.cle)));
+  }).catch(() => {
+    setClesActives(null);
+  });
+};
+
+useEffect(() => {
+  chargerModulesActifs();
+  window.addEventListener("modules-systeme-modifies", chargerModulesActifs);
+  return () => window.removeEventListener("modules-systeme-modifies", chargerModulesActifs);
+}, []);
+
+  const clesRole = MENU_PAR_ROLE[utilisateur?.role] || [];
+  // "dashboard" reste toujours visible, quel que soit l'état des modules.
+const CLES_TOUJOURS_VISIBLES = ["dashboard", "modules_visibles"];
+
+const clesAffichees = clesActives
+  ? clesRole.filter((cle) => CLES_TOUJOURS_VISIBLES.includes(cle) || clesActives.has(cle))
+  : clesRole;
+
   const voitModulesFuturs = ROLES_VOIENT_MODULES_FUTURS.includes(utilisateur?.role);
 
   return (
@@ -27,7 +52,7 @@ function Sidebar({ ouverte, onFermer }) {
       </div>
 
       <nav className={styles.menu}>
-        {cles.map((cle) => {
+        {clesAffichees.map((cle) => {
           const item = ITEMS_MENU[cle];
           if (!item) return null;
           const Icone = item.icone;
@@ -70,11 +95,7 @@ function Sidebar({ ouverte, onFermer }) {
         <LanguageSwitcher variant="sombre" />
       </div>
 
-      {/* <div className={styles.pied}>
-        <button onClick={deconnecter} className={styles.boutonDeconnexion}>
-          <LogOut size={15} /> {t("se_deconnecter")}
-        </button>
-      </div> */}
+
     </aside>
   );
 }
