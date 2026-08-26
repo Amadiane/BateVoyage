@@ -148,7 +148,8 @@ class PelerinViewSet(viewsets.ModelViewSet):
         except ModeleDocument.DoesNotExist:
             return Response({"erreur": "Type de document inconnu."}, status=404)
 
-        template_corps = django_engine.from_string(modele.corps_html)
+        corps_nettoye = modele.corps_html.replace("&nbsp;", " ")
+        template_corps = django_engine.from_string(corps_nettoye)
         corps_rendu = template_corps.render({
             "p": pelerin,
             "paiements": pelerin.paiements.all(),
@@ -189,5 +190,3 @@ class PelerinViewSet(viewsets.ModelViewSet):
         if resultat.err:
             return Response({"erreur": "Échec de la génération du PDF."}, status=500)
         return response
-
-
