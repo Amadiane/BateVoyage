@@ -441,7 +441,23 @@
   "attestation_inscription": "Registration certificate",
   "attestation_paiement": "Payment certificate",
   "contrat": "Service agreement",
-  "attestation_sante": "Health certificate"
+  "attestation_sante": "Health certificate",
+
+  
+  "modeles_documents_description_simple": "اكتب محتوى مستنداتك كما في معالج النصوص، دون الحاجة إلى برمجة.",
+  "cliquer_pour_inserer": "انقر على حقل لإدراجه في موضع المؤشر:",
+  "champ_prenom": "الاسم الأول",
+  "champ_nom": "اللقب",
+  "champ_numero_dossier": "رقم الملف",
+  "champ_numero_passeport": "رقم الجواز",
+  "champ_type_voyage": "نوع الرحلة",
+  "champ_montant_verse": "المبلغ المدفوع",
+  "champ_groupe_sanguin": "فصيلة الدم",
+  "champ_date_du_jour": "تاريخ اليوم",
+  "mode_edition": "✏️ تحرير",
+  "mode_apercu": "👁 معاينة",
+  "avertissement_apercu": "معاينة ببيانات تجريبية — سيستخدم المستند الفعلي معلومات الحاج المحدد."
+
 
 
 

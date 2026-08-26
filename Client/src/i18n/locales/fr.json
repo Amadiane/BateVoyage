@@ -443,7 +443,23 @@
   "attestation_inscription": "Attestation d'inscription",
   "attestation_paiement": "Attestation de paiement",
   "contrat": "Contrat de prestation",
-  "attestation_sante": "Attestation de santé"
+  "attestation_sante": "Attestation de santé",
+
+  
+  "modeles_documents_description_simple": "Rédigez le contenu de vos documents comme dans un traitement de texte, sans code.",
+  "cliquer_pour_inserer": "Cliquez sur un champ pour l'insérer dans le texte à l'endroit du curseur :",
+  "champ_prenom": "Prénom",
+  "champ_nom": "Nom",
+  "champ_numero_dossier": "N° de dossier",
+  "champ_numero_passeport": "N° Passeport",
+  "champ_type_voyage": "Type de voyage",
+  "champ_montant_verse": "Montant versé",
+  "champ_groupe_sanguin": "Groupe sanguin",
+  "champ_date_du_jour": "Date du jour",
+  "mode_edition": "✏️ Rédiger",
+  "mode_apercu": "👁 Aperçu",
+  "avertissement_apercu": "Aperçu avec des données fictives — le vrai document utilisera les informations du pèlerin sélectionné."
+
 
 
  
