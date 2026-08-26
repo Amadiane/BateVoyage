@@ -458,7 +458,14 @@
   "champ_date_du_jour": "Date du jour",
   "mode_edition": "✏️ Rédiger",
   "mode_apercu": "👁 Aperçu",
-  "avertissement_apercu": "Aperçu avec des données fictives — le vrai document utilisera les informations du pèlerin sélectionné."
+  "avertissement_apercu": "Aperçu avec des données fictives — le vrai document utilisera les informations du pèlerin sélectionné.",
+
+  
+  "documents_description": "Suivi de la conformité des dossiers pèlerins",
+  "passeports_a_surveiller": "Passeports à surveiller",
+  "elements_manquants": "Éléments manquants",
+  "aucun_resultat": "Aucun résultat"
+
 
 
 

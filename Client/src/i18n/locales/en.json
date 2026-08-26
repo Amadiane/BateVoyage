@@ -456,7 +456,14 @@
   "champ_date_du_jour": "تاريخ اليوم",
   "mode_edition": "✏️ تحرير",
   "mode_apercu": "👁 معاينة",
-  "avertissement_apercu": "معاينة ببيانات تجريبية — سيستخدم المستند الفعلي معلومات الحاج المحدد."
+  "avertissement_apercu": "معاينة ببيانات تجريبية — سيستخدم المستند الفعلي معلومات الحاج المحدد.",
+
+  
+  "documents_description": "Track pilgrim file compliance",
+  "passeports_a_surveiller": "Passports to watch",
+  "elements_manquants": "Missing items",
+  "aucun_resultat": "No results"
+
 
 
 

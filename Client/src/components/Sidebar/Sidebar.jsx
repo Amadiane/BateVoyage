@@ -1,6 +1,6 @@
 import { NavLink } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { X, Ticket, Car, Package } from "lucide-react";
+import { X, Ticket, Car, Package, LogOut } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
 import { MENU_PAR_ROLE, ITEMS_MENU, ENTREPRISE } from "../../config/config";
 import LanguageSwitcher from "../LanguageSwitcher/LanguageSwitcher";
@@ -70,13 +70,11 @@ function Sidebar({ ouverte, onFermer }) {
         <LanguageSwitcher variant="sombre" />
       </div>
 
-      <div className={styles.pied}>
-        <p className={styles.nomUtilisateur}>{utilisateur?.first_name} {utilisateur?.last_name}</p>
-        <p className={styles.role}>{utilisateur?.role_display}</p>
+      {/* <div className={styles.pied}>
         <button onClick={deconnecter} className={styles.boutonDeconnexion}>
-          {t("se_deconnecter")}
+          <LogOut size={15} /> {t("se_deconnecter")}
         </button>
-      </div>
+      </div> */}
     </aside>
   );
 }

@@ -124,20 +124,32 @@
   margin: 2px 0 10px;
 }
 
+.pied {
+  padding: 14px 6px 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  margin: 0 4px;
+}
+
 .boutonDeconnexion {
   width: 100%;
-  padding: 8px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 9px 12px;
   border-radius: 8px;
   border: none;
   background-color: rgba(255, 255, 255, 0.06);
   color: rgba(255, 255, 255, 0.75);
   font-size: 12.5px;
+  font-weight: 600;
   cursor: pointer;
 }
 
 .boutonDeconnexion:hover {
   background-color: rgba(255, 255, 255, 0.12);
 }
+
 
 /* ---------- Responsive : off-canvas sur mobile ---------- */
 @media (max-width: 900px) {
