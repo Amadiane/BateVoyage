@@ -192,7 +192,7 @@ function DetailPelerin() {
         </Section>
 
         <Section titre={t("etape_documents")}>
-          <Ligne label={t("inscripteur")} valeur={pelerin.inscripteur_nom || "—"} />
+          <Ligne label={t("inscripteur")} valeur={pelerin.inscripteur || "—"} />
           <Ligne label={t("programme")} valeur={pelerin.programme ? pelerin.programme : t("aucun_pour_le_moment")} />
         </Section>
 

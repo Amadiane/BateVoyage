@@ -470,7 +470,15 @@
   
   "menu_modules_visibles": "الوحدات المرئية",
   "modules_visibles_titre": "إدارة الوحدات المرئية",
-  "modules_visibles_description": "فعّل وحدة واحدة في كل مرة لتوجيه عملية التحقق مع العميل، دون إثقال قائمته."
+  "modules_visibles_description": "فعّل وحدة واحدة في كل مرة لتوجيه عملية التحقق مع العميل، دون إثقال قائمته.",
+
+  
+  "etape_principal": "الحاج",
+  "etape_sante_inscription": "التسجيل",
+  "inscription_pour": "التسجيل من أجل",
+
+  "saisir_nom_inscripteur": "أدخل اسم الموظف"
+
 
 
 

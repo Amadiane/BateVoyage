@@ -93,11 +93,7 @@ class Pelerin(models.Model):
     )
 
     # ---------- 14. Inscripteur ----------
-    inscripteur = models.ForeignKey(
-        settings.AUTH_USER_MODEL, on_delete=models.PROTECT,
-        related_name="pelerins_inscrits",
-        limit_choices_to={"role__in": ["fondateur", "admin_general", "secretaire", "comptable", "affaires_sociales"]},
-    )
+    inscripteur = models.CharField(max_length=150, blank=True, help_text="Nom de l'agent ayant inscrit ce pèlerin")
 
     # ---------- 15. Correspondant (= téléphone d'urgence) ----------
     nom_correspondant = models.CharField(max_length=150)

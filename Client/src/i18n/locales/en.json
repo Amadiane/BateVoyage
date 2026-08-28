@@ -467,7 +467,15 @@
   
   "menu_modules_visibles": "Visible modules",
   "modules_visibles_titre": "Manage visible modules",
-  "modules_visibles_description": "Enable one module at a time to guide validation with the client, without overwhelming their menu."
+  "modules_visibles_description": "Enable one module at a time to guide validation with the client, without overwhelming their menu.",
+
+  
+  "etape_principal": "Pilgrim",
+  "etape_sante_inscription": "Registration",
+  "inscription_pour": "Registering for",
+
+  "saisir_nom_inscripteur": "Enter agent's name"
+
 
 
 

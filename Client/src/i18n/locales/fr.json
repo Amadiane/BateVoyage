@@ -469,7 +469,15 @@
   
   "menu_modules_visibles": "Modules visibles",
   "modules_visibles_titre": "Gestion des modules visibles",
-  "modules_visibles_description": "Activez un module à la fois pour guider la validation avec le client, sans surcharger son menu."
+  "modules_visibles_description": "Activez un module à la fois pour guider la validation avec le client, sans surcharger son menu.",
+
+  
+  "etape_principal": "Pèlerin",
+  "etape_sante_inscription": "Inscription",
+  "inscription_pour": "Inscription pour",
+
+  "saisir_nom_inscripteur": "Saisir le nom de l'agent"
+
 
 
 

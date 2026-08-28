@@ -57,7 +57,10 @@ function ListePelerins({ typeVoyageFixe, titreCle }) {
           <h1 className={styles.titre}>{t(titreCle || "menu_pelerins")}</h1>
           <p className={styles.sousTitre}>{pelerinsAffiches.length} {t("dossiers_enregistres")}</p>
         </div>
-        <button className={styles.boutonPrincipal} onClick={() => navigate("/pelerins/nouveau")}>
+        <button
+          className={styles.boutonPrincipal}
+          onClick={() => navigate(typeVoyageFixe ? `/pelerins/nouveau?type=${typeVoyageFixe}` : "/pelerins/nouveau")}
+        >
           + {t("nouveau_pelerin")}
         </button>
       </div>
@@ -132,7 +135,7 @@ function ListePelerins({ typeVoyageFixe, titreCle }) {
                   </span>
                 </td>
                 <td><BadgeStatutPaiement statut={p.statut_paiement} /></td>
-                <td className={styles.cellInscripteur}>{p.inscripteur_nom || "—"}</td>
+                <td className={styles.cellInscripteur}>{p.inscripteur || "—"}</td>
                 <td className={styles.cellActions} onClick={(e) => e.stopPropagation()}>
                   <button onClick={() => navigate(`/pelerins/${p.id}/modifier`)} title={t("modifier")}>✎</button>
                   <button onClick={(e) => telechargerFiche(p, e)} title={t("telecharger_fiche")}>⬇</button>

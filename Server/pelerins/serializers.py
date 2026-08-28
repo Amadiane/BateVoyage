@@ -3,7 +3,6 @@ from .models import Pelerin
 
 
 class PelerinSerializer(serializers.ModelSerializer):
-    inscripteur_nom = serializers.SerializerMethodField()
     sexe_display = serializers.CharField(source="get_sexe_display", read_only=True)
     statut_display = serializers.CharField(source="get_statut_display", read_only=True)
     statut_visa_display = serializers.CharField(source="get_statut_visa_display", read_only=True)
@@ -24,11 +23,7 @@ class PelerinSerializer(serializers.ModelSerializer):
         fields = "__all__"
         read_only_fields = ["numero_id", "date_inscription"]
 
-    def get_inscripteur_nom(self, obj):
-        if not obj.inscripteur:
-            return None
-        nom_complet = obj.inscripteur.get_full_name()
-        return nom_complet if nom_complet.strip() else obj.inscripteur.username
+    
 
     def get_prix_programme(self, obj):
         if obj.programme and obj.programme.prix:
