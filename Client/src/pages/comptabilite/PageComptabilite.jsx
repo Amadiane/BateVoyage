@@ -9,20 +9,31 @@ import styles from "../../theme/pages/comptabilite/PageComptabilite.module.css";
 function PageComptabilite() {
   const { t } = useTranslation();
   const [resume, setResume] = useState(null);
+  const [activiteActive, setActiviteActive] = useState("hajj");
   const [ongletActif, setOngletActif] = useState("bons_sortie");
 
   const chargerResume = () => {
-    comptabiliteService.obtenirResume().then(({ data }) => setResume(data));
+    comptabiliteService.obtenirResume({ activite: activiteActive }).then(({ data }) => setResume(data));
   };
 
-  useEffect(() => {
-    chargerResume();
-  }, []);
+  useEffect(() => { chargerResume(); }, [activiteActive]);
 
   return (
     <div>
       <h1 className={styles.titre}>{t("menu_comptabilite")}</h1>
       <p className={styles.sousTitre}>{t("comptabilite_description")}</p>
+
+      <div className={styles.ongletsActivite}>
+        <button className={activiteActive === "hajj" ? styles.activiteActive : styles.activite} onClick={() => setActiviteActive("hajj")}>
+          {t("menu_hajj")}
+        </button>
+        <button className={activiteActive === "oumra" ? styles.activiteActive : styles.activite} onClick={() => setActiviteActive("oumra")}>
+          {t("menu_oumra")}
+        </button>
+        <button className={activiteActive === "general" ? styles.activiteActive : styles.activite} onClick={() => setActiviteActive("general")}>
+          {t("activite_generale")}
+        </button>
+      </div>
 
       {resume && (
         <div className={styles.cartesResume}>
@@ -53,9 +64,9 @@ function PageComptabilite() {
         </button>
       </div>
 
-      {ongletActif === "bons_sortie" && <OngletBonsSortie onChange={chargerResume} />}
-      {ongletActif === "depenses" && <OngletDepenses onChange={chargerResume} />}
-      {ongletActif === "dettes" && <OngletDettesFournisseurs onChange={chargerResume} />}
+      {ongletActif === "bons_sortie" && <OngletBonsSortie activite={activiteActive} onChange={chargerResume} />}
+      {ongletActif === "depenses" && <OngletDepenses activite={activiteActive} onChange={chargerResume} />}
+      {ongletActif === "dettes" && <OngletDettesFournisseurs activite={activiteActive} onChange={chargerResume} />}
     </div>
   );
 }

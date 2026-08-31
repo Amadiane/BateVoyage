@@ -2,12 +2,10 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { pelerinService } from "../../services/pelerinService";
-import { programmeService } from "../../services/programmeService";
-import { groupeService } from "../../services/groupeService";
 import ChampFichier from "../../components/ChampFichier/ChampFichier";
 import styles from "../../theme/pages/pelerins/FormulairePelerin.module.css";
 
-const ETAPES = ["principal", "sante_inscription"];
+const ETAPES = ["identite_passeport", "adresse_contact", "sante_inscription"];
 
 const AGENCES_PARTENAIRES = [
   "BATE VOYAGE GUINÉE",
@@ -17,6 +15,17 @@ const AGENCES_PARTENAIRES = [
   "MOHAMED FADIGA",
   "MANDENG VOYAGE GUINÉE",
   "WARASSIMASSA",
+];
+
+const INSCRIPTEURS = [
+  "Nfamba Kaba",
+  "Laye Mady Diallo",
+  "Laye Abou Diallo",
+  "Nfamba Keïta",
+  "Minata Mady",
+  "Boh Kabinet",
+  "Hadja Fatou Diallo",
+  "Hadja Fanta Oulen",
 ];
 
 const LABELS_TYPE_VOYAGE = {
@@ -31,10 +40,17 @@ const VALEURS_INITIALES = {
   commune: "", quartier: "", nom_pere: "", nom_mere: "",
   telephone: "", nom_correspondant: "", telephone_correspondant: "", agence_partenaire: "",
   groupe_sanguin: "", probleme_sante: "",
-  type_voyage: "", montant_verse: "", mode_paiement: "", inscripteur: "", programme: "", groupe: "",
+  type_voyage: "", montant_verse: "", mode_paiement: "", inscripteur: "",
 };
 
 const CHAMPS_FICHIERS = ["photo", "scan_passeport", "scan_certificat_medical", "scan_recu_versement"];
+
+const CHAMPS_REQUIS_PAR_ETAPE = {
+  0: ["prenom", "nom", "sexe", "date_naissance", "lieu_naissance",
+      "numero_passeport", "date_emission_passeport", "date_expiration_passeport"],
+  1: ["commune", "quartier", "telephone", "nom_correspondant", "telephone_correspondant"],
+  2: ["inscripteur"],
+};
 
 function FormulairePelerin() {
   const { t } = useTranslation();
@@ -55,24 +71,12 @@ function FormulairePelerin() {
   const [documentsExistants, setDocumentsExistants] = useState({});
   const [montantTotalExistant, setMontantTotalExistant] = useState(0);
 
-  const [programmes, setProgrammes] = useState([]);
-  const [groupes, setGroupes] = useState([]);
   const [envoi, setEnvoi] = useState(false);
   const [erreur, setErreur] = useState("");
   const [champsManquants, setChampsManquants] = useState([]);
   const [chargementInitial, setChargementInitial] = useState(modeEdition);
 
-  const CHAMPS_REQUIS_PAR_ETAPE = {
-    0: ["prenom", "nom", "sexe", "date_naissance", "lieu_naissance",
-        "numero_passeport", "date_emission_passeport", "date_expiration_passeport",
-        "commune", "quartier", "telephone", "nom_correspondant", "telephone_correspondant"],
-    1: typeVoyageFixe ? ["inscripteur"] : ["type_voyage", "inscripteur"],
-  };
-
   useEffect(() => {
-    programmeService.lister().then(({ data }) => setProgrammes(data));
-    groupeService.lister().then(({ data }) => setGroupes(data));
-
     if (modeEdition) {
       pelerinService.obtenir(id).then(({ data }) => {
         const valeursTexte = {};
@@ -148,7 +152,7 @@ function FormulairePelerin() {
       } else {
         await pelerinService.creer(formData);
       }
-      navigate(typeVoyageFixe === "pelerinage" ? "/hajj" : typeVoyageFixe === "oumra" ? "/oumra" : "/pelerins");
+      navigate(typeVoyageFixe === "pelerinage" ? "/hajj/pelerins/liste" : typeVoyageFixe === "oumra" ? "/oumra/pelerins/liste" : "/pelerins");
     } catch (err) {
       const donneesErreur = err.response?.data;
       if (donneesErreur && typeof donneesErreur === "object") {
@@ -168,6 +172,22 @@ function FormulairePelerin() {
 
   if (chargementInitial) {
     return <p className={styles.chargement}>{t("chargement")}</p>;
+  }
+
+  if (!modeEdition && !typeVoyageFixe) {
+    return (
+      <div className={styles.page}>
+        <h1 className={styles.titre}>{t("choisir_type_voyage")}</h1>
+        <div className={styles.choixType}>
+          <button className={styles.carteChoixType} onClick={() => navigate("/pelerins/nouveau?type=pelerinage")}>
+            🕋 {t("type_pelerinage")}
+          </button>
+          <button className={styles.carteChoixType} onClick={() => navigate("/pelerins/nouveau?type=oumra")}>
+            🌙 {t("type_oumra")}
+          </button>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -246,7 +266,11 @@ function FormulairePelerin() {
                 />
               </div>
             </div>
+          </>
+        )}
 
+        {etape === 1 && (
+          <>
             <div className={styles.sectionTitre}>{t("etape_adresse")}</div>
             <div className={styles.grille}>
               <Champ label={t("commune")} manquant={estManquant("commune")}>
@@ -286,7 +310,7 @@ function FormulairePelerin() {
           </>
         )}
 
-        {etape === 1 && (
+        {etape === 2 && (
           <>
             {typeVoyageFixe && (
               <div className={styles.noteTypeFixe}>
@@ -329,25 +353,10 @@ function FormulairePelerin() {
                 </Champ>
               )}
               <Champ label={t("inscripteur")} manquant={estManquant("inscripteur")}>
-                <input
-                  value={valeurs.inscripteur}
-                  onChange={(e) => majChamp("inscripteur", e.target.value)}
-                  placeholder={t("saisir_nom_inscripteur")}
-                />
-              </Champ>
-              <Champ label={t("programme")}>
-                <select value={valeurs.programme} onChange={(e) => majChamp("programme", e.target.value)}>
-                  <option value="">{t("aucun_pour_le_moment")}</option>
-                  {programmes.map((p) => (
-                    <option key={p.id} value={p.id}>{p.nom}</option>
-                  ))}
-                </select>
-              </Champ>
-              <Champ label={t("groupe")}>
-                <select value={valeurs.groupe} onChange={(e) => majChamp("groupe", e.target.value)}>
-                  <option value="">{t("aucun_pour_le_moment")}</option>
-                  {groupes.map((g) => (
-                    <option key={g.id} value={g.id}>{g.nom}</option>
+                <select value={valeurs.inscripteur} onChange={(e) => majChamp("inscripteur", e.target.value)}>
+                  <option value="">—</option>
+                  {INSCRIPTEURS.map((nom) => (
+                    <option key={nom} value={nom}>{nom}</option>
                   ))}
                 </select>
               </Champ>

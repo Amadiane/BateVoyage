@@ -1,58 +1,51 @@
 import requests
+import django_filters
 from django.http import HttpResponse, Http404
 from django.template.loader import render_to_string
-from rest_framework import viewsets, permissions
-from rest_framework.decorators import action
-from rest_framework.response import Response
-from xhtml2pdf import pisa
-from .pdf_utils import link_callback
-
-from .models import Pelerin
-from .serializers import PelerinSerializer
 from django.template import engines
 from django.utils import timezone
-from documents_generes.models import ModeleDocument
-
-django_engine = engines["django"]
-
-
-
-
-from django.http import HttpResponse, Http404
-from django.template.loader import render_to_string
+from django.contrib.contenttypes.models import ContentType
 from rest_framework import viewsets, permissions
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from xhtml2pdf import pisa
-import requests
+from openpyxl import Workbook
+from auditlog.models import LogEntry
+from auditlog.context import set_actor
 
+from activite.serializers import EntreeJournalDetailSerializer
+from documents_generes.models import ModeleDocument
 from .models import Pelerin
 from .serializers import PelerinSerializer
-from .pdf_utils import link_callback  
+from .pdf_utils import link_callback
 
-from django.contrib.contenttypes.models import ContentType
-from auditlog.models import LogEntry
-from activite.serializers import EntreeJournalDetailSerializer
-from auditlog.context import set_actor
+django_engine = engines["django"]
 
 CHAMPS_DOCUMENTS = ["photo", "scan_passeport", "scan_certificat_medical", "scan_recu_versement"]
 
 
+class PelerinFilter(django_filters.FilterSet):
+    annee = django_filters.NumberFilter(field_name="date_creation", lookup_expr="year")
+    guide = django_filters.NumberFilter(field_name="groupe__encadreur_id")
+
+    class Meta:
+        model = Pelerin
+        fields = ["statut", "statut_visa", "sexe", "type_voyage", "inscripteur",
+                  "programme", "groupe", "chambre", "annee", "guide"]
+
+
 class PelerinViewSet(viewsets.ModelViewSet):
-    queryset = Pelerin.objects.select_related("inscripteur", "programme").all()
+    queryset = Pelerin.objects.select_related("programme", "groupe", "chambre").all()
     serializer_class = PelerinSerializer
     permission_classes = [permissions.IsAuthenticated]
-    filterset_fields = ["statut", "statut_visa", "sexe", "type_voyage", "inscripteur", "programme", "groupe", "chambre"]
+    filterset_class = PelerinFilter
     search_fields = ["nom", "prenom", "numero_id", "numero_passeport", "telephone", "inscripteur"]
-
-    
 
     def perform_create(self, serializer):
         with set_actor(self.request.user):
             pelerin = serializer.save()
             if pelerin.montant_verse and float(pelerin.montant_verse) > 0:
                 from paiements.models import Paiement
-                from django.utils import timezone
                 Paiement.objects.create(
                     pelerin=pelerin,
                     montant=pelerin.montant_verse,
@@ -110,15 +103,13 @@ class PelerinViewSet(viewsets.ModelViewSet):
                 status=502,
             )
 
-        # Nom réel du fichier stocké, avec sa vraie extension — ne jamais
-        # forcer une extension arbitraire côté frontend.
         nom_fichier = fichier.name.split("/")[-1]
 
         response = HttpResponse(contenu, content_type=content_type or "application/octet-stream")
         response["Content-Disposition"] = f'inline; filename="{nom_fichier}"'
         response["X-Nom-Fichier-Reel"] = nom_fichier
         return response
-    
+
     @action(detail=True, methods=["get"], url_path="historique")
     def historique(self, request, pk=None):
         pelerin = self.get_object()
@@ -138,6 +129,38 @@ class PelerinViewSet(viewsets.ModelViewSet):
             "nb_paiements": nb_paiements,
             "total_paiements": total_paiements,
         })
+
+    @action(detail=False, methods=["get"], url_path="export-excel")
+    def export_excel(self, request):
+        queryset = self.filter_queryset(self.get_queryset())
+        wb = Workbook()
+        ws = wb.active
+        ws.title = "Pèlerins"
+        ws.append(["N° Dossier", "Nom", "Prénom", "Téléphone", "N° Passeport", "Type", "Statut", "Inscripteur"])
+
+        for p in queryset:
+            ws.append([
+                p.numero_id, p.nom, p.prenom, p.telephone, p.numero_passeport,
+                p.get_type_voyage_display(), p.get_statut_display(), p.inscripteur or "",
+            ])
+
+        response = HttpResponse(content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+        response["Content-Disposition"] = 'attachment; filename="pelerins_export.xlsx"'
+        wb.save(response)
+        return response
+
+    @action(detail=False, methods=["get"], url_path="export-pdf")
+    def export_pdf(self, request):
+        queryset = self.filter_queryset(self.get_queryset())
+        html = render_to_string("pelerins/liste_pelerins.html", {"pelerins": queryset})
+
+        response = HttpResponse(content_type="application/pdf")
+        response["Content-Disposition"] = 'attachment; filename="liste_pelerins.pdf"'
+
+        resultat = pisa.CreatePDF(html, dest=response, link_callback=link_callback)
+        if resultat.err:
+            return Response({"erreur": "Échec de la génération du PDF."}, status=500)
+        return response
 
     @action(detail=True, methods=["get"], url_path="document-genere/(?P<type_doc>[^/.]+)")
     def document_genere(self, request, pk=None, type_doc=None):

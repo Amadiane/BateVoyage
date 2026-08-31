@@ -93,7 +93,17 @@ class Pelerin(models.Model):
     )
 
     # ---------- 14. Inscripteur ----------
-    inscripteur = models.CharField(max_length=150, blank=True, help_text="Nom de l'agent ayant inscrit ce pèlerin")
+    class Inscripteur(models.TextChoices):
+        NFAMBA_KABA = "Nfamba Kaba", "Nfamba Kaba"
+        LAYE_MADY_DIALLO = "Laye Mady Diallo", "Laye Mady Diallo"
+        LAYE_ABOU_DIALLO = "Laye Abou Diallo", "Laye Abou Diallo"
+        NFAMBA_KEITA = "Nfamba Keïta", "Nfamba Keïta"
+        MINATA_MADY = "Minata Mady", "Minata Mady"
+        BOH_KABINET = "Boh Kabinet", "Boh Kabinet"
+        HADJA_FATOU_DIALLO = "Hadja Fatou Diallo", "Hadja Fatou Diallo"
+        HADJA_FANTA_OULEN = "Hadja Fanta Oulen", "Hadja Fanta Oulen"
+
+    inscripteur = models.CharField(max_length=50, choices=Inscripteur.choices, blank=True)
 
     # ---------- 15. Correspondant (= téléphone d'urgence) ----------
     nom_correspondant = models.CharField(max_length=150)

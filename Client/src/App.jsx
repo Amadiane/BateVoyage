@@ -7,6 +7,8 @@ import Dashboard from "./pages/dashboard/Dashboard";
 import ListePelerins from "./pages/pelerins/ListePelerins";
 import FormulairePelerin from "./pages/pelerins/FormulairePelerin";
 import DetailPelerin from "./pages/pelerins/DetailPelerin";
+import PageModuleVoyage from "./pages/moduleVoyage/PageModuleVoyage";
+import PagePelerinsModule from "./pages/moduleVoyage/PagePelerinsModule";
 import PageDocuments from "./pages/documents/PageDocuments";
 import ListeUtilisateurs from "./pages/utilisateurs/ListeUtilisateurs";
 import FormulaireUtilisateur from "./pages/utilisateurs/FormulaireUtilisateur";
@@ -46,13 +48,21 @@ function App() {
         >
           <Route path="/dashboard" element={<Dashboard />} />
 
-          {/* Pèlerins — Hajj / Oumra */}
+          {/* Pèlerins — routes techniques partagées (formulaire, détail) */}
           <Route path="/pelerins" element={<ListePelerins />} />
-          <Route path="/hajj" element={<ListePelerins typeVoyageFixe="pelerinage" titreCle="menu_hajj" />} />
-          <Route path="/oumra" element={<ListePelerins typeVoyageFixe="oumra" titreCle="menu_oumra" />} />
           <Route path="/pelerins/nouveau" element={<FormulairePelerin />} />
           <Route path="/pelerins/:id" element={<DetailPelerin />} />
           <Route path="/pelerins/:id/modifier" element={<FormulairePelerin />} />
+
+          {/* Module Hajj */}
+          <Route path="/hajj" element={<PageModuleVoyage typeVoyage="pelerinage" basePath="/hajj" titreCle="menu_hajj" />} />
+          <Route path="/hajj/pelerins" element={<PagePelerinsModule typeVoyage="pelerinage" basePath="/hajj" />} />
+          <Route path="/hajj/pelerins/liste" element={<ListePelerins typeVoyageFixe="pelerinage" titreCle="menu_hajj" retourPath="/hajj/pelerins" />} />
+
+          {/* Module Oumra */}
+          <Route path="/oumra" element={<PageModuleVoyage typeVoyage="oumra" basePath="/oumra" titreCle="menu_oumra" />} />
+          <Route path="/oumra/pelerins" element={<PagePelerinsModule typeVoyage="oumra" basePath="/oumra" />} />
+          <Route path="/oumra/pelerins/liste" element={<ListePelerins typeVoyageFixe="oumra" titreCle="menu_oumra" retourPath="/oumra/pelerins" />} />
 
           {/* Documents (conformité dossiers) */}
           <Route path="/documents" element={<PageDocuments />} />
@@ -63,14 +73,6 @@ function App() {
             element={
               <ProtectedRoute rolesAutorises={ROLES_FINANCIERS}>
                 <ListePaiements />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/parametres/modules"
-            element={
-              <ProtectedRoute rolesAutorises={ROLES_ADMIN}>
-                <PageModulesVisibles />
               </ProtectedRoute>
             }
           />
@@ -190,6 +192,16 @@ function App() {
             element={
               <ProtectedRoute rolesAutorises={ROLES_ADMIN}>
                 <PageJournalActivite />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* Paramètres — modules visibles (toujours accessible Fondateur/Admin) */}
+          <Route
+            path="/parametres/modules"
+            element={
+              <ProtectedRoute rolesAutorises={ROLES_ADMIN}>
+                <PageModulesVisibles />
               </ProtectedRoute>
             }
           />

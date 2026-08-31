@@ -200,3 +200,23 @@
     max-width: none;
   }
 }   
+.groupeBoutons {
+  display: flex;
+  gap: 8px;
+}
+
+.retour {
+  background: none;
+  border: none;
+  color: #6B7280;
+  font-size: 13px;
+  cursor: pointer;
+  padding: 0;
+  margin-bottom: 16px;
+}
+.retour:hover { color: var(--color-brand); }
+
+.groupeBoutons {
+  display: flex;
+  gap: 8px;
+}

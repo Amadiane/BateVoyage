@@ -74,6 +74,7 @@ const CONFIG = {
   API_PELERIN_DOCUMENT_GENERE: (id, type) => `${BASE_URL}/api/pelerins/${id}/document-genere/${type}/`,
   API_MODULES_SYSTEME: `${BASE_URL}/api/configuration/modules/`,
   API_MODULE_SYSTEME_DETAIL: (id) => `${BASE_URL}/api/configuration/modules/${id}/`,
+  API_PELERINS_EXPORT_EXCEL: `${BASE_URL}/api/pelerins/export-excel/`,
 
   // --- Formules / Programmes ---
   API_PROGRAMMES: `${BASE_URL}/api/formules/programmes/`,

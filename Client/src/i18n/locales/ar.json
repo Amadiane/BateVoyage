@@ -477,7 +477,31 @@
   "etape_sante_inscription": "التسجيل",
   "inscription_pour": "التسجيل من أجل",
 
-  "saisir_nom_inscripteur": "أدخل اسم الموظف"
+  "saisir_nom_inscripteur": "أدخل اسم الموظف",
+
+  
+  "etape_identite_passeport": "الهوية وجواز السفر",
+  "etape_adresse_contact": "العنوان والاتصال",
+  "etape_sante_inscription": "الصحة والتسجيل",
+  "choisir_type_voyage": "لأي نوع من الرحلات؟",
+  "inscription_pour": "التسجيل من أجل",
+  "toutes_annees": "جميع السنوات",
+  "tous_inscripteurs": "جميع الموظفين المسجلين",
+
+  
+  "choisir_sous_module": "اختر إجراء",
+  "sous_module_pelerins": "الحجاج",
+  "sous_module_forfaits": "الباقات والبرامج",
+  "sous_module_visa_doc": "التأشيرة والمستندات",
+  "sous_module_vols": "الرحلات والسفر",
+  "sous_module_hebergement": "الفنادق والإقامة",
+  "sous_module_transport": "النقل واللوجستيات",
+  "sous_module_groupes": "المجموعات والإشراف",
+  "sous_module_finances": "المالية والمحاسبة",
+  "liste_pelerins": "قائمة الحجاج",
+  "retour": "رجوع"
+
+
 
 
 

@@ -2,11 +2,19 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { pelerinService } from "../../services/pelerinService";
-import { ouvrirFichierProtege, telechargerFichierProtege } from "../../utils/telechargement";
+import { telechargerFichierProtege } from "../../utils/telechargement";
 import BadgeStatutPaiement from "../../components/BadgeStatutPaiement/BadgeStatutPaiement";
+import CONFIG from "../../config/config";
 import styles from "../../theme/pages/pelerins/ListePelerins.module.css";
 
-function ListePelerins({ typeVoyageFixe, titreCle }) {
+const INSCRIPTEURS = [
+  "Nfamba Kaba", "Laye Mady Diallo", "Laye Abou Diallo", "Nfamba Keïta",
+  "Minata Mady", "Boh Kabinet", "Hadja Fatou Diallo", "Hadja Fanta Oulen",
+];
+
+const ANNEES = [2024, 2025, 2026, 2027];
+
+function ListePelerins({ typeVoyageFixe, titreCle, retourPath }) {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [pelerins, setPelerins] = useState([]);
@@ -14,6 +22,8 @@ function ListePelerins({ typeVoyageFixe, titreCle }) {
   const [recherche, setRecherche] = useState("");
   const [filtreStatut, setFiltreStatut] = useState("");
   const [filtreStatutPaiement, setFiltreStatutPaiement] = useState("");
+  const [filtreAnnee, setFiltreAnnee] = useState("");
+  const [filtreInscripteur, setFiltreInscripteur] = useState("");
 
   const charger = async () => {
     setChargement(true);
@@ -22,6 +32,8 @@ function ListePelerins({ typeVoyageFixe, titreCle }) {
       if (recherche) params.search = recherche;
       if (filtreStatut) params.statut = filtreStatut;
       if (typeVoyageFixe) params.type_voyage = typeVoyageFixe;
+      if (filtreAnnee) params.annee = filtreAnnee;
+      if (filtreInscripteur) params.inscripteur = filtreInscripteur;
       const { data } = await pelerinService.lister(params);
       setPelerins(data);
     } finally {
@@ -32,7 +44,7 @@ function ListePelerins({ typeVoyageFixe, titreCle }) {
   useEffect(() => {
     const delai = setTimeout(charger, 300);
     return () => clearTimeout(delai);
-  }, [recherche, filtreStatut, typeVoyageFixe]);
+  }, [recherche, filtreStatut, typeVoyageFixe, filtreAnnee, filtreInscripteur]);
 
   const pelerinsAffiches = filtreStatutPaiement
     ? pelerins.filter((p) => p.statut_paiement === filtreStatutPaiement)
@@ -50,19 +62,37 @@ function ListePelerins({ typeVoyageFixe, titreCle }) {
     telechargerFichierProtege(pelerinService.urlFichePdf(p.id), `fiche_${p.numero_id}.pdf`);
   };
 
+  const exporterExcel = () => {
+    telechargerFichierProtege(`${CONFIG.API_PELERINS}export-excel/`, "pelerins_export.xlsx");
+  };
+
+  const exporterPdf = () => {
+    telechargerFichierProtege(`${CONFIG.API_PELERINS}export-pdf/`, "liste_pelerins.pdf");
+  };
+
   return (
     <div>
+      {retourPath && (
+        <button className={styles.retour} onClick={() => navigate(retourPath)}>
+          ← {t("retour")}
+        </button>
+      )}
+
       <div className={styles.entete}>
         <div>
           <h1 className={styles.titre}>{t(titreCle || "menu_pelerins")}</h1>
           <p className={styles.sousTitre}>{pelerinsAffiches.length} {t("dossiers_enregistres")}</p>
         </div>
-        <button
-          className={styles.boutonPrincipal}
-          onClick={() => navigate(typeVoyageFixe ? `/pelerins/nouveau?type=${typeVoyageFixe}` : "/pelerins/nouveau")}
-        >
-          + {t("nouveau_pelerin")}
-        </button>
+        <div className={styles.groupeBoutons}>
+          <button className={styles.boutonSecondaire} onClick={exporterExcel}>⬇ Excel</button>
+          <button className={styles.boutonSecondaire} onClick={exporterPdf}>⬇ PDF</button>
+          <button
+            className={styles.boutonPrincipal}
+            onClick={() => navigate(typeVoyageFixe ? `/pelerins/nouveau?type=${typeVoyageFixe}` : "/pelerins/nouveau")}
+          >
+            + {t("nouveau_pelerin")}
+          </button>
+        </div>
       </div>
 
       <div className={styles.barreOutils}>
@@ -87,6 +117,14 @@ function ListePelerins({ typeVoyageFixe, titreCle }) {
           <option value="complet">{t("statut_paiement_complet")}</option>
           <option value="a_surveiller">{t("statut_paiement_a_surveiller")}</option>
           <option value="en_retard">{t("statut_paiement_en_retard")}</option>
+        </select>
+        <select value={filtreAnnee} onChange={(e) => setFiltreAnnee(e.target.value)} className={styles.selectFiltre}>
+          <option value="">{t("toutes_annees")}</option>
+          {ANNEES.map((a) => <option key={a} value={a}>{a}</option>)}
+        </select>
+        <select value={filtreInscripteur} onChange={(e) => setFiltreInscripteur(e.target.value)} className={styles.selectFiltre}>
+          <option value="">{t("tous_inscripteurs")}</option>
+          {INSCRIPTEURS.map((n) => <option key={n} value={n}>{n}</option>)}
         </select>
       </div>
 

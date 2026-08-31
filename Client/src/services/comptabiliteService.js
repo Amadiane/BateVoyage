@@ -22,4 +22,5 @@ export const comptabiliteService = {
   obtenirHistoriqueBonSortie: (id) => api.get(CONFIG.API_BON_SORTIE_HISTORIQUE(id)),
   obtenirHistoriqueDepense: (id) => api.get(CONFIG.API_DEPENSE_HISTORIQUE(id)),
   obtenirHistoriqueDetteFournisseur: (id) => api.get(CONFIG.API_DETTE_FOURNISSEUR_HISTORIQUE(id)),
+  obtenirResume: (params) => api.get(CONFIG.API_RESUME_COMPTABILITE, { params }),
 };

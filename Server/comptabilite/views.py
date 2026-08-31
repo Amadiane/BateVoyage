@@ -20,7 +20,7 @@ class BonSortieViewSet(viewsets.ModelViewSet):
     queryset = BonSortie.objects.select_related("enregistre_par", "beneficiaire_utilisateur").all()
     serializer_class = BonSortieSerializer
     permission_classes = [EstGestionnaireFinancier]
-    filterset_fields = ["justifie"]
+    filterset_fields = ["justifie", "activite"]
     search_fields = ["beneficiaire_nom", "motif", "numero_bon"]
 
     def perform_create(self, serializer):
@@ -45,11 +45,13 @@ class BonSortieViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
 
 
+
+
 class DepenseViewSet(viewsets.ModelViewSet):
     queryset = Depense.objects.select_related("enregistre_par").all()
     serializer_class = DepenseSerializer
     permission_classes = [EstGestionnaireFinancier]
-    filterset_fields = ["categorie"]
+    filterset_fields = ["categorie", "activite"]
     search_fields = ["description"]
 
     def perform_create(self, serializer):
@@ -78,7 +80,7 @@ class DetteFournisseurViewSet(viewsets.ModelViewSet):
     queryset = DetteFournisseur.objects.select_related("enregistre_par").all()
     serializer_class = DetteFournisseurSerializer
     permission_classes = [EstGestionnaireFinancier]
-    filterset_fields = ["soldee"]
+    filterset_fields = ["soldee", "activite"] 
     search_fields = ["nom_fournisseur", "motif"]
 
     def perform_create(self, serializer):
@@ -107,9 +109,12 @@ class ResumeComptabiliteView(APIView):
     permission_classes = [EstGestionnaireFinancier]
 
     def get(self, request):
-        creances_non_justifiees = BonSortie.objects.filter(justifie=False)
-        depenses = Depense.objects.all()
-        dettes_non_soldees = DetteFournisseur.objects.filter(soldee=False)
+        activite = request.query_params.get("activite")
+        filtre = {"activite": activite} if activite else {}
+
+        creances_non_justifiees = BonSortie.objects.filter(justifie=False, **filtre)
+        depenses = Depense.objects.filter(**filtre)
+        dettes_non_soldees = DetteFournisseur.objects.filter(soldee=False, **filtre)
 
         return Response({
             "total_creances_en_attente": creances_non_justifiees.aggregate(t=Sum("montant"))["t"] or 0,

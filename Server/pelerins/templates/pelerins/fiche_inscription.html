@@ -3,211 +3,104 @@
 <style>
   @page {
     size: A4;
-    margin-top: 4.8cm;
-    margin-bottom: 2.6cm;
-    margin-left: 1.5cm;
-    margin-right: 1.5cm;
-
-    @frame header_frame {
-      -pdf-frame-content: header_content;
-      top: 1cm;
-      left: 1.5cm;
-      right: 1.5cm;
-      height: 3.6cm;
-    }
-
-    @frame footer_frame {
-      -pdf-frame-content: footer_content;
-      bottom: 0.7cm;
-      left: 1.5cm;
-      right: 1.5cm;
-      height: 1.6cm;
-    }
+    margin-top: 4.8cm; margin-bottom: 2.6cm; margin-left: 1.5cm; margin-right: 1.5cm;
+    @frame header_frame { -pdf-frame-content: header_content; top: 1cm; left: 1.5cm; right: 1.5cm; height: 3.6cm; }
+    @frame footer_frame { -pdf-frame-content: footer_content; bottom: 0.7cm; left: 1.5cm; right: 1.5cm; height: 1.6cm; }
   }
-
-  body { font-family: Helvetica, Arial, sans-serif; font-size: 11px; color: #1F2937; }
-
+  body { font-family: Helvetica, Arial, sans-serif; font-size: 11.5px; color: #1F2937; }
   #header_content img, #footer_content img { width: 100%; }
-
-  .bloc-titre { width: 100%; border-collapse: collapse; margin-bottom: 6px; }
-  .bloc-titre td { vertical-align: middle; }
-  .titre-fiche {
-    font-size: 15px;
-    font-weight: bold;
-    color: #0B3FA0;
-  }
-  .sous-titre-fiche {
-    font-size: 10px;
-    color: #6B7280;
-    margin-top: 2px;
-  }
-  .photo-pelerin {
-    width: 92px;
-    height: 92px;
-    object-fit: cover;
-    border: 1.5px solid #E5E7EB;
-    padding: 2px;
-  }
-  .ligne-separation {
-    border-bottom: 2px solid #0B3FA0;
-    margin: 4px 0 14px;
-  }
-
-  .section { page-break-inside: avoid; margin-top: 16px; }
-  .section-titre {
-    font-size: 11px;
-    font-weight: bold;
-    color: #0B3FA0;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    border-bottom: 1px solid #0B3FA0;
-    padding-bottom: 4px;
-    margin-bottom: 2px;
-  }
-
-  table.champs { width: 100%; border-collapse: collapse; }
-  table.champs td {
-    padding: 7px 4px;
-    border-bottom: 1px solid #F0F1F3;
-    font-size: 11px;
-  }
-  table.champs tr:nth-child(even) td { background-color: #FAFBFC; }
-  table.champs td.label {
-    width: 38%;
-    font-weight: bold;
-    color: #4B5563;
-  }
-  table.champs td.valeur {
-    width: 62%;
-    color: #111827;
-  }
-
-  .bloc-signatures { margin-top: 16px; }
-  .espaceur-vertical { height: 110px; }
-  .separateur-signatures {
-    border-top: 1px dashed #D1D5DB;
-    margin-bottom: 40px;
-  }
-  .table-signatures { width: 100%; border-collapse: collapse; }
-  .cellule-signature { width: 45%; vertical-align: top; }
-  .espace-signatures { width: 10%; }
-  .ligne-signature {
-    border-bottom: 1px solid #9CA3AF;
-    height: 42px;
-  }
-  .libelle-signature {
-    font-size: 10.5px;
-    font-weight: bold;
-    color: #4B5563;
-    margin-top: 6px;
-  }
-  .date-signature {
-    font-size: 10px;
-    color: #6B7280;
-    margin-top: 4px;
-  }
+  .titre-doc { font-size: 15px; font-weight: bold; color: #0B3FA0; text-align: center; margin: 8px 0 4px; }
+  .sous-titre { font-size: 11px; color: #6B7280; text-align: center; margin: 0 0 18px; }
+  .ligne-separation { border-bottom: 2px solid #0B3FA0; margin: 4px 0 20px; }
+  .section-titre { font-size: 11.5px; font-weight: bold; color: #0B3FA0; text-transform: uppercase; margin: 18px 0 8px; }
+  table.champs { width: 100%; border-collapse: collapse; margin: 4px 0; }
+  table.champs td { padding: 6px 4px; border-bottom: 1px solid #F0F1F3; font-size: 11px; }
+  table.champs td.label { width: 35%; font-weight: bold; color: #4B5563; }
+  table.champs td.valeur { width: 65%; color: #111827; }
 </style>
 </head>
 <body>
+  <div id="header_content"><img src="/static/pelerins/entete_bvg.png" /></div>
+  <div id="footer_content"><img src="/static/pelerins/pied_bvg.png" /></div>
 
-  <div id="header_content">
-    <img src="/static/pelerins/entete_bvg.png" />
-  </div>
+  <div class="titre-doc">FICHE D'INSCRIPTION</div>
+  <div class="sous-titre">N° Dossier : {{ p.numero_id }}</div>
+  <div class="ligne-separation"></div>
 
-  <div id="footer_content">
-    <img src="/static/pelerins/pied_bvg.png" />
-  </div>
-
-  <table class="bloc-titre">
+  <div class="section-titre">Identité</div>
+  <table style="width: 100%; border-collapse: collapse;">
     <tr>
-      <td>
-        <div class="titre-fiche">FICHE D'INSCRIPTION PÈLERIN</div>
-        <div class="sous-titre-fiche">N° de dossier : {{ p.numero_id }} — Date d'inscription : {{ p.date_inscription|date:"d/m/Y" }}</div>
+      <td style="width: 75%; vertical-align: top;">
+        <table class="champs">
+          <tr><td class="label">Nom et prénom</td><td class="valeur">{{ p.prenom }} {{ p.nom }}</td></tr>
+          <tr><td class="label">Sexe</td><td class="valeur">{{ p.get_sexe_display }}</td></tr>
+          <tr><td class="label">Date de naissance</td><td class="valeur">{{ p.date_naissance }}</td></tr>
+          <tr><td class="label">Lieu de naissance</td><td class="valeur">{{ p.lieu_naissance }}</td></tr>
+        </table>
       </td>
-      <td style="text-align: right; width: 110px;">
-        {% if p.photo %}<img src="{{ p.photo.url }}" class="photo-pelerin" />{% endif %}
+      <td style="width: 25%; text-align: center; vertical-align: top;">
+        {% if p.photo %}
+        <img src="{{ p.photo.url }}" style="width: 90px; height: 110px; object-fit: cover; border: 1px solid #E5E7EB;" />
+        {% endif %}
       </td>
     </tr>
   </table>
-  <div class="ligne-separation"></div>
 
-  <div class="section">
-    <div class="section-titre">Identité</div>
-    <table class="champs">
-      <tr><td class="label">Prénom</td><td class="valeur">{{ p.prenom }}</td></tr>
-      <tr><td class="label">Nom</td><td class="valeur">{{ p.nom }}</td></tr>
-      <tr><td class="label">Sexe</td><td class="valeur">{{ p.get_sexe_display|default:"—" }}</td></tr>
-      <tr><td class="label">Date de naissance</td><td class="valeur">{{ p.date_naissance }}</td></tr>
-      <tr><td class="label">Lieu de naissance</td><td class="valeur">{{ p.lieu_naissance }}</td></tr>
-      <tr><td class="label">Type de voyage</td><td class="valeur">{{ p.get_type_voyage_display|default:"—" }}</td></tr>
-    </table>
-  </div>
+  <div class="section-titre">Passeport & Visa</div>
+  <table class="champs">
+    <tr><td class="label">N° Passeport</td><td class="valeur">{{ p.numero_passeport }}</td></tr>
+    <tr><td class="label">Date d'émission</td><td class="valeur">{{ p.date_emission_passeport }}</td></tr>
+    <tr><td class="label">Date d'expiration</td><td class="valeur">{{ p.date_expiration_passeport }}</td></tr>
+    <tr><td class="label">Statut du visa</td><td class="valeur">{{ p.get_statut_visa_display }}</td></tr>
+  </table>
 
-  <div class="section">
-    <div class="section-titre">Passeport &amp; Visa</div>
-    <table class="champs">
-      <tr><td class="label">N° Passeport</td><td class="valeur">{{ p.numero_passeport }}</td></tr>
-      <tr><td class="label">Émission passeport</td><td class="valeur">{{ p.date_emission_passeport }}</td></tr>
-      <tr><td class="label">Expiration passeport</td><td class="valeur">{{ p.date_expiration_passeport }}</td></tr>
-      <tr><td class="label">Statut visa</td><td class="valeur">{{ p.get_statut_visa_display|default:"—" }}</td></tr>
-    </table>
-  </div>
+  <div class="section-titre">Adresse & Filiation</div>
+  <table class="champs">
+    <tr><td class="label">Commune</td><td class="valeur">{{ p.commune }}</td></tr>
+    <tr><td class="label">Quartier</td><td class="valeur">{{ p.quartier }}</td></tr>
+    <tr><td class="label">Nom du père</td><td class="valeur">{{ p.nom_pere|default:"—" }}</td></tr>
+    <tr><td class="label">Nom de la mère</td><td class="valeur">{{ p.nom_mere|default:"—" }}</td></tr>
+  </table>
 
-  <div class="section">
-    <div class="section-titre">Adresse &amp; Filiation</div>
-    <table class="champs">
-      <tr><td class="label">Commune</td><td class="valeur">{{ p.commune }}</td></tr>
-      <tr><td class="label">Quartier</td><td class="valeur">{{ p.quartier }}</td></tr>
-      <tr><td class="label">Nom du père</td><td class="valeur">{{ p.nom_pere|default:"—" }}</td></tr>
-      <tr><td class="label">Nom de la mère</td><td class="valeur">{{ p.nom_mere|default:"—" }}</td></tr>
-    </table>
-  </div>
+  <div class="section-titre">Contact</div>
+  <table class="champs">
+    <tr><td class="label">Téléphone</td><td class="valeur">{{ p.telephone }}</td></tr>
+    <tr><td class="label">Correspondant</td><td class="valeur">{{ p.nom_correspondant }}</td></tr>
+    <tr><td class="label">Téléphone correspondant</td><td class="valeur">{{ p.telephone_correspondant }}</td></tr>
+    <tr><td class="label">Agence partenaire</td><td class="valeur">{{ p.agence_partenaire|default:"—" }}</td></tr>
+  </table>
 
-  <div class="section">
-    <div class="section-titre">Contact</div>
-    <table class="champs">
-      <tr><td class="label">Téléphone</td><td class="valeur">{{ p.telephone }}</td></tr>
-      <tr><td class="label">Correspondant</td><td class="valeur">{{ p.nom_correspondant }}</td></tr>
-      <tr><td class="label">Téléphone d'urgence</td><td class="valeur">{{ p.telephone_urgence }}</td></tr>
-      <tr><td class="label">Agence partenaire</td><td class="valeur">{{ p.agence_partenaire|default:"—" }}</td></tr>
-    </table>
-  </div>
+  <div class="section-titre">Santé</div>
+  <table class="champs">
+    <tr><td class="label">Groupe sanguin</td><td class="valeur">{{ p.groupe_sanguin|default:"—" }}</td></tr>
+    <tr><td class="label">Problème de santé</td><td class="valeur">{{ p.probleme_sante|default:"Aucun" }}</td></tr>
+  </table>
 
-  <div class="section">
-    <div class="section-titre">Santé</div>
-    <table class="champs">
-      <tr><td class="label">Groupe sanguin</td><td class="valeur">{{ p.groupe_sanguin|default:"—" }}</td></tr>
-      <tr><td class="label">Problème de santé</td><td class="valeur">{{ p.probleme_sante|default:"Aucun signalé" }}</td></tr>
-    </table>
-  </div>
-
-  <div class="section">
     <div class="section-titre">Inscription</div>
-    <table class="champs">
-      <tr><td class="label">Inscripteur</td><td class="valeur">{{ p.inscripteur.get_full_name|default:p.inscripteur.username }}</td></tr>
-      <tr><td class="label">Montant versé</td><td class="valeur">{{ p.montant_verse }} GNF</td></tr>
-    </table>
-  </div>
+  <table class="champs">
+    <tr><td class="label">Type de voyage</td><td class="valeur">{{ p.get_type_voyage_display }}</td></tr>
+    <tr><td class="label">Inscripteur</td><td class="valeur">{{ p.inscripteur|default:"—" }}</td></tr>
+    <tr><td class="label">Statut du dossier</td><td class="valeur">{{ p.get_statut_display }}</td></tr>
+    <tr><td class="label">Montant total versé</td><td class="valeur">{{ p.montant_total_verse }} GNF</td></tr>
+  </table>
 
-  <div class="section bloc-signatures">
-    <div class="espaceur-vertical"></div>
-    <div class="separateur-signatures"></div>
-    <table class="table-signatures">
-      <tr>
-        <td class="cellule-signature">
-          <div class="ligne-signature"></div>
-          <div class="libelle-signature">Signature du pèlerin</div>
-          <div class="date-signature">Date : ____ / ____ / ________</div>
-        </td>
-        <td class="espace-signatures"></td>
-        <td class="cellule-signature">
-          <div class="ligne-signature"></div>
-          <div class="libelle-signature">Signature de l'agent inscripteur</div>
-          <div class="date-signature">Date : ____ / ____ / ________</div>
-        </td>
-      </tr>
-    </table>
-  </div>
+  <table style="width: 100%; border-collapse: collapse; margin-top: 50px;">
+    <tr>
+      <td style="width: 50%; text-align: center; vertical-align: top;">
+        <div style="border-top: 1px solid #4B5563; width: 70%; margin: 0 auto; padding-top: 6px; font-size: 10.5px; color: #4B5563;">
+          Signature du pèlerin
+        </div>
+      </td>
+      <td style="width: 50%; text-align: center; vertical-align: top;">
+        <div style="border-top: 1px solid #4B5563; width: 70%; margin: 0 auto; padding-top: 6px; font-size: 10.5px; color: #4B5563;">
+          Signature de l'inscripteur<br/>({{ p.inscripteur|default:"—" }})
+        </div>
+      </td>
+    </tr>
+  </table>
+
+</body>
+  
 
 </body>
 </html>

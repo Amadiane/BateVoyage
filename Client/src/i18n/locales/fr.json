@@ -476,7 +476,37 @@
   "etape_sante_inscription": "Inscription",
   "inscription_pour": "Inscription pour",
 
-  "saisir_nom_inscripteur": "Saisir le nom de l'agent"
+  "saisir_nom_inscripteur": "Saisir le nom de l'agent",
+
+  
+  "activite_generale": "Général",
+  "choisir_type_voyage": "Pour quel type de voyage ?",
+  "exporter_excel": "Exporter Excel",
+
+  
+  "etape_identite_passeport": "Identité & Passeport",
+  "etape_adresse_contact": "Adresse & Contact",
+  "etape_sante_inscription": "Santé & Inscription",
+  "choisir_type_voyage": "Pour quel type de voyage ?",
+  "inscription_pour": "Inscription pour",
+  "toutes_annees": "Toutes les années",
+  "tous_inscripteurs": "Tous les inscripteurs",
+
+  
+  "choisir_sous_module": "Choisissez une action",
+  "sous_module_pelerins": "Pèlerins",
+  "sous_module_forfaits": "Forfaits & Programmes",
+  "sous_module_visa_doc": "Visa & Documents",
+  "sous_module_vols": "Vols & Voyages",
+  "sous_module_hebergement": "Hôtels & Hébergement",
+  "sous_module_transport": "Transport & Logistique",
+  "sous_module_groupes": "Groupes & Encadrement",
+  "sous_module_finances": "Finances & Comptabilité",
+  "liste_pelerins": "Liste des pèlerins",
+  "retour": "Retour"
+
+
+
 
 
 

@@ -1,0 +1,50 @@
+.retour {
+  background: none;
+  border: none;
+  color: #6B7280;
+  font-size: 13px;
+  cursor: pointer;
+  padding: 0;
+  margin-bottom: 16px;
+}
+.retour:hover { color: var(--color-brand); }
+
+.titre {
+  font-family: var(--font-display);
+  font-size: 22px;
+  color: var(--color-brand-dark);
+  margin: 0 0 24px;
+}
+
+.grilleActions {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 16px;
+  max-width: 560px;
+}
+
+.carteAction {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 36px 20px;
+  border: 2px solid var(--color-border);
+  border-radius: 16px;
+  background-color: #fff;
+  cursor: pointer;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.carteAction:hover {
+  border-color: var(--color-brand);
+  box-shadow: 0 8px 20px rgba(11,14,20,0.08);
+}
+
+.icone { color: var(--color-brand); }
+
+.libelle {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--color-ink);
+}

@@ -474,7 +474,31 @@
   "etape_sante_inscription": "Registration",
   "inscription_pour": "Registering for",
 
-  "saisir_nom_inscripteur": "Enter agent's name"
+  "saisir_nom_inscripteur": "Enter agent's name",
+
+  
+  "etape_identite_passeport": "Identity & Passport",
+  "etape_adresse_contact": "Address & Contact",
+  "etape_sante_inscription": "Health & Registration",
+  "choisir_type_voyage": "Which type of trip?",
+  "inscription_pour": "Registering for",
+  "toutes_annees": "All years",
+  "tous_inscripteurs": "All registering agents",
+
+  
+  "choisir_sous_module": "Choose an action",
+  "sous_module_pelerins": "Pilgrims",
+  "sous_module_forfaits": "Packages & Programs",
+  "sous_module_visa_doc": "Visa & Documents",
+  "sous_module_vols": "Flights & Travel",
+  "sous_module_hebergement": "Hotels & Accommodation",
+  "sous_module_transport": "Transport & Logistics",
+  "sous_module_groupes": "Groups & Supervision",
+  "sous_module_finances": "Finance & Accounting",
+  "liste_pelerins": "Pilgrims list",
+  "retour": "Back"
+
+
 
 
 

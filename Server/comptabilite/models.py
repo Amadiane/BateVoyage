@@ -4,6 +4,10 @@ from django.db import models
 from django.db import models
 from django.conf import settings
 
+class Activite(models.TextChoices):
+    HAJJ = "hajj", "Hajj"
+    OUMRA = "oumra", "Oumra"
+    GENERAL = "general", "Général (agence)"
 
 class BonSortie(models.Model):
     numero_bon = models.CharField(max_length=20, unique=True, editable=False, blank=True)
@@ -14,6 +18,7 @@ class BonSortie(models.Model):
         help_text="Si c'est un employé du système, le sélectionner ici (optionnel)"
     )
     montant = models.DecimalField(max_digits=12, decimal_places=2)
+    activite = models.CharField(max_length=20, choices=Activite.choices, default=Activite.GENERAL)
     motif = models.CharField(max_length=255)
     date_sortie = models.DateField()
     justifie = models.BooleanField(default=False, help_text="Coché une fois l'argent justifié ou remboursé")
@@ -52,6 +57,7 @@ class Depense(models.Model):
 
     categorie = models.CharField(max_length=20, choices=Categorie.choices)
     montant = models.DecimalField(max_digits=12, decimal_places=2)
+    activite = models.CharField(max_length=20, choices=Activite.choices, default=Activite.GENERAL)
     description = models.CharField(max_length=255)
     date_depense = models.DateField()
     enregistre_par = models.ForeignKey(
@@ -71,6 +77,7 @@ class Depense(models.Model):
 class DetteFournisseur(models.Model):
     nom_fournisseur = models.CharField(max_length=150, help_text="Ex: Makkah Towers, Air Guinée")
     montant_du = models.DecimalField(max_digits=12, decimal_places=2)
+    activite = models.CharField(max_length=20, choices=Activite.choices, default=Activite.GENERAL)
     motif = models.CharField(max_length=255)
     date_echeance = models.DateField(null=True, blank=True)
     soldee = models.BooleanField(default=False)
@@ -88,3 +95,4 @@ class DetteFournisseur(models.Model):
 
     def __str__(self):
         return f"{self.nom_fournisseur} — {self.montant_du} GNF"
+

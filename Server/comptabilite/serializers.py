@@ -5,6 +5,7 @@ from .models import BonSortie, Depense, DetteFournisseur
 class BonSortieSerializer(serializers.ModelSerializer):
     numero_bon = serializers.CharField(read_only=True)
     enregistre_par_nom = serializers.SerializerMethodField()
+    activite_display = serializers.CharField(source="get_activite_display", read_only=True)
 
     class Meta:
         model = BonSortie
@@ -19,6 +20,7 @@ class BonSortieSerializer(serializers.ModelSerializer):
 class DepenseSerializer(serializers.ModelSerializer):
     categorie_display = serializers.CharField(source="get_categorie_display", read_only=True)
     enregistre_par_nom = serializers.SerializerMethodField()
+    activite_display = serializers.CharField(source="get_activite_display", read_only=True)
 
     class Meta:
         model = Depense
@@ -32,6 +34,7 @@ class DepenseSerializer(serializers.ModelSerializer):
 
 class DetteFournisseurSerializer(serializers.ModelSerializer):
     enregistre_par_nom = serializers.SerializerMethodField()
+    activite_display = serializers.CharField(source="get_activite_display", read_only=True)
 
     class Meta:
         model = DetteFournisseur
