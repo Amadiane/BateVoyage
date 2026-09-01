@@ -37,13 +37,14 @@ const LABELS_TYPE_VOYAGE = {
 const VALEURS_INITIALES = {
   prenom: "", nom: "", sexe: "", date_naissance: "", lieu_naissance: "",
   numero_passeport: "", date_emission_passeport: "", date_expiration_passeport: "", statut_visa: "non_demande",
+  biometrie_effectuee: false, date_biometrie: "",
   commune: "", quartier: "", nom_pere: "", nom_mere: "",
   telephone: "", nom_correspondant: "", telephone_correspondant: "", agence_partenaire: "",
   groupe_sanguin: "", probleme_sante: "",
   type_voyage: "", montant_verse: "", mode_paiement: "", inscripteur: "",
 };
 
-const CHAMPS_FICHIERS = ["photo", "scan_passeport", "scan_certificat_medical", "scan_recu_versement"];
+const CHAMPS_FICHIERS = ["photo", "scan_passeport", "scan_visa", "scan_certificat_medical", "scan_recu_versement"];
 
 const CHAMPS_REQUIS_PAR_ETAPE = {
   0: ["prenom", "nom", "sexe", "date_naissance", "lieu_naissance",
@@ -65,6 +66,7 @@ function FormulairePelerin() {
   const [fichiers, setFichiers] = useState({
     photo: null,
     scan_passeport: null,
+    scan_visa: null,
     scan_certificat_medical: null,
     scan_recu_versement: null,
   });
@@ -136,8 +138,13 @@ function FormulairePelerin() {
       const formData = new FormData();
       Object.keys(VALEURS_INITIALES).forEach((champ) => {
         if (modeEdition && (champ === "montant_verse" || champ === "mode_paiement")) return;
+        if (champ === "date_biometrie" && !valeurs.biometrie_effectuee) return;
 
         const val = valeurs[champ];
+        if (champ === "biometrie_effectuee") {
+          formData.append(champ, val ? "true" : "false");
+          return;
+        }
         if (val !== null && val !== undefined && val !== "") {
           formData.append(champ, val);
         }
@@ -250,6 +257,7 @@ function FormulairePelerin() {
                   <option value="en_cours">{t("visa_en_cours")}</option>
                   <option value="obtenu">{t("visa_obtenu")}</option>
                   <option value="refuse">{t("visa_refuse")}</option>
+                  <option value="expire">{t("visa_expire")}</option>
                 </select>
               </Champ>
               <Champ label={t("date_emission_passeport")} manquant={estManquant("date_emission_passeport")}>
@@ -258,11 +266,33 @@ function FormulairePelerin() {
               <Champ label={t("date_expiration_passeport")} manquant={estManquant("date_expiration_passeport")}>
                 <input type="date" value={valeurs.date_expiration_passeport} onChange={(e) => majChamp("date_expiration_passeport", e.target.value)} />
               </Champ>
+              <Champ label={t("biometrie_effectuee")}>
+                <label style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 14 }}>
+                  <input
+                    type="checkbox"
+                    checked={valeurs.biometrie_effectuee}
+                    onChange={(e) => majChamp("biometrie_effectuee", e.target.checked)}
+                  />
+                  {t("biometrie_faite")}
+                </label>
+              </Champ>
+              {valeurs.biometrie_effectuee && (
+                <Champ label={t("date_biometrie")}>
+                  <input type="date" value={valeurs.date_biometrie} onChange={(e) => majChamp("date_biometrie", e.target.value)} />
+                </Champ>
+              )}
               <div style={{ gridColumn: "1 / -1" }}>
                 <ChampFichier
                   label={t("scan_passeport")}
                   valeurActuelle={documentsExistants.scan_passeport}
                   onFichierChange={(f) => majFichier("scan_passeport", f)}
+                />
+              </div>
+              <div style={{ gridColumn: "1 / -1" }}>
+                <ChampFichier
+                  label={t("scan_visa")}
+                  valeurActuelle={documentsExistants.scan_visa}
+                  onFichierChange={(f) => majFichier("scan_visa", f)}
                 />
               </div>
             </div>

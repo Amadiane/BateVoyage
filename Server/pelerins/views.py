@@ -21,7 +21,7 @@ from .pdf_utils import link_callback
 
 django_engine = engines["django"]
 
-CHAMPS_DOCUMENTS = ["photo", "scan_passeport", "scan_certificat_medical", "scan_recu_versement"]
+CHAMPS_DOCUMENTS = ["photo", "scan_passeport", "scan_visa", "scan_certificat_medical", "scan_recu_versement"]
 
 
 class PelerinFilter(django_filters.FilterSet):
@@ -156,6 +156,18 @@ class PelerinViewSet(viewsets.ModelViewSet):
 
         response = HttpResponse(content_type="application/pdf")
         response["Content-Disposition"] = 'attachment; filename="liste_pelerins.pdf"'
+
+        resultat = pisa.CreatePDF(html, dest=response, link_callback=link_callback)
+        if resultat.err:
+            return Response({"erreur": "Échec de la génération du PDF."}, status=500)
+        return response
+    @action(detail=True, methods=["get"], url_path="fiche-visa")
+    def fiche_visa(self, request, pk=None):
+        pelerin = self.get_object()
+        html = render_to_string("pelerins/fiche_visa.html", {"p": pelerin})
+
+        response = HttpResponse(content_type="application/pdf")
+        response["Content-Disposition"] = f'attachment; filename="visa_{pelerin.numero_id}.pdf"'
 
         resultat = pisa.CreatePDF(html, dest=response, link_callback=link_callback)
         if resultat.err:

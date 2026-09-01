@@ -40,9 +40,10 @@ class Pelerin(models.Model):
 
     class StatutVisa(models.TextChoices):
         NON_DEMANDE = "non_demande", "Non demandé"
-        EN_COURS = "en_cours", "En cours (Nusuk)"
+        EN_COURS = "en_cours", "En cours"
         OBTENU = "obtenu", "Obtenu"
         REFUSE = "refuse", "Refusé"
+        EXPIRE = "expire", "Expiré"
 
     class ModePaiement(models.TextChoices):
         ESPECES = "especes", "Espèces"
@@ -70,6 +71,11 @@ class Pelerin(models.Model):
         upload_to="pelerins/passeports/", storage=RawMediaCloudinaryStorage(),
         blank=True, null=True
     )
+    scan_visa = models.FileField(
+        upload_to="pelerins/visas/", storage=RawMediaCloudinaryStorage(), blank=True, null=True
+    )
+    biometrie_effectuee = models.BooleanField(default=False)
+    date_biometrie = models.DateField(null=True, blank=True)
     statut_visa = models.CharField(max_length=20, choices=StatutVisa.choices, default=StatutVisa.NON_DEMANDE)
 
     # ---------- 6-7. Naissance ----------
@@ -169,6 +175,12 @@ class Pelerin(models.Model):
             self.statut_visa == self.StatutVisa.OBTENU and
             self.scan_certificat_medical
         )
+    @property
+    def jours_avant_expiration_passeport(self):
+        if not self.date_expiration_passeport:
+            return None
+        from django.utils import timezone
+        return (self.date_expiration_passeport - timezone.now().date()).days
 
     def save(self, *args, **kwargs):
         if not self.numero_id:

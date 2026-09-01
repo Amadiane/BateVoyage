@@ -17,6 +17,7 @@ class PelerinSerializer(serializers.ModelSerializer):
     jours_avant_echeance_paiement = serializers.IntegerField(read_only=True)
     groupe_nom = serializers.CharField(source="groupe.nom", read_only=True)
     chambre_info = serializers.SerializerMethodField()
+    jours_avant_expiration_passeport = serializers.IntegerField(read_only=True)
 
     class Meta:
         model = Pelerin

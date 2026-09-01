@@ -6,7 +6,7 @@ import styles from "../../theme/pages/moduleVoyage/PageModuleVoyage.module.css";
 const SOUS_MODULES = [
   { cle: "pelerins", icone: Users, actif: true, couleur: "bleu" },
   { cle: "forfaits", icone: Package, actif: true, couleur: "orange" },
-  { cle: "visa_doc", icone: FileCheck2, actif: false, couleur: "or" },
+  { cle: "visa_doc", icone: FileCheck2, actif: true, couleur: "or" },
   { cle: "vols", icone: Plane, actif: false, couleur: "violet" },
   { cle: "hebergement", icone: Hotel, actif: false, couleur: "vert" },
   { cle: "transport", icone: Bus, actif: false, couleur: "rose" },

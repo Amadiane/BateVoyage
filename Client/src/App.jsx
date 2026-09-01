@@ -28,6 +28,7 @@ import FormulairePersonnel from "./pages/personnel/FormulairePersonnel";
 import PageModelesDocuments from "./pages/modeles-documents/PageModelesDocuments";
 import PageModulesVisibles from "./pages/parametres/PageModulesVisibles";
 import PageForfaitsModule from "./pages/moduleVoyage/PageForfaitsModule";
+import PageVisaDocModule from "./pages/moduleVoyage/PageVisaDocModule";
 import "./globals.css";
 
 const ROLES_FINANCIERS = ["fondateur", "admin_general", "comptable", "secretaire"];
@@ -61,6 +62,8 @@ function App() {
           <Route path="/hajj/pelerins/liste" element={<ListePelerins typeVoyageFixe="pelerinage" titreCle="menu_hajj" retourPath="/hajj/pelerins" />} />
           <Route path="/hajj/forfaits" element={<PageForfaitsModule typeVoyage="pelerinage" basePath="/hajj" />} />
           <Route path="/oumra/forfaits" element={<PageForfaitsModule typeVoyage="oumra" basePath="/oumra" />} />
+          <Route path="/hajj/visa_doc" element={<PageVisaDocModule typeVoyage="pelerinage" basePath="/hajj" />} />
+          <Route path="/oumra/visa_doc" element={<PageVisaDocModule typeVoyage="oumra" basePath="/oumra" />} />
 
           {/* Module Oumra */}
           <Route path="/oumra" element={<PageModuleVoyage typeVoyage="oumra" basePath="/oumra" titreCle="menu_oumra" />} />

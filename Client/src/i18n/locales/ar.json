@@ -522,7 +522,29 @@
   "nom_prestation": "اسم الخدمة",
   "ajouter_prestation": "إضافة خدمة",
   "total_devis": "إجمالي العرض",
-  "infos_internes_agence": "معلومات داخلية (خاصة بالوكالة فقط)"
+  "infos_internes_agence": "معلومات داخلية (خاصة بالوكالة فقط)",
+
+  
+  "sous_module_visa_doc": "التأشيرة والمستندات",
+  "visa_expire": "منتهية الصلاحية",
+  "statut_visa_label": "حالة التأشيرة",
+  "biometrie": "البصمة الحيوية",
+  "biometrie_effectuee": "البصمة الحيوية",
+  "biometrie_faite": "تم أخذ البصمة الحيوية",
+  "date_biometrie": "تاريخ البصمة الحيوية",
+  "scan_visa": "نسخة التأشيرة",
+  "effectuee": "تمت",
+  "non_effectuee": "لم تتم",
+  "passeport_expire": "جواز السفر منتهي الصلاحية!",
+  "expire_dans_x_jours": "ينتهي خلال {{jours}} يومًا",
+  "imprimer_fiche_visa": "طباعة بطاقة التأشيرة",
+
+  
+  "vue_kanban": "عرض كانبان",
+  "vue_tableau": "عرض الجدول",
+  "aucun_resultat": "لا يوجد ملف"
+
+
 
 
 
