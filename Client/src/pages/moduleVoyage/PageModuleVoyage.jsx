@@ -4,14 +4,14 @@ import { Users, Package, FileCheck2, Plane, Hotel, Bus, UsersRound, Wallet } fro
 import styles from "../../theme/pages/moduleVoyage/PageModuleVoyage.module.css";
 
 const SOUS_MODULES = [
-  { cle: "pelerins", icone: Users, actif: true },
-  { cle: "forfaits", icone: Package, actif: false },
-  { cle: "visa_doc", icone: FileCheck2, actif: false },
-  { cle: "vols", icone: Plane, actif: false },
-  { cle: "hebergement", icone: Hotel, actif: false },
-  { cle: "transport", icone: Bus, actif: false },
-  { cle: "groupes", icone: UsersRound, actif: false },
-  { cle: "finances", icone: Wallet, actif: false },
+  { cle: "pelerins", icone: Users, actif: true, couleur: "bleu" },
+  { cle: "forfaits", icone: Package, actif: false, couleur: "orange" },
+  { cle: "visa_doc", icone: FileCheck2, actif: false, couleur: "or" },
+  { cle: "vols", icone: Plane, actif: false, couleur: "violet" },
+  { cle: "hebergement", icone: Hotel, actif: false, couleur: "vert" },
+  { cle: "transport", icone: Bus, actif: false, couleur: "rose" },
+  { cle: "groupes", icone: UsersRound, actif: false, couleur: "cyan" },
+  { cle: "finances", icone: Wallet, actif: false, couleur: "rouge" },
 ];
 
 function PageModuleVoyage({ typeVoyage, basePath, titreCle }) {
@@ -19,7 +19,7 @@ function PageModuleVoyage({ typeVoyage, basePath, titreCle }) {
   const navigate = useNavigate();
 
   return (
-    <div>
+    <div className={styles.page}>
       <h1 className={styles.titre}>{t(titreCle)}</h1>
       <p className={styles.sousTitre}>{t("choisir_sous_module")}</p>
 
@@ -29,11 +29,13 @@ function PageModuleVoyage({ typeVoyage, basePath, titreCle }) {
           return (
             <button
               key={m.cle}
-              className={`${styles.carteSousModule} ${!m.actif ? styles.carteDesactivee : ""}`}
+              className={`${styles.carteSousModule} ${styles["bordure_" + m.couleur]} ${!m.actif ? styles.carteDesactivee : ""}`}
               disabled={!m.actif}
               onClick={() => m.actif && navigate(`${basePath}/${m.cle}`)}
             >
-              <Icone size={24} className={styles.icone} />
+              <div className={`${styles.iconeCercle} ${styles["cercle_" + m.couleur]}`}>
+                <Icone size={30} />
+              </div>
               <span className={styles.libelle}>{t(`sous_module_${m.cle}`)}</span>
               {!m.actif && <span className={styles.badgeBientot}>{t("bientot")}</span>}
             </button>

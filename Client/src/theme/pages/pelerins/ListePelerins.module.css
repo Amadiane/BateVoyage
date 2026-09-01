@@ -220,3 +220,17 @@
   display: flex;
   gap: 8px;
 }
+
+.boutonPrincipal {
+  background-color: #1E40AF;
+}
+.boutonPrincipal:hover {
+  background-color: #1D4ED8;
+}
+
+.entete {
+  border-left: 4px solid #93C5FD;
+  padding-left: 16px;
+}
+
+.badge_inscrit { background-color: #DBEAFE; color: #1E40AF; }

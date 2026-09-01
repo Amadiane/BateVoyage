@@ -8,7 +8,7 @@ function PagePelerinsModule({ typeVoyage, basePath }) {
   const navigate = useNavigate();
 
   return (
-    <div>
+    <div className={styles.page}>
       <button className={styles.retour} onClick={() => navigate(basePath)}>
         ← {t("retour")}
       </button>
@@ -17,18 +17,22 @@ function PagePelerinsModule({ typeVoyage, basePath }) {
 
       <div className={styles.grilleActions}>
         <button
-          className={styles.carteAction}
+          className={`${styles.carteAction} ${styles.bordure_bleu}`}
           onClick={() => navigate(`/pelerins/nouveau?type=${typeVoyage}`)}
         >
-          <UserPlus size={28} className={styles.icone} />
+          <div className={`${styles.iconeCercle} ${styles.cercle_bleu}`}>
+            <UserPlus size={32} />
+          </div>
           <span className={styles.libelle}>{t("nouveau_pelerin")}</span>
         </button>
 
         <button
-          className={styles.carteAction}
+          className={`${styles.carteAction} ${styles.bordure_or}`}
           onClick={() => navigate(`${basePath}/pelerins/liste`)}
         >
-          <ListChecks size={28} className={styles.icone} />
+          <div className={`${styles.iconeCercle} ${styles.cercle_or}`}>
+            <ListChecks size={32} />
+          </div>
           <span className={styles.libelle}>{t("liste_pelerins")}</span>
         </button>
       </div>
