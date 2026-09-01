@@ -62,6 +62,7 @@ class Pelerin(models.Model):
     prenom = models.CharField(max_length=100)
     nom = models.CharField(max_length=100)
     sexe = models.CharField(max_length=1, choices=Sexe.choices)
+    check_in_effectue = models.BooleanField(default=False)
 
     # ---------- 5,8,9. Passeport ----------
     numero_passeport = models.CharField(max_length=30)

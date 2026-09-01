@@ -79,6 +79,7 @@ const CONFIG = {
   API_FORFAIT_DETAIL: (id) => `${BASE_URL}/api/formules/forfaits/${id}/`,
   API_FORFAIT_EXPORT_PDF: (id) => `${BASE_URL}/api/formules/forfaits/${id}/export-pdf/`,
   API_PELERIN_FICHE_VISA: (id) => `${BASE_URL}/api/pelerins/${id}/fiche-visa/`,
+  API_VOL_MANIFESTE_PDF: (id) => `${BASE_URL}/api/groupes-vols/vols/${id}/manifeste-pdf/`,
 
   // --- Formules / Programmes ---
   API_PROGRAMMES: `${BASE_URL}/api/formules/programmes/`,

@@ -542,7 +542,25 @@
   
   "vue_kanban": "عرض كانبان",
   "vue_tableau": "عرض الجدول",
-  "aucun_resultat": "لا يوجد ملف"
+  "aucun_resultat": "لا يوجد ملف",
+
+  
+  "sous_module_vols": "الرحلات والسفر",
+  "nouveau_vol": "رحلة جديدة",
+  "modifier_vol": "تعديل الرحلة",
+  "aucun_vol": "لا توجد رحلة مسجلة",
+  "confirmer_suppression_vol": "تأكيد حذف هذه الرحلة؟",
+  "compagnie": "شركة الطيران",
+  "numero_vol": "رقم الرحلة",
+  "date_vol": "تاريخ الرحلة",
+  "heure_vol": "وقت الرحلة",
+  "aeroport_depart": "مطار المغادرة",
+  "aeroport_arrivee": "مطار الوصول",
+  "numero_billet_reference": "رقم مرجع التذكرة (PNR)",
+  "bagages_autorises": "الوزن المسموح للأمتعة (كجم)",
+  "passagers": "مسافرون",
+  "manifeste": "قائمة الركاب"
+
 
 
 

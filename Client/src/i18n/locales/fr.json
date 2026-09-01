@@ -546,7 +546,25 @@
   
   "vue_kanban": "Vue Kanban",
   "vue_tableau": "Vue tableau",
-  "aucun_resultat": "Aucun dossier"
+  "aucun_resultat": "Aucun dossier",
+
+  
+  "sous_module_vols": "Vols & Voyages",
+  "nouveau_vol": "Nouveau vol",
+  "modifier_vol": "Modifier le vol",
+  "aucun_vol": "Aucun vol enregistré",
+  "confirmer_suppression_vol": "Confirmer la suppression de ce vol ?",
+  "compagnie": "Compagnie",
+  "numero_vol": "N° de vol",
+  "date_vol": "Date du vol",
+  "heure_vol": "Heure du vol",
+  "aeroport_depart": "Aéroport de départ",
+  "aeroport_arrivee": "Aéroport d'arrivée",
+  "numero_billet_reference": "N° référence billet (PNR)",
+  "bagages_autorises": "Bagages autorisés (kg)",
+  "passagers": "passagers",
+  "manifeste": "Manifeste"
+
 
 
 

@@ -538,7 +538,25 @@
   
   "vue_kanban": "Kanban view",
   "vue_tableau": "Table view",
-  "aucun_resultat": "No records"
+  "aucun_resultat": "No records",
+
+  
+  "sous_module_vols": "Flights & Travel",
+  "nouveau_vol": "New flight",
+  "modifier_vol": "Edit flight",
+  "aucun_vol": "No flight registered",
+  "confirmer_suppression_vol": "Confirm deletion of this flight?",
+  "compagnie": "Airline",
+  "numero_vol": "Flight number",
+  "date_vol": "Flight date",
+  "heure_vol": "Flight time",
+  "aeroport_depart": "Departure airport",
+  "aeroport_arrivee": "Arrival airport",
+  "numero_billet_reference": "Ticket reference (PNR)",
+  "bagages_autorises": "Baggage allowance (kg)",
+  "passagers": "passengers",
+  "manifeste": "Manifest"
+
 
 
 

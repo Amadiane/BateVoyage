@@ -2,7 +2,7 @@ import api from "./api";
 import CONFIG from "../config/config";
 
 export const groupeService = {
-  lister: () => api.get(CONFIG.API_GROUPES),
+  lister: (params) => api.get(CONFIG.API_GROUPES, { params }),
   obtenir: (id) => api.get(CONFIG.API_GROUPE_DETAIL(id)),
   creer: (donnees) => api.post(CONFIG.API_GROUPES, donnees),
   modifier: (id, donnees) => api.patch(CONFIG.API_GROUPE_DETAIL(id), donnees),

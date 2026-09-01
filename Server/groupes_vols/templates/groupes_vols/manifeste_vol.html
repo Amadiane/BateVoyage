@@ -1,0 +1,69 @@
+<html>
+<head>
+<style>
+  @page {
+    size: A4 landscape;
+    margin-top: 4.4cm; margin-bottom: 2.2cm; margin-left: 1.2cm; margin-right: 1.2cm;
+    @frame header_frame { -pdf-frame-content: header_content; top: 1cm; left: 1.2cm; right: 1.2cm; height: 3.3cm; }
+    @frame footer_frame { -pdf-frame-content: footer_content; bottom: 0.6cm; left: 1.2cm; right: 1.2cm; height: 1.4cm; }
+  }
+  body { font-family: Helvetica, Arial, sans-serif; font-size: 10px; color: #1F2937; }
+  #header_content img, #footer_content img { width: 100%; }
+  .titre-doc { font-size: 15px; font-weight: bold; color: #0B3FA0; margin: 6px 0 2px; }
+  .ligne-separation { border-bottom: 2px solid #C7A44A; margin: 4px 0 14px; }
+  table.infos-vol { width: 100%; border-collapse: collapse; margin-bottom: 16px; }
+  table.infos-vol td { padding: 5px 4px; font-size: 10.5px; }
+  table.infos-vol td.label { font-weight: bold; color: #4B5563; width: 20%; }
+  .sous-titre-liste { font-size: 11.5px; font-weight: bold; color: #0B3FA0; margin: 14px 0 6px; }
+  table.passagers { width: 100%; border-collapse: collapse; }
+  table.passagers th { color: #0B3FA0; padding: 5px 8px; text-align: left; font-size: 9px; text-transform: uppercase; border-bottom: 2px solid #0B3FA0; }
+  table.passagers td { padding: 5px 8px; border-bottom: 1px solid #E5E7EB; font-size: 9.5px; }
+</style>
+</head>
+<body>
+  <div id="header_content"><img src="/static/pelerins/entete_bvg.png" /></div>
+  <div id="footer_content"><img src="/static/pelerins/pied_bvg.png" /></div>
+
+  <div class="titre-doc">MANIFESTE DE VOL</div>
+  <div class="ligne-separation"></div>
+
+  <table class="infos-vol">
+    <tr>
+      <td class="label">Compagnie</td><td>{{ v.compagnie }}</td>
+      <td class="label">N° Vol</td><td>{{ v.numero_vol }}</td>
+    </tr>
+    <tr>
+      <td class="label">Date</td><td>{{ v.date_vol }}</td>
+      <td class="label">Heure</td><td>{{ v.heure_vol }}</td>
+    </tr>
+    <tr>
+      <td class="label">Trajet</td><td colspan="3">{{ v.aeroport_depart }} → {{ v.aeroport_arrivee }}</td>
+    </tr>
+  </table>
+
+  {% if pelerins_aller %}
+  <div class="sous-titre-liste">Passagers (Aller) — {{ pelerins_aller|length }}</div>
+  <table class="passagers">
+    <thead><tr><th>N° Dossier</th><th>Nom</th><th>Prénom</th><th>N° Passeport</th><th>Check-in</th></tr></thead>
+    <tbody>
+      {% for p in pelerins_aller %}
+      <tr><td>{{ p.numero_id }}</td><td>{{ p.nom }}</td><td>{{ p.prenom }}</td><td>{{ p.numero_passeport }}</td><td>{% if p.check_in_effectue %}Oui{% else %}Non{% endif %}</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% endif %}
+
+  {% if pelerins_retour %}
+  <div class="sous-titre-liste">Passagers (Retour) — {{ pelerins_retour|length }}</div>
+  <table class="passagers">
+    <thead><tr><th>N° Dossier</th><th>Nom</th><th>Prénom</th><th>N° Passeport</th><th>Check-in</th></tr></thead>
+    <tbody>
+      {% for p in pelerins_retour %}
+      <tr><td>{{ p.numero_id }}</td><td>{{ p.nom }}</td><td>{{ p.prenom }}</td><td>{{ p.numero_passeport }}</td><td>{% if p.check_in_effectue %}Oui{% else %}Non{% endif %}</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% endif %}
+
+</body>
+</html>

@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from .models import Vol, Groupe
+from pelerins.models import Pelerin
 
 
 class VolSerializer(serializers.ModelSerializer):
@@ -27,3 +28,13 @@ class GroupeSerializer(serializers.ModelSerializer):
 
     def get_nb_pelerins(self, obj):
         return obj.pelerins.count()
+
+class VolSerializer(serializers.ModelSerializer):
+    nb_pelerins_affectes = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Vol
+        fields = "__all__"
+
+    def get_nb_pelerins_affectes(self, obj):
+        return Pelerin.objects.filter(groupe__vol_aller=obj).count() + Pelerin.objects.filter(groupe__vol_retour=obj).count()

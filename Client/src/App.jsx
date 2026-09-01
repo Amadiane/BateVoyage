@@ -29,6 +29,8 @@ import PageModelesDocuments from "./pages/modeles-documents/PageModelesDocuments
 import PageModulesVisibles from "./pages/parametres/PageModulesVisibles";
 import PageForfaitsModule from "./pages/moduleVoyage/PageForfaitsModule";
 import PageVisaDocModule from "./pages/moduleVoyage/PageVisaDocModule";
+import PageVolsModule from "./pages/moduleVoyage/PageVolsModule";
+import DetailVol from "./pages/moduleVoyage/DetailVol";
 import "./globals.css";
 
 const ROLES_FINANCIERS = ["fondateur", "admin_general", "comptable", "secretaire"];
@@ -64,6 +66,10 @@ function App() {
           <Route path="/oumra/forfaits" element={<PageForfaitsModule typeVoyage="oumra" basePath="/oumra" />} />
           <Route path="/hajj/visa_doc" element={<PageVisaDocModule typeVoyage="pelerinage" basePath="/hajj" />} />
           <Route path="/oumra/visa_doc" element={<PageVisaDocModule typeVoyage="oumra" basePath="/oumra" />} />
+          <Route path="/hajj/vols" element={<PageVolsModule basePath="/hajj" />} />
+          <Route path="/oumra/vols" element={<PageVolsModule basePath="/oumra" />} />
+          <Route path="/hajj/vols/:id" element={<DetailVol />} />
+          <Route path="/oumra/vols/:id" element={<DetailVol />} />
 
           {/* Module Oumra */}
           <Route path="/oumra" element={<PageModuleVoyage typeVoyage="oumra" basePath="/oumra" titreCle="menu_oumra" />} />

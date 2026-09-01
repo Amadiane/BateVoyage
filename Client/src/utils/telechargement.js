@@ -41,10 +41,16 @@ export async function telechargerFichierProtege(url, nomFichierRepli) {
 
 function gererErreurDocument(erreur) {
   const statut = erreur.response?.status;
+
   if (statut === 404) {
-    alert("Ce document n'a pas encore été téléversé pour ce pèlerin.");
+    alert("Ce document n'existe pas encore ou n'a pas été téléversé.");
+  } else if (statut === 500) {
+    alert("Une erreur est survenue lors de la génération du document. Réessayez dans un instant.");
+  } else if (statut === 403 || statut === 401) {
+    alert("Vous n'avez pas l'autorisation d'accéder à ce document.");
   } else {
     alert("Erreur lors du chargement du document. Réessayez ou contactez le support technique.");
   }
+
   console.error("Erreur document :", erreur);
 }

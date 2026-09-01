@@ -12,6 +12,8 @@ class Vol(models.Model):
     heure_vol = models.TimeField()
     aeroport_depart = models.CharField(max_length=100)
     aeroport_arrivee = models.CharField(max_length=100)
+    numero_billet_reference = models.CharField(max_length=100, blank=True, help_text="Référence de réservation groupe (PNR)")
+    bagages_autorises_kg = models.PositiveIntegerField(null=True, blank=True, help_text="Poids autorisé par pèlerin, en kg")
 
     class Meta:
         ordering = ["date_vol", "heure_vol"]
