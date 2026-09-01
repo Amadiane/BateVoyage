@@ -555,7 +555,27 @@
   "numero_billet_reference": "Ticket reference (PNR)",
   "bagages_autorises": "Baggage allowance (kg)",
   "passagers": "passengers",
-  "manifeste": "Manifest"
+  "manifeste": "Manifest",
+
+  
+  "sous_module_vols": "Flights & Travel",
+  "nouveau_vol": "New flight",
+  "modifier_vol": "Edit flight",
+  "aucun_vol": "No flight registered",
+  "confirmer_suppression_vol": "Confirm deletion of this flight?",
+  "compagnie": "Airline",
+  "numero_vol": "Flight number",
+  "date_vol": "Flight date",
+  "heure_vol": "Flight time",
+  "aeroport_depart": "Departure airport",
+  "aeroport_arrivee": "Arrival airport",
+  "numero_billet_reference": "Ticket reference (PNR)",
+  "bagages_autorises": "Baggage allowance (kg)",
+  "passagers": "passengers",
+  "manifeste": "Manifest",
+  "aucun_groupe_pour_vol": "No group is linked to this flight yet.",
+  "creer_groupe_pour_vol": "Create a group for this flight"
+
 
 
 

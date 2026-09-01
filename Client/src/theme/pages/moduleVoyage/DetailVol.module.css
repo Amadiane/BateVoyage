@@ -28,3 +28,17 @@
 
 .boutonRetirer { width: 26px; height: 26px; display: inline-flex; align-items: center; justify-content: center; border: 1px solid var(--color-border); border-radius: 6px; background: #fff; cursor: pointer; color: #6B7280; }
 .boutonRetirer:hover { background-color: #FEE2E2; border-color: #FCA5A5; color: #B91C1C; }
+
+.titre { border-left: 4px solid #C4B5FD; padding-left: 12px; }
+
+@media (max-width: 900px) {
+  .entete {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+  .titre { border-left: none; border-top: 3px solid #C4B5FD; padding-left: 0; padding-top: 8px; }
+  .boutonSecondaire, .boutonPrincipal { width: 100%; justify-content: center; }
+  .conteneurTableau { overflow-x: auto; }
+  .tableau { min-width: 500px; }
+}

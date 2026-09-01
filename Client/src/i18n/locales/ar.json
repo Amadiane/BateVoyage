@@ -559,7 +559,27 @@
   "numero_billet_reference": "رقم مرجع التذكرة (PNR)",
   "bagages_autorises": "الوزن المسموح للأمتعة (كجم)",
   "passagers": "مسافرون",
-  "manifeste": "قائمة الركاب"
+  "manifeste": "قائمة الركاب",
+
+  
+  "sous_module_vols": "الرحلات والسفر",
+  "nouveau_vol": "رحلة جديدة",
+  "modifier_vol": "تعديل الرحلة",
+  "aucun_vol": "لا توجد رحلة مسجلة",
+  "confirmer_suppression_vol": "تأكيد حذف هذه الرحلة؟",
+  "compagnie": "شركة الطيران",
+  "numero_vol": "رقم الرحلة",
+  "date_vol": "تاريخ الرحلة",
+  "heure_vol": "وقت الرحلة",
+  "aeroport_depart": "مطار المغادرة",
+  "aeroport_arrivee": "مطار الوصول",
+  "numero_billet_reference": "رقم مرجع التذكرة (PNR)",
+  "bagages_autorises": "الوزن المسموح للأمتعة (كجم)",
+  "passagers": "مسافرون",
+  "manifeste": "قائمة الركاب",
+  "aucun_groupe_pour_vol": "لا توجد مجموعة مرتبطة بهذه الرحلة بعد.",
+  "creer_groupe_pour_vol": "إنشاء مجموعة لهذه الرحلة"
+
 
 
 
