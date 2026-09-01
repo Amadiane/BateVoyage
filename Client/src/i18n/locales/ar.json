@@ -499,7 +499,32 @@
   "sous_module_groupes": "المجموعات والإشراف",
   "sous_module_finances": "المالية والمحاسبة",
   "liste_pelerins": "قائمة الحجاج",
-  "retour": "رجوع"
+  "retour": "رجوع",
+
+  
+  "nouveau_forfait": "باقة جديدة",
+  "modifier_forfait": "تعديل الباقة",
+  "aucun_forfait": "لا توجد باقة مسجلة",
+  "nom_forfait": "اسم الباقة",
+  "standard": "الفئة",
+  "prix_vente": "سعر البيع",
+  "cout_reel": "التكلفة الفعلية",
+  "marge": "الهامش",
+  "nombre_places": "عدد الأماكن",
+  "places_disponibles": "مكان",
+  "services_inclus": "الخدمات المشمولة",
+  "services_exclus": "الخدمات غير المشمولة",
+  "un_service_par_ligne": "خدمة واحدة في كل سطر",
+  "exporter_pdf": "تصدير PDF",
+
+  
+  "detail_prestations": "تفاصيل الخدمات",
+  "nom_prestation": "اسم الخدمة",
+  "ajouter_prestation": "إضافة خدمة",
+  "total_devis": "إجمالي العرض",
+  "infos_internes_agence": "معلومات داخلية (خاصة بالوكالة فقط)"
+
+
 
 
 

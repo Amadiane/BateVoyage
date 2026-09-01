@@ -8,7 +8,7 @@ function PagePelerinsModule({ typeVoyage, basePath }) {
   const navigate = useNavigate();
 
   return (
-    <div className={styles.page}>
+    <div className={styles.page} style={{ position: "relative" }}>
       <button className={styles.retour} onClick={() => navigate(basePath)}>
         ← {t("retour")}
       </button>

@@ -496,7 +496,31 @@
   "sous_module_groupes": "Groups & Supervision",
   "sous_module_finances": "Finance & Accounting",
   "liste_pelerins": "Pilgrims list",
-  "retour": "Back"
+  "retour": "Back",
+  
+  "nouveau_forfait": "New package",
+  "modifier_forfait": "Edit package",
+  "aucun_forfait": "No package registered",
+  "nom_forfait": "Package name",
+  "standard": "Tier",
+  "prix_vente": "Selling price",
+  "cout_reel": "Actual cost",
+  "marge": "Margin",
+  "nombre_places": "Number of spots",
+  "places_disponibles": "spots",
+  "services_inclus": "Services included",
+  "services_exclus": "Services excluded",
+  "un_service_par_ligne": "One service per line",
+  "exporter_pdf": "Export PDF",
+
+  
+  "detail_prestations": "Service breakdown",
+  "nom_prestation": "Service name",
+  "ajouter_prestation": "Add a service",
+  "total_devis": "Quote total",
+  "infos_internes_agence": "Internal information (agency only)"
+
+
 
 
 

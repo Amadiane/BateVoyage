@@ -503,7 +503,32 @@
   "sous_module_groupes": "Groupes & Encadrement",
   "sous_module_finances": "Finances & Comptabilité",
   "liste_pelerins": "Liste des pèlerins",
-  "retour": "Retour"
+  "retour": "Retour",
+
+  
+  "nouveau_forfait": "Nouveau forfait",
+  "modifier_forfait": "Modifier le forfait",
+  "aucun_forfait": "Aucun forfait enregistré",
+  "nom_forfait": "Nom du forfait",
+  "standard": "Standard",
+  "prix_vente": "Prix de vente",
+  "cout_reel": "Coût réel",
+  "marge": "Marge",
+  "nombre_places": "Nombre de places",
+  "places_disponibles": "places",
+  "services_inclus": "Services inclus",
+  "services_exclus": "Services exclus",
+  "un_service_par_ligne": "Un service par ligne",
+  "exporter_pdf": "Exporter PDF",
+
+  
+  "detail_prestations": "Détail des prestations",
+  "nom_prestation": "Nom de la prestation",
+  "ajouter_prestation": "Ajouter une prestation",
+  "total_devis": "Total du devis",
+  "infos_internes_agence": "Informations internes (agence uniquement)"
+
+
 
 
 

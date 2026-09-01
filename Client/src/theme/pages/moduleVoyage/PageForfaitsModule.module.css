@@ -1,0 +1,95 @@
+.retour { background: none; border: none; color: #6B7280; font-size: 13px; cursor: pointer; padding: 0; margin-bottom: 16px; }
+.retour:hover { color: var(--color-brand); }
+
+.entete { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+.titre { font-family: var(--font-display); font-size: 22px; color: var(--color-brand-dark); margin: 0; }
+
+.boutonPrincipal { display: inline-flex; align-items: center; gap: 8px; padding: 10px 18px; border: none; border-radius: 8px; background-color: #9A3412; color: #fff; font-size: 14px; font-weight: 600; cursor: pointer; }
+.boutonPrincipal:hover:not(:disabled) { opacity: 0.9; }
+.boutonPrincipal:disabled { opacity: 0.6; }
+
+.grilleCartes { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+.etatVide { text-align: center; padding: 40px; color: #9CA3AF; grid-column: 1 / -1; }
+
+.carte { background-color: #fff; border: 2px solid var(--color-border); border-radius: 16px; padding: 20px; }
+.bordure_vip { border-color: #E8C766; }
+.bordure_semi_vip { border-color: #93C5FD; }
+.bordure_standard { border-color: #86EFAC; }
+
+.bandeau { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+.badge { font-size: 10.5px; font-weight: 700; padding: 3px 10px; border-radius: 999px; text-transform: uppercase; }
+.badge_vip { background-color: #FBF6EA; color: #A88530; }
+.badge_semi_vip { background-color: #DBEAFE; color: #1E40AF; }
+.badge_standard { background-color: #DCFCE7; color: #166534; }
+
+.actions { display: flex; gap: 6px; }
+.actions button { width: 26px; height: 26px; border: 1px solid var(--color-border); border-radius: 6px; background: #fff; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; }
+.actions button:hover { background-color: #F9FAFB; }
+.boutonSupprimer:hover { background-color: #FEE2E2 !important; border-color: #FCA5A5 !important; }
+
+.nom { font-family: var(--font-display); font-size: 17px; color: var(--color-brand-dark); margin: 0 0 6px; }
+.prix { font-size: 22px; font-weight: 700; color: #9A3412; margin: 0 0 10px; }
+
+.detailsInternes { display: flex; flex-direction: column; gap: 4px; font-size: 11.5px; color: #6B7280; margin-bottom: 10px; padding: 10px; background-color: #F9FAFB; border-radius: 8px; }
+.margePositive { color: #166534; font-weight: 600; }
+.margeNegative { color: #991B1B; font-weight: 600; }
+
+.places { font-size: 12.5px; color: #6B7280; margin: 0 0 14px; }
+
+.boutonExport { width: 100%; display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: 9px; border: 1px solid var(--color-border); border-radius: 8px; background: #fff; color: var(--color-brand-dark); font-size: 12.5px; font-weight: 600; cursor: pointer; }
+.boutonExport:hover { background-color: #F9FAFB; }
+
+.superposition { position: fixed; inset: 0; background-color: rgba(11,14,20,0.55); display: flex; align-items: center; justify-content: center; z-index: 50; padding: 24px; }
+.panneau { width: 460px; max-width: 100%; max-height: 90vh; overflow-y: auto; background-color: #fff; border-radius: 16px; padding: 26px; }
+.enteteModal { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+.enteteModal h2 { font-family: var(--font-display); font-size: 18px; color: var(--color-brand-dark); margin: 0; }
+.boutonFermer { background: none; border: none; cursor: pointer; color: #6B7280; }
+
+.formulaire { display: flex; flex-direction: column; gap: 16px; }
+.champ label { display: block; font-size: 12.5px; font-weight: 600; color: #4B5563; margin-bottom: 6px; }
+.champ input, .champ select, .champ textarea { width: 100%; padding: 10px 12px; border: 1px solid var(--color-border); border-radius: 8px; font-size: 14px; font-family: inherit; }
+.champ input:focus, .champ select:focus, .champ textarea:focus { outline: none; border-color: var(--color-brand); box-shadow: 0 0 0 3px var(--color-brand-pale); }
+.ligneDeux { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.erreur { font-size: 13px; color: #B91C1C; background-color: #FEF2F2; border: 1px solid #FECACA; border-radius: 8px; padding: 10px 14px; }
+.navigationModal { display: flex; justify-content: flex-end; gap: 10px; margin-top: 8px; padding-top: 16px; border-top: 1px solid #F3F4F6; }
+.boutonSecondaire { padding: 10px 18px; border: 1px solid var(--color-border); border-radius: 8px; background-color: #fff; color: var(--color-ink); font-size: 14px; cursor: pointer; }
+.boutonSecondaire:hover { background-color: #F9FAFB; }
+
+.sousLibelleTotal { font-size: 10.5px; color: #9CA3AF; margin: -6px 0 10px; }
+
+.panneauLarge {
+  width: 560px; max-width: 100%; max-height: 90vh; overflow-y: auto;
+  background-color: #fff; border-radius: 16px; padding: 26px;
+}
+
+.sectionTitre {
+  font-size: 11px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.04em; color: var(--color-brand); margin: 8px 0 4px;
+  padding-top: 14px; border-top: 1px solid #F3F4F6;
+}
+
+.tableauLignes { display: flex; flex-direction: column; gap: 8px; }
+
+.ligneEditable { display: flex; gap: 8px; align-items: center; }
+.inputLibelle { flex: 1; padding: 8px 10px; border: 1px solid var(--color-border); border-radius: 8px; font-size: 13px; }
+.inputMontant { width: 130px; padding: 8px 10px; border: 1px solid var(--color-border); border-radius: 8px; font-size: 13px; }
+
+.boutonRetirerLigne {
+  width: 30px; height: 30px; flex-shrink: 0; border: 1px solid var(--color-border);
+  border-radius: 8px; background: #fff; cursor: pointer; color: #9CA3AF;
+  display: inline-flex; align-items: center; justify-content: center;
+}
+.boutonRetirerLigne:hover { background-color: #FEE2E2; border-color: #FCA5A5; color: #B91C1C; }
+
+.boutonAjouterLigne {
+  display: inline-flex; align-items: center; gap: 6px; align-self: flex-start;
+  padding: 7px 14px; border: 1px dashed var(--color-brand); border-radius: 8px;
+  background: none; color: var(--color-brand); font-size: 12.5px; font-weight: 600; cursor: pointer;
+}
+.boutonAjouterLigne:hover { background-color: var(--color-brand-pale); }
+
+.totalDevis {
+  display: flex; justify-content: space-between; align-items: center;
+  background-color: #0B0E14; color: #fff; padding: 14px 18px; border-radius: 10px; margin-top: 6px;
+}
+.totalDevis strong { color: #C7A44A; font-size: 17px; }

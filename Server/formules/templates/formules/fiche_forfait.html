@@ -1,0 +1,65 @@
+<html>
+<head>
+<style>
+  @page {
+    size: A4;
+    margin-top: 4.4cm; margin-bottom: 2.2cm; margin-left: 1.5cm; margin-right: 1.5cm;
+    @frame header_frame { -pdf-frame-content: header_content; top: 1cm; left: 1.5cm; right: 1.5cm; height: 3.3cm; }
+    @frame footer_frame { -pdf-frame-content: footer_content; bottom: 0.6cm; left: 1.5cm; right: 1.5cm; height: 1.4cm; }
+  }
+  body { font-family: Helvetica, Arial, sans-serif; font-size: 10.5px; color: #1F2937; }
+  #header_content img, #footer_content img { width: 100%; }
+
+  .titre-doc { font-size: 16px; font-weight: bold; color: #0B3FA0; margin: 6px 0 2px; }
+  .sous-titre-doc { font-size: 10.5px; color: #6B7280; margin: 0 0 4px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .ligne-separation { border-bottom: 2px solid #C7A44A; margin: 4px 0 10px; }
+
+  .badge-standard { display: inline-block; color: #0B3FA0; font-size: 10px; font-weight: bold; border: 1px solid #0B3FA0; padding: 3px 12px; border-radius: 10px; margin-bottom: 10px; }
+
+  table.prestations { width: 100%; border-collapse: collapse; margin: 10px 0 0; }
+  table.prestations thead td { color: #0B3FA0; font-weight: bold; padding: 6px 10px; font-size: 9.5px; text-transform: uppercase; border-bottom: 2px solid #0B3FA0; }
+  table.prestations tbody td { padding: 6px 10px; border-bottom: 1px solid #E5E7EB; font-size: 10.5px; }
+  .col-montant { text-align: right; font-weight: bold; color: #0B3FA0; }
+
+  .ligne-total td { border-top: 2px solid #C7A44A; border-bottom: none; font-weight: bold; font-size: 12.5px; padding: 10px; color: #0B3FA0; }
+  .ligne-total .col-montant { color: #A88530; font-size: 15px; text-decoration: underline; }
+
+  .zone-places { margin: 10px 0; text-align: center; font-size: 10px; color: #6B7280; }
+
+  .mention-bas { margin-top: 16px; font-size: 9px; color: #9CA3AF; font-style: italic; text-align: center; }
+</style>
+</head>
+<body>
+  <div id="header_content"><img src="/static/pelerins/entete_bvg.png" /></div>
+  <div id="footer_content"><img src="/static/pelerins/pied_bvg.png" /></div>
+
+  <div class="titre-doc">{{ f.nom }}</div>
+  <div class="sous-titre-doc">{{ f.get_type_voyage_display }} {{ f.annee }} — Devis détaillé des prestations</div>
+  <div class="ligne-separation"></div>
+
+  <span class="badge-standard">FORMULE {{ f.get_standard_display|upper }}</span>
+
+  <table class="prestations">
+    <thead>
+      <tr><td>Prestation</td><td class="col-montant">Montant (GNF)</td></tr>
+    </thead>
+    <tbody>
+      {% for ligne in f.lignes.all %}
+      <tr>
+        <td>{{ ligne.libelle }}</td>
+        <td class="col-montant">{{ ligne.montant }}</td>
+      </tr>
+      {% endfor %}
+      <tr class="ligne-total">
+        <td>TOTAL À PAYER</td>
+        <td class="col-montant">{{ total_lignes }} GNF</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="zone-places">Nombre de places disponibles : {{ f.nombre_places }}</div>
+
+  <div class="mention-bas">Ce devis est valable pour la formule sélectionnée. Toute modification de prestation entraîne une révision du tarif.</div>
+
+</body>
+</html>

@@ -75,6 +75,9 @@ const CONFIG = {
   API_MODULES_SYSTEME: `${BASE_URL}/api/configuration/modules/`,
   API_MODULE_SYSTEME_DETAIL: (id) => `${BASE_URL}/api/configuration/modules/${id}/`,
   API_PELERINS_EXPORT_EXCEL: `${BASE_URL}/api/pelerins/export-excel/`,
+  API_FORFAITS: `${BASE_URL}/api/formules/forfaits/`,
+  API_FORFAIT_DETAIL: (id) => `${BASE_URL}/api/formules/forfaits/${id}/`,
+  API_FORFAIT_EXPORT_PDF: (id) => `${BASE_URL}/api/formules/forfaits/${id}/export-pdf/`,
 
   // --- Formules / Programmes ---
   API_PROGRAMMES: `${BASE_URL}/api/formules/programmes/`,

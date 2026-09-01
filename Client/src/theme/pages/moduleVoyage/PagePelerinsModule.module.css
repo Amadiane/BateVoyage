@@ -2,6 +2,9 @@
   min-height: calc(100vh - 64px);
   display: flex;
   flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
 }
 
 .retour {
@@ -11,8 +14,9 @@
   font-size: 13px;
   cursor: pointer;
   padding: 0;
-  margin-bottom: 20px;
-  align-self: flex-start;
+  position: absolute;
+  top: 0;
+  left: 0;
 }
 .retour:hover { color: var(--color-brand); }
 
@@ -20,14 +24,15 @@
   font-family: var(--font-display);
   font-size: 24px;
   color: var(--color-brand-dark);
-  margin: 0 0 28px;
+  margin: 0 0 32px;
 }
 
 .grilleActions {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 20px;
-  flex: 1;
+  gap: 32px;
+  width: 100%;
+  max-width: 640px;
 }
 
 .carteAction {
@@ -35,18 +40,17 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 18px;
-  padding: 50px 24px;
+  gap: 20px;
+  padding: 52px 28px;
   border: 2px solid var(--color-border);
   border-radius: 18px;
   background-color: #fff;
   cursor: pointer;
   transition: border-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
-  min-height: 220px;
 }
 
 .carteAction:hover {
-  box-shadow: 0 10px 26px rgba(11,14,20,0.1);
+  box-shadow: 0 10px 24px rgba(11,14,20,0.1);
   transform: translateY(-3px);
 }
 
@@ -54,8 +58,8 @@
 .bordure_or { border-color: #E8C766; }
 
 .iconeCercle {
-  width: 64px;
-  height: 64px;
+  width: 68px;
+  height: 68px;
   border-radius: 16px;
   display: flex;
   align-items: center;
@@ -74,5 +78,6 @@
 @media (max-width: 560px) {
   .grilleActions {
     grid-template-columns: 1fr;
+    max-width: 280px;
   }
 }
