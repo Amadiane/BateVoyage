@@ -1,20 +1,30 @@
 .retour { background: none; border: none; color: #6B7280; font-size: 13px; cursor: pointer; padding: 0; margin-bottom: 16px; }
 .retour:hover { color: var(--color-brand); }
 
-.entete { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+.entete { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; border-left: 4px solid #C4B5FD; padding-left: 16px; }
 .titre { font-family: var(--font-display); font-size: 22px; color: var(--color-brand-dark); margin: 0; }
 
 .boutonPrincipal { display: inline-flex; align-items: center; gap: 8px; padding: 10px 18px; border: none; border-radius: 8px; background-color: #6B21A8; color: #fff; font-size: 14px; font-weight: 600; cursor: pointer; }
 .boutonPrincipal:hover:not(:disabled) { opacity: 0.9; }
 
+.barreOutils { margin-bottom: 16px; }
+.selectFiltre { padding: 9px 14px; border: 1px solid var(--color-border); border-radius: 8px; font-size: 14px; background-color: #fff; }
+
 .grilleCartes { display: grid; grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); gap: 16px; }
 .etatVide { text-align: center; padding: 40px; color: #9CA3AF; grid-column: 1 / -1; }
 
-.carte { background-color: #fff; border: 2px solid #C4B5FD; border-radius: 16px; padding: 20px; }
-.bandeau { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+.carte { background-color: #fff; border: 2px solid #C4B5FD; border-radius: 16px; padding: 20px; cursor: pointer; transition: box-shadow 0.15s ease, transform 0.15s ease; }
+.carte:hover { box-shadow: 0 8px 20px rgba(11,14,20,0.08); transform: translateY(-2px); }
+
+.bandeau { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; gap: 8px; }
+.groupeTitreVol { display: flex; flex-direction: column; gap: 5px; }
 .numeroVol { font-family: var(--font-display); font-size: 15px; color: var(--color-brand-dark); }
 
-.actions { display: flex; gap: 6px; }
+.badgeType { display: inline-block; width: fit-content; font-size: 10px; font-weight: 700; padding: 2px 9px; border-radius: 999px; text-transform: uppercase; }
+.badgeAller { background-color: #DBEAFE; color: #1E40AF; }
+.badgeRetour { background-color: #FEF3C7; color: #92400E; }
+
+.actions { display: flex; gap: 6px; flex-shrink: 0; }
 .actions button { width: 26px; height: 26px; border: 1px solid var(--color-border); border-radius: 6px; background: #fff; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; }
 .actions button:hover { background-color: #F9FAFB; }
 .boutonSupprimer:hover { background-color: #FEE2E2 !important; border-color: #FCA5A5 !important; }
@@ -23,29 +33,35 @@
 .dateHeure { font-size: 12px; color: #6B7280; margin: 0 0 4px; }
 .reference { font-size: 11px; color: #9CA3AF; margin: 0 0 12px; font-family: monospace; }
 
-.piedCarte { display: flex; justify-content: space-between; align-items: center; margin-top: 12px; padding-top: 12px; border-top: 1px solid #F3F4F6; }
+.piedCarte { display: flex; justify-content: space-between; align-items: center; margin-top: 12px; padding-top: 12px; border-top: 1px solid #F3F4F6; flex-wrap: wrap; gap: 8px; }
 .nbPassagers { display: flex; align-items: center; gap: 4px; font-size: 12px; color: #6B7280; font-weight: 600; }
 
 .boutonExport { display: inline-flex; align-items: center; gap: 5px; padding: 6px 12px; border: 1px solid var(--color-border); border-radius: 7px; background: #fff; color: var(--color-brand-dark); font-size: 11.5px; font-weight: 600; cursor: pointer; }
 .boutonExport:hover { background-color: #F9FAFB; }
 
-.superposition { position: fixed; inset: 0; background-color: rgba(11,14,20,0.55); display: flex; align-items: center; justify-content: center; z-index: 50; padding: 24px; }
-.panneau { width: 460px; max-width: 100%; max-height: 90vh; overflow-y: auto; background-color: #fff; border-radius: 16px; padding: 26px; }
+.superposition { position: fixed; inset: 0; background-color: rgba(11,14,20,0.55); display: flex; align-items: center; justify-content: center; z-index: 50; padding: 16px; }
+.panneau { width: 460px; max-width: 100%; max-height: 90vh; overflow-y: auto; background-color: #fff; border-radius: 16px; padding: 24px; }
 .enteteModal { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-.enteteModal h2 { font-family: var(--font-display); font-size: 18px; color: var(--color-brand-dark); margin: 0; }
+.enteteModal h2 { font-family: var(--font-display); font-size: 17px; color: var(--color-brand-dark); margin: 0; }
 .boutonFermer { background: none; border: none; cursor: pointer; color: #6B7280; }
 
-.formulaire { display: flex; flex-direction: column; gap: 16px; }
+.formulaire { display: flex; flex-direction: column; gap: 14px; }
 .champ label { display: block; font-size: 12.5px; font-weight: 600; color: #4B5563; margin-bottom: 6px; }
 .champ input { width: 100%; padding: 10px 12px; border: 1px solid var(--color-border); border-radius: 8px; font-size: 14px; }
 .champ input:focus { outline: none; border-color: var(--color-brand); box-shadow: 0 0 0 3px var(--color-brand-pale); }
-.ligneDeux { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.ligneDeux { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+.choixTypeVol { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.boutonType, .boutonTypeActif {
+  padding: 10px; border-radius: 8px; font-size: 13.5px; font-weight: 600; cursor: pointer;
+}
+.boutonType { border: 1.5px solid var(--color-border); background: #fff; color: #6B7280; }
+.boutonTypeActif { border: 1.5px solid #6B21A8; background: #F3E8FF; color: #6B21A8; }
+
 .erreur { font-size: 13px; color: #B91C1C; background-color: #FEF2F2; border: 1px solid #FECACA; border-radius: 8px; padding: 10px 14px; }
-.navigationModal { display: flex; justify-content: flex-end; gap: 10px; margin-top: 8px; padding-top: 16px; border-top: 1px solid #F3F4F6; }
+.navigationModal { display: flex; justify-content: flex-end; gap: 10px; margin-top: 4px; padding-top: 14px; border-top: 1px solid #F3F4F6; flex-wrap: wrap; }
 .boutonSecondaire { padding: 10px 18px; border: 1px solid var(--color-border); border-radius: 8px; background-color: #fff; color: var(--color-ink); font-size: 14px; cursor: pointer; }
 .boutonSecondaire:hover { background-color: #F9FAFB; }
-
-.entete { border-left: 4px solid #C4B5FD; padding-left: 16px; }
 
 @media (max-width: 900px) {
   .entete {
@@ -59,4 +75,12 @@
   }
   .boutonPrincipal { width: 100%; justify-content: center; }
   .grilleCartes { grid-template-columns: 1fr; }
+  .selectFiltre { width: 100%; }
+}
+
+@media (max-width: 480px) {
+  .panneau { padding: 18px; border-radius: 12px; }
+  .ligneDeux { grid-template-columns: 1fr; }
+  .navigationModal { flex-direction: column-reverse; }
+  .navigationModal button { width: 100%; }
 }

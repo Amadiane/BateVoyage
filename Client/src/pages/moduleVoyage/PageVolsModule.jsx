@@ -7,7 +7,7 @@ import { telechargerFichierProtege } from "../../utils/telechargement";
 import styles from "../../theme/pages/moduleVoyage/PageVolsModule.module.css";
 
 const VALEURS_INITIALES = {
-  compagnie: "", numero_vol: "", date_vol: "", heure_vol: "",
+  type_vol: "aller", compagnie: "", numero_vol: "", date_vol: "", heure_vol: "",
   aeroport_depart: "", aeroport_arrivee: "", numero_billet_reference: "", bagages_autorises_kg: "",
 };
 
@@ -16,6 +16,7 @@ function PageVolsModule({ basePath }) {
   const navigate = useNavigate();
   const [vols, setVols] = useState([]);
   const [chargement, setChargement] = useState(true);
+  const [filtreType, setFiltreType] = useState("");
   const [modalOuverte, setModalOuverte] = useState(false);
   const [volAModifier, setVolAModifier] = useState(null);
   const [valeurs, setValeurs] = useState(VALEURS_INITIALES);
@@ -24,13 +25,15 @@ function PageVolsModule({ basePath }) {
 
   const charger = () => {
     setChargement(true);
-    volService.lister().then(({ data }) => {
+    const params = {};
+    if (filtreType) params.type_vol = filtreType;
+    volService.lister(params).then(({ data }) => {
       setVols(data);
       setChargement(false);
     });
   };
 
-  useEffect(() => { charger(); }, []);
+  useEffect(() => { charger(); }, [filtreType]);
 
   const ouvrirNouveau = () => {
     setVolAModifier(null);
@@ -43,7 +46,7 @@ function PageVolsModule({ basePath }) {
     e.stopPropagation();
     setVolAModifier(v);
     setValeurs({
-      compagnie: v.compagnie, numero_vol: v.numero_vol, date_vol: v.date_vol, heure_vol: v.heure_vol,
+      type_vol: v.type_vol, compagnie: v.compagnie, numero_vol: v.numero_vol, date_vol: v.date_vol, heure_vol: v.heure_vol,
       aeroport_depart: v.aeroport_depart, aeroport_arrivee: v.aeroport_arrivee,
       numero_billet_reference: v.numero_billet_reference || "", bagages_autorises_kg: v.bagages_autorises_kg || "",
     });
@@ -95,6 +98,14 @@ function PageVolsModule({ basePath }) {
         </button>
       </div>
 
+      <div className={styles.barreOutils}>
+        <select value={filtreType} onChange={(e) => setFiltreType(e.target.value)} className={styles.selectFiltre}>
+          <option value="">{t("tous_types_vol")}</option>
+          <option value="aller">{t("vol_aller")}</option>
+          <option value="retour">{t("vol_retour")}</option>
+        </select>
+      </div>
+
       <div className={styles.grilleCartes}>
         {chargement && <p className={styles.etatVide}>{t("chargement")}</p>}
         {!chargement && vols.length === 0 && <p className={styles.etatVide}>{t("aucun_vol")}</p>}
@@ -103,10 +114,14 @@ function PageVolsModule({ basePath }) {
             key={v.id}
             className={styles.carte}
             onClick={() => navigate(`${basePath}/vols/${v.id}`)}
-            style={{ cursor: "pointer" }}
           >
             <div className={styles.bandeau}>
-              <span className={styles.numeroVol}>{v.compagnie} {v.numero_vol}</span>
+              <div className={styles.groupeTitreVol}>
+                <span className={`${styles.badgeType} ${v.type_vol === "aller" ? styles.badgeAller : styles.badgeRetour}`}>
+                  {v.type_vol_display}
+                </span>
+                <span className={styles.numeroVol}>{v.compagnie} {v.numero_vol}</span>
+              </div>
               <div className={styles.actions} onClick={(e) => e.stopPropagation()}>
                 <button onClick={(e) => ouvrirModification(v, e)} title={t("modifier")}><Pencil size={13} /></button>
                 <button onClick={(e) => supprimer(v.id, e)} title={t("supprimer")} className={styles.boutonSupprimer}><Trash2 size={13} /></button>
@@ -133,6 +148,25 @@ function PageVolsModule({ basePath }) {
               <button className={styles.boutonFermer} onClick={() => setModalOuverte(false)}><X size={16} /></button>
             </div>
             <form onSubmit={handleSubmit} className={styles.formulaire}>
+              <div className={styles.champ}>
+                <label>{t("type_vol_label")}</label>
+                <div className={styles.choixTypeVol}>
+                  <button
+                    type="button"
+                    className={valeurs.type_vol === "aller" ? styles.boutonTypeActif : styles.boutonType}
+                    onClick={() => majChamp("type_vol", "aller")}
+                  >
+                    {t("vol_aller")}
+                  </button>
+                  <button
+                    type="button"
+                    className={valeurs.type_vol === "retour" ? styles.boutonTypeActif : styles.boutonType}
+                    onClick={() => majChamp("type_vol", "retour")}
+                  >
+                    {t("vol_retour")}
+                  </button>
+                </div>
+              </div>
               <div className={styles.champ}>
                 <label>{t("compagnie")}</label>
                 <input value={valeurs.compagnie} onChange={(e) => majChamp("compagnie", e.target.value)} required />

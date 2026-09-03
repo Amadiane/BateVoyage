@@ -6,6 +6,7 @@ from pelerins.models import Pelerin
 class VolSerializer(serializers.ModelSerializer):
     class Meta:
         model = Vol
+        type_vol_display = serializers.CharField(source="get_type_vol_display", read_only=True)
         fields = "__all__"
 
 

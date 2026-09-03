@@ -582,7 +582,14 @@
   "passagers": "passagers",
   "manifeste": "Manifeste",
   "aucun_groupe_pour_vol": "Aucun groupe n'est encore associé à ce vol.",
-  "creer_groupe_pour_vol": "Créer un groupe pour ce vol"
+  "creer_groupe_pour_vol": "Créer un groupe pour ce vol",
+
+  
+  "type_vol_label": "Type de vol",
+  "vol_aller": "Aller",
+  "vol_retour": "Retour",
+  "tous_types_vol": "Tous les vols"
+
 
 
 

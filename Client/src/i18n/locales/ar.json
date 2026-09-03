@@ -578,7 +578,14 @@
   "passagers": "مسافرون",
   "manifeste": "قائمة الركاب",
   "aucun_groupe_pour_vol": "لا توجد مجموعة مرتبطة بهذه الرحلة بعد.",
-  "creer_groupe_pour_vol": "إنشاء مجموعة لهذه الرحلة"
+  "creer_groupe_pour_vol": "إنشاء مجموعة لهذه الرحلة",
+
+  
+  "type_vol_label": "نوع الرحلة",
+  "vol_aller": "ذهاب",
+  "vol_retour": "عودة",
+  "tous_types_vol": "جميع الرحلات"
+
 
 
 

@@ -57,6 +57,7 @@ class GroupeViewSet(viewsets.ModelViewSet):
     serializer_class = GroupeSerializer
     permission_classes = [EstGestionnaireLogistique]
     filterset_fields = ["vol_aller", "vol_retour", "programme"]
+    filterset_fields = ["type_vol"]
 
     def perform_create(self, serializer):
         with set_actor(self.request.user):

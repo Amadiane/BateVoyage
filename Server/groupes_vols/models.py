@@ -14,6 +14,12 @@ class Vol(models.Model):
     aeroport_arrivee = models.CharField(max_length=100)
     numero_billet_reference = models.CharField(max_length=100, blank=True, help_text="Référence de réservation groupe (PNR)")
     bagages_autorises_kg = models.PositiveIntegerField(null=True, blank=True, help_text="Poids autorisé par pèlerin, en kg")
+    
+    class TypeVol(models.TextChoices):
+        ALLER = "aller", "Aller"
+        RETOUR = "retour", "Retour"
+
+    type_vol = models.CharField(max_length=10, choices=TypeVol.choices, default=TypeVol.ALLER)
 
     class Meta:
         ordering = ["date_vol", "heure_vol"]

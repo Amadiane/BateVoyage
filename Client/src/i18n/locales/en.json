@@ -574,7 +574,14 @@
   "passagers": "passengers",
   "manifeste": "Manifest",
   "aucun_groupe_pour_vol": "No group is linked to this flight yet.",
-  "creer_groupe_pour_vol": "Create a group for this flight"
+  "creer_groupe_pour_vol": "Create a group for this flight",
+
+  
+  "type_vol_label": "Flight type",
+  "vol_aller": "Outbound",
+  "vol_retour": "Return",
+  "tous_types_vol": "All flights"
+
 
 
 
