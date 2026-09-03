@@ -3,19 +3,16 @@ import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Plus, X, Trash2, Pencil, Users } from "lucide-react";
 import { groupeService } from "../../services/groupeService";
-import { programmeService } from "../../services/programmeService";
 import { volService } from "../../services/volService";
 import styles from "../../theme/pages/moduleVoyage/PageGroupesModule.module.css";
 
-const VALEURS_INITIALES = { nom: "", programme: "", vol_aller: "", vol_retour: "", encadreur: "", capacite_max: "", notes: "" };
+const VALEURS_INITIALES = { nom: "", sensVol: "", volId: "", encadreur: "", capacite_max: "", notes: "" };
 
 function PageGroupesModule({ basePath }) {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [groupes, setGroupes] = useState([]);
-  const [programmes, setProgrammes] = useState([]);
   const [vols, setVols] = useState([]);
-  const [encadreurs, setEncadreurs] = useState([]);
   const [chargement, setChargement] = useState(true);
   const [modalOuverte, setModalOuverte] = useState(false);
   const [groupeAModifier, setGroupeAModifier] = useState(null);
@@ -33,9 +30,7 @@ function PageGroupesModule({ basePath }) {
 
   useEffect(() => {
     charger();
-    programmeService.lister().then(({ data }) => setProgrammes(data));
     volService.lister().then(({ data }) => setVols(data));
-    groupeService.listerEncadreursDisponibles().then(({ data }) => setEncadreurs(data));
   }, []);
 
   const ouvrirNouveau = () => {
@@ -48,9 +43,12 @@ function PageGroupesModule({ basePath }) {
   const ouvrirModification = (g, e) => {
     e.stopPropagation();
     setGroupeAModifier(g);
+    let sensVol = "";
+    let volId = "";
+    if (g.vol_aller) { sensVol = "aller"; volId = g.vol_aller; }
+    else if (g.vol_retour) { sensVol = "retour"; volId = g.vol_retour; }
     setValeurs({
-      nom: g.nom, programme: g.programme || "", vol_aller: g.vol_aller || "", vol_retour: g.vol_retour || "",
-      encadreur: g.encadreur || "", capacite_max: g.capacite_max || "", notes: g.notes || "",
+      nom: g.nom, sensVol, volId, encadreur: g.encadreur || "", capacite_max: g.capacite_max || "", notes: g.notes || "",
     });
     setErreur("");
     setModalOuverte(true);
@@ -58,13 +56,23 @@ function PageGroupesModule({ basePath }) {
 
   const majChamp = (champ, val) => setValeurs((v) => ({ ...v, [champ]: val }));
 
+  const majSensVol = (sens) => setValeurs((v) => ({ ...v, sensVol: sens, volId: "" }));
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setErreur("");
     setEnvoi(true);
     try {
-      const donnees = { ...valeurs };
-      Object.keys(donnees).forEach((k) => { if (donnees[k] === "") delete donnees[k]; });
+      const donnees = {
+        nom: valeurs.nom,
+        encadreur: valeurs.encadreur,
+        capacite_max: valeurs.capacite_max || null,
+        notes: valeurs.notes,
+        vol_aller: valeurs.sensVol === "aller" ? valeurs.volId : null,
+        vol_retour: valeurs.sensVol === "retour" ? valeurs.volId : null,
+      };
+      Object.keys(donnees).forEach((k) => { if (donnees[k] === "") donnees[k] = null; });
+
       if (groupeAModifier) {
         await groupeService.modifier(groupeAModifier.id, donnees);
       } else {
@@ -112,8 +120,9 @@ function PageGroupesModule({ basePath }) {
                 </div>
               </div>
 
-              {g.programme_nom && <p className={styles.programme}>{g.programme_nom}</p>}
-              {g.encadreur_nom && <p className={styles.encadreur}>👤 {g.encadreur_nom}</p>}
+              {g.vol_aller_detail && <p className={styles.infoVol}>✈️ {t("vol_aller")} : {g.vol_aller_detail.compagnie} {g.vol_aller_detail.numero_vol}</p>}
+              {g.vol_retour_detail && <p className={styles.infoVol}>✈️ {t("vol_retour")} : {g.vol_retour_detail.compagnie} {g.vol_retour_detail.numero_vol}</p>}
+              {g.encadreur && <p className={styles.encadreur}>👤 {g.encadreur}</p>}
 
               <div className={styles.piedCarte}>
                 <span className={styles.effectif}>
@@ -147,44 +156,61 @@ function PageGroupesModule({ basePath }) {
                 <label>{t("nom_groupe")}</label>
                 <input value={valeurs.nom} onChange={(e) => majChamp("nom", e.target.value)} required placeholder="Groupe Hajj A" />
               </div>
+
               <div className={styles.champ}>
-                <label>{t("programme")}</label>
-                <select value={valeurs.programme} onChange={(e) => majChamp("programme", e.target.value)}>
-                  <option value="">—</option>
-                  {programmes.map((p) => <option key={p.id} value={p.id}>{p.nom}</option>)}
-                </select>
+                <label>{t("type_vol_label")}</label>
+                <div className={styles.choixSensVol}>
+                  <button
+                    type="button"
+                    className={valeurs.sensVol === "aller" ? styles.boutonTypeActif : styles.boutonType}
+                    onClick={() => majSensVol("aller")}
+                  >
+                    {t("vol_aller")}
+                  </button>
+                  <button
+                    type="button"
+                    className={valeurs.sensVol === "retour" ? styles.boutonTypeActif : styles.boutonType}
+                    onClick={() => majSensVol("retour")}
+                  >
+                    {t("vol_retour")}
+                  </button>
+                  <button
+                    type="button"
+                    className={valeurs.sensVol === "" ? styles.boutonTypeActif : styles.boutonType}
+                    onClick={() => majSensVol("")}
+                  >
+                    {t("aucun")}
+                  </button>
+                </div>
               </div>
-              <div className={styles.ligneDeux}>
+
+              {valeurs.sensVol && (
                 <div className={styles.champ}>
-                  <label>{t("vol_aller")}</label>
-                  <select value={valeurs.vol_aller} onChange={(e) => majChamp("vol_aller", e.target.value)}>
+                  <label>{valeurs.sensVol === "aller" ? t("vol_aller") : t("vol_retour")}</label>
+                  <select value={valeurs.volId} onChange={(e) => majChamp("volId", e.target.value)}>
                     <option value="">—</option>
-                    {vols.filter((v) => v.type_vol === "aller").map((v) => <option key={v.id} value={v.id}>{v.compagnie} {v.numero_vol}</option>)}
+                    {vols.filter((v) => v.type_vol === valeurs.sensVol).map((v) => (
+                      <option key={v.id} value={v.id}>{v.compagnie} {v.numero_vol} — {v.date_vol}</option>
+                    ))}
                   </select>
                 </div>
-                <div className={styles.champ}>
-                  <label>{t("vol_retour")}</label>
-                  <select value={valeurs.vol_retour} onChange={(e) => majChamp("vol_retour", e.target.value)}>
-                    <option value="">—</option>
-                    {vols.filter((v) => v.type_vol === "retour").map((v) => <option key={v.id} value={v.id}>{v.compagnie} {v.numero_vol}</option>)}
-                  </select>
-                </div>
-              </div>
+              )}
+
               <div className={styles.champ}>
                 <label>{t("encadreur")}</label>
-                <select value={valeurs.encadreur} onChange={(e) => majChamp("encadreur", e.target.value)}>
-                  <option value="">—</option>
-                  {encadreurs.map((u) => <option key={u.id} value={u.id}>{u.nom} ({u.role_display})</option>)}
-                </select>
+                <input value={valeurs.encadreur} onChange={(e) => majChamp("encadreur", e.target.value)} placeholder={t("saisir_nom_encadreur")} />
               </div>
+
               <div className={styles.champ}>
                 <label>{t("capacite_max")}</label>
                 <input type="number" min="1" value={valeurs.capacite_max} onChange={(e) => majChamp("capacite_max", e.target.value)} placeholder="Ex: 45" />
               </div>
+
               <div className={styles.champ}>
                 <label>{t("notes")}</label>
                 <textarea rows={2} value={valeurs.notes} onChange={(e) => majChamp("notes", e.target.value)} />
               </div>
+
               {erreur && <p className={styles.erreur}>{erreur}</p>}
               <div className={styles.navigationModal}>
                 <button type="button" className={styles.boutonSecondaire} onClick={() => setModalOuverte(false)}>{t("annuler")}</button>

@@ -14,7 +14,7 @@ class GroupeSerializer(serializers.ModelSerializer):
     programme_nom = serializers.CharField(source="programme.nom", read_only=True)
     vol_aller_detail = VolSerializer(source="vol_aller", read_only=True)
     vol_retour_detail = VolSerializer(source="vol_retour", read_only=True)
-    encadreur_nom = serializers.SerializerMethodField()
+    
     nb_pelerins = serializers.SerializerMethodField()
 
     class Meta:

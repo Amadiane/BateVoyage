@@ -54,7 +54,7 @@ class VolViewSet(viewsets.ModelViewSet):
 
 
 class GroupeViewSet(viewsets.ModelViewSet):
-    queryset = Groupe.objects.select_related("programme", "vol_aller", "vol_retour", "encadreur").all()
+    queryset = Groupe.objects.select_related("programme", "vol_aller", "vol_retour").all()
     serializer_class = GroupeSerializer
     permission_classes = [EstGestionnaireLogistique]
     filterset_fields = ["vol_aller", "vol_retour", "programme"]
@@ -110,10 +110,4 @@ class GroupeViewSet(viewsets.ModelViewSet):
         with set_actor(request.user):
             Pelerin.objects.filter(id=pelerin_id, groupe_id=pk).update(groupe=None)
         return Response({"detail": "Pèlerin retiré du groupe."})
-    @action(detail=False, methods=["get"], url_path="encadreurs-disponibles")
-    def encadreurs_disponibles(self, request):
-        from django.contrib.auth import get_user_model
-        User = get_user_model()
-        encadreurs = User.objects.filter(role__in=["guide", "encadreur", "mounazim"], actif=True)
-        data = [{"id": u.id, "nom": u.get_full_name() or u.username, "role": u.role, "role_display": u.get_role_display()} for u in encadreurs]
-        return Response(data)
+    

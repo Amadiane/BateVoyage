@@ -1,13 +1,92 @@
-.actions {
+.page {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.chargement {
+  padding: 32px;
+  text-align: center;
+  color: #9CA3AF;
+}
+
+.retour {
+  background: none;
+  border: none;
+  color: #6B7280;
+  font-size: 13px;
+  cursor: pointer;
+  padding: 0;
+  margin-bottom: 20px;
+}
+.retour:hover { color: var(--color-brand); }
+
+.entete {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+
+.titre {
+  font-family: var(--font-display);
+  font-size: 24px;
+  color: var(--color-brand-dark);
+  margin: 0 0 8px;
+}
+
+.metaEntete {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.badgeEffectif {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #0C4A6E;
+  background-color: #E0F2FE;
+  padding: 5px 12px;
+  border-radius: 999px;
+}
+
+.metaTexte {
+  font-size: 13px;
+  color: #6B7280;
+}
+
+.groupeBoutons {
   display: flex;
   gap: 10px;
+  flex-wrap: wrap;
 }
+
+.boutonPrincipal {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
+  border: none;
+  border-radius: 8px;
+  background-color: #0C4A6E;
+  color: #fff;
+  font-size: 13.5px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.boutonPrincipal:hover { opacity: 0.9; }
 
 .boutonSecondaire {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 10px 16px;
+  gap: 8px;
+  padding: 10px 18px;
   border: 1px solid var(--color-border);
   border-radius: 8px;
   background-color: #fff;
@@ -15,27 +94,111 @@
   font-size: 13.5px;
   font-weight: 600;
   cursor: pointer;
+  white-space: nowrap;
+}
+.boutonSecondaire:hover { background-color: #F9FAFB; }
+
+.conteneurTableau {
+  background-color: #fff;
+  border-radius: 14px;
+  border: 1px solid var(--color-border);
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
-.boutonSecondaire:hover {
+.tableau {
+  width: 100%;
+  min-width: 560px;
+  border-collapse: collapse;
+  font-size: 13.5px;
+}
+
+.tableau th {
+  text-align: left;
+  padding: 13px 18px;
+  background-color: #F9FAFB;
+  color: #6B7280;
+  font-weight: 600;
+  font-size: 11.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.tableau td {
+  padding: 12px 18px;
+  border-bottom: 1px solid #F3F4F6;
+}
+
+.tableau tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.tableau tbody tr:hover {
   background-color: #F9FAFB;
 }
 
+.cellId {
+  font-family: monospace;
+  font-weight: 700;
+  color: var(--color-brand);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.cellNom {
+  cursor: pointer;
+  font-weight: 500;
+  color: var(--color-ink);
+}
+
+.etatVide {
+  text-align: center;
+  padding: 40px;
+  color: #9CA3AF;
+}
+
+.cellActions {
+  text-align: right;
+}
+
 .boutonRetirer {
-  width: 26px;
-  height: 26px;
+  width: 28px;
+  height: 28px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   border: 1px solid var(--color-border);
-  border-radius: 6px;
+  border-radius: 7px;
   background: #fff;
   cursor: pointer;
   color: #6B7280;
 }
-
 .boutonRetirer:hover {
   background-color: #FEE2E2;
   border-color: #FCA5A5;
   color: #B91C1C;
+}
+
+@media (max-width: 700px) {
+  .entete {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .groupeBoutons {
+    flex-direction: column;
+  }
+  .boutonPrincipal, .boutonSecondaire {
+    justify-content: center;
+    width: 100%;
+  }
+}
+
+@media (max-width: 500px) {
+  .titre {
+    font-size: 20px;
+  }
+  .conteneurTableau {
+    border-radius: 10px;
+  }
 }

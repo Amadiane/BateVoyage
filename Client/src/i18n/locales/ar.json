@@ -600,7 +600,12 @@
   "lier_ce_groupe": "ربط هذه المجموعة",
   "creer_nouveau_groupe_module": "إنشاء مجموعة جديدة من وحدة المجموعات",
   "detacher_du_vol": "فصل عن الرحلة",
-  "confirmer_detachement_vol": "فصل هذه المجموعة عن هذه الرحلة؟"
+  "confirmer_detachement_vol": "فصل هذه المجموعة عن هذه الرحلة؟",
+
+  
+  "aucun": "لا شيء",
+  "saisir_nom_encadreur": "أدخل اسم المرشد/المشرف"
+
 
 
 

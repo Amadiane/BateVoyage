@@ -596,7 +596,12 @@
   "lier_ce_groupe": "Link this group",
   "creer_nouveau_groupe_module": "create a new group from the Groups module",
   "detacher_du_vol": "Unlink from flight",
-  "confirmer_detachement_vol": "Unlink this group from this flight?"
+  "confirmer_detachement_vol": "Unlink this group from this flight?",
+
+  
+  "aucun": "None",
+  "saisir_nom_encadreur": "Enter the guide/supervisor's name"
+
 
 
 

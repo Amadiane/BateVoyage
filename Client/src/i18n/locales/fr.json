@@ -604,7 +604,12 @@
   "lier_ce_groupe": "Lier ce groupe",
   "creer_nouveau_groupe_module": "créer un nouveau groupe depuis le module Groupes",
   "detacher_du_vol": "Détacher du vol",
-  "confirmer_detachement_vol": "Détacher ce groupe de ce vol ?"
+  "confirmer_detachement_vol": "Détacher ce groupe de ce vol ?",
+
+  
+  "aucun": "Aucun",
+  "saisir_nom_encadreur": "Saisir le nom du guide/encadreur"
+
 
 
 

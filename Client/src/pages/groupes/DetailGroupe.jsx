@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { UserPlus, UserMinus } from "lucide-react";
+import { UserPlus, UserMinus, Download, Users } from "lucide-react";
 import { groupeService } from "../../services/groupeService";
 import { pelerinService } from "../../services/pelerinService";
 import { telechargerFichierProtege } from "../../utils/telechargement";
@@ -25,9 +25,7 @@ function DetailGroupe() {
     });
   };
 
-  useEffect(() => {
-    charger();
-  }, [id]);
+  useEffect(() => { charger(); }, [id]);
 
   const telechargerManifeste = () => {
     telechargerFichierProtege(groupeService.urlManifestePdf(id), `manifeste_${groupe?.nom}.pdf`);
@@ -41,6 +39,8 @@ function DetailGroupe() {
 
   if (chargement || !groupe) return <p className={styles.chargement}>{t("chargement")}</p>;
 
+  const placesRestantes = groupe.capacite_max ? groupe.capacite_max - pelerins.length : null;
+
   return (
     <div className={styles.page}>
       <button className={styles.retour} onClick={() => navigate("/groupes")}>← {t("retour_liste")}</button>
@@ -48,14 +48,20 @@ function DetailGroupe() {
       <div className={styles.entete}>
         <div>
           <h1 className={styles.titre}>{groupe.nom}</h1>
-          <p className={styles.sousTitre}>{pelerins.length} {t("pelerins")}</p>
+          <div className={styles.metaEntete}>
+            <span className={styles.badgeEffectif}>
+              <Users size={13} />
+              {pelerins.length}{groupe.capacite_max ? ` / ${groupe.capacite_max}` : ""} {t("pelerins")}
+            </span>
+            {groupe.encadreur && <span className={styles.metaTexte}>👤 {groupe.encadreur}</span>}
+          </div>
         </div>
-        <div className={styles.actions}>
-          <button className={styles.boutonSecondaire} onClick={() => setModalOuverte(true)}>
+        <div className={styles.groupeBoutons}>
+          <button className={styles.boutonPrincipal} onClick={() => setModalOuverte(true)}>
             <UserPlus size={15} /> {t("ajouter_pelerins")}
           </button>
-          <button className={styles.boutonPrincipal} onClick={telechargerManifeste}>
-            🧾 {t("telecharger_manifeste")}
+          <button className={styles.boutonSecondaire} onClick={telechargerManifeste}>
+            <Download size={15} /> {t("telecharger_manifeste")}
           </button>
         </div>
       </div>
@@ -77,15 +83,11 @@ function DetailGroupe() {
             )}
             {pelerins.map((p) => (
               <tr key={p.id}>
-                <td className={styles.cellId} onClick={() => navigate(`/pelerins/${p.id}`)} style={{ cursor: "pointer" }}>
-                  {p.numero_id}
-                </td>
-                <td onClick={() => navigate(`/pelerins/${p.id}`)} style={{ cursor: "pointer" }}>
-                  {p.prenom} {p.nom}
-                </td>
+                <td className={styles.cellId} onClick={() => navigate(`/pelerins/${p.id}`)}>{p.numero_id}</td>
+                <td className={styles.cellNom} onClick={() => navigate(`/pelerins/${p.id}`)}>{p.prenom} {p.nom}</td>
                 <td>{p.numero_passeport}</td>
                 <td>{p.telephone}</td>
-                <td>
+                <td className={styles.cellActions}>
                   <button className={styles.boutonRetirer} onClick={() => retirer(p.id)} title={t("retirer_du_groupe")}>
                     <UserMinus size={14} />
                   </button>
@@ -99,6 +101,7 @@ function DetailGroupe() {
       {modalOuverte && (
         <ModalAjoutPelerinsGroupe
           groupeId={Number(id)}
+          placesRestantes={placesRestantes}
           onFermer={() => setModalOuverte(false)}
           onAjoute={charger}
         />
