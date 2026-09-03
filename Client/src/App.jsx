@@ -31,6 +31,7 @@ import PageForfaitsModule from "./pages/moduleVoyage/PageForfaitsModule";
 import PageVisaDocModule from "./pages/moduleVoyage/PageVisaDocModule";
 import PageVolsModule from "./pages/moduleVoyage/PageVolsModule";
 import DetailVol from "./pages/moduleVoyage/DetailVol";
+import PageGroupesModule from "./pages/moduleVoyage/PageGroupesModule";
 import "./globals.css";
 
 const ROLES_FINANCIERS = ["fondateur", "admin_general", "comptable", "secretaire"];
@@ -70,11 +71,17 @@ function App() {
           <Route path="/oumra/vols" element={<PageVolsModule basePath="/oumra" />} />
           <Route path="/hajj/vols/:id" element={<DetailVol />} />
           <Route path="/oumra/vols/:id" element={<DetailVol />} />
+          <Route path="/hajj/groupes" element={<PageGroupesModule basePath="/hajj" />} />
+          <Route path="/oumra/groupes" element={<PageGroupesModule basePath="/oumra" />} />
+          <Route path="/hajj/groupes/:id" element={<DetailGroupe />} />
+          <Route path="/oumra/groupes/:id" element={<DetailGroupe />} />
 
           {/* Module Oumra */}
           <Route path="/oumra" element={<PageModuleVoyage typeVoyage="oumra" basePath="/oumra" titreCle="menu_oumra" />} />
           <Route path="/oumra/pelerins" element={<PagePelerinsModule typeVoyage="oumra" basePath="/oumra" />} />
           <Route path="/oumra/pelerins/liste" element={<ListePelerins typeVoyageFixe="oumra" titreCle="menu_oumra" retourPath="/oumra/pelerins" />} />
+
+          
 
           {/* Documents (conformité dossiers) */}
           <Route path="/documents" element={<PageDocuments />} />

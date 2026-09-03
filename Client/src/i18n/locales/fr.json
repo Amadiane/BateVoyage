@@ -588,7 +588,25 @@
   "type_vol_label": "Type de vol",
   "vol_aller": "Aller",
   "vol_retour": "Retour",
-  "tous_types_vol": "Tous les vols"
+  "tous_types_vol": "Tous les vols",
+
+  
+  "nouveau_groupe": "Nouveau groupe",
+  "modifier_groupe": "Modifier le groupe",
+  "aucun_groupe": "Aucun groupe enregistré",
+  "confirmer_suppression_groupe": "Confirmer la suppression de ce groupe ?",
+  "nom_groupe": "Nom du groupe",
+  "encadreur": "Encadreur / Guide",
+  "capacite_max": "Capacité maximale",
+
+  
+  "selectionner_groupe_existant": "Sélectionner un groupe existant",
+  "lier_ce_groupe": "Lier ce groupe",
+  "creer_nouveau_groupe_module": "créer un nouveau groupe depuis le module Groupes",
+  "detacher_du_vol": "Détacher du vol",
+  "confirmer_detachement_vol": "Détacher ce groupe de ce vol ?"
+
+
 
 
 

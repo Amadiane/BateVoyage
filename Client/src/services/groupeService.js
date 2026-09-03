@@ -12,4 +12,5 @@ export const groupeService = {
     api.post(CONFIG.API_GROUPE_AFFECTER_PELERINS(id), { pelerin_ids: pelerinIds }),
   retirerPelerin: (id, pelerinId) =>
     api.post(CONFIG.API_GROUPE_RETIRER_PELERIN(id), { pelerin_id: pelerinId }),
+  listerEncadreursDisponibles: () => api.get(`${CONFIG.API_GROUPES}encadreurs-disponibles/`),
 };

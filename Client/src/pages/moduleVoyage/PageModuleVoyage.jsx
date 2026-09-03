@@ -8,9 +8,9 @@ const SOUS_MODULES = [
   { cle: "forfaits", icone: Package, actif: true, couleur: "orange" },
   { cle: "visa_doc", icone: FileCheck2, actif: true, couleur: "or" },
   { cle: "vols", icone: Plane, actif: true, couleur: "violet" },
+  { cle: "groupes", icone: UsersRound, actif: true, couleur: "cyan" },
   { cle: "hebergement", icone: Hotel, actif: false, couleur: "vert" },
   { cle: "transport", icone: Bus, actif: false, couleur: "rose" },
-  { cle: "groupes", icone: UsersRound, actif: false, couleur: "cyan" },
   { cle: "finances", icone: Wallet, actif: false, couleur: "rouge" },
 ];
 

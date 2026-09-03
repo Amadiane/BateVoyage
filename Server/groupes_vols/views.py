@@ -20,6 +20,7 @@ class VolViewSet(viewsets.ModelViewSet):
     queryset = Vol.objects.all()
     serializer_class = VolSerializer
     permission_classes = [EstGestionnaireLogistique]
+    filterset_fields = ["type_vol"]
 
     def perform_create(self, serializer):
         with set_actor(self.request.user):
@@ -57,7 +58,7 @@ class GroupeViewSet(viewsets.ModelViewSet):
     serializer_class = GroupeSerializer
     permission_classes = [EstGestionnaireLogistique]
     filterset_fields = ["vol_aller", "vol_retour", "programme"]
-    filterset_fields = ["type_vol"]
+    
 
     def perform_create(self, serializer):
         with set_actor(self.request.user):
@@ -89,6 +90,16 @@ class GroupeViewSet(viewsets.ModelViewSet):
     def affecter_pelerins(self, request, pk=None):
         groupe = self.get_object()
         ids = request.data.get("pelerin_ids", [])
+
+        if groupe.capacite_max:
+            effectif_actuel = groupe.pelerins.count()
+            places_restantes = groupe.capacite_max - effectif_actuel
+            if len(ids) > places_restantes:
+                return Response(
+                    {"erreur": f"Capacité insuffisante : {places_restantes} place(s) restante(s), {len(ids)} sélectionné(s)."},
+                    status=400,
+                )
+
         with set_actor(request.user):
             Pelerin.objects.filter(id__in=ids).update(groupe=groupe)
         return Response({"detail": f"{len(ids)} pèlerin(s) affecté(s) au groupe."})
@@ -99,3 +110,10 @@ class GroupeViewSet(viewsets.ModelViewSet):
         with set_actor(request.user):
             Pelerin.objects.filter(id=pelerin_id, groupe_id=pk).update(groupe=None)
         return Response({"detail": "Pèlerin retiré du groupe."})
+    @action(detail=False, methods=["get"], url_path="encadreurs-disponibles")
+    def encadreurs_disponibles(self, request):
+        from django.contrib.auth import get_user_model
+        User = get_user_model()
+        encadreurs = User.objects.filter(role__in=["guide", "encadreur", "mounazim"], actif=True)
+        data = [{"id": u.id, "nom": u.get_full_name() or u.username, "role": u.role, "role_display": u.get_role_display()} for u in encadreurs]
+        return Response(data)

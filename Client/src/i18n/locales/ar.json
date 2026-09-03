@@ -584,7 +584,25 @@
   "type_vol_label": "نوع الرحلة",
   "vol_aller": "ذهاب",
   "vol_retour": "عودة",
-  "tous_types_vol": "جميع الرحلات"
+  "tous_types_vol": "جميع الرحلات",
+
+  
+  "nouveau_groupe": "مجموعة جديدة",
+  "modifier_groupe": "تعديل المجموعة",
+  "aucun_groupe": "لا توجد مجموعة مسجلة",
+  "confirmer_suppression_groupe": "تأكيد حذف هذه المجموعة؟",
+  "nom_groupe": "اسم المجموعة",
+  "encadreur": "المشرف / المرشد",
+  "capacite_max": "السعة القصوى",
+
+  
+  "selectionner_groupe_existant": "اختر مجموعة موجودة",
+  "lier_ce_groupe": "ربط هذه المجموعة",
+  "creer_nouveau_groupe_module": "إنشاء مجموعة جديدة من وحدة المجموعات",
+  "detacher_du_vol": "فصل عن الرحلة",
+  "confirmer_detachement_vol": "فصل هذه المجموعة عن هذه الرحلة؟"
+
+
 
 
 

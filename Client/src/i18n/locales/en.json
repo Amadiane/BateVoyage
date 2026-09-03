@@ -580,7 +580,25 @@
   "type_vol_label": "Flight type",
   "vol_aller": "Outbound",
   "vol_retour": "Return",
-  "tous_types_vol": "All flights"
+  "tous_types_vol": "All flights",
+
+  
+  "nouveau_groupe": "New group",
+  "modifier_groupe": "Edit group",
+  "aucun_groupe": "No group registered",
+  "confirmer_suppression_groupe": "Confirm deletion of this group?",
+  "nom_groupe": "Group name",
+  "encadreur": "Supervisor / Guide",
+  "capacite_max": "Maximum capacity",
+
+  
+  "selectionner_groupe_existant": "Select an existing group",
+  "lier_ce_groupe": "Link this group",
+  "creer_nouveau_groupe_module": "create a new group from the Groups module",
+  "detacher_du_vol": "Unlink from flight",
+  "confirmer_detachement_vol": "Unlink this group from this flight?"
+
+
 
 
 

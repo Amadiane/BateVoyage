@@ -4,17 +4,20 @@ import { useTranslation } from "react-i18next";
 import { UserPlus, UserMinus, Download } from "lucide-react";
 import { volService } from "../../services/volService";
 import { groupeService } from "../../services/groupeService";
+import { pelerinService } from "../../services/pelerinService";
 import { telechargerFichierProtege } from "../../utils/telechargement";
 import ModalAjoutPelerinsGroupe from "../../components/ModalAjoutPelerinsGroupe/ModalAjoutPelerinsGroupe";
 import styles from "../../theme/pages/moduleVoyage/DetailVol.module.css";
 
-function DetailVol() {
+function DetailVol({ basePath }) {
   const { id } = useParams();
   const navigate = useNavigate();
   const { t } = useTranslation();
   const [vol, setVol] = useState(null);
   const [groupe, setGroupe] = useState(null);
   const [pelerins, setPelerins] = useState([]);
+  const [tousGroupes, setTousGroupes] = useState([]);
+  const [groupeSelectionne, setGroupeSelectionne] = useState("");
   const [chargement, setChargement] = useState(true);
   const [modalOuverte, setModalOuverte] = useState(false);
   const [creationEnCours, setCreationEnCours] = useState(false);
@@ -24,12 +27,14 @@ function DetailVol() {
     const { data: volData } = await volService.obtenir(id);
     setVol(volData);
 
-    const { data: groupes } = await groupeService.lister({ vol_aller: id });
-    if (groupes.length > 0) {
-      setGroupe(groupes[0]);
-      const { data: pelerinsData } = await import("../../services/pelerinService").then((m) =>
-        m.pelerinService.lister({ groupe: groupes[0].id })
-      );
+    const { data: groupesData } = await groupeService.lister();
+    setTousGroupes(groupesData);
+
+    const groupeLie = groupesData.find((g) => String(g.vol_aller) === String(id) || String(g.vol_retour) === String(id));
+
+    if (groupeLie) {
+      setGroupe(groupeLie);
+      const { data: pelerinsData } = await pelerinService.lister({ groupe: groupeLie.id });
       setPelerins(pelerinsData);
     } else {
       setGroupe(null);
@@ -40,14 +45,22 @@ function DetailVol() {
 
   useEffect(() => { charger(); }, [id]);
 
-  const creerGroupePourVol = async () => {
+  const lierGroupeExistant = async () => {
+    if (!groupeSelectionne) return;
     setCreationEnCours(true);
     try {
-      await groupeService.creer({ nom: `Groupe ${vol.numero_vol}`, vol_aller: id });
+      await groupeService.modifier(groupeSelectionne, { vol_aller: id });
+      setGroupeSelectionne("");
       charger();
     } finally {
       setCreationEnCours(false);
     }
+  };
+
+  const delierGroupe = async () => {
+    if (!window.confirm(t("confirmer_detachement_vol"))) return;
+    await groupeService.modifier(groupe.id, { vol_aller: null });
+    charger();
   };
 
   const retirer = async (pelerinId) => {
@@ -60,7 +73,11 @@ function DetailVol() {
     telechargerFichierProtege(volService.urlManifestePdf(id), `manifeste_vol_${vol.numero_vol}.pdf`);
   };
 
+  const cheminGroupes = basePath ? `${basePath}/groupes` : "/hajj/groupes";
+
   if (chargement || !vol) return <p className={styles.chargement}>{t("chargement")}</p>;
+
+  const placesRestantesGroupe = groupe && groupe.capacite_max ? groupe.capacite_max - pelerins.length : null;
 
   return (
     <div className={styles.page}>
@@ -79,17 +96,37 @@ function DetailVol() {
       {!groupe ? (
         <div className={styles.carteVide}>
           <p className={styles.texteVide}>{t("aucun_groupe_pour_vol")}</p>
-          <button className={styles.boutonPrincipal} onClick={creerGroupePourVol} disabled={creationEnCours}>
-            {creationEnCours ? t("enregistrement") : t("creer_groupe_pour_vol")}
-          </button>
+          <div className={styles.choixLiaison}>
+            <select className={styles.selectLiaison} value={groupeSelectionne} onChange={(e) => setGroupeSelectionne(e.target.value)}>
+              <option value="">{t("selectionner_groupe_existant")}</option>
+              {tousGroupes.map((g) => <option key={g.id} value={g.id}>{g.nom}</option>)}
+            </select>
+            <button className={styles.boutonPrincipal} onClick={lierGroupeExistant} disabled={!groupeSelectionne || creationEnCours}>
+              {creationEnCours ? t("enregistrement") : t("lier_ce_groupe")}
+            </button>
+          </div>
+          <p className={styles.texteAlternatif}>
+            {t("ou")}{" "}
+            <button className={styles.lienTexte} onClick={() => navigate(cheminGroupes)}>
+              {t("creer_nouveau_groupe_module")}
+            </button>
+          </p>
         </div>
       ) : (
         <>
           <div className={styles.enteteGroupe}>
-            <span className={styles.nomGroupe}>{groupe.nom}</span>
-            <button className={styles.boutonSecondaire} onClick={() => setModalOuverte(true)}>
-              <UserPlus size={15} /> {t("ajouter_pelerins")}
-            </button>
+            <span className={styles.nomGroupe}>
+              {groupe.nom}
+              {groupe.capacite_max && <span className={styles.effectifGroupe}> ({pelerins.length}/{groupe.capacite_max})</span>}
+            </span>
+            <div className={styles.actionsGroupe}>
+              <button className={styles.boutonSecondaire} onClick={() => setModalOuverte(true)}>
+                <UserPlus size={15} /> {t("ajouter_pelerins")}
+              </button>
+              <button className={styles.boutonLienDetacher} onClick={delierGroupe}>
+                {t("detacher_du_vol")}
+              </button>
+            </div>
           </div>
 
           <div className={styles.conteneurTableau}>
@@ -127,6 +164,7 @@ function DetailVol() {
       {modalOuverte && groupe && (
         <ModalAjoutPelerinsGroupe
           groupeId={groupe.id}
+          placesRestantes={placesRestantesGroupe}
           onFermer={() => setModalOuverte(false)}
           onAjoute={charger}
         />

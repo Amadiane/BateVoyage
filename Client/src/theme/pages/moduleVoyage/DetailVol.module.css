@@ -60,3 +60,17 @@
 @media (max-width: 480px) {
   .carteVide { padding: 24px 16px; }
 }
+
+.choixLiaison { display: flex; gap: 10px; margin-top: 16px; flex-wrap: wrap; justify-content: center; }
+.selectLiaison { padding: 9px 14px; border: 1px solid var(--color-border); border-radius: 8px; font-size: 14px; min-width: 200px; }
+.texteAlternatif { margin-top: 14px; font-size: 12.5px; color: #9CA3AF; }
+.lienTexte { background: none; border: none; color: var(--color-brand); font-weight: 600; cursor: pointer; padding: 0; text-decoration: underline; }
+
+.choixLiaison { display: flex; gap: 10px; margin-top: 16px; flex-wrap: wrap; justify-content: center; }
+.selectLiaison { padding: 9px 14px; border: 1px solid var(--color-border); border-radius: 8px; font-size: 14px; min-width: 200px; }
+.texteAlternatif { margin-top: 14px; font-size: 12.5px; color: #9CA3AF; }
+.lienTexte { background: none; border: none; color: var(--color-brand); font-weight: 600; cursor: pointer; padding: 0; text-decoration: underline; }
+
+.actionsGroupe { display: flex; gap: 8px; }
+.boutonLienDetacher { background: none; border: 1px solid #FCA5A5; color: #B91C1C; padding: 9px 14px; border-radius: 8px; font-size: 12.5px; font-weight: 600; cursor: pointer; }
+.boutonLienDetacher:hover { background-color: #FEE2E2; }

@@ -5,24 +5,28 @@ import { pelerinService } from "../../services/pelerinService";
 import { groupeService } from "../../services/groupeService";
 import styles from "../../theme/components/ModalAjoutPelerinsGroupe.module.css";
 
-function ModalAjoutPelerinsGroupe({ groupeId, onFermer, onAjoute }) {
+function ModalAjoutPelerinsGroupe({ groupeId, placesRestantes, onFermer, onAjoute }) {
   const { t } = useTranslation();
   const [pelerins, setPelerins] = useState([]);
   const [selectionnes, setSelectionnes] = useState([]);
   const [recherche, setRecherche] = useState("");
   const [chargement, setChargement] = useState(true);
   const [envoi, setEnvoi] = useState(false);
+  const [erreur, setErreur] = useState("");
 
   useEffect(() => {
     pelerinService.lister().then(({ data }) => {
-      // On ne propose que les pèlerins pas déjà dans CE groupe précis.
       setPelerins(data.filter((p) => p.groupe !== groupeId && String(p.groupe) !== String(groupeId)));
       setChargement(false);
     });
   }, [groupeId]);
 
   const basculer = (id) => {
-    setSelectionnes((s) => (s.includes(id) ? s.filter((x) => x !== id) : [...s, id]));
+    setSelectionnes((s) => {
+      if (s.includes(id)) return s.filter((x) => x !== id);
+      if (placesRestantes !== undefined && placesRestantes !== null && s.length >= placesRestantes) return s;
+      return [...s, id];
+    });
   };
 
   const pelerinsFiltres = pelerins.filter((p) => {
@@ -33,14 +37,21 @@ function ModalAjoutPelerinsGroupe({ groupeId, onFermer, onAjoute }) {
   const valider = async () => {
     if (selectionnes.length === 0) return;
     setEnvoi(true);
+    setErreur("");
     try {
       await groupeService.affecterPelerins(groupeId, selectionnes);
       onAjoute();
       onFermer();
+    } catch (err) {
+      setErreur(err.response?.data?.erreur || t("erreur_enregistrement"));
     } finally {
       setEnvoi(false);
     }
   };
+
+  const placesRestantesAffichees = placesRestantes !== undefined && placesRestantes !== null
+    ? placesRestantes - selectionnes.length
+    : null;
 
   return (
     <div className={styles.superposition} onClick={onFermer}>
@@ -49,6 +60,10 @@ function ModalAjoutPelerinsGroupe({ groupeId, onFermer, onAjoute }) {
           <h2 className={styles.titre}>{t("ajouter_pelerins_groupe")}</h2>
           <button className={styles.boutonFermer} onClick={onFermer}><X size={16} /></button>
         </div>
+
+        {placesRestantesAffichees !== null && (
+          <p className={styles.capaciteInfo}>{t("places_restantes")} : {placesRestantesAffichees}</p>
+        )}
 
         <div className={styles.zoneRecherche}>
           <Search size={15} className={styles.iconeRecherche} />
@@ -66,18 +81,26 @@ function ModalAjoutPelerinsGroupe({ groupeId, onFermer, onAjoute }) {
           {!chargement && pelerinsFiltres.length === 0 && (
             <p className={styles.etatVide}>{t("aucun_pelerin_disponible")}</p>
           )}
-          {!chargement && pelerinsFiltres.map((p) => (
-            <label key={p.id} className={styles.ligne}>
-              <input
-                type="checkbox"
-                checked={selectionnes.includes(p.id)}
-                onChange={() => basculer(p.id)}
-              />
-              <span className={styles.idPelerin}>{p.numero_id}</span>
-              <span>{p.prenom} {p.nom}</span>
-            </label>
-          ))}
+          {!chargement && pelerinsFiltres.map((p) => {
+            const desactive = !selectionnes.includes(p.id)
+              && placesRestantes !== undefined && placesRestantes !== null
+              && selectionnes.length >= placesRestantes;
+            return (
+              <label key={p.id} className={styles.ligne} style={desactive ? { opacity: 0.4, cursor: "not-allowed" } : {}}>
+                <input
+                  type="checkbox"
+                  checked={selectionnes.includes(p.id)}
+                  onChange={() => basculer(p.id)}
+                  disabled={desactive}
+                />
+                <span className={styles.idPelerin}>{p.numero_id}</span>
+                <span>{p.prenom} {p.nom}</span>
+              </label>
+            );
+          })}
         </div>
+
+        {erreur && <p className={styles.erreurModal}>{erreur}</p>}
 
         <div className={styles.pied}>
           <span className={styles.compteur}>{selectionnes.length} {t("selectionnes")}</span>
