@@ -604,7 +604,14 @@
 
   
   "aucun": "لا شيء",
-  "saisir_nom_encadreur": "أدخل اسم المرشد/المشرف"
+  "saisir_nom_encadreur": "أدخل اسم المرشد/المشرف",
+
+  
+  "phase_aller": "مرحلة الذهاب",
+  "phase_retour": "مرحلة العودة",
+  "responsable_medical": "المسؤول الطبي",
+  "saisir_nom_responsable_medical": "أدخل اسم الطبيب/المسؤول الطبي"
+
 
 
 

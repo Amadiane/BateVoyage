@@ -82,6 +82,9 @@ function DetailVol({ basePath }) {
   return (
     <div className={styles.page}>
       <button className={styles.retour} onClick={() => navigate(-1)}>← {t("retour")}</button>
+      <div className={`${styles.bandeauPhase} ${vol.type_vol === "aller" ? styles.bandeauPhaseAller : styles.bandeauPhaseRetour}`}>
+        {vol.type_vol === "aller" ? t("phase_aller") : t("phase_retour")}
+      </div>
 
       <div className={styles.entete}>
         <div>

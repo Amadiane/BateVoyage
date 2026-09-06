@@ -600,7 +600,14 @@
 
   
   "aucun": "None",
-  "saisir_nom_encadreur": "Enter the guide/supervisor's name"
+  "saisir_nom_encadreur": "Enter the guide/supervisor's name",
+
+  
+  "phase_aller": "Outbound Phase",
+  "phase_retour": "Return Phase",
+  "responsable_medical": "Medical officer",
+  "saisir_nom_responsable_medical": "Enter the doctor/medical officer's name"
+
 
 
 

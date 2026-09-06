@@ -42,6 +42,7 @@ class Groupe(models.Model):
         Vol, on_delete=models.SET_NULL, null=True, blank=True, related_name="groupes_retour"
     )
     encadreur = models.CharField(max_length=150, blank=True, help_text="Nom du guide/encadreur (saisie libre)")
+    responsable_medical = models.CharField(max_length=150, blank=True, help_text="Nom du médecin/responsable médical (saisie libre)")
     capacite_max = models.PositiveIntegerField(null=True, blank=True, help_text="Nombre maximum de pèlerins pour ce groupe")
     notes = models.TextField(blank=True)
     date_creation = models.DateTimeField(auto_now_add=True)

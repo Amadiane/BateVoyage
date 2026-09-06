@@ -608,7 +608,14 @@
 
   
   "aucun": "Aucun",
-  "saisir_nom_encadreur": "Saisir le nom du guide/encadreur"
+  "saisir_nom_encadreur": "Saisir le nom du guide/encadreur",
+
+  
+  "phase_aller": "Phase Aller",
+  "phase_retour": "Phase Retour",
+  "responsable_medical": "Responsable médical",
+  "saisir_nom_responsable_medical": "Saisir le nom du médecin/responsable médical"
+
 
 
 

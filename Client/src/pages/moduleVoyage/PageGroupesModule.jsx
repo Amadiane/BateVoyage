@@ -6,7 +6,9 @@ import { groupeService } from "../../services/groupeService";
 import { volService } from "../../services/volService";
 import styles from "../../theme/pages/moduleVoyage/PageGroupesModule.module.css";
 
-const VALEURS_INITIALES = { nom: "", sensVol: "", volId: "", encadreur: "", capacite_max: "", notes: "" };
+const VALEURS_INITIALES = {
+  nom: "", sensVol: "", volId: "", encadreur: "", responsable_medical: "", capacite_max: "", notes: "",
+};
 
 function PageGroupesModule({ basePath }) {
   const { t } = useTranslation();
@@ -48,7 +50,13 @@ function PageGroupesModule({ basePath }) {
     if (g.vol_aller) { sensVol = "aller"; volId = g.vol_aller; }
     else if (g.vol_retour) { sensVol = "retour"; volId = g.vol_retour; }
     setValeurs({
-      nom: g.nom, sensVol, volId, encadreur: g.encadreur || "", capacite_max: g.capacite_max || "", notes: g.notes || "",
+      nom: g.nom,
+      sensVol,
+      volId,
+      encadreur: g.encadreur || "",
+      responsable_medical: g.responsable_medical || "",
+      capacite_max: g.capacite_max || "",
+      notes: g.notes || "",
     });
     setErreur("");
     setModalOuverte(true);
@@ -66,6 +74,7 @@ function PageGroupesModule({ basePath }) {
       const donnees = {
         nom: valeurs.nom,
         encadreur: valeurs.encadreur,
+        responsable_medical: valeurs.responsable_medical,
         capacite_max: valeurs.capacite_max || null,
         notes: valeurs.notes,
         vol_aller: valeurs.sensVol === "aller" ? valeurs.volId : null,
@@ -123,6 +132,7 @@ function PageGroupesModule({ basePath }) {
               {g.vol_aller_detail && <p className={styles.infoVol}>✈️ {t("vol_aller")} : {g.vol_aller_detail.compagnie} {g.vol_aller_detail.numero_vol}</p>}
               {g.vol_retour_detail && <p className={styles.infoVol}>✈️ {t("vol_retour")} : {g.vol_retour_detail.compagnie} {g.vol_retour_detail.numero_vol}</p>}
               {g.encadreur && <p className={styles.encadreur}>👤 {g.encadreur}</p>}
+              {g.responsable_medical && <p className={styles.encadreur}>🩺 {g.responsable_medical}</p>}
 
               <div className={styles.piedCarte}>
                 <span className={styles.effectif}>
@@ -199,6 +209,11 @@ function PageGroupesModule({ basePath }) {
               <div className={styles.champ}>
                 <label>{t("encadreur")}</label>
                 <input value={valeurs.encadreur} onChange={(e) => majChamp("encadreur", e.target.value)} placeholder={t("saisir_nom_encadreur")} />
+              </div>
+
+              <div className={styles.champ}>
+                <label>{t("responsable_medical")}</label>
+                <input value={valeurs.responsable_medical} onChange={(e) => majChamp("responsable_medical", e.target.value)} placeholder={t("saisir_nom_responsable_medical")} />
               </div>
 
               <div className={styles.champ}>

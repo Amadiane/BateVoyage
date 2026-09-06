@@ -117,8 +117,8 @@ function PageVolsModule({ basePath }) {
           >
             <div className={styles.bandeau}>
               <div className={styles.groupeTitreVol}>
-                <span className={`${styles.badgeType} ${v.type_vol === "aller" ? styles.badgeAller : styles.badgeRetour}`}>
-                  {v.type_vol_display}
+                <span className={`${styles.badgePhase} ${v.type_vol === "aller" ? styles.badgePhaseAller : styles.badgePhaseRetour}`}>
+                  {v.type_vol === "aller" ? t("phase_aller") : t("phase_retour")}
                 </span>
                 <span className={styles.numeroVol}>{v.compagnie} {v.numero_vol}</span>
               </div>
