@@ -9,7 +9,7 @@ const SOUS_MODULES = [
   { cle: "visa_doc", icone: FileCheck2, actif: true, couleur: "or" },
   { cle: "vols", icone: Plane, actif: true, couleur: "violet" },
   { cle: "groupes", icone: UsersRound, actif: true, couleur: "cyan" },
-  { cle: "hebergement", icone: Hotel, actif: false, couleur: "vert" },
+  { cle: "hebergement", icone: Hotel, actif: true, couleur: "vert" },
   { cle: "transport", icone: Bus, actif: false, couleur: "rose" },
   { cle: "finances", icone: Wallet, actif: false, couleur: "rouge" },
 ];

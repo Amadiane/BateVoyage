@@ -606,7 +606,52 @@
   "phase_aller": "Outbound Phase",
   "phase_retour": "Return Phase",
   "responsable_medical": "Medical officer",
-  "saisir_nom_responsable_medical": "Enter the doctor/medical officer's name"
+  "saisir_nom_responsable_medical": "Enter the doctor/medical officer's name",
+
+  
+  "nouvelle_ville": "New city",
+  "modifier_ville": "Edit city",
+  "aucune_ville": "No city registered",
+  "confirmer_suppression_ville": "Confirm deletion of this city? This will also delete its hotels.",
+  "nom_ville": "City name",
+
+  
+  "sous_module_hebergement": "Hotels & Accommodation",
+  "nouvelle_ville": "New city",
+  "modifier_ville": "Edit city",
+  "aucune_ville": "No city registered",
+  "confirmer_suppression_ville": "Confirm deletion of this city? This will also delete its hotels.",
+  "nom_ville": "City name",
+  "nouvel_hotel": "New hotel",
+  "modifier_hotel": "Edit hotel",
+  "aucun_hotel": "No hotel registered",
+  "confirmer_suppression_hotel": "Confirm deletion of this hotel?",
+  "nom_hotel": "Hotel name",
+  "ville": "City",
+  "adresse": "Address",
+  "categorie": "Category",
+  "categorie_economique": "Economy",
+  "categorie_standard": "Standard",
+  "categorie_superieur": "Superior",
+  "categorie_luxe": "Luxury",
+  "distance_haram": "Distance from Haram (m)",
+  "nombre_chambres_prevu": "Planned number of rooms",
+  "telephone": "Phone",
+  "date_debut_sejour": "Stay start",
+  "date_fin_sejour": "Stay end",
+  "chambres": "rooms",
+  "chambres_avec_erreur": "room(s) with assignment error",
+  "sous_module_campements": "Camps (Mina/Arafat)",
+  "nouveau_campement": "New camp",
+  "modifier_campement": "Edit camp",
+  "aucun_campement": "No camp registered",
+  "confirmer_suppression_campement": "Confirm deletion?",
+  "tente_camp": "Tent / Camp",
+  "groupe": "Group",
+  "zone": "Zone",
+  "affectation": "Assignment"
+
+
 
 
 

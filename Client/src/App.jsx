@@ -32,6 +32,8 @@ import PageVisaDocModule from "./pages/moduleVoyage/PageVisaDocModule";
 import PageVolsModule from "./pages/moduleVoyage/PageVolsModule";
 import DetailVol from "./pages/moduleVoyage/DetailVol";
 import PageGroupesModule from "./pages/moduleVoyage/PageGroupesModule";
+import PageHebergementModule from "./pages/moduleVoyage/PageHebergementModule";
+import PageCampementsModule from "./pages/moduleVoyage/PageCampementsModule";
 import "./globals.css";
 
 const ROLES_FINANCIERS = ["fondateur", "admin_general", "comptable", "secretaire"];
@@ -75,6 +77,13 @@ function App() {
           <Route path="/oumra/groupes" element={<PageGroupesModule basePath="/oumra" />} />
           <Route path="/hajj/groupes/:id" element={<DetailGroupe />} />
           <Route path="/oumra/groupes/:id" element={<DetailGroupe />} />
+
+          <Route path="/hajj/hebergement" element={<PageHebergementModule basePath="/hajj" />} />
+          <Route path="/oumra/hebergement" element={<PageHebergementModule basePath="/oumra" />} />
+          <Route path="/hajj/hebergement/:id" element={<DetailHotel />} />
+          <Route path="/oumra/hebergement/:id" element={<DetailHotel />} />
+          <Route path="/hajj/campements" element={<PageCampementsModule basePath="/hajj" />} />
+          <Route path="/oumra/campements" element={<PageCampementsModule basePath="/oumra" />} />
 
           {/* Module Oumra */}
           <Route path="/oumra" element={<PageModuleVoyage typeVoyage="oumra" basePath="/oumra" titreCle="menu_oumra" />} />

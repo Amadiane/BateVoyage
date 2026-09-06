@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Hotel, Chambre
+from .models import Hotel, Chambre, Ville
 
 
 @admin.register(Hotel)
@@ -12,3 +12,7 @@ class HotelAdmin(admin.ModelAdmin):
 class ChambreAdmin(admin.ModelAdmin):
     list_display = ["hotel", "numero", "type_chambre", "capacite"]
     list_filter = ["hotel", "type_chambre"]
+
+@admin.register(Ville)
+class VilleAdmin(admin.ModelAdmin):
+    list_display = ["nom"]

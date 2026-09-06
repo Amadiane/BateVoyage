@@ -610,7 +610,52 @@
   "phase_aller": "مرحلة الذهاب",
   "phase_retour": "مرحلة العودة",
   "responsable_medical": "المسؤول الطبي",
-  "saisir_nom_responsable_medical": "أدخل اسم الطبيب/المسؤول الطبي"
+  "saisir_nom_responsable_medical": "أدخل اسم الطبيب/المسؤول الطبي",
+
+  
+  "nouvelle_ville": "مدينة جديدة",
+  "modifier_ville": "تعديل المدينة",
+  "aucune_ville": "لا توجد مدينة مسجلة",
+  "confirmer_suppression_ville": "تأكيد حذف هذه المدينة؟ سيؤدي ذلك أيضًا إلى حذف فنادقها.",
+  "nom_ville": "اسم المدينة",
+
+  
+  "sous_module_hebergement": "الفنادق والإقامة",
+  "nouvelle_ville": "مدينة جديدة",
+  "modifier_ville": "تعديل المدينة",
+  "aucune_ville": "لا توجد مدينة مسجلة",
+  "confirmer_suppression_ville": "تأكيد حذف هذه المدينة؟ سيؤدي ذلك أيضًا إلى حذف فنادقها.",
+  "nom_ville": "اسم المدينة",
+  "nouvel_hotel": "فندق جديد",
+  "modifier_hotel": "تعديل الفندق",
+  "aucun_hotel": "لا يوجد فندق مسجل",
+  "confirmer_suppression_hotel": "تأكيد حذف هذا الفندق؟",
+  "nom_hotel": "اسم الفندق",
+  "ville": "المدينة",
+  "adresse": "العنوان",
+  "categorie": "الفئة",
+  "categorie_economique": "اقتصادية",
+  "categorie_standard": "قياسية",
+  "categorie_superieur": "متميزة",
+  "categorie_luxe": "فاخرة",
+  "distance_haram": "المسافة من الحرم (م)",
+  "nombre_chambres_prevu": "عدد الغرف المخطط",
+  "telephone": "الهاتف",
+  "date_debut_sejour": "بداية الإقامة",
+  "date_fin_sejour": "نهاية الإقامة",
+  "chambres": "غرف",
+  "chambres_avec_erreur": "غرفة (غرف) بها خطأ في التوزيع",
+  "sous_module_campements": "المخيمات (منى/عرفات)",
+  "nouveau_campement": "مخيم جديد",
+  "modifier_campement": "تعديل المخيم",
+  "aucun_campement": "لا يوجد مخيم مسجل",
+  "confirmer_suppression_campement": "تأكيد الحذف؟",
+  "tente_camp": "الخيمة / المخيم",
+  "groupe": "المجموعة",
+  "zone": "المنطقة",
+  "affectation": "التخصيص"
+
+
 
 
 

@@ -1,12 +1,18 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { Plus, Pencil, Trash2, X, Users } from "lucide-react";
+import { Plus, Pencil, Trash2, X, Users, AlertTriangle } from "lucide-react";
 import { hotelService } from "../../services/hotelService";
 import { chambreService } from "../../services/chambreService";
+import ModalAjoutPelerinsChambre from "../../components/ModalAjoutPelerinsChambre/ModalAjoutPelerinsChambre";
 import styles from "../../theme/pages/hebergement/DetailHotel.module.css";
 
 const VALEURS_INITIALES = { numero: "", type_chambre: "" };
+
+const LIBELLES_ERREUR = {
+  mixite_genre: "⚠️ Mélange homme/femme",
+  capacite_depassee: "⚠️ Capacité dépassée",
+};
 
 function DetailHotel() {
   const { id } = useParams();
@@ -20,6 +26,7 @@ function DetailHotel() {
   const [valeurs, setValeurs] = useState(VALEURS_INITIALES);
   const [envoi, setEnvoi] = useState(false);
   const [erreur, setErreur] = useState("");
+  const [chambreSelectionnee, setChambreSelectionnee] = useState(null);
 
   const charger = () => {
     hotelService.obtenir(id).then(({ data }) => setHotel(data));
@@ -80,14 +87,19 @@ function DetailHotel() {
 
   if (chargement || !hotel) return <p className={styles.chargement}>{t("chargement")}</p>;
 
+  const chambreOuverte = chambres.find((c) => c.id === chambreSelectionnee);
+
   return (
     <div>
-      <button className={styles.retour} onClick={() => navigate("/hebergement")}>← {t("retour_liste")}</button>
+      <button className={styles.retour} onClick={() => navigate(-1)}>← {t("retour_liste")}</button>
 
       <div className={styles.entete}>
         <div>
           <h1 className={styles.titre}>{hotel.nom}</h1>
-          <p className={styles.sousTitre}>{t(`ville_${hotel.ville}`)} — {chambres.length} {t("chambres")}</p>
+          <p className={styles.sousTitre}>
+            {hotel.ville_nom}{hotel.categorie_display ? ` — ${hotel.categorie_display}` : ""} — {chambres.length} {t("chambres")}
+            {hotel.distance_haram_metres && ` — ${hotel.distance_haram_metres}m du Haram`}
+          </p>
         </div>
         <button className={styles.boutonPrincipal} onClick={ouvrirNouveau}>
           <Plus size={16} /> {t("nouvelle_chambre")}
@@ -96,24 +108,36 @@ function DetailHotel() {
 
       <div className={styles.grilleCartes}>
         {chambres.length === 0 && <p className={styles.etatVide}>{t("aucune_chambre")}</p>}
-        {chambres.map((c) => (
-          <div key={c.id} className={styles.carteChambre} onClick={() => navigate(`/hebergement/chambre/${c.id}`)}>
-            <div className={styles.bandeau}>
-              <span className={styles.numeroChambre}>Ch. {c.numero}</span>
-              <div className={styles.actions} onClick={(e) => e.stopPropagation()}>
-                <button onClick={() => ouvrirModification(c)} title={t("modifier")}><Pencil size={12} /></button>
-                <button onClick={() => supprimer(c.id)} title={t("supprimer")} className={styles.boutonSupprimer}><Trash2 size={12} /></button>
+        {chambres.map((c) => {
+          const aErreur = c.erreurs_affectation && c.erreurs_affectation.length > 0;
+          return (
+            <div
+              key={c.id}
+              className={`${styles.carteChambre} ${aErreur ? styles.carteAvecErreur : ""}`}
+              onClick={() => setChambreSelectionnee(c.id)}
+            >
+              <div className={styles.bandeau}>
+                <span className={styles.numeroChambre}>Ch. {c.numero}</span>
+                <div className={styles.actions} onClick={(e) => e.stopPropagation()}>
+                  <button onClick={() => ouvrirModification(c)} title={t("modifier")}><Pencil size={12} /></button>
+                  <button onClick={() => supprimer(c.id)} title={t("supprimer")} className={styles.boutonSupprimer}><Trash2 size={12} /></button>
+                </div>
               </div>
+              <p className={styles.typeChambre}>{t(`type_${c.type_chambre}`)}</p>
+              <div className={styles.occupation}>
+                <Users size={13} />
+                <span className={c.places_restantes === 0 ? styles.complet : styles.disponible}>
+                  {c.occupants_actuels}/{c.capacite}
+                </span>
+              </div>
+              {aErreur && (
+                <div className={styles.badgeErreur}>
+                  <AlertTriangle size={12} /> {c.erreurs_affectation.map((e) => LIBELLES_ERREUR[e] || e).join(", ")}
+                </div>
+              )}
             </div>
-            <p className={styles.typeChambre}>{t(`type_${c.type_chambre}`)}</p>
-            <div className={styles.occupation}>
-              <Users size={13} />
-              <span className={c.places_restantes === 0 ? styles.complet : styles.disponible}>
-                {c.occupants_actuels}/{c.capacite}
-              </span>
-            </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
 
       {modalOuverte && (
@@ -146,6 +170,15 @@ function DetailHotel() {
             </form>
           </div>
         </div>
+      )}
+
+      {chambreOuverte && (
+        <ModalAjoutPelerinsChambre
+          chambreId={chambreOuverte.id}
+          placesRestantes={chambreOuverte.places_restantes}
+          onFermer={() => setChambreSelectionnee(null)}
+          onAjoute={charger}
+        />
       )}
     </div>
   );

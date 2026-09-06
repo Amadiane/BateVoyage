@@ -1,0 +1,101 @@
+.retour { background: none; border: none; color: #6B7280; font-size: 13px; cursor: pointer; padding: 0; margin-bottom: 16px; }
+.retour:hover { color: var(--color-brand); }
+
+.entete { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; border-left: 4px solid #86EFAC; padding-left: 16px; }
+.titre { font-family: var(--font-display); font-size: 22px; color: var(--color-brand-dark); margin: 0; }
+
+.boutonPrincipal { display: inline-flex; align-items: center; gap: 8px; padding: 10px 18px; border: none; border-radius: 8px; background-color: #166534; color: #fff; font-size: 14px; font-weight: 600; cursor: pointer; }
+.boutonPrincipal:hover:not(:disabled) { opacity: 0.9; }
+
+.boutonSecondaire { display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; border: 1px solid var(--color-border); border-radius: 8px; background-color: #fff; color: var(--color-brand-dark); font-size: 12.5px; font-weight: 600; cursor: pointer; }
+.boutonSecondaire:hover { background-color: #F9FAFB; }
+
+.ongletsVilles { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
+.ongletVille, .ongletVilleActif {
+  display: flex; align-items: center; gap: 8px; padding: 9px 14px; border-radius: 10px;
+  cursor: pointer; font-size: 13.5px; font-weight: 600; border: 2px solid transparent;
+}
+.ongletVille { background-color: #F3F4F6; color: #6B7280; }
+.ongletVilleActif { background-color: #DCFCE7; color: #166534; border-color: #86EFAC; }
+.compteurVille { font-size: 10.5px; background-color: rgba(0,0,0,0.08); padding: 1px 7px; border-radius: 999px; }
+.actionsVille { display: flex; gap: 3px; margin-left: 4px; }
+.actionsVille button { width: 20px; height: 20px; border: none; background: rgba(255,255,255,0.5); border-radius: 5px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; }
+
+.enteteHotels { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+.sousTitreVille { font-family: var(--font-display); font-size: 17px; color: var(--color-brand-dark); margin: 0; }
+
+.grilleCartes { display: grid; grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); gap: 16px; }
+.etatVide { text-align: center; padding: 40px; color: #9CA3AF; grid-column: 1 / -1; }
+
+.carte { background-color: #fff; border: 2px solid #86EFAC; border-radius: 16px; padding: 20px; cursor: pointer; transition: box-shadow 0.15s ease, transform 0.15s ease; }
+.carte:hover { box-shadow: 0 8px 20px rgba(11,14,20,0.08); transform: translateY(-2px); }
+
+.bandeau { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+.nomHotel { display: flex; align-items: center; gap: 7px; font-family: var(--font-display); font-size: 15px; color: var(--color-brand-dark); }
+
+.actions { display: flex; gap: 6px; }
+.actions button { width: 26px; height: 26px; border: 1px solid var(--color-border); border-radius: 6px; background: #fff; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; }
+.actions button:hover { background-color: #F9FAFB; }
+.boutonSupprimer:hover { background-color: #FEE2E2 !important; border-color: #FCA5A5 !important; }
+
+.adresse { font-size: 11.5px; color: #9CA3AF; margin: 0 0 6px; }
+.dates { font-size: 12px; color: #6B7280; margin: 0 0 12px; }
+
+.stats { display: flex; gap: 16px; padding-top: 10px; border-top: 1px solid #F3F4F6; }
+.statItem { display: flex; align-items: center; gap: 5px; font-size: 12px; color: #4B5563; font-weight: 600; }
+
+.superposition { position: fixed; inset: 0; background-color: rgba(11,14,20,0.55); display: flex; align-items: center; justify-content: center; z-index: 50; padding: 16px; }
+.panneau { width: 460px; max-width: 100%; max-height: 90vh; overflow-y: auto; background-color: #fff; border-radius: 16px; padding: 24px; }
+.panneauEtroit { width: 340px; max-width: 100%; background-color: #fff; border-radius: 16px; padding: 24px; }
+.enteteModal { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+.enteteModal h2 { font-family: var(--font-display); font-size: 17px; color: var(--color-brand-dark); margin: 0; }
+.boutonFermer { background: none; border: none; cursor: pointer; color: #6B7280; }
+
+.formulaire { display: flex; flex-direction: column; gap: 14px; }
+.champ label { display: block; font-size: 12.5px; font-weight: 600; color: #4B5563; margin-bottom: 6px; }
+.champ input, .champ select { width: 100%; padding: 10px 12px; border: 1px solid var(--color-border); border-radius: 8px; font-size: 14px; }
+.champ input:focus, .champ select:focus { outline: none; border-color: var(--color-brand); box-shadow: 0 0 0 3px var(--color-brand-pale); }
+.ligneDeux { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+.erreur { font-size: 13px; color: #B91C1C; background-color: #FEF2F2; border: 1px solid #FECACA; border-radius: 8px; padding: 10px 14px; }
+.navigationModal { display: flex; justify-content: flex-end; gap: 10px; margin-top: 4px; padding-top: 14px; border-top: 1px solid #F3F4F6; flex-wrap: wrap; }
+
+@media (max-width: 900px) {
+  .entete { flex-direction: column; align-items: stretch; gap: 12px; border-left: none; border-top: 4px solid #86EFAC; padding-left: 0; padding-top: 12px; }
+  .boutonPrincipal { width: 100%; justify-content: center; }
+  .enteteHotels { flex-direction: column; align-items: stretch; gap: 10px; }
+  .grilleCartes { grid-template-columns: 1fr; }
+}
+@media (max-width: 480px) {
+  .panneau, .panneauEtroit { padding: 18px; border-radius: 12px; }
+  .ligneDeux { grid-template-columns: 1fr; }
+}
+
+.badgeCategorie {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 9px;
+  border-radius: 999px;
+  background-color: #DCFCE7;
+  color: #166534;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+}
+
+.distance {
+  font-size: 11.5px;
+  color: #6B7280;
+  margin: 0 0 6px;
+}
+
+.alerteErreurs {
+  font-size: 11px;
+  color: #991B1B;
+  background-color: #FEF2F2;
+  padding: 5px 9px;
+  border-radius: 6px;
+  margin: 10px 0 0;
+  font-weight: 600;
+}
+.groupeBoutonsEntete { display: flex; gap: 10px; }

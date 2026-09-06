@@ -614,7 +614,52 @@
   "phase_aller": "Phase Aller",
   "phase_retour": "Phase Retour",
   "responsable_medical": "Responsable médical",
-  "saisir_nom_responsable_medical": "Saisir le nom du médecin/responsable médical"
+  "saisir_nom_responsable_medical": "Saisir le nom du médecin/responsable médical",
+
+  
+  "nouvelle_ville": "Nouvelle ville",
+  "modifier_ville": "Modifier la ville",
+  "aucune_ville": "Aucune ville enregistrée",
+  "confirmer_suppression_ville": "Confirmer la suppression de cette ville ? Cela supprimera aussi ses hôtels.",
+  "nom_ville": "Nom de la ville",
+
+  
+  "sous_module_hebergement": "Hôtels & Hébergement",
+  "nouvelle_ville": "Nouvelle ville",
+  "modifier_ville": "Modifier la ville",
+  "aucune_ville": "Aucune ville enregistrée",
+  "confirmer_suppression_ville": "Confirmer la suppression de cette ville ? Cela supprimera aussi ses hôtels.",
+  "nom_ville": "Nom de la ville",
+  "nouvel_hotel": "Nouvel hôtel",
+  "modifier_hotel": "Modifier l'hôtel",
+  "aucun_hotel": "Aucun hôtel enregistré",
+  "confirmer_suppression_hotel": "Confirmer la suppression de cet hôtel ?",
+  "nom_hotel": "Nom de l'hôtel",
+  "ville": "Ville",
+  "adresse": "Adresse",
+  "categorie": "Catégorie",
+  "categorie_economique": "Économique",
+  "categorie_standard": "Standard",
+  "categorie_superieur": "Supérieur",
+  "categorie_luxe": "Luxe",
+  "distance_haram": "Distance du Haram (m)",
+  "nombre_chambres_prevu": "Nombre de chambres prévu",
+  "telephone": "Téléphone",
+  "date_debut_sejour": "Début du séjour",
+  "date_fin_sejour": "Fin du séjour",
+  "chambres": "chambres",
+  "chambres_avec_erreur": "chambre(s) avec erreur d'affectation",
+  "sous_module_campements": "Campements (Mina/Arafat)",
+  "nouveau_campement": "Nouveau campement",
+  "modifier_campement": "Modifier le campement",
+  "aucun_campement": "Aucun campement enregistré",
+  "confirmer_suppression_campement": "Confirmer la suppression ?",
+  "tente_camp": "Tente / Camp",
+  "groupe": "Groupe",
+  "zone": "Zone",
+  "affectation": "Affectation"
+
+
 
 
 

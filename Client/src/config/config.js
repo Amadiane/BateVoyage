@@ -81,6 +81,11 @@ const CONFIG = {
   API_PELERIN_FICHE_VISA: (id) => `${BASE_URL}/api/pelerins/${id}/fiche-visa/`,
   API_VOL_MANIFESTE_PDF: (id) => `${BASE_URL}/api/groupes-vols/vols/${id}/manifeste-pdf/`,
 
+  API_VILLES: `${BASE_URL}/api/hebergement/villes/`,
+  API_VILLE_DETAIL: (id) => `${BASE_URL}/api/hebergement/villes/${id}/`,
+  API_CAMPEMENTS: `${BASE_URL}/api/hebergement/campements/`,
+  API_CAMPEMENT_DETAIL: (id) => `${BASE_URL}/api/hebergement/campements/${id}/`,
+
   // --- Formules / Programmes ---
   API_PROGRAMMES: `${BASE_URL}/api/formules/programmes/`,
 
