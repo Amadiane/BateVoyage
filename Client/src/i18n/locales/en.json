@@ -649,7 +649,23 @@
   "tente_camp": "Tent / Camp",
   "groupe": "Group",
   "zone": "Zone",
-  "affectation": "Assignment"
+  "affectation": "Assignment",
+
+  
+  "gerer_occupants_chambre": "Manage occupants",
+  "occupants_actuels": "Current occupants",
+  "retirer_de_la_chambre": "Remove from room",
+  "confirmer_retrait_chambre": "Remove this pilgrim from the room?",
+  "aucun_pelerin_dans_campement": "No pilgrim in this camp",
+  "confirmer_retrait_campement": "Remove this pilgrim from the camp?",
+  "ajouter_pelerins_campement": "Add pilgrims to camp",
+
+  
+  "confirmer": "Confirm",
+  "confirmer_retrait_titre": "Remove this pilgrim?",
+  "confirmer_retrait_message": "Are you sure you want to remove {{nom}}? This can be undone by reassigning them later."
+
+
 
 
 

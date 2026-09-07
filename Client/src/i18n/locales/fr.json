@@ -657,7 +657,23 @@
   "tente_camp": "Tente / Camp",
   "groupe": "Groupe",
   "zone": "Zone",
-  "affectation": "Affectation"
+  "affectation": "Affectation",
+
+  
+  "gerer_occupants_chambre": "Gérer les occupants",
+  "occupants_actuels": "Occupants actuels",
+  "retirer_de_la_chambre": "Retirer de la chambre",
+  "confirmer_retrait_chambre": "Retirer ce pèlerin de la chambre ?",
+  "aucun_pelerin_dans_campement": "Aucun pèlerin dans ce campement",
+  "confirmer_retrait_campement": "Retirer ce pèlerin du campement ?",
+  "ajouter_pelerins_campement": "Ajouter des pèlerins au campement",
+
+  
+  "confirmer": "Confirmer",
+  "confirmer_retrait_titre": "Retirer ce pèlerin ?",
+  "confirmer_retrait_message": "Voulez-vous vraiment retirer {{nom}} ? Cette action peut être annulée en le réaffectant plus tard."
+
+
 
 
 

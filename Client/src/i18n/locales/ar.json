@@ -653,7 +653,23 @@
   "tente_camp": "الخيمة / المخيم",
   "groupe": "المجموعة",
   "zone": "المنطقة",
-  "affectation": "التخصيص"
+  "affectation": "التخصيص",
+
+  
+  "gerer_occupants_chambre": "إدارة النزلاء",
+  "occupants_actuels": "النزلاء الحاليون",
+  "retirer_de_la_chambre": "إزالة من الغرفة",
+  "confirmer_retrait_chambre": "إزالة هذا الحاج من الغرفة؟",
+  "aucun_pelerin_dans_campement": "لا يوجد حاج في هذا المخيم",
+  "confirmer_retrait_campement": "إزالة هذا الحاج من المخيم؟",
+  "ajouter_pelerins_campement": "إضافة حجاج إلى المخيم",
+
+  
+  "confirmer": "تأكيد",
+  "confirmer_retrait_titre": "إزالة هذا الحاج؟",
+  "confirmer_retrait_message": "هل تريد فعلاً إزالة {{nom}}؟ يمكن التراجع عن هذا بإعادة تعيينه لاحقًا."
+
+
 
 
 

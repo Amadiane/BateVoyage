@@ -1,33 +1,25 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { X, Search, UserMinus } from "lucide-react";
+import { X, Search } from "lucide-react";
 import { pelerinService } from "../../services/pelerinService";
-import { chambreService } from "../../services/chambreService";
-import ModalConfirmation from "../ModalConfirmation/ModalConfirmation";
+import { campementService } from "../../services/campementService";
 import styles from "../../theme/components/ModalAjoutPelerinsChambre.module.css";
 
-function ModalAjoutPelerinsChambre({ chambreId, placesRestantes, onFermer, onAjoute }) {
+function ModalAjoutPelerinsCampement({ campementId, placesRestantes, onFermer, onAjoute }) {
   const { t } = useTranslation();
-  const [tousPelerins, setTousPelerins] = useState([]);
-  const [occupantsActuels, setOccupantsActuels] = useState([]);
+  const [pelerins, setPelerins] = useState([]);
   const [selectionnes, setSelectionnes] = useState([]);
   const [recherche, setRecherche] = useState("");
   const [chargement, setChargement] = useState(true);
   const [envoi, setEnvoi] = useState(false);
   const [erreur, setErreur] = useState("");
-  const [pelerinARetirer, setPelerinARetirer] = useState(null);
 
-  const charger = () => {
+  useEffect(() => {
     pelerinService.lister().then(({ data }) => {
-      setTousPelerins(data);
-      setOccupantsActuels(data.filter((p) => String(p.chambre) === String(chambreId)));
+      setPelerins(data.filter((p) => !p.campement || String(p.campement) !== String(campementId)));
       setChargement(false);
     });
-  };
-
-  useEffect(() => { charger(); }, [chambreId]);
-
-  const disponibles = tousPelerins.filter((p) => !p.chambre || String(p.chambre) !== String(chambreId));
+  }, [campementId]);
 
   const basculer = (id) => {
     setSelectionnes((s) => {
@@ -37,7 +29,7 @@ function ModalAjoutPelerinsChambre({ chambreId, placesRestantes, onFermer, onAjo
     });
   };
 
-  const pelerinsFiltres = disponibles.filter((p) => {
+  const pelerinsFiltres = pelerins.filter((p) => {
     const texte = `${p.prenom} ${p.nom} ${p.numero_id}`.toLowerCase();
     return texte.includes(recherche.toLowerCase());
   });
@@ -47,7 +39,7 @@ function ModalAjoutPelerinsChambre({ chambreId, placesRestantes, onFermer, onAjo
     setEnvoi(true);
     setErreur("");
     try {
-      await chambreService.affecterPelerins(chambreId, selectionnes);
+      await campementService.affecterPelerins(campementId, selectionnes);
       onAjoute();
       onFermer();
     } catch (err) {
@@ -55,15 +47,6 @@ function ModalAjoutPelerinsChambre({ chambreId, placesRestantes, onFermer, onAjo
     } finally {
       setEnvoi(false);
     }
-  };
-
-  const demanderRetrait = (pelerin) => setPelerinARetirer(pelerin);
-
-  const confirmerRetrait = async () => {
-    await chambreService.retirerPelerin(chambreId, pelerinARetirer.id);
-    setPelerinARetirer(null);
-    charger();
-    onAjoute();
   };
 
   const placesRestantesAffichees = placesRestantes !== undefined && placesRestantes !== null
@@ -74,23 +57,9 @@ function ModalAjoutPelerinsChambre({ chambreId, placesRestantes, onFermer, onAjo
     <div className={styles.superposition} onClick={onFermer}>
       <div className={styles.panneau} onClick={(e) => e.stopPropagation()}>
         <div className={styles.entete}>
-          <h2 className={styles.titre}>{t("gerer_occupants_chambre")}</h2>
+          <h2 className={styles.titre}>{t("ajouter_pelerins_campement")}</h2>
           <button className={styles.boutonFermer} onClick={onFermer}><X size={16} /></button>
         </div>
-
-        {occupantsActuels.length > 0 && (
-          <div className={styles.sectionOccupants}>
-            <p className={styles.labelSection}>{t("occupants_actuels")}</p>
-            {occupantsActuels.map((p) => (
-              <div key={p.id} className={styles.ligneOccupant}>
-                <span>{p.prenom} {p.nom}</span>
-                <button onClick={() => demanderRetrait(p)} title={t("retirer_de_la_chambre")}>
-                  <UserMinus size={13} />
-                </button>
-              </div>
-            ))}
-          </div>
-        )}
 
         {placesRestantesAffichees !== null && (
           <p className={styles.capaciteInfo}>{t("places_restantes")} : {placesRestantesAffichees}</p>
@@ -140,17 +109,8 @@ function ModalAjoutPelerinsChambre({ chambreId, placesRestantes, onFermer, onAjo
           </button>
         </div>
       </div>
-
-      {pelerinARetirer && (
-        <ModalConfirmation
-          titre={t("confirmer_retrait_titre")}
-          message={t("confirmer_retrait_message", { nom: `${pelerinARetirer.prenom} ${pelerinARetirer.nom}` })}
-          onConfirmer={confirmerRetrait}
-          onAnnuler={() => setPelerinARetirer(null)}
-        />
-      )}
     </div>
   );
 }
 
-export default ModalAjoutPelerinsChambre;
+export default ModalAjoutPelerinsCampement;

@@ -34,6 +34,7 @@ import DetailVol from "./pages/moduleVoyage/DetailVol";
 import PageGroupesModule from "./pages/moduleVoyage/PageGroupesModule";
 import PageHebergementModule from "./pages/moduleVoyage/PageHebergementModule";
 import PageCampementsModule from "./pages/moduleVoyage/PageCampementsModule";
+import DetailCampement from "./pages/moduleVoyage/DetailCampement";
 import "./globals.css";
 
 const ROLES_FINANCIERS = ["fondateur", "admin_general", "comptable", "secretaire"];
@@ -82,6 +83,8 @@ function App() {
           <Route path="/oumra/hebergement" element={<PageHebergementModule basePath="/oumra" />} />
           <Route path="/hajj/hebergement/:id" element={<DetailHotel />} />
           <Route path="/oumra/hebergement/:id" element={<DetailHotel />} />
+          <Route path="/hajj/campements/:id" element={<DetailCampement />} />
+          <Route path="/oumra/campements/:id" element={<DetailCampement />} />
           <Route path="/hajj/campements" element={<PageCampementsModule basePath="/hajj" />} />
           <Route path="/oumra/campements" element={<PageCampementsModule basePath="/oumra" />} />
 
