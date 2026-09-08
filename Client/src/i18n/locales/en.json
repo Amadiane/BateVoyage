@@ -663,7 +663,17 @@
   
   "confirmer": "Confirm",
   "confirmer_retrait_titre": "Remove this pilgrim?",
-  "confirmer_retrait_message": "Are you sure you want to remove {{nom}}? This can be undone by reassigning them later."
+  "confirmer_retrait_message": "Are you sure you want to remove {{nom}}? This can be undone by reassigning them later.",
+
+  
+  "type_individuelle": "Single (1 bed)",
+  "type_double": "Double (2 beds)",
+  "type_triple": "Triple (3 beds)",
+  "type_quadruple": "Quadruple (4 beds)",
+  "type_quintuple": "Quintuple (5 beds)",
+  "type_sextuple": "Sextuple (6 beds)"
+
+
 
 
 

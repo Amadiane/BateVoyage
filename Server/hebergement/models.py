@@ -47,9 +47,11 @@ class Chambre(models.Model):
         DOUBLE = "double", "Double"
         TRIPLE = "triple", "Triple"
         QUADRUPLE = "quadruple", "Quadruple"
+        QUINTUPLE = "quintuple", "Quintuple"
+        SEXTUPLE = "sextuple", "Sextuple"
 
     CAPACITES = {
-        "individuelle": 1, "double": 2, "triple": 3, "quadruple": 4,
+        "individuelle": 1, "double": 2, "triple": 3, "quadruple": 4, "quintuple": 5, "sextuple": 6,
     }
 
     hotel = models.ForeignKey(Hotel, on_delete=models.CASCADE, related_name="chambres")

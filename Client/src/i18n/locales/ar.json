@@ -667,7 +667,18 @@
   
   "confirmer": "تأكيد",
   "confirmer_retrait_titre": "إزالة هذا الحاج؟",
-  "confirmer_retrait_message": "هل تريد فعلاً إزالة {{nom}}؟ يمكن التراجع عن هذا بإعادة تعيينه لاحقًا."
+  "confirmer_retrait_message": "هل تريد فعلاً إزالة {{nom}}؟ يمكن التراجع عن هذا بإعادة تعيينه لاحقًا.",
+
+
+  
+  "type_individuelle": "فردية (سرير واحد)",
+  "type_double": "مزدوجة (سريران)",
+  "type_triple": "ثلاثية (3 أسرّة)",
+  "type_quadruple": "رباعية (4 أسرّة)",
+  "type_quintuple": "خماسية (5 أسرّة)",
+  "type_sextuple": "سداسية (6 أسرّة)"
+
+
 
 
 

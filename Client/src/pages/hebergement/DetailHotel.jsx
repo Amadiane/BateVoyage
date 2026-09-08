@@ -160,6 +160,8 @@ function DetailHotel() {
                   <option value="double">{t("type_double")}</option>
                   <option value="triple">{t("type_triple")}</option>
                   <option value="quadruple">{t("type_quadruple")}</option>
+                  <option value="quintuple">{t("type_quintuple")}</option>
+                  <option value="sextuple">{t("type_sextuple")}</option>
                 </select>
               </div>
               {erreur && <p className={styles.erreur}>{erreur}</p>}

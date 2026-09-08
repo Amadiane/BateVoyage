@@ -671,7 +671,21 @@
   
   "confirmer": "Confirmer",
   "confirmer_retrait_titre": "Retirer ce pèlerin ?",
-  "confirmer_retrait_message": "Voulez-vous vraiment retirer {{nom}} ? Cette action peut être annulée en le réaffectant plus tard."
+  "confirmer_retrait_message": "Voulez-vous vraiment retirer {{nom}} ? Cette action peut être annulée en le réaffectant plus tard.",
+
+  
+  "type_quintuple": "Quintuple (5 lits)",
+  "type_sextuple": "Sextuple (6 lits)",
+
+  
+  "type_individuelle": "Individuelle (1 lit)",
+  "type_double": "Double (2 lits)",
+  "type_triple": "Triple (3 lits)",
+  "type_quadruple": "Quadruple (4 lits)",
+  "type_quintuple": "Quintuple (5 lits)",
+  "type_sextuple": "Sextuple (6 lits)"
+
+
 
 
 
