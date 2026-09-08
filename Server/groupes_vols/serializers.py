@@ -44,6 +44,7 @@ class VehiculeSerializer(serializers.ModelSerializer):
     type_vehicule_display = serializers.CharField(source="get_type_vehicule_display", read_only=True)
     occupants_actuels = serializers.IntegerField(read_only=True)
     places_restantes = serializers.SerializerMethodField()
+    groupe_lie_nom = serializers.CharField(source="groupe_lie.nom", read_only=True, default=None)
 
     class Meta:
         model = Vehicule

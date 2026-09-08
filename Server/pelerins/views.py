@@ -31,7 +31,7 @@ class PelerinFilter(django_filters.FilterSet):
     class Meta:
         model = Pelerin
         fields = ["statut", "statut_visa", "sexe", "type_voyage", "inscripteur",
-                  "programme", "groupe", "chambre", "annee", "guide"]
+                  "programme", "groupe", "chambre", "vehicule", "campement", "annee", "guide"]
 
 
 class PelerinViewSet(viewsets.ModelViewSet):

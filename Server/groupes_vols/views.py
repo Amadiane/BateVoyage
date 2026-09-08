@@ -113,7 +113,7 @@ class GroupeViewSet(viewsets.ModelViewSet):
 
 
 class VehiculeViewSet(viewsets.ModelViewSet):
-    queryset = Vehicule.objects.all()
+    queryset = Vehicule.objects.select_related("groupe_lie").all()
     serializer_class = VehiculeSerializer
     permission_classes = [EstGestionnaireLogistique]
     filterset_fields = ["type_vehicule"]

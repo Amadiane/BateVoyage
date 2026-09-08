@@ -37,3 +37,36 @@
   .boutonPrincipal { justify-content: center; width: 100%; }
   .blocGroupe { flex-direction: column; align-items: stretch; }
 }
+
+.blocGroupeLie {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background-color: #FDF2F8;
+  border: 1px solid #FBCFE8;
+  border-radius: 10px;
+  padding: 10px 14px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.texteGroupeLie {
+  flex: 1;
+  font-size: 13px;
+  color: var(--color-ink);
+}
+
+.boutonLienDetacher {
+  background: none;
+  border: 1px solid #FCA5A5;
+  color: #B91C1C;
+  padding: 7px 14px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.boutonLienDetacher:hover {
+  background-color: #FEE2E2;
+}

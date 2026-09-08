@@ -710,7 +710,14 @@
 
   
   "confirmer_retrait_titre": "إزالة هذا الحاج؟",
-  "confirmer_retrait_vehicule_message": "هل تريد فعلاً إزالة {{nom}} من هذه المركبة؟"
+  "confirmer_retrait_vehicule_message": "هل تريد فعلاً إزالة {{nom}} من هذه المركبة؟",
+
+  
+  "groupe_lie": "المجموعة المرتبطة",
+  "lier_un_groupe": "ربط مجموعة",
+  "lier_ce_groupe": "ربط هذه المجموعة",
+  "detacher_du_vehicule": "فصل"
+
 
 
 

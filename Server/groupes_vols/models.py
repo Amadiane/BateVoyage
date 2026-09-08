@@ -74,6 +74,9 @@ class Vehicule(models.Model):
     date_debut_utilisation = models.DateField(null=True, blank=True)
     date_fin_utilisation = models.DateField(null=True, blank=True)
     cout_location = models.DecimalField(max_digits=12, decimal_places=2, null=True, blank=True)
+    groupe_lie = models.ForeignKey(
+        "Groupe", on_delete=models.SET_NULL, null=True, blank=True, related_name="vehicules_lies"
+    )
     notes = models.TextField(blank=True)
     date_creation = models.DateTimeField(auto_now_add=True)
 

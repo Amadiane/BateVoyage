@@ -705,7 +705,14 @@
 
   
   "confirmer_retrait_titre": "Remove this pilgrim?",
-  "confirmer_retrait_vehicule_message": "Are you sure you want to remove {{nom}} from this vehicle?"
+  "confirmer_retrait_vehicule_message": "Are you sure you want to remove {{nom}} from this vehicle?",
+
+  
+  "groupe_lie": "Linked group",
+  "lier_un_groupe": "Link a group",
+  "lier_ce_groupe": "Link this group",
+  "detacher_du_vehicule": "Unlink"
+
 
 
 

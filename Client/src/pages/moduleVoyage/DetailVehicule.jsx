@@ -19,7 +19,7 @@ function DetailVehicule() {
   const [chargement, setChargement] = useState(true);
   const [modalOuverte, setModalOuverte] = useState(false);
   const [groupeSelectionne, setGroupeSelectionne] = useState("");
-  const [envoiGroupe, setEnvoiGroupe] = useState(false);
+  const [envoiLiaison, setEnvoiLiaison] = useState(false);
   const [erreurGroupe, setErreurGroupe] = useState("");
   const [pelerinARetirer, setPelerinARetirer] = useState(null);
 
@@ -44,19 +44,25 @@ function DetailVehicule() {
     charger();
   };
 
-  const affecterGroupeEntier = async () => {
+  const lierGroupe = async () => {
     if (!groupeSelectionne) return;
-    setEnvoiGroupe(true);
+    setEnvoiLiaison(true);
     setErreurGroupe("");
     try {
+      await vehiculeService.modifier(id, { groupe_lie: groupeSelectionne });
       await vehiculeService.affecterGroupe(id, groupeSelectionne);
       setGroupeSelectionne("");
       charger();
     } catch (err) {
       setErreurGroupe(err.response?.data?.erreur || t("erreur_enregistrement"));
     } finally {
-      setEnvoiGroupe(false);
+      setEnvoiLiaison(false);
     }
+  };
+
+  const delierGroupe = async () => {
+    await vehiculeService.modifier(id, { groupe_lie: null });
+    charger();
   };
 
   if (chargement || !vehicule) return <p className={styles.chargement}>{t("chargement")}</p>;
@@ -81,16 +87,26 @@ function DetailVehicule() {
         </button>
       </div>
 
-      <div className={styles.blocGroupe}>
-        <UsersRound size={15} className={styles.iconeGroupe} />
-        <select value={groupeSelectionne} onChange={(e) => setGroupeSelectionne(e.target.value)} className={styles.selectGroupe}>
-          <option value="">{t("affecter_groupe_entier")}</option>
-          {groupes.map((g) => <option key={g.id} value={g.id}>{g.nom} ({g.nb_pelerins})</option>)}
-        </select>
-        <button className={styles.boutonSecondaire} onClick={affecterGroupeEntier} disabled={!groupeSelectionne || envoiGroupe}>
-          {envoiGroupe ? t("enregistrement") : t("affecter")}
-        </button>
-      </div>
+      {vehicule.groupe_lie ? (
+        <div className={styles.blocGroupeLie}>
+          <UsersRound size={15} className={styles.iconeGroupe} />
+          <span className={styles.texteGroupeLie}>{t("groupe_lie")} : <strong>{vehicule.groupe_lie_nom}</strong></span>
+          <button className={styles.boutonLienDetacher} onClick={delierGroupe}>
+            {t("detacher_du_vehicule")}
+          </button>
+        </div>
+      ) : (
+        <div className={styles.blocGroupe}>
+          <UsersRound size={15} className={styles.iconeGroupe} />
+          <select value={groupeSelectionne} onChange={(e) => setGroupeSelectionne(e.target.value)} className={styles.selectGroupe}>
+            <option value="">{t("lier_un_groupe")}</option>
+            {groupes.map((g) => <option key={g.id} value={g.id}>{g.nom} ({g.nb_pelerins})</option>)}
+          </select>
+          <button className={styles.boutonSecondaire} onClick={lierGroupe} disabled={!groupeSelectionne || envoiLiaison}>
+            {envoiLiaison ? t("enregistrement") : t("lier_ce_groupe")}
+          </button>
+        </div>
+      )}
       {erreurGroupe && <p className={styles.erreurGroupe}>{erreurGroupe}</p>}
 
       <div className={styles.conteneurTableau}>

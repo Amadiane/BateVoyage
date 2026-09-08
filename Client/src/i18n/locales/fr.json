@@ -717,7 +717,13 @@
 
   
   "confirmer_retrait_titre": "Retirer ce pèlerin ?",
-  "confirmer_retrait_vehicule_message": "Voulez-vous vraiment retirer {{nom}} de ce véhicule ?"
+  "confirmer_retrait_vehicule_message": "Voulez-vous vraiment retirer {{nom}} de ce véhicule ?",
+  
+  "groupe_lie": "Groupe lié",
+  "lier_un_groupe": "Lier un groupe",
+  "lier_ce_groupe": "Lier ce groupe",
+  "detacher_du_vehicule": "Détacher"
+
 
 
 
