@@ -716,7 +716,34 @@
   "groupe_lie": "المجموعة المرتبطة",
   "lier_un_groupe": "ربط مجموعة",
   "lier_ce_groupe": "ربط هذه المجموعة",
-  "detacher_du_vehicule": "فصل"
+  "detacher_du_vehicule": "فصل",
+
+  
+  "selectionner_groupe_existant": "اختر مجموعة موجودة",
+  "lier_ce_groupe": "ربط هذه المجموعة",
+  "aucun_groupe_disponible": "لا توجد مجموعة تم إنشاؤها بعد. أنشئ واحدة من المجموعات والإشراف.",
+  "pelerins": "حجاج",
+
+  
+  "pelerin_enregistre_mais": "تم تسجيل الحاج",
+  "elements_a_completer": "لا تزال بعض العناصر بحاجة إلى إكمال:",
+  "manquant_photo": "الصورة",
+  "manquant_scan_passeport": "نسخة جواز السفر",
+  "manquant_visa": "التأشيرة لم يتم الحصول عليها بعد",
+  "manquant_certificat_medical": "الشهادة الطبية",
+  "manquant_groupe_sanguin": "فصيلة الدم",
+  "manquant_programme": "لم يتم تعيين البرنامج",
+  "manquant_paiement": "لا يوجد دفعة مسجلة",
+  "completer_maintenant": "إكمال الآن",
+  "continuer_plus_tard": "المتابعة لاحقًا",
+  "dossier_incomplet_details": "ملف غير مكتمل",
+
+  
+  "dossier": "الملف",
+  "manquants": "ناقص"
+
+
+
 
 
 

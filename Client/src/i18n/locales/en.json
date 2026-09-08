@@ -711,7 +711,34 @@
   "groupe_lie": "Linked group",
   "lier_un_groupe": "Link a group",
   "lier_ce_groupe": "Link this group",
-  "detacher_du_vehicule": "Unlink"
+  "detacher_du_vehicule": "Unlink", 
+
+  
+  "selectionner_groupe_existant": "Select an existing group",
+  "lier_ce_groupe": "Link this group",
+  "aucun_groupe_disponible": "No group created yet. Create one from Groups & Supervision.",
+  "pelerins": "pilgrims",
+
+  
+  "pelerin_enregistre_mais": "Pilgrim registered",
+  "elements_a_completer": "A few items still need to be completed:",
+  "manquant_photo": "Photo",
+  "manquant_scan_passeport": "Passport scan",
+  "manquant_visa": "Visa not yet obtained",
+  "manquant_certificat_medical": "Medical certificate",
+  "manquant_groupe_sanguin": "Blood type",
+  "manquant_programme": "Program not assigned",
+  "manquant_paiement": "No payment recorded",
+  "completer_maintenant": "Complete now",
+  "continuer_plus_tard": "Continue later",
+  "dossier_incomplet_details": "Incomplete file",
+
+  
+  "dossier": "File",
+  "manquants": "missing"
+
+
+
 
 
 

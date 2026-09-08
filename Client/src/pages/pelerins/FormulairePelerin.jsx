@@ -77,6 +77,7 @@ function FormulairePelerin() {
   const [erreur, setErreur] = useState("");
   const [champsManquants, setChampsManquants] = useState([]);
   const [chargementInitial, setChargementInitial] = useState(modeEdition);
+  const [pelerinEnregistre, setPelerinEnregistre] = useState(null);
 
   useEffect(() => {
     if (modeEdition) {
@@ -129,6 +130,13 @@ function FormulairePelerin() {
     setEtape((e) => Math.max(e - 1, 0));
   };
 
+  const cheminRetour = () =>
+    typeVoyageFixe === "pelerinage" ? "/hajj/pelerins/liste" : typeVoyageFixe === "oumra" ? "/oumra/pelerins/liste" : "/pelerins";
+
+  const continuerMalgreManquants = () => {
+    navigate(cheminRetour());
+  };
+
   const handleSubmit = async () => {
     if (!validerEtape(etape)) return;
 
@@ -154,12 +162,18 @@ function FormulairePelerin() {
         if (fichier) formData.append(champ, fichier);
       });
 
+      let resultat;
       if (modeEdition) {
-        await pelerinService.modifier(id, formData);
+        resultat = await pelerinService.modifier(id, formData);
       } else {
-        await pelerinService.creer(formData);
+        resultat = await pelerinService.creer(formData);
       }
-      navigate(typeVoyageFixe === "pelerinage" ? "/hajj/pelerins/liste" : typeVoyageFixe === "oumra" ? "/oumra/pelerins/liste" : "/pelerins");
+
+      if (resultat.data.elements_manquants && resultat.data.elements_manquants.length > 0) {
+        setPelerinEnregistre(resultat.data);
+      } else {
+        navigate(cheminRetour());
+      }
     } catch (err) {
       const donneesErreur = err.response?.data;
       if (donneesErreur && typeof donneesErreur === "object") {
@@ -451,6 +465,29 @@ function FormulairePelerin() {
           </div>
         </div>
       </div>
+
+      {pelerinEnregistre && (
+        <div className={styles.superpositionAlerte} onClick={continuerMalgreManquants}>
+          <div className={styles.panneauAlerte} onClick={(e) => e.stopPropagation()}>
+            <div className={styles.iconeAlerteCercle}>⚠️</div>
+            <h2 className={styles.titreAlerte}>{t("pelerin_enregistre_mais")}</h2>
+            <p className={styles.sousTitreAlerte}>{t("elements_a_completer")}</p>
+            <ul className={styles.listeManquants}>
+              {pelerinEnregistre.elements_manquants.map((el) => (
+                <li key={el} className={styles.itemManquant}>{t(`manquant_${el}`)}</li>
+              ))}
+            </ul>
+            <div className={styles.actionsAlerte}>
+              <button className={styles.boutonCompleterMaintenant} onClick={() => setPelerinEnregistre(null)}>
+                {t("completer_maintenant")}
+              </button>
+              <button className={styles.boutonContinuerPlusTard} onClick={continuerMalgreManquants}>
+                {t("continuer_plus_tard")}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

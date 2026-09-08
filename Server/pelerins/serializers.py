@@ -18,11 +18,30 @@ class PelerinSerializer(serializers.ModelSerializer):
     groupe_nom = serializers.CharField(source="groupe.nom", read_only=True)
     chambre_info = serializers.SerializerMethodField()
     jours_avant_expiration_passeport = serializers.IntegerField(read_only=True)
+    elements_manquants = serializers.SerializerMethodField()
+
 
     class Meta:
         model = Pelerin
         fields = "__all__"
         read_only_fields = ["numero_id", "date_inscription"]
+    
+    def get_elements_manquants(self, obj):
+        manquants = []
+        if not obj.photo:
+            manquants.append("photo")
+        if not obj.scan_passeport:
+            manquants.append("scan_passeport")
+        if obj.statut_visa in ["non_demande", "en_cours"]:
+            manquants.append("visa")
+        if not obj.scan_certificat_medical:
+            manquants.append("certificat_medical")
+        if not obj.groupe_sanguin:
+            manquants.append("groupe_sanguin")
+        if not obj.montant_total_verse or float(obj.montant_total_verse) == 0:
+            manquants.append("paiement")
+        return manquants
+
 
     
 
@@ -43,3 +62,7 @@ class PelerinSerializer(serializers.ModelSerializer):
         if not obj.chambre:
             return None
         return f"{obj.chambre.hotel.nom} — Ch. {obj.chambre.numero}"
+
+      
+
+    

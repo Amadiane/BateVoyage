@@ -722,7 +722,34 @@
   "groupe_lie": "Groupe lié",
   "lier_un_groupe": "Lier un groupe",
   "lier_ce_groupe": "Lier ce groupe",
-  "detacher_du_vehicule": "Détacher"
+  "detacher_du_vehicule": "Détacher",
+
+  
+  "selectionner_groupe_existant": "Sélectionner un groupe existant",
+  "lier_ce_groupe": "Lier ce groupe",
+  "aucun_groupe_disponible": "Aucun groupe créé pour l'instant. Créez-en un depuis Groupes & Encadrement.",
+  "pelerins": "pèlerins",
+
+  
+  "pelerin_enregistre_mais": "Pèlerin enregistré",
+  "elements_a_completer": "Certains éléments restent à compléter :",
+  "manquant_photo": "Photo",
+  "manquant_scan_passeport": "Scan du passeport",
+  "manquant_visa": "Visa non encore obtenu",
+  "manquant_certificat_medical": "Certificat médical",
+  "manquant_groupe_sanguin": "Groupe sanguin",
+  "manquant_programme": "Programme non affecté",
+  "manquant_paiement": "Aucun paiement enregistré",
+  "completer_maintenant": "Compléter maintenant",
+  "continuer_plus_tard": "Continuer plus tard",
+  "dossier_incomplet_details": "Dossier incomplet",
+
+  
+  "dossier": "Dossier",
+  "manquants": "manquant(s)"
+
+
+
 
 
 

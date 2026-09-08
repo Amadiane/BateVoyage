@@ -60,6 +60,11 @@ function PageVisaDocModule({ typeVoyage, basePath }) {
         </div>
         <p className={styles.nomCartePelerin}>{p.prenom} {p.nom}</p>
         <p className={styles.passeportCartePelerin}>{p.numero_passeport}</p>
+        {p.elements_manquants && p.elements_manquants.length > 0 && (
+          <div className={styles.badgeDossierIncomplet} title={p.elements_manquants.map((el) => t(`manquant_${el}`)).join(", ")}>
+            📋 {p.elements_manquants.length} {t("manquants")}
+          </div>
+        )}
         {alerte && (
           <div className={alerte.classe}>
             <AlertTriangle size={11} /> {alerte.texte}
@@ -139,11 +144,12 @@ function PageVisaDocModule({ typeVoyage, basePath }) {
                 <th>{t("date_expiration_passeport")}</th>
                 <th>{t("statut_visa_label")}</th>
                 <th>{t("biometrie")}</th>
+                <th>{t("dossier")}</th>
                 <th></th>
               </tr>
             </thead>
             <tbody>
-              {pelerinsAffiches.length === 0 && <tr><td colSpan={7} className={styles.etatVide}>{t("aucun_pelerin")}</td></tr>}
+              {pelerinsAffiches.length === 0 && <tr><td colSpan={8} className={styles.etatVide}>{t("aucun_pelerin")}</td></tr>}
               {pelerinsAffiches.map((p) => {
                 const alerte = alerteExpiration(p.jours_avant_expiration_passeport);
                 return (
@@ -164,6 +170,15 @@ function PageVisaDocModule({ typeVoyage, basePath }) {
                       <span className={p.biometrie_effectuee ? styles.badgeVert : styles.badgeGris}>
                         {p.biometrie_effectuee ? t("effectuee") : t("non_effectuee")}
                       </span>
+                    </td>
+                    <td>
+                      {p.elements_manquants && p.elements_manquants.length > 0 ? (
+                        <span className={styles.badgeIncomplet} title={p.elements_manquants.map((el) => t(`manquant_${el}`)).join(", ")}>
+                          ⚠️ {p.elements_manquants.length}
+                        </span>
+                      ) : (
+                        <span className={styles.badgeComplet}>✓</span>
+                      )}
                     </td>
                     <td className={styles.cellActions}>
                       {p.scan_visa && (

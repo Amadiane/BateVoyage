@@ -140,15 +140,16 @@ function ListePelerins({ typeVoyageFixe, titreCle, retourPath }) {
               <th>{t("visa")}</th>
               <th>{t("statut_paiement_label")}</th>
               <th>{t("inscripteur")}</th>
+              <th>{t("dossier")}</th>
               <th></th>
             </tr>
           </thead>
           <tbody>
             {chargement && (
-              <tr><td colSpan={9} className={styles.etatVide}>{t("chargement")}</td></tr>
+              <tr><td colSpan={10} className={styles.etatVide}>{t("chargement")}</td></tr>
             )}
             {!chargement && pelerinsAffiches.length === 0 && (
-              <tr><td colSpan={9} className={styles.etatVide}>{t("aucun_pelerin")}</td></tr>
+              <tr><td colSpan={10} className={styles.etatVide}>{t("aucun_pelerin")}</td></tr>
             )}
             {!chargement && pelerinsAffiches.map((p) => (
               <tr key={p.id} className={styles.ligneCliquable} onClick={() => navigate(`/pelerins/${p.id}`)}>
@@ -174,6 +175,15 @@ function ListePelerins({ typeVoyageFixe, titreCle, retourPath }) {
                 </td>
                 <td><BadgeStatutPaiement statut={p.statut_paiement} /></td>
                 <td className={styles.cellInscripteur}>{p.inscripteur || "—"}</td>
+                <td>
+                  {p.elements_manquants && p.elements_manquants.length > 0 ? (
+                    <span className={styles.badgeIncomplet} title={p.elements_manquants.map((el) => t(`manquant_${el}`)).join(", ")}>
+                      ⚠️ {p.elements_manquants.length}
+                    </span>
+                  ) : (
+                    <span className={styles.badgeComplet}>✓</span>
+                  )}
+                </td>
                 <td className={styles.cellActions} onClick={(e) => e.stopPropagation()}>
                   <button onClick={() => navigate(`/pelerins/${p.id}/modifier`)} title={t("modifier")}>✎</button>
                   <button onClick={(e) => telechargerFiche(p, e)} title={t("telecharger_fiche")}>⬇</button>
