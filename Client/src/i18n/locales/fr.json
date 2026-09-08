@@ -683,7 +683,43 @@
   "type_triple": "Triple (3 lits)",
   "type_quadruple": "Quadruple (4 lits)",
   "type_quintuple": "Quintuple (5 lits)",
-  "type_sextuple": "Sextuple (6 lits)"
+  "type_sextuple": "Sextuple (6 lits)",
+
+  
+  "sous_module_transport": "Transport & Logistique",
+  "nouveau_vehicule": "Nouveau véhicule",
+  "modifier_vehicule": "Modifier le véhicule",
+  "aucun_vehicule": "Aucun véhicule enregistré",
+  "confirmer_suppression_vehicule": "Confirmer la suppression de ce véhicule ?",
+  "numero_bus": "Numéro de bus",
+  "numero_bus_deja_utilise": "Ce numéro de bus est déjà utilisé.",
+  "type_vehicule_label": "Type de véhicule",
+  "type_bus": "Bus",
+  "type_minibus": "Minibus",
+  "type_voiture": "Voiture",
+  "type_autre": "Autre",
+  "tous_types_vehicule": "Tous les véhicules",
+  "capacite": "Capacité",
+  "plaque_immatriculation": "Plaque d'immatriculation",
+  "chauffeur": "Chauffeur",
+  "saisir_nom_chauffeur": "Saisir le nom du chauffeur",
+  "telephone_chauffeur": "Téléphone du chauffeur",
+  "trajet": "Trajet",
+  "date_debut_utilisation": "Début d'utilisation",
+  "date_fin_utilisation": "Fin d'utilisation",
+  "cout_location": "Coût de location",
+  "aucun_pelerin_dans_vehicule": "Aucun pèlerin dans ce véhicule",
+  "confirmer_retrait_vehicule": "Retirer ce pèlerin du véhicule ?",
+  "retirer_du_vehicule": "Retirer du véhicule",
+  "ajouter_pelerins_vehicule": "Ajouter des pèlerins au véhicule",
+  "affecter_groupe_entier": "Affecter un groupe entier",
+  "affecter": "Affecter",
+
+  
+  "confirmer_retrait_titre": "Retirer ce pèlerin ?",
+  "confirmer_retrait_vehicule_message": "Voulez-vous vraiment retirer {{nom}} de ce véhicule ?"
+
+
 
 
 

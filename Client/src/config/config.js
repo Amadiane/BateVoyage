@@ -86,6 +86,9 @@ const CONFIG = {
   API_CAMPEMENTS: `${BASE_URL}/api/hebergement/campements/`,
   API_CAMPEMENT_DETAIL: (id) => `${BASE_URL}/api/hebergement/campements/${id}/`,
 
+  API_VEHICULES: `${BASE_URL}/api/groupes-vols/vehicules/`,
+  API_VEHICULE_DETAIL: (id) => `${BASE_URL}/api/groupes-vols/vehicules/${id}/`,
+
   // --- Formules / Programmes ---
   API_PROGRAMMES: `${BASE_URL}/api/formules/programmes/`,
 

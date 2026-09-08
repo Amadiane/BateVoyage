@@ -12,8 +12,8 @@ from pelerins.models import Pelerin
 from pelerins.pdf_utils import link_callback
 from activite.serializers import EntreeJournalDetailSerializer
 from utilisateurs.permissions import EstGestionnaireLogistique
-from .models import Vol, Groupe
-from .serializers import VolSerializer, GroupeSerializer
+from .models import Vol, Groupe, Vehicule
+from .serializers import VolSerializer, GroupeSerializer, VehiculeSerializer
 
 
 class VolViewSet(viewsets.ModelViewSet):
@@ -110,4 +110,68 @@ class GroupeViewSet(viewsets.ModelViewSet):
         with set_actor(request.user):
             Pelerin.objects.filter(id=pelerin_id, groupe_id=pk).update(groupe=None)
         return Response({"detail": "Pèlerin retiré du groupe."})
+
+
+class VehiculeViewSet(viewsets.ModelViewSet):
+    queryset = Vehicule.objects.all()
+    serializer_class = VehiculeSerializer
+    permission_classes = [EstGestionnaireLogistique]
+    filterset_fields = ["type_vehicule"]
+
+    def perform_create(self, serializer):
+        with set_actor(self.request.user):
+            serializer.save()
+
+    def perform_update(self, serializer):
+        with set_actor(self.request.user):
+            serializer.save()
+
+    def perform_destroy(self, instance):
+        with set_actor(self.request.user):
+            instance.delete()
+
+    @action(detail=True, methods=["post"], url_path="affecter-pelerins")
+    def affecter_pelerins(self, request, pk=None):
+        from pelerins.models import Pelerin
+        vehicule = self.get_object()
+        ids = request.data.get("pelerin_ids", [])
+
+        if vehicule.capacite:
+            places_dispo = vehicule.capacite - vehicule.occupants_actuels
+            if len(ids) > places_dispo:
+                return Response(
+                    {"erreur": f"Capacité insuffisante : {places_dispo} place(s) restante(s), {len(ids)} sélectionné(s)."},
+                    status=400,
+                )
+
+        with set_actor(request.user):
+            Pelerin.objects.filter(id__in=ids).update(vehicule=vehicule)
+        return Response({"detail": f"{len(ids)} pèlerin(s) affecté(s) au véhicule."})
+
+    @action(detail=True, methods=["post"], url_path="affecter-groupe")
+    def affecter_groupe(self, request, pk=None):
+        from pelerins.models import Pelerin
+        vehicule = self.get_object()
+        groupe_id = request.data.get("groupe_id")
+        pelerins_groupe = Pelerin.objects.filter(groupe_id=groupe_id)
+
+        if vehicule.capacite:
+            places_dispo = vehicule.capacite - vehicule.occupants_actuels
+            if pelerins_groupe.count() > places_dispo:
+                return Response(
+                    {"erreur": f"Capacité insuffisante : {places_dispo} place(s) restante(s), le groupe compte {pelerins_groupe.count()} pèlerin(s)."},
+                    status=400,
+                )
+
+        with set_actor(request.user):
+            pelerins_groupe.update(vehicule=vehicule)
+        return Response({"detail": f"Groupe affecté au véhicule ({pelerins_groupe.count()} pèlerin(s))."})
+
+    @action(detail=True, methods=["post"], url_path="retirer-pelerin")
+    def retirer_pelerin(self, request, pk=None):
+        from pelerins.models import Pelerin
+        pelerin_id = request.data.get("pelerin_id")
+        with set_actor(request.user):
+            Pelerin.objects.filter(id=pelerin_id, vehicule_id=pk).update(vehicule=None)
+        return Response({"detail": "Pèlerin retiré du véhicule."})
     

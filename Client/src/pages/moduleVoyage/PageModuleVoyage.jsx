@@ -10,7 +10,7 @@ const SOUS_MODULES = [
   { cle: "vols", icone: Plane, actif: true, couleur: "violet" },
   { cle: "groupes", icone: UsersRound, actif: true, couleur: "cyan" },
   { cle: "hebergement", icone: Hotel, actif: true, couleur: "vert" },
-  { cle: "transport", icone: Bus, actif: false, couleur: "rose" },
+  { cle: "transport", icone: Bus, actif: true, couleur: "rose" },
   { cle: "finances", icone: Wallet, actif: false, couleur: "rouge" },
 ];
 

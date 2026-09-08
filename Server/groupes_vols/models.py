@@ -55,3 +55,42 @@ class Groupe(models.Model):
 
     def __str__(self):
         return self.nom
+
+
+class Vehicule(models.Model):
+    class TypeVehicule(models.TextChoices):
+        BUS = "bus", "Bus"
+        MINIBUS = "minibus", "Minibus"
+        VOITURE = "voiture", "Voiture"
+        AUTRE = "autre", "Autre"
+
+    numero_bus = models.CharField(max_length=20, unique=True, help_text="Numéro ou nom du bus (ex: Bus 01)")
+    type_vehicule = models.CharField(max_length=15, choices=TypeVehicule.choices, default=TypeVehicule.BUS)
+    plaque_immatriculation = models.CharField(max_length=30, blank=True)
+    capacite = models.PositiveIntegerField(null=True, blank=True)
+    chauffeur = models.CharField(max_length=150, blank=True, help_text="Nom du chauffeur (saisie libre)")
+    telephone_chauffeur = models.CharField(max_length=20, blank=True)
+    trajet = models.CharField(max_length=255, blank=True, help_text="Ex: Hôtel Makkah → Haram")
+    date_debut_utilisation = models.DateField(null=True, blank=True)
+    date_fin_utilisation = models.DateField(null=True, blank=True)
+    cout_location = models.DecimalField(max_digits=12, decimal_places=2, null=True, blank=True)
+    notes = models.TextField(blank=True)
+    date_creation = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["numero_bus"]
+        verbose_name = "Véhicule"
+        verbose_name_plural = "Véhicules"
+
+    def __str__(self):
+        return f"{self.numero_bus} ({self.get_type_vehicule_display()})"
+
+    @property
+    def occupants_actuels(self):
+        return self.pelerins.count()
+
+    @property
+    def places_restantes(self):
+        if not self.capacite:
+            return None
+        return self.capacite - self.occupants_actuels

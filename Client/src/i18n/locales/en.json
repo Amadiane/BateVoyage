@@ -671,7 +671,43 @@
   "type_triple": "Triple (3 beds)",
   "type_quadruple": "Quadruple (4 beds)",
   "type_quintuple": "Quintuple (5 beds)",
-  "type_sextuple": "Sextuple (6 beds)"
+  "type_sextuple": "Sextuple (6 beds)", 
+
+  
+  "sous_module_transport": "Transport & Logistics",
+  "nouveau_vehicule": "New vehicle",
+  "modifier_vehicule": "Edit vehicle",
+  "aucun_vehicule": "No vehicle registered",
+  "confirmer_suppression_vehicule": "Confirm deletion of this vehicle?",
+  "numero_bus": "Bus number",
+  "numero_bus_deja_utilise": "This bus number is already in use.",
+  "type_vehicule_label": "Vehicle type",
+  "type_bus": "Bus",
+  "type_minibus": "Minibus",
+  "type_voiture": "Car",
+  "type_autre": "Other",
+  "tous_types_vehicule": "All vehicles",
+  "capacite": "Capacity",
+  "plaque_immatriculation": "License plate",
+  "chauffeur": "Driver",
+  "saisir_nom_chauffeur": "Enter the driver's name",
+  "telephone_chauffeur": "Driver's phone",
+  "trajet": "Route",
+  "date_debut_utilisation": "Start of use",
+  "date_fin_utilisation": "End of use",
+  "cout_location": "Rental cost",
+  "aucun_pelerin_dans_vehicule": "No pilgrim in this vehicle",
+  "confirmer_retrait_vehicule": "Remove this pilgrim from the vehicle?",
+  "retirer_du_vehicule": "Remove from vehicle",
+  "ajouter_pelerins_vehicule": "Add pilgrims to vehicle",
+  "affecter_groupe_entier": "Assign an entire group",
+  "affecter": "Assign",
+
+  
+  "confirmer_retrait_titre": "Remove this pilgrim?",
+  "confirmer_retrait_vehicule_message": "Are you sure you want to remove {{nom}} from this vehicle?"
+
+
 
 
 

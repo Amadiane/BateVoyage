@@ -66,6 +66,9 @@ class Pelerin(models.Model):
     campement = models.ForeignKey(
         "hebergement.Campement", on_delete=models.SET_NULL, null=True, blank=True, related_name="pelerins"
     )
+    vehicule = models.ForeignKey(
+        "groupes_vols.Vehicule", on_delete=models.SET_NULL, null=True, blank=True, related_name="pelerins"
+    )
 
     # ---------- 5,8,9. Passeport ----------
     numero_passeport = models.CharField(max_length=30)

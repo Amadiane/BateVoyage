@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Vol, Groupe
+from .models import Vol, Groupe, Vehicule
 from pelerins.models import Pelerin
 
 
@@ -39,3 +39,15 @@ class VolSerializer(serializers.ModelSerializer):
 
     def get_nb_pelerins_affectes(self, obj):
         return Pelerin.objects.filter(groupe__vol_aller=obj).count() + Pelerin.objects.filter(groupe__vol_retour=obj).count()
+
+class VehiculeSerializer(serializers.ModelSerializer):
+    type_vehicule_display = serializers.CharField(source="get_type_vehicule_display", read_only=True)
+    occupants_actuels = serializers.IntegerField(read_only=True)
+    places_restantes = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Vehicule
+        fields = "__all__"
+
+    def get_places_restantes(self, obj):
+        return obj.places_restantes

@@ -676,7 +676,43 @@
   "type_triple": "ثلاثية (3 أسرّة)",
   "type_quadruple": "رباعية (4 أسرّة)",
   "type_quintuple": "خماسية (5 أسرّة)",
-  "type_sextuple": "سداسية (6 أسرّة)"
+  "type_sextuple": "سداسية (6 أسرّة)",
+
+  
+  "sous_module_transport": "النقل واللوجستيات",
+  "nouveau_vehicule": "مركبة جديدة",
+  "modifier_vehicule": "تعديل المركبة",
+  "aucun_vehicule": "لا توجد مركبة مسجلة",
+  "confirmer_suppression_vehicule": "تأكيد حذف هذه المركبة؟",
+  "numero_bus": "رقم الحافلة",
+  "numero_bus_deja_utilise": "رقم الحافلة هذا مستخدم بالفعل.",
+  "type_vehicule_label": "نوع المركبة",
+  "type_bus": "حافلة",
+  "type_minibus": "حافلة صغيرة",
+  "type_voiture": "سيارة",
+  "type_autre": "أخرى",
+  "tous_types_vehicule": "جميع المركبات",
+  "capacite": "السعة",
+  "plaque_immatriculation": "رقم اللوحة",
+  "chauffeur": "السائق",
+  "saisir_nom_chauffeur": "أدخل اسم السائق",
+  "telephone_chauffeur": "هاتف السائق",
+  "trajet": "المسار",
+  "date_debut_utilisation": "بداية الاستخدام",
+  "date_fin_utilisation": "نهاية الاستخدام",
+  "cout_location": "تكلفة الإيجار",
+  "aucun_pelerin_dans_vehicule": "لا يوجد حاج في هذه المركبة",
+  "confirmer_retrait_vehicule": "إزالة هذا الحاج من المركبة؟",
+  "retirer_du_vehicule": "إزالة من المركبة",
+  "ajouter_pelerins_vehicule": "إضافة حجاج إلى المركبة",
+  "affecter_groupe_entier": "تعيين مجموعة كاملة",
+  "affecter": "تعيين",
+
+  
+  "confirmer_retrait_titre": "إزالة هذا الحاج؟",
+  "confirmer_retrait_vehicule_message": "هل تريد فعلاً إزالة {{nom}} من هذه المركبة؟"
+
+
 
 
 
