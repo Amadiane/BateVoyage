@@ -20,7 +20,7 @@ class TableauBordDocumentsView(APIView):
         aujourdhui = date.today()
         seuil = aujourdhui + timedelta(days=SEUIL_EXPIRATION_JOURS)
 
-        pelerins = Pelerin.objects.exclude(statut=Pelerin.Statut.CLOTURE).exclude(programme__est_archive=True).select_related("inscripteur")
+        pelerins = Pelerin.objects.select_related("programme", "groupe", "chambre").all()
 
         dossiers_incomplets = []
         passeports_expirant = []
