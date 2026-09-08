@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { UserPlus, UserMinus, UsersRound } from "lucide-react";
+import { UserPlus, UserMinus } from "lucide-react";
 import { vehiculeService } from "../../services/vehiculeService";
 import { pelerinService } from "../../services/pelerinService";
 import { groupeService } from "../../services/groupeService";
@@ -15,10 +15,10 @@ function DetailVehicule() {
   const { t } = useTranslation();
   const [vehicule, setVehicule] = useState(null);
   const [pelerins, setPelerins] = useState([]);
-  const [groupes, setGroupes] = useState([]);
+  const [tousGroupes, setTousGroupes] = useState([]);
+  const [groupeSelectionne, setGroupeSelectionne] = useState("");
   const [chargement, setChargement] = useState(true);
   const [modalOuverte, setModalOuverte] = useState(false);
-  const [groupeSelectionne, setGroupeSelectionne] = useState("");
   const [envoiLiaison, setEnvoiLiaison] = useState(false);
   const [erreurGroupe, setErreurGroupe] = useState("");
   const [pelerinARetirer, setPelerinARetirer] = useState(null);
@@ -27,29 +27,23 @@ function DetailVehicule() {
     setChargement(true);
     const { data: vehiculeData } = await vehiculeService.obtenir(id);
     setVehicule(vehiculeData);
+
     const { data: pelerinsData } = await pelerinService.lister({ vehicule: id });
     setPelerins(pelerinsData);
+
     const { data: groupesData } = await groupeService.lister();
-    setGroupes(groupesData);
+    setTousGroupes(groupesData);
+
     setChargement(false);
   };
 
   useEffect(() => { charger(); }, [id]);
-
-  const demanderRetrait = (pelerin) => setPelerinARetirer(pelerin);
-
-  const confirmerRetrait = async () => {
-    await vehiculeService.retirerPelerin(id, pelerinARetirer.id);
-    setPelerinARetirer(null);
-    charger();
-  };
 
   const lierGroupe = async () => {
     if (!groupeSelectionne) return;
     setEnvoiLiaison(true);
     setErreurGroupe("");
     try {
-      await vehiculeService.modifier(id, { groupe_lie: groupeSelectionne });
       await vehiculeService.affecterGroupe(id, groupeSelectionne);
       setGroupeSelectionne("");
       charger();
@@ -60,8 +54,11 @@ function DetailVehicule() {
     }
   };
 
-  const delierGroupe = async () => {
-    await vehiculeService.modifier(id, { groupe_lie: null });
+  const demanderRetrait = (pelerin) => setPelerinARetirer(pelerin);
+
+  const confirmerRetrait = async () => {
+    await vehiculeService.retirerPelerin(id, pelerinARetirer.id);
+    setPelerinARetirer(null);
     charger();
   };
 
@@ -87,27 +84,21 @@ function DetailVehicule() {
         </button>
       </div>
 
-      {vehicule.groupe_lie ? (
-        <div className={styles.blocGroupeLie}>
-          <UsersRound size={15} className={styles.iconeGroupe} />
-          <span className={styles.texteGroupeLie}>{t("groupe_lie")} : <strong>{vehicule.groupe_lie_nom}</strong></span>
-          <button className={styles.boutonLienDetacher} onClick={delierGroupe}>
-            {t("detacher_du_vehicule")}
-          </button>
-        </div>
-      ) : (
-        <div className={styles.blocGroupe}>
-          <UsersRound size={15} className={styles.iconeGroupe} />
-          <select value={groupeSelectionne} onChange={(e) => setGroupeSelectionne(e.target.value)} className={styles.selectGroupe}>
-            <option value="">{t("lier_un_groupe")}</option>
-            {groupes.map((g) => <option key={g.id} value={g.id}>{g.nom} ({g.nb_pelerins})</option>)}
-          </select>
-          <button className={styles.boutonSecondaire} onClick={lierGroupe} disabled={!groupeSelectionne || envoiLiaison}>
-            {envoiLiaison ? t("enregistrement") : t("lier_ce_groupe")}
-          </button>
-        </div>
-      )}
+      <div className={styles.blocGroupe}>
+        <select value={groupeSelectionne} onChange={(e) => setGroupeSelectionne(e.target.value)} className={styles.selectGroupe}>
+          <option value="">{t("selectionner_groupe_existant")}</option>
+          {tousGroupes.map((g) => (
+            <option key={g.id} value={g.id}>{g.nom} ({g.nb_pelerins} {t("pelerins")})</option>
+          ))}
+        </select>
+        <button className={styles.boutonSecondaire} onClick={lierGroupe} disabled={!groupeSelectionne || envoiLiaison}>
+          {envoiLiaison ? t("enregistrement") : t("lier_ce_groupe")}
+        </button>
+      </div>
       {erreurGroupe && <p className={styles.erreurGroupe}>{erreurGroupe}</p>}
+      {tousGroupes.length === 0 && !chargement && (
+        <p className={styles.avertissementVide}>{t("aucun_groupe_disponible")}</p>
+      )}
 
       <div className={styles.conteneurTableau}>
         <table className={styles.tableau}>
