@@ -740,7 +740,32 @@
 
   
   "dossier": "الملف",
-  "manquants": "ناقص"
+  "manquants": "ناقص",
+
+  
+  "decaissements": "المصروفات",
+  "nouveau_decaissement": "مصروف جديد",
+  "modifier_decaissement": "تعديل المصروف",
+  "pelerin_concerne": "الحاج المعني",
+  "toutes_devises": "جميع العملات",
+  "precision_libelle": "توضيح",
+  "ex_periode_concernee": "مثال: الفترة المعنية",
+  "ajouter_autre_charge": "إضافة مصروف آخر",
+  "nom_nouvelle_charge": "اسم المصروف الجديد",
+  "optionnel": "اختياري",
+  "confirmer_suppression_titre": "تأكيد الحذف",
+  "confirmer_suppression_message": "لا يمكن التراجع عن هذا الإجراء.",
+
+  
+  "frais_generaux": "المصاريف العامة",
+  "total": "الإجمالي",
+  "modifier_taux": "تعديل سعر الصرف",
+  "taux_actuels": "أسعار الصرف الحالية",
+  "taux_usd": "سعر الدولار",
+  "taux_sar": "سعر الريال",
+  "historique_decaissements": "سجل المصروفات"
+
+
 
 
 

@@ -11,7 +11,7 @@ const SOUS_MODULES = [
   { cle: "groupes", icone: UsersRound, actif: true, couleur: "cyan" },
   { cle: "hebergement", icone: Hotel, actif: true, couleur: "vert" },
   { cle: "transport", icone: Bus, actif: true, couleur: "rose" },
-  { cle: "finances", icone: Wallet, actif: false, couleur: "rouge" },
+  { cle: "finances", icone: Wallet, actif: true, couleur: "rouge" },
 ];
 
 function PageModuleVoyage({ typeVoyage, basePath, titreCle }) {

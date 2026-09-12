@@ -94,3 +94,28 @@
 
 .activite { background: none; color: #6B7280; }
 .activiteActive { background-color: #fff; color: var(--color-brand-dark); box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+
+.retour { background: none; border: none; color: #6B7280; font-size: 13px; cursor: pointer; padding: 0; margin-bottom: 16px; }
+.retour:hover { color: var(--color-brand); }
+
+.grilleBoutons { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; margin-top: 20px; }
+
+.carteBouton {
+  display: flex; flex-direction: column; align-items: center; gap: 14px;
+  padding: 32px 18px; border: 2px solid var(--color-border); border-radius: 16px;
+  background-color: #fff; cursor: pointer; transition: box-shadow 0.15s ease, transform 0.15s ease;
+}
+.carteBouton:hover { box-shadow: 0 8px 20px rgba(11,14,20,0.08); transform: translateY(-2px); }
+
+.bordure_rouge { border-color: #FCA5A5; }
+.bordure_orange { border-color: #FDBA74; }
+.bordure_violet { border-color: #C4B5FD; }
+.bordure_bleu { border-color: #93C5FD; }
+
+.iconeCercle { width: 52px; height: 52px; border-radius: 14px; display: flex; align-items: center; justify-content: center; }
+.cercle_rouge { background-color: #FEE2E2; color: #991B1B; }
+.cercle_orange { background-color: #FFEDD5; color: #9A3412; }
+.cercle_violet { background-color: #F3E8FF; color: #6B21A8; }
+.cercle_bleu { background-color: #DBEAFE; color: #1E40AF; }
+
+.libelleBouton { font-size: 14px; font-weight: 700; color: var(--color-ink); text-align: center; }

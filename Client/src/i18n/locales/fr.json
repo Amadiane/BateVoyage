@@ -746,7 +746,32 @@
 
   
   "dossier": "Dossier",
-  "manquants": "manquant(s)"
+  "manquants": "manquant(s)",
+
+  
+  "decaissements": "Décaissements",
+  "nouveau_decaissement": "Nouveau décaissement",
+  "modifier_decaissement": "Modifier le décaissement",
+  "pelerin_concerne": "Pèlerin concerné",
+  "toutes_devises": "Toutes les devises",
+  "precision_libelle": "Précision",
+  "ex_periode_concernee": "Ex: période concernée",
+  "ajouter_autre_charge": "Ajouter une autre charge",
+  "nom_nouvelle_charge": "Nom de la nouvelle charge",
+  "optionnel": "optionnel",
+  "confirmer_suppression_titre": "Confirmer la suppression",
+  "confirmer_suppression_message": "Cette action est irréversible.",
+
+  
+  "frais_generaux": "Frais généraux",
+  "total": "Total",
+  "modifier_taux": "Modifier le taux",
+  "taux_actuels": "Taux actuels",
+  "taux_usd": "Taux USD",
+  "taux_sar": "Taux SAR",
+  "historique_decaissements": "Historique des décaissements"
+
+
 
 
 

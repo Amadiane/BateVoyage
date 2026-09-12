@@ -89,6 +89,11 @@ const CONFIG = {
   API_VEHICULES: `${BASE_URL}/api/groupes-vols/vehicules/`,
   API_VEHICULE_DETAIL: (id) => `${BASE_URL}/api/groupes-vols/vehicules/${id}/`,
 
+  API_CATEGORIES_DECAISSEMENT: `${BASE_URL}/api/comptabilite/categories-decaissement/`,
+  API_DECAISSEMENTS: `${BASE_URL}/api/comptabilite/decaissements/`,
+  API_DECAISSEMENT_DETAIL: (id) => `${BASE_URL}/api/comptabilite/decaissements/${id}/`,
+  API_TAUX_CHANGE: `${BASE_URL}/api/comptabilite/taux-change/`,
+
   // --- Formules / Programmes ---
   API_PROGRAMMES: `${BASE_URL}/api/formules/programmes/`,
 

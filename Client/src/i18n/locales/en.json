@@ -735,7 +735,32 @@
 
   
   "dossier": "File",
-  "manquants": "missing"
+  "manquants": "missing",
+
+  
+  "decaissements": "Expenses/Disbursements",
+  "nouveau_decaissement": "New disbursement",
+  "modifier_decaissement": "Edit disbursement",
+  "pelerin_concerne": "Related pilgrim",
+  "toutes_devises": "All currencies",
+  "precision_libelle": "Note",
+  "ex_periode_concernee": "E.g. period covered",
+  "ajouter_autre_charge": "Add another expense",
+  "nom_nouvelle_charge": "New expense name",
+  "optionnel": "optional",
+  "confirmer_suppression_titre": "Confirm deletion",
+  "confirmer_suppression_message": "This action cannot be undone.",
+
+  
+  "frais_generaux": "General expenses",
+  "total": "Total",
+  "modifier_taux": "Edit exchange rate",
+  "taux_actuels": "Current rates",
+  "taux_usd": "USD rate",
+  "taux_sar": "SAR rate",
+  "historique_decaissements": "Disbursement history"
+
+
 
 
 

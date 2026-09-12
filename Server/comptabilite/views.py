@@ -1,19 +1,20 @@
-from django.shortcuts import render
-
-# Create your views here.
-from django.db.models import Sum
-from rest_framework import viewsets, permissions
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from auditlog.context import set_actor
-from utilisateurs.permissions import EstGestionnaireFinancier
-from .models import BonSortie, Depense, DetteFournisseur
-from .serializers import BonSortieSerializer, DepenseSerializer, DetteFournisseurSerializer
-from django.contrib.contenttypes.models import ContentType
-from auditlog.models import LogEntry
-from activite.serializers import EntreeJournalDetailSerializer
+import django_filters
+from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from rest_framework.views import APIView
+from django.db.models import Sum
+from auditlog.context import set_actor
+
+from utilisateurs.permissions import EstGestionnaireFinancier
+from .models import (
+    BonSortie, Depense, DetteFournisseur,
+    CategorieDecaissement, Decaissement, TauxChange, SaisonComptable,
+)
+from .serializers import (
+    BonSortieSerializer, DepenseSerializer, DetteFournisseurSerializer,
+    CategorieDecaissementSerializer, DecaissementSerializer, TauxChangeSerializer, SaisonComptableSerializer,
+)
 
 
 class BonSortieViewSet(viewsets.ModelViewSet):
@@ -34,17 +35,6 @@ class BonSortieViewSet(viewsets.ModelViewSet):
     def perform_destroy(self, instance):
         with set_actor(self.request.user):
             instance.delete()
-    @action(detail=True, methods=["get"], url_path="historique")
-    def historique(self, request, pk=None):
-        instance = self.get_object()
-        content_type = ContentType.objects.get_for_model(instance.__class__)
-        entrees = LogEntry.objects.filter(
-            content_type=content_type, object_pk=str(instance.pk)
-        ).select_related("actor").order_by("-timestamp")
-        serializer = EntreeJournalDetailSerializer(entrees, many=True)
-        return Response(serializer.data)
-
-
 
 
 class DepenseViewSet(viewsets.ModelViewSet):
@@ -65,22 +55,13 @@ class DepenseViewSet(viewsets.ModelViewSet):
     def perform_destroy(self, instance):
         with set_actor(self.request.user):
             instance.delete()
-    @action(detail=True, methods=["get"], url_path="historique")
-    def historique(self, request, pk=None):
-        instance = self.get_object()
-        content_type = ContentType.objects.get_for_model(instance.__class__)
-        entrees = LogEntry.objects.filter(
-            content_type=content_type, object_pk=str(instance.pk)
-        ).select_related("actor").order_by("-timestamp")
-        serializer = EntreeJournalDetailSerializer(entrees, many=True)
-        return Response(serializer.data)
 
 
 class DetteFournisseurViewSet(viewsets.ModelViewSet):
     queryset = DetteFournisseur.objects.select_related("enregistre_par").all()
     serializer_class = DetteFournisseurSerializer
     permission_classes = [EstGestionnaireFinancier]
-    filterset_fields = ["soldee", "activite"] 
+    filterset_fields = ["soldee", "activite"]
     search_fields = ["nom_fournisseur", "motif"]
 
     def perform_create(self, serializer):
@@ -94,15 +75,6 @@ class DetteFournisseurViewSet(viewsets.ModelViewSet):
     def perform_destroy(self, instance):
         with set_actor(self.request.user):
             instance.delete()
-    @action(detail=True, methods=["get"], url_path="historique")
-    def historique(self, request, pk=None):
-        instance = self.get_object()
-        content_type = ContentType.objects.get_for_model(instance.__class__)
-        entrees = LogEntry.objects.filter(
-            content_type=content_type, object_pk=str(instance.pk)
-        ).select_related("actor").order_by("-timestamp")
-        serializer = EntreeJournalDetailSerializer(entrees, many=True)
-        return Response(serializer.data)
 
 
 class ResumeComptabiliteView(APIView):
@@ -123,3 +95,105 @@ class ResumeComptabiliteView(APIView):
             "total_dettes_fournisseurs": dettes_non_soldees.aggregate(t=Sum("montant_du"))["t"] or 0,
             "nombre_dettes_fournisseurs": dettes_non_soldees.count(),
         })
+
+
+class CategorieDecaissementViewSet(viewsets.ModelViewSet):
+    queryset = CategorieDecaissement.objects.all()
+    serializer_class = CategorieDecaissementSerializer
+    permission_classes = [EstGestionnaireFinancier]
+    filterset_fields = ["activite"]
+
+    def perform_create(self, serializer):
+        with set_actor(self.request.user):
+            serializer.save(est_categorie_fixe=False)
+
+
+class DecaissementFilter(django_filters.FilterSet):
+    class Meta:
+        model = Decaissement
+        fields = ["activite", "categorie", "devise", "saison"]
+
+
+class DecaissementViewSet(viewsets.ModelViewSet):
+    queryset = Decaissement.objects.select_related("categorie", "pelerin", "enregistre_par").all()
+    serializer_class = DecaissementSerializer
+    permission_classes = [EstGestionnaireFinancier]
+    filterset_class = DecaissementFilter
+
+    def perform_create(self, serializer):
+        with set_actor(self.request.user):
+            serializer.save(enregistre_par=self.request.user)
+
+    def perform_update(self, serializer):
+        with set_actor(self.request.user):
+            serializer.save()
+
+    def perform_destroy(self, instance):
+        with set_actor(self.request.user):
+            instance.delete()
+
+    @action(detail=False, methods=["get"], url_path="annees-disponibles")
+    def annees_disponibles(self, request):
+        annees = (
+            Decaissement.objects
+            .dates("date_decaissement", "year")
+        )
+        liste = sorted({d.year for d in annees}, reverse=True)
+        from django.utils import timezone
+        annee_courante = timezone.now().year
+        if annee_courante not in liste:
+            liste.insert(0, annee_courante)
+        return Response(liste)
+
+    @action(detail=False, methods=["get"], url_path="recapitulatif")
+    def recapitulatif(self, request):
+        activite = request.query_params.get("activite", "hajj")
+        annee = request.query_params.get("annee")
+        taux, _ = TauxChange.objects.get_or_create(id=1, defaults={"taux_usd": 8600, "taux_sar": 2300})
+
+        categories = CategorieDecaissement.objects.filter(activite=activite)
+        resultats = []
+        for cat in categories:
+            decaissements_cat = Decaissement.objects.filter(categorie=cat)
+            if annee:
+                decaissements_cat = decaissements_cat.filter(date_decaissement__year=annee)
+
+            total_gnf_equiv = 0
+            for d in decaissements_cat:
+                montant = float(d.montant)
+                if d.devise == "GNF":
+                    total_gnf_equiv += montant
+                elif d.devise == "USD":
+                    total_gnf_equiv += montant * float(taux.taux_usd)
+                elif d.devise == "SAR":
+                    total_gnf_equiv += montant * float(taux.taux_sar)
+
+            resultats.append({
+                "categorie_id": cat.id,
+                "categorie_nom": cat.nom,
+                "total_gnf": round(total_gnf_equiv, 2),
+                "total_usd": round(total_gnf_equiv / float(taux.taux_usd), 2) if taux.taux_usd else 0,
+                "total_sar": round(total_gnf_equiv / float(taux.taux_sar), 2) if taux.taux_sar else 0,
+            })
+        return Response({"taux": TauxChangeSerializer(taux).data, "categories": resultats})
+
+
+class TauxChangeView(APIView):
+    permission_classes = [EstGestionnaireFinancier]
+
+    def get(self, request):
+        taux, _ = TauxChange.objects.get_or_create(id=1, defaults={"taux_usd": 8600, "taux_sar": 2300})
+        return Response(TauxChangeSerializer(taux).data)
+
+    def patch(self, request):
+        taux, _ = TauxChange.objects.get_or_create(id=1, defaults={"taux_usd": 8600, "taux_sar": 2300})
+        serializer = TauxChangeSerializer(taux, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data)
+
+class SaisonComptableViewSet(viewsets.ModelViewSet):
+    queryset = SaisonComptable.objects.all()
+    serializer_class = SaisonComptableSerializer
+    permission_classes = [EstGestionnaireFinancier]
+    filterset_fields = ["activite"]
