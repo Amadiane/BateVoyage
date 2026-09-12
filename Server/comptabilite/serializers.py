@@ -81,3 +81,4 @@ class SaisonComptableSerializer(serializers.ModelSerializer):
     class Meta:
         model = SaisonComptable
         fields = "__all__"
+

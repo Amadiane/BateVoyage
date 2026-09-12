@@ -5,7 +5,9 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.db.models import Sum
 from auditlog.context import set_actor
-
+from django.contrib.contenttypes.models import ContentType
+from auditlog.models import LogEntry
+from activite.serializers import EntreeJournalDetailSerializer
 from utilisateurs.permissions import EstGestionnaireFinancier
 from .models import (
     BonSortie, Depense, DetteFournisseur,
@@ -148,15 +150,17 @@ class DecaissementViewSet(viewsets.ModelViewSet):
     @action(detail=False, methods=["get"], url_path="recapitulatif")
     def recapitulatif(self, request):
         activite = request.query_params.get("activite", "hajj")
-        annee = request.query_params.get("annee")
+        saison_id = request.query_params.get("saison")
         taux, _ = TauxChange.objects.get_or_create(id=1, defaults={"taux_usd": 8600, "taux_sar": 2300})
 
         categories = CategorieDecaissement.objects.filter(activite=activite)
         resultats = []
         for cat in categories:
             decaissements_cat = Decaissement.objects.filter(categorie=cat)
-            if annee:
-                decaissements_cat = decaissements_cat.filter(date_decaissement__year=annee)
+            if saison_id:
+                decaissements_cat = decaissements_cat.filter(saison_id=saison_id)
+            else:
+                decaissements_cat = decaissements_cat.none()  # aucune saison sélectionnée = rien à afficher
 
             total_gnf_equiv = 0
             for d in decaissements_cat:
@@ -177,7 +181,6 @@ class DecaissementViewSet(viewsets.ModelViewSet):
             })
         return Response({"taux": TauxChangeSerializer(taux).data, "categories": resultats})
 
-
 class TauxChangeView(APIView):
     permission_classes = [EstGestionnaireFinancier]
 
@@ -197,3 +200,17 @@ class SaisonComptableViewSet(viewsets.ModelViewSet):
     serializer_class = SaisonComptableSerializer
     permission_classes = [EstGestionnaireFinancier]
     filterset_fields = ["activite"]
+
+class SaisonComptableViewSet(viewsets.ModelViewSet):
+    queryset = SaisonComptable.objects.all()
+    serializer_class = SaisonComptableSerializer
+    permission_classes = [EstGestionnaireFinancier]
+    filterset_fields = ["activite"]
+
+    def perform_create(self, serializer):
+        with set_actor(self.request.user):
+            serializer.save()
+
+    def perform_update(self, serializer):
+        with set_actor(self.request.user):
+            serializer.save()

@@ -758,7 +758,15 @@
   "taux_actuels": "Current rates",
   "taux_usd": "USD rate",
   "taux_sar": "SAR rate",
-  "historique_decaissements": "Disbursement history"
+  "historique_decaissements": "Disbursement history",
+
+  
+  "aucune_saison": "No season created",
+  "nouvelle_saison": "New season",
+  "nom_saison": "Season name",
+  "date_debut": "Start date",
+  "date_fin": "End date"
+
 
 
 

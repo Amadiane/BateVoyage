@@ -12,4 +12,11 @@ export const decaissementService = {
   obtenirRecapitulatif: (activite, annee) => api.get(`${CONFIG.API_DECAISSEMENTS}recapitulatif/`, { params: { activite, annee } }),
   obtenirTauxChange: () => api.get(CONFIG.API_TAUX_CHANGE),
   modifierTauxChange: (donnees) => api.patch(CONFIG.API_TAUX_CHANGE, donnees),
+  listerSaisons: (activite) => api.get(CONFIG.API_SAISONS, { params: { activite } }),
+  creerSaison: (donnees) => api.post(CONFIG.API_SAISONS, donnees),
+  obtenirHistoriqueDecaissement: (id) => api.get(`${CONFIG.API_DECAISSEMENT_DETAIL(id)}historique/`),
+  listerSaisons: (activite) => api.get(CONFIG.API_SAISONS, { params: { activite } }),
+  creerSaison: (donnees) => api.post(CONFIG.API_SAISONS, donnees),
+  obtenirRecapitulatif: (activite, annee, saison) => api.get(`${CONFIG.API_DECAISSEMENTS}recapitulatif/`, { params: { activite, saison } }),
+  obtenirHistoriqueDecaissement: (id) => api.get(`${CONFIG.API_DECAISSEMENT_DETAIL(id)}historique/`),
 };

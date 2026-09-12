@@ -763,7 +763,15 @@
   "taux_actuels": "أسعار الصرف الحالية",
   "taux_usd": "سعر الدولار",
   "taux_sar": "سعر الريال",
-  "historique_decaissements": "سجل المصروفات"
+  "historique_decaissements": "سجل المصروفات",
+
+  
+  "aucune_saison": "لم يتم إنشاء أي موسم",
+  "nouvelle_saison": "موسم جديد",
+  "nom_saison": "اسم الموسم",
+  "date_debut": "تاريخ البداية",
+  "date_fin": "تاريخ النهاية"
+
 
 
 

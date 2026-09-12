@@ -94,6 +94,8 @@ const CONFIG = {
   API_DECAISSEMENT_DETAIL: (id) => `${BASE_URL}/api/comptabilite/decaissements/${id}/`,
   API_TAUX_CHANGE: `${BASE_URL}/api/comptabilite/taux-change/`,
 
+  API_SAISONS: `${BASE_URL}/api/comptabilite/saisons/`,
+
   // --- Formules / Programmes ---
   API_PROGRAMMES: `${BASE_URL}/api/formules/programmes/`,
 

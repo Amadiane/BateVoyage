@@ -769,7 +769,15 @@
   "taux_actuels": "Taux actuels",
   "taux_usd": "Taux USD",
   "taux_sar": "Taux SAR",
-  "historique_decaissements": "Historique des décaissements"
+  "historique_decaissements": "Historique des décaissements",
+
+  
+  "aucune_saison": "Aucune saison créée",
+  "nouvelle_saison": "Nouvelle saison",
+  "nom_saison": "Nom de la saison",
+  "date_debut": "Date de début",
+  "date_fin": "Date de fin"
+
 
 
 
