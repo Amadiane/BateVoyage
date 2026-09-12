@@ -64,3 +64,6 @@
 }
 .chevron { transition: transform 0.2s ease; }
 .chevronOuvert { transform: rotate(180deg); }
+
+.noteAffichage { font-size: 11.5px; color: #9CA3AF; font-style: italic; margin: -4px 0 14px; }
+.aideSaison { font-size: 11px; color: #9CA3AF; margin: 5px 0 0; }

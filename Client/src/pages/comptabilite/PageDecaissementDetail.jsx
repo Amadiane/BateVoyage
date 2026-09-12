@@ -8,7 +8,7 @@ import HistoriqueGenerique from "../../components/HistoriqueGenerique/Historique
 import styles from "../../theme/pages/comptabilite/PageDecaissementDetail.module.css";
 
 const VALEURS_INITIALES = {
-  categorie: "", libelle_complementaire: "", montant: "", devise: "GNF",
+  categorie: "", saison: "", libelle_complementaire: "", montant: "", devise: "GNF",
   date_decaissement: new Date().toISOString().slice(0, 10), notes: "",
 };
 
@@ -43,9 +43,6 @@ function PageDecaissementDetail({ activite, basePath }) {
   const [ajoutCategorieOuvert, setAjoutCategorieOuvert] = useState(false);
   const [nouvelleCategorieNom, setNouvelleCategorieNom] = useState("");
 
-  // Charge les données liées uniquement à la saison actuellement sélectionnée.
-  // Séparée du chargement initial pour pouvoir être rappelée seule à chaque
-  // changement de saison, sans redemander catégories/liste des saisons.
   const chargerDonneesSaison = async (idSaison) => {
     if (!idSaison) {
       setDecaissements([]);
@@ -78,17 +75,16 @@ function PageDecaissementDetail({ activite, basePath }) {
     chargerInitial().finally(() => setChargementInitial(false));
   }, [activite]);
 
-  // Se déclenche à chaque changement explicite de saison (sélecteur, ou
-  // juste après la création d'une nouvelle saison) — recharge TOUJOURS les
-  // données propres à cette saison, jamais les anciennes valeurs affichées.
-  const changerSaison = async (idSaison) => {
+  const changerSaisonAffichee = async (idSaison) => {
     setSaisonSelectionnee(idSaison);
     await chargerDonneesSaison(idSaison);
   };
 
   const ouvrirNouveau = () => {
     setDecaissementAModifier(null);
-    setValeurs(VALEURS_INITIALES);
+    // La saison du formulaire démarre alignée sur celle affichée à l'écran,
+    // mais reste un choix EXPLICITE et modifiable — jamais déduite de la date.
+    setValeurs({ ...VALEURS_INITIALES, saison: saisonSelectionnee || "" });
     setErreur("");
     setModalOuverte(true);
   };
@@ -96,7 +92,7 @@ function PageDecaissementDetail({ activite, basePath }) {
   const ouvrirModification = (d) => {
     setDecaissementAModifier(d);
     setValeurs({
-      categorie: d.categorie, libelle_complementaire: d.libelle_complementaire || "",
+      categorie: d.categorie, saison: d.saison || "", libelle_complementaire: d.libelle_complementaire || "",
       montant: d.montant, devise: d.devise,
       date_decaissement: d.date_decaissement, notes: d.notes || "",
     });
@@ -117,19 +113,26 @@ function PageDecaissementDetail({ activite, basePath }) {
 
   const handleSubmit = async () => {
     setErreur("");
-    if (!valeurs.categorie || !valeurs.montant || !valeurs.date_decaissement) {
+    if (!valeurs.categorie || !valeurs.saison || !valeurs.montant || !valeurs.date_decaissement) {
       setErreur(t("champs_obligatoires_manquants"));
       return;
     }
     setEnvoi(true);
     try {
-      const donnees = { ...valeurs, activite, saison: saisonSelectionnee };
+      // La saison enregistrée est EXACTEMENT celle choisie dans le formulaire,
+      // jamais recalculée depuis la date — deux activités à la même date
+      // peuvent donc appartenir à deux saisons différentes si l'utilisateur
+      // le décide.
+      const donnees = { ...valeurs, activite };
       if (decaissementAModifier) {
         await decaissementService.modifier(decaissementAModifier.id, donnees);
       } else {
         await decaissementService.creer(donnees);
       }
       setModalOuverte(false);
+      // On recharge la vue actuelle : si l'entrée créée/modifiée appartient à
+      // une AUTRE saison que celle affichée, elle disparaîtra logiquement de
+      // la liste courante — c'est le comportement voulu.
       await chargerDonneesSaison(saisonSelectionnee);
     } catch {
       setErreur(t("erreur_enregistrement"));
@@ -167,9 +170,7 @@ function PageDecaissementDetail({ activite, basePath }) {
       const { data } = await decaissementService.creerSaison({ ...valeursSaison, activite });
       setSaisons((s) => [data, ...s]);
       setModalSaisonOuverte(false);
-      // Bascule explicitement sur la nouvelle saison ET recharge ses données
-      // (forcément vides), pour ne jamais laisser les anciens totaux affichés.
-      await changerSaison(data.id);
+      await changerSaisonAffichee(data.id);
     } finally {
       setEnvoiSaison(false);
     }
@@ -186,7 +187,7 @@ function PageDecaissementDetail({ activite, basePath }) {
         <div className={styles.groupeBoutons}>
           <select
             value={saisonSelectionnee || ""}
-            onChange={(e) => changerSaison(e.target.value ? Number(e.target.value) : null)}
+            onChange={(e) => changerSaisonAffichee(e.target.value ? Number(e.target.value) : null)}
             className={styles.selectAnnee}
           >
             {saisons.length === 0 && <option value="">{t("aucune_saison")}</option>}
@@ -198,11 +199,13 @@ function PageDecaissementDetail({ activite, basePath }) {
           <button className={styles.boutonTaux} onClick={ouvrirModalTaux}>
             <Settings size={14} /> {t("modifier_taux")}
           </button>
-          <button className={styles.boutonPrincipal} onClick={ouvrirNouveau} disabled={!saisonSelectionnee}>
+          <button className={styles.boutonPrincipal} onClick={ouvrirNouveau} disabled={saisons.length === 0}>
             <Plus size={16} /> {t("nouveau_decaissement")}
           </button>
         </div>
       </div>
+
+      <p className={styles.noteAffichage}>{t("note_filtre_affichage")}</p>
 
       {recap && (
         <>
@@ -286,6 +289,14 @@ function PageDecaissementDetail({ activite, basePath }) {
               <button className={styles.boutonFermer} onClick={() => setModalOuverte(false)}><X size={16} /></button>
             </div>
             <div className={styles.formulaire}>
+              <div className={styles.champ}>
+                <label>{t("saison")} *</label>
+                <select value={valeurs.saison} onChange={(e) => majChamp("saison", e.target.value)}>
+                  <option value="">—</option>
+                  {saisons.map((s) => <option key={s.id} value={s.id}>{s.nom}</option>)}
+                </select>
+                <p className={styles.aideSaison}>{t("aide_choix_saison")}</p>
+              </div>
               <div className={styles.champ}>
                 <label>{t("categorie")}</label>
                 <select value={valeurs.categorie} onChange={(e) => majChamp("categorie", e.target.value)}>
@@ -414,4 +425,4 @@ function PageDecaissementDetail({ activite, basePath }) {
   );
 }
 
-export default PageDecaissementDetail;  
+export default PageDecaissementDetail;
