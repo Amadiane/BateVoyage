@@ -770,7 +770,16 @@
   
   "saison": "Season",
   "aide_choix_saison": "Choose the season this expense belongs to, regardless of its date.",
-  "note_filtre_affichage": "The selector above only displays expenses already assigned to this season — it does not classify anything automatically."
+  "note_filtre_affichage": "The selector above only displays expenses already assigned to this season — it does not classify anything automatically.",
+
+  
+  "encaissements": "Receipts",
+  "total_encaisse": "Total collected",
+  "historique_encaissements": "Receipts history",
+  "recu": "Receipt No.",
+  "pelerin": "Pilgrim",
+  "mode_paiement_label": "Payment method"
+
 
 
 

@@ -214,3 +214,31 @@ class SaisonComptableViewSet(viewsets.ModelViewSet):
     def perform_update(self, serializer):
         with set_actor(self.request.user):
             serializer.save()
+
+class EncaissementView(APIView):
+    permission_classes = [EstGestionnaireFinancier]
+
+    def get(self, request):
+        from paiements.models import Paiement
+        from pelerins.models import Pelerin
+
+        activite = request.query_params.get("activite", "hajj")
+        type_voyage = "pelerinage" if activite == "hajj" else "oumra"
+
+        paiements = Paiement.objects.filter(
+            pelerin__type_voyage=type_voyage
+        ).select_related("pelerin").order_by("-date_paiement")
+
+        resultats = [{
+            "id": p.id,
+            "numero_recu": p.numero_recu,
+            "pelerin_nom": f"{p.pelerin.prenom} {p.pelerin.nom}",
+            "pelerin_numero_id": p.pelerin.numero_id,
+            "montant": p.montant,
+            "mode_paiement_display": p.get_mode_paiement_display(),
+            "date_paiement": p.date_paiement,
+        } for p in paiements]
+
+        total = sum(float(p.montant) for p in paiements)
+
+        return Response({"paiements": resultats, "total": total})

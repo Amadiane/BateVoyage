@@ -19,4 +19,5 @@ export const decaissementService = {
   creerSaison: (donnees) => api.post(CONFIG.API_SAISONS, donnees),
   obtenirRecapitulatif: (activite, annee, saison) => api.get(`${CONFIG.API_DECAISSEMENTS}recapitulatif/`, { params: { activite, saison } }),
   obtenirHistoriqueDecaissement: (id) => api.get(`${CONFIG.API_DECAISSEMENT_DETAIL(id)}historique/`),
+  obtenirEncaissements: (activite) => api.get(CONFIG.API_ENCAISSEMENTS, { params: { activite } }),
 };

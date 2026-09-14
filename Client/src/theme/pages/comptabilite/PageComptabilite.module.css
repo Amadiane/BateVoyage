@@ -119,3 +119,5 @@
 .cercle_bleu { background-color: #DBEAFE; color: #1E40AF; }
 
 .libelleBouton { font-size: 14px; font-weight: 700; color: var(--color-ink); text-align: center; }
+.bordure_vert { border-color: #86EFAC; }
+.cercle_vert { background-color: #DCFCE7; color: #166534; }

@@ -781,7 +781,16 @@
   
   "saison": "Saison",
   "aide_choix_saison": "Choisissez la saison à laquelle rattacher cette dépense, indépendamment de sa date.",
-  "note_filtre_affichage": "Le sélecteur ci-dessus n'affiche que les dépenses déjà classées dans cette saison — il ne classe rien automatiquement."
+  "note_filtre_affichage": "Le sélecteur ci-dessus n'affiche que les dépenses déjà classées dans cette saison — il ne classe rien automatiquement.",
+
+  
+  "encaissements": "Encaissements",
+  "total_encaisse": "Total encaissé",
+  "historique_encaissements": "Historique des encaissements",
+  "recu": "N° Reçu",
+  "pelerin": "Pèlerin",
+  "mode_paiement_label": "Mode de paiement"
+
 
 
 

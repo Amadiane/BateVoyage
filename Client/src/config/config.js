@@ -96,6 +96,8 @@ const CONFIG = {
 
   API_SAISONS: `${BASE_URL}/api/comptabilite/saisons/`,
 
+  API_ENCAISSEMENTS: `${BASE_URL}/api/comptabilite/encaissements/`,
+
   // --- Formules / Programmes ---
   API_PROGRAMMES: `${BASE_URL}/api/formules/programmes/`,
 
