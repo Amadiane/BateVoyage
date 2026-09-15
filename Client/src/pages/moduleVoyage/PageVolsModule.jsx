@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { Plus, X, Trash2, Pencil, Users, Download } from "lucide-react";
 import { volService } from "../../services/volService";
 import { telechargerFichierProtege } from "../../utils/telechargement";
+import ModalConfirmation from "../../components/ModalConfirmation/ModalConfirmation";
 import styles from "../../theme/pages/moduleVoyage/PageVolsModule.module.css";
 
 const VALEURS_INITIALES = {
@@ -22,6 +23,7 @@ function PageVolsModule({ basePath }) {
   const [valeurs, setValeurs] = useState(VALEURS_INITIALES);
   const [envoi, setEnvoi] = useState(false);
   const [erreur, setErreur] = useState("");
+  const [aSupprimer, setASupprimer] = useState(null);
 
   const charger = () => {
     setChargement(true);
@@ -56,8 +58,7 @@ function PageVolsModule({ basePath }) {
 
   const majChamp = (champ, val) => setValeurs((v) => ({ ...v, [champ]: val }));
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleSubmit = async () => {
     setErreur("");
     setEnvoi(true);
     try {
@@ -75,10 +76,9 @@ function PageVolsModule({ basePath }) {
     }
   };
 
-  const supprimer = async (id, e) => {
-    e.stopPropagation();
-    if (!window.confirm(t("confirmer_suppression_vol"))) return;
-    await volService.supprimer(id);
+  const confirmerSuppression = async () => {
+    await volService.supprimer(aSupprimer.id);
+    setASupprimer(null);
     charger();
   };
 
@@ -87,8 +87,10 @@ function PageVolsModule({ basePath }) {
     telechargerFichierProtege(volService.urlManifestePdf(v.id), `manifeste_vol_${v.numero_vol}.pdf`);
   };
 
+  const COULEUR_TYPE = { aller: "#2B6CE0", retour: "#E8804A" };
+
   return (
-    <div>
+    <div className={styles.page}>
       <button className={styles.retour} onClick={() => navigate(basePath)}>← {t("retour")}</button>
 
       <div className={styles.entete}>
@@ -113,22 +115,24 @@ function PageVolsModule({ basePath }) {
           <div
             key={v.id}
             className={styles.carte}
+            style={{ "--couleur-type": COULEUR_TYPE[v.type_vol] }}
             onClick={() => navigate(`${basePath}/vols/${v.id}`)}
           >
+            <span className={styles.barreHaut} />
             <div className={styles.bandeau}>
               <div className={styles.groupeTitreVol}>
-                <span className={`${styles.badgePhase} ${v.type_vol === "aller" ? styles.badgePhaseAller : styles.badgePhaseRetour}`}>
+                <span className={styles.badgePhase}>
                   {v.type_vol === "aller" ? t("phase_aller") : t("phase_retour")}
                 </span>
                 <span className={styles.numeroVol}>{v.compagnie} {v.numero_vol}</span>
               </div>
               <div className={styles.actions} onClick={(e) => e.stopPropagation()}>
                 <button onClick={(e) => ouvrirModification(v, e)} title={t("modifier")}><Pencil size={13} /></button>
-                <button onClick={(e) => supprimer(v.id, e)} title={t("supprimer")} className={styles.boutonSupprimer}><Trash2 size={13} /></button>
+                <button onClick={() => setASupprimer(v)} title={t("supprimer")} className={styles.boutonSupprimer}><Trash2 size={13} /></button>
               </div>
             </div>
             <p className={styles.trajet}>{v.aeroport_depart} → {v.aeroport_arrivee}</p>
-            <p className={styles.dateHeure}>📅 {v.date_vol} — {v.heure_vol}</p>
+            <p className={styles.dateHeure}>{v.date_vol} — {v.heure_vol}</p>
             {v.numero_billet_reference && <p className={styles.reference}>PNR : {v.numero_billet_reference}</p>}
             <div className={styles.piedCarte}>
               <span className={styles.nbPassagers}><Users size={13} /> {v.nb_pelerins_affectes} {t("passagers")}</span>
@@ -147,70 +151,42 @@ function PageVolsModule({ basePath }) {
               <h2>{volAModifier ? t("modifier_vol") : t("nouveau_vol")}</h2>
               <button className={styles.boutonFermer} onClick={() => setModalOuverte(false)}><X size={16} /></button>
             </div>
-            <form onSubmit={handleSubmit} className={styles.formulaire}>
+            <div className={styles.formulaire}>
               <div className={styles.champ}>
                 <label>{t("type_vol_label")}</label>
                 <div className={styles.choixTypeVol}>
-                  <button
-                    type="button"
-                    className={valeurs.type_vol === "aller" ? styles.boutonTypeActif : styles.boutonType}
-                    onClick={() => majChamp("type_vol", "aller")}
-                  >
+                  <button type="button" className={valeurs.type_vol === "aller" ? styles.boutonTypeActif : styles.boutonType} onClick={() => majChamp("type_vol", "aller")}>
                     {t("vol_aller")}
                   </button>
-                  <button
-                    type="button"
-                    className={valeurs.type_vol === "retour" ? styles.boutonTypeActif : styles.boutonType}
-                    onClick={() => majChamp("type_vol", "retour")}
-                  >
+                  <button type="button" className={valeurs.type_vol === "retour" ? styles.boutonTypeActif : styles.boutonType} onClick={() => majChamp("type_vol", "retour")}>
                     {t("vol_retour")}
                   </button>
                 </div>
               </div>
-              <div className={styles.champ}>
-                <label>{t("compagnie")}</label>
-                <input value={valeurs.compagnie} onChange={(e) => majChamp("compagnie", e.target.value)} required />
-              </div>
-              <div className={styles.champ}>
-                <label>{t("numero_vol")}</label>
-                <input value={valeurs.numero_vol} onChange={(e) => majChamp("numero_vol", e.target.value)} required />
+              <div className={styles.champ}><label>{t("compagnie")}</label><input value={valeurs.compagnie} onChange={(e) => majChamp("compagnie", e.target.value)} /></div>
+              <div className={styles.champ}><label>{t("numero_vol")}</label><input value={valeurs.numero_vol} onChange={(e) => majChamp("numero_vol", e.target.value)} /></div>
+              <div className={styles.ligneDeux}>
+                <div className={styles.champ}><label>{t("date_vol")}</label><input type="date" value={valeurs.date_vol} onChange={(e) => majChamp("date_vol", e.target.value)} /></div>
+                <div className={styles.champ}><label>{t("heure_vol")}</label><input type="time" value={valeurs.heure_vol} onChange={(e) => majChamp("heure_vol", e.target.value)} /></div>
               </div>
               <div className={styles.ligneDeux}>
-                <div className={styles.champ}>
-                  <label>{t("date_vol")}</label>
-                  <input type="date" value={valeurs.date_vol} onChange={(e) => majChamp("date_vol", e.target.value)} required />
-                </div>
-                <div className={styles.champ}>
-                  <label>{t("heure_vol")}</label>
-                  <input type="time" value={valeurs.heure_vol} onChange={(e) => majChamp("heure_vol", e.target.value)} required />
-                </div>
+                <div className={styles.champ}><label>{t("aeroport_depart")}</label><input value={valeurs.aeroport_depart} onChange={(e) => majChamp("aeroport_depart", e.target.value)} placeholder="Conakry (CKY)" /></div>
+                <div className={styles.champ}><label>{t("aeroport_arrivee")}</label><input value={valeurs.aeroport_arrivee} onChange={(e) => majChamp("aeroport_arrivee", e.target.value)} placeholder="Djeddah (JED)" /></div>
               </div>
-              <div className={styles.ligneDeux}>
-                <div className={styles.champ}>
-                  <label>{t("aeroport_depart")}</label>
-                  <input value={valeurs.aeroport_depart} onChange={(e) => majChamp("aeroport_depart", e.target.value)} required placeholder="Conakry (CKY)" />
-                </div>
-                <div className={styles.champ}>
-                  <label>{t("aeroport_arrivee")}</label>
-                  <input value={valeurs.aeroport_arrivee} onChange={(e) => majChamp("aeroport_arrivee", e.target.value)} required placeholder="Djeddah (JED)" />
-                </div>
-              </div>
-              <div className={styles.champ}>
-                <label>{t("numero_billet_reference")}</label>
-                <input value={valeurs.numero_billet_reference} onChange={(e) => majChamp("numero_billet_reference", e.target.value)} placeholder="PNR (optionnel)" />
-              </div>
-              <div className={styles.champ}>
-                <label>{t("bagages_autorises")}</label>
-                <input type="number" min="0" value={valeurs.bagages_autorises_kg} onChange={(e) => majChamp("bagages_autorises_kg", e.target.value)} placeholder="Ex: 23" />
-              </div>
+              <div className={styles.champ}><label>{t("numero_billet_reference")}</label><input value={valeurs.numero_billet_reference} onChange={(e) => majChamp("numero_billet_reference", e.target.value)} placeholder="PNR (optionnel)" /></div>
+              <div className={styles.champ}><label>{t("bagages_autorises")}</label><input type="number" min="0" value={valeurs.bagages_autorises_kg} onChange={(e) => majChamp("bagages_autorises_kg", e.target.value)} placeholder="Ex: 23" /></div>
               {erreur && <p className={styles.erreur}>{erreur}</p>}
               <div className={styles.navigationModal}>
                 <button type="button" className={styles.boutonSecondaire} onClick={() => setModalOuverte(false)}>{t("annuler")}</button>
-                <button type="submit" className={styles.boutonPrincipal} disabled={envoi}>{envoi ? t("enregistrement") : t("enregistrer")}</button>
+                <button type="button" className={styles.boutonPrincipal} onClick={handleSubmit} disabled={envoi}>{envoi ? t("enregistrement") : t("enregistrer")}</button>
               </div>
-            </form>
+            </div>
           </div>
         </div>
+      )}
+
+      {aSupprimer && (
+        <ModalConfirmation titre={t("confirmer_suppression_titre")} message={t("confirmer_suppression_message")} onConfirmer={confirmerSuppression} onAnnuler={() => setASupprimer(null)} />
       )}
     </div>
   );

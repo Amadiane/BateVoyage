@@ -8,11 +8,11 @@ import CONFIG from "../../config/config";
 import styles from "../../theme/pages/moduleVoyage/PageVisaDocModule.module.css";
 
 const COULEURS_STATUT = {
-  non_demande: "gris",
-  en_cours: "bleu",
-  obtenu: "vert",
-  refuse: "rouge",
-  expire: "orange",
+  non_demande: "#8B8578",
+  en_cours: "#2B6CE0",
+  obtenu: "#2F9E5C",
+  refuse: "#C73E3E",
+  expire: "#E8804A",
 };
 
 const ORDRE_COLONNES = ["non_demande", "en_cours", "obtenu", "refuse", "expire"];
@@ -75,7 +75,7 @@ function PageVisaDocModule({ typeVoyage, basePath }) {
   };
 
   return (
-    <div>
+    <div className={styles.page}>
       <button className={styles.retour} onClick={() => navigate(basePath)}>← {t("retour")}</button>
 
       <div className={styles.entete}>
@@ -94,7 +94,8 @@ function PageVisaDocModule({ typeVoyage, basePath }) {
         {ORDRE_COLONNES.map((s) => (
           <button
             key={s}
-            className={`${styles.carteResume} ${styles["carteResume_" + COULEURS_STATUT[s]]} ${filtreStatut === s ? styles.carteResumeActive : ""}`}
+            className={`${styles.carteResume} ${filtreStatut === s ? styles.carteResumeActive : ""}`}
+            style={{ "--couleur": COULEURS_STATUT[s] }}
             onClick={() => setFiltreStatut(filtreStatut === s ? "" : s)}
           >
             <span className={styles.chiffreResume}>{compteParStatut[s]}</span>
@@ -114,7 +115,8 @@ function PageVisaDocModule({ typeVoyage, basePath }) {
             return (
               <div key={s} className={styles.colonneKanban}>
                 <button
-                  className={`${styles.enteteColonne} ${styles["enteteColonne_" + COULEURS_STATUT[s]]}`}
+                  className={styles.enteteColonne}
+                  style={{ "--couleur": COULEURS_STATUT[s] }}
                   onClick={() => setColonneOuverte(estOuverte ? null : s)}
                 >
                   <span>{t(`visa_${s}`)}</span>
@@ -162,7 +164,7 @@ function PageVisaDocModule({ typeVoyage, basePath }) {
                       {alerte && <div className={alerte.classe}>{alerte.texte}</div>}
                     </td>
                     <td>
-                      <span className={`${styles.badge} ${styles["badge_" + COULEURS_STATUT[p.statut_visa]]}`}>
+                      <span className={styles.badgeStatut} style={{ "--couleur": COULEURS_STATUT[p.statut_visa] }}>
                         {p.statut_visa_display}
                       </span>
                     </td>
