@@ -803,7 +803,26 @@
   "benefice_pelerin": "Profit per Pilgrim",
   "selectionner_pelerin": "Select a pilgrim",
   "ajouter_depense": "Add an expense",
-  "detail_depenses": "Expense details"
+  "detail_depenses": "Expense details",
+
+  "creance": "Receivable",
+  "nouvelle_creance": "New receivable",
+  "modifier_creance": "Edit receivable",
+  "devis_facture": "Quote / Invoice",
+  "nouveau_document": "New document",
+  "modifier_document": "Edit document",
+  "type_devis": "Quote",
+  "type_facture": "Invoice",
+  "type_avoir": "Credit note",
+  "etats_impayes": "Outstanding payments",
+  "total_impaye": "Total outstanding",
+  "numero": "Number",
+  "type": "Type",
+  "client": "Client",
+  "paye": "Paid",
+  "non_paye": "Unpaid",
+  "marquer_paye": "Mark as paid",
+  "client_nom_libre": "Client name (if not a pilgrim)"
 
 
 

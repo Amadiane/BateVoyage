@@ -12,11 +12,11 @@ from utilisateurs.permissions import EstGestionnaireFinancier
 from django.db.models import Sum
 from .models import (
     BonSortie, Depense, DetteFournisseur,
-    CategorieDecaissement, Decaissement, TauxChange, SaisonComptable, ObservationBeneficeGlobal, Dette, Associe, DepensePelerin,
+    CategorieDecaissement, Decaissement, TauxChange, SaisonComptable, ObservationBeneficeGlobal, Dette, Associe, DepensePelerin, Creance, DevisFacture,
 )
 from .serializers import (
     BonSortieSerializer, DepenseSerializer, DetteFournisseurSerializer,
-    CategorieDecaissementSerializer, DecaissementSerializer, TauxChangeSerializer, SaisonComptableSerializer, ObservationBeneficeGlobalSerializer, DetteSerializer, AssocieSerializer, DepensePelerinSerializer
+    CategorieDecaissementSerializer, DecaissementSerializer, TauxChangeSerializer, SaisonComptableSerializer, ObservationBeneficeGlobalSerializer, DetteSerializer, AssocieSerializer, DepensePelerinSerializer, CreanceSerializer, DevisFactureSerializer
 )
 
 
@@ -507,3 +507,49 @@ class DepensePelerinViewSet(viewsets.ModelViewSet):
         lignes.append({"designation": "BÉNÉFICE PAR PÈLERIN", "valeurs": convertir(benefice), "gras": True})
 
         return Response({"lignes": lignes})
+
+
+class CreanceViewSet(viewsets.ModelViewSet):
+    queryset = Creance.objects.select_related("enregistre_par").all()
+    serializer_class = CreanceSerializer
+    permission_classes = [EstGestionnaireFinancier]
+    filterset_fields = ["soldee", "devise"]
+    search_fields = ["nom", "prenom"]
+
+    def perform_create(self, serializer):
+        with set_actor(self.request.user):
+            serializer.save(enregistre_par=self.request.user)
+
+    def perform_update(self, serializer):
+        with set_actor(self.request.user):
+            serializer.save()
+
+    def perform_destroy(self, instance):
+        with set_actor(self.request.user):
+            instance.delete()
+
+
+class DevisFactureViewSet(viewsets.ModelViewSet):
+    queryset = DevisFacture.objects.select_related("pelerin", "enregistre_par").all()
+    serializer_class = DevisFactureSerializer
+    permission_classes = [EstGestionnaireFinancier]
+    filterset_fields = ["type_document", "paye", "devise"]
+
+    def perform_create(self, serializer):
+        with set_actor(self.request.user):
+            serializer.save(enregistre_par=self.request.user)
+
+    def perform_update(self, serializer):
+        with set_actor(self.request.user):
+            serializer.save()
+
+    def perform_destroy(self, instance):
+        with set_actor(self.request.user):
+            instance.delete()
+
+    @action(detail=False, methods=["get"], url_path="impayes")
+    def impayes(self, request):
+        impayes = self.get_queryset().filter(type_document__in=["facture", "devis"], paye=False)
+        serializer = self.get_serializer(impayes, many=True)
+        total = sum(float(d.montant) for d in impayes)
+        return Response({"documents": serializer.data, "total_impaye": total})

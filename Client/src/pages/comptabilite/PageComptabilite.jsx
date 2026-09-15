@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { Wallet, Receipt, TrendingDown, TrendingUp, Building2, Home, PiggyBank, UserX, Users, UserCheck } from "lucide-react";
+import { Wallet, Receipt, TrendingDown, TrendingUp, Building2, Home, PiggyBank, UserX, Users, UserCheck, UserPlus, FileText } from "lucide-react";
 import styles from "../../theme/pages/comptabilite/PageComptabilite.module.css";
 
 function PageComptabilite({ basePath }) {
@@ -15,6 +15,8 @@ function PageComptabilite({ basePath }) {
     { cle: "benefice-individuel", label: t("benefice_individuel"), icone: Users, couleur: "violet" },
     { cle: "benefice-pelerin", label: t("benefice_pelerin"), icone: UserCheck, couleur: "cyan" },
     { cle: "dette", label: t("dette"), icone: UserX, couleur: "rose" },
+    { cle: "creance", label: t("creance"), icone: UserPlus, couleur: "vert" },
+    { cle: "devis-facture", label: t("devis_facture"), icone: FileText, couleur: "or" },
     { cle: "bons-sortie", label: t("bons_sortie"), icone: Receipt, couleur: "orange" },
     { cle: "depenses", label: t("depenses"), icone: Wallet, couleur: "violet" },
     { cle: "dettes", label: t("dettes_fournisseurs"), icone: Building2, couleur: "bleu" },

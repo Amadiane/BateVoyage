@@ -807,7 +807,26 @@
   "benefice_pelerin": "الربح لكل حاج",
   "selectionner_pelerin": "اختر حاجًا",
   "ajouter_depense": "إضافة مصروف",
-  "detail_depenses": "تفاصيل المصاريف"
+  "detail_depenses": "تفاصيل المصاريف",
+
+  "creance": "الدين المستحق",
+  "nouvelle_creance": "دين مستحق جديد",
+  "modifier_creance": "تعديل الدين المستحق",
+  "devis_facture": "عرض السعر / الفاتورة",
+  "nouveau_document": "مستند جديد",
+  "modifier_document": "تعديل المستند",
+  "type_devis": "عرض سعر",
+  "type_facture": "فاتورة",
+  "type_avoir": "إشعار دائن",
+  "etats_impayes": "حالة المستحقات غير المدفوعة",
+  "total_impaye": "إجمالي غير المدفوع",
+  "numero": "الرقم",
+  "type": "النوع",
+  "client": "العميل",
+  "paye": "مدفوع",
+  "non_paye": "غير مدفوع",
+  "marquer_paye": "وضع علامة كمدفوع",
+  "client_nom_libre": "اسم العميل (إذا لم يكن حاجًا)"
 
 
 

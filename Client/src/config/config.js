@@ -108,6 +108,11 @@ const CONFIG = {
 
   API_DEPENSES_PELERIN: `${BASE_URL}/api/comptabilite/depenses-pelerin/`,
 
+  API_CREANCES: `${BASE_URL}/api/comptabilite/creances/`,
+  API_CREANCE_DETAIL: (id) => `${BASE_URL}/api/comptabilite/creances/${id}/`,
+  API_DEVIS_FACTURES: `${BASE_URL}/api/comptabilite/devis-factures/`,
+  API_DEVIS_FACTURE_DETAIL: (id) => `${BASE_URL}/api/comptabilite/devis-factures/${id}/`,
+
   // --- Formules / Programmes ---
   API_PROGRAMMES: `${BASE_URL}/api/formules/programmes/`,
 

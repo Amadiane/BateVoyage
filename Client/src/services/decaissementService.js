@@ -32,4 +32,16 @@ export const decaissementService = {
   creerDepensePelerin: (donnees) => api.post(CONFIG.API_DEPENSES_PELERIN, donnees),
   supprimerDepensePelerin: (id) => api.delete(`${CONFIG.API_DEPENSES_PELERIN}${id}/`),
   obtenirRecapPelerin: (pelerinId) => api.get(`${CONFIG.API_DEPENSES_PELERIN}recapitulatif-pelerin/`, { params: { pelerin: pelerinId } }),
+
+
+  listerCreances: (params) => api.get(CONFIG.API_CREANCES, { params }),
+  creerCreance: (donnees) => api.post(CONFIG.API_CREANCES, donnees),
+  modifierCreance: (id, donnees) => api.patch(CONFIG.API_CREANCE_DETAIL(id), donnees),
+  supprimerCreance: (id) => api.delete(CONFIG.API_CREANCE_DETAIL(id)),
+
+  listerDevisFactures: (params) => api.get(CONFIG.API_DEVIS_FACTURES, { params }),
+  creerDevisFacture: (donnees) => api.post(CONFIG.API_DEVIS_FACTURES, donnees),
+  modifierDevisFacture: (id, donnees) => api.patch(CONFIG.API_DEVIS_FACTURE_DETAIL(id), donnees),
+  supprimerDevisFacture: (id) => api.delete(CONFIG.API_DEVIS_FACTURE_DETAIL(id)),
+  obtenirImpayes: () => api.get(`${CONFIG.API_DEVIS_FACTURES}impayes/`),
 };

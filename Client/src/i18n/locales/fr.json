@@ -814,7 +814,26 @@
   "benefice_pelerin": "Bénéfices par Pèlerin",
   "selectionner_pelerin": "Sélectionner un pèlerin",
   "ajouter_depense": "Ajouter une dépense",
-  "detail_depenses": "Détail des dépenses"
+  "detail_depenses": "Détail des dépenses",
+
+  "creance": "Créance",
+  "nouvelle_creance": "Nouvelle créance",
+  "modifier_creance": "Modifier la créance",
+  "devis_facture": "Devis / Facture",
+  "nouveau_document": "Nouveau document",
+  "modifier_document": "Modifier le document",
+  "type_devis": "Devis",
+  "type_facture": "Facture",
+  "type_avoir": "Avoir",
+  "etats_impayes": "États des impayés",
+  "total_impaye": "Total impayé",
+  "numero": "Numéro",
+  "type": "Type",
+  "client": "Client",
+  "paye": "Payé",
+  "non_paye": "Non payé",
+  "marquer_paye": "Marquer comme payé",
+  "client_nom_libre": "Nom du client (si pas un pèlerin)"
 
 
 
