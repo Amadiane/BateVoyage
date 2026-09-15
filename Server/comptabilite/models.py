@@ -355,3 +355,34 @@ class ObservationBeneficeGlobal(models.Model):
     class Meta:
         verbose_name = "Observation Bénéfice Global"
 
+
+class Dette(models.Model):
+    class ModePaiement(models.TextChoices):
+        ESPECES = "especes", "Espèces"
+        ORANGE_MONEY = "orange_money", "Orange Money"
+        VIREMENT = "virement", "Virement bancaire"
+
+    date = models.DateField()
+    nom = models.CharField(max_length=100)
+    prenom = models.CharField(max_length=100)
+    montant = models.DecimalField(max_digits=14, decimal_places=2)
+    devise = models.CharField(max_length=3, choices=Devise.choices, default=Devise.GNF)
+    adresse = models.CharField(max_length=255, blank=True)
+    telephone = models.CharField(max_length=20, blank=True)
+    mode_paiement = models.CharField(max_length=20, choices=ModePaiement.choices, blank=True)
+    associe = models.ForeignKey(
+        "Associe", on_delete=models.SET_NULL, null=True, blank=True, related_name="dettes",
+        help_text="Si cette dette concerne un des associés (pour Bénéfices Individuels)"
+    )
+    soldee = models.BooleanField(default=False)
+    notes = models.TextField(blank=True)
+    enregistre_par = models.ForeignKey("utilisateurs.Utilisateur", on_delete=models.PROTECT, related_name="dettes_personnelles_enregistrees")
+    date_creation = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["-date"]
+        verbose_name = "Dette"
+
+    def __str__(self):
+        return f"{self.prenom} {self.nom} — {self.montant} {self.devise}"
+

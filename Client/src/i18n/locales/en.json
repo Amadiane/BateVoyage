@@ -785,7 +785,22 @@
   "benefice_global": "Global Profit",
   "designation": "Description",
   "observation": "Observation",
-  "observation_placeholder": "Free notes about this season..."
+  "observation_placeholder": "Free notes about this season...",
+
+  "dette": "Debt",
+  "nouvelle_dette": "New debt",
+  "modifier_dette": "Edit debt",
+  "associe": "Partner",
+  "aide_associe_dette": "If this debt concerns a partner, it will automatically be factored into Individual Profits.",
+  "tous": "All",
+  "non_soldee": "Outstanding",
+  "soldee": "Settled",
+  "marquer_soldee": "Mark as settled",
+
+  "benefice_individuel": "Individual Profits",
+  "benefice_reel_global": "Season's global real profit"
+
+
 
 
 

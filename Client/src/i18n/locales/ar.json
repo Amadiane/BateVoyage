@@ -789,7 +789,20 @@
   "benefice_global": "الأرباح الإجمالية",
   "designation": "البيان",
   "observation": "ملاحظة",
-  "observation_placeholder": "ملاحظات حرة حول هذا الموسم..."
+  "observation_placeholder": "ملاحظات حرة حول هذا الموسم...",
+
+  "dette": "الدين",
+  "nouvelle_dette": "دين جديد",
+  "modifier_dette": "تعديل الدين",
+  "associe": "الشريك",
+  "aide_associe_dette": "إذا كان هذا الدين يخص أحد الشركاء، فسيتم احتسابه تلقائيًا ضمن الأرباح الفردية.",
+  "tous": "الكل",
+  "non_soldee": "غير مسددة",
+  "soldee": "مسددة",
+  "marquer_soldee": "وضع علامة كمسددة",
+
+  "benefice_individuel": "الأرباح الفردية",
+  "benefice_reel_global": "الربح الحقيقي الإجمالي للموسم"
 
 
 

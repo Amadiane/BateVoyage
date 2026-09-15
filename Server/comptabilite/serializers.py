@@ -3,7 +3,7 @@ from rest_framework import serializers
 from .models import (
     BonSortie, Depense, DetteFournisseur,
     CategorieDecaissement, Decaissement, TauxChange, SaisonComptable,
-    ObservationBeneficeGlobal,
+    ObservationBeneficeGlobal, Dette, Associe, 
 )
 
 class BonSortieSerializer(serializers.ModelSerializer):
@@ -89,5 +89,24 @@ class SaisonComptableSerializer(serializers.ModelSerializer):
 class ObservationBeneficeGlobalSerializer(serializers.ModelSerializer):
     class Meta:
         model = ObservationBeneficeGlobal
+        fields = "__all__"
+
+class DetteSerializer(serializers.ModelSerializer):
+    associe_nom = serializers.CharField(source="associe.nom_complet", read_only=True, default=None)
+    enregistre_par_nom = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Dette
+        fields = "__all__"
+        read_only_fields = ["enregistre_par", "date_creation"]
+
+    def get_enregistre_par_nom(self, obj):
+        nom = obj.enregistre_par.get_full_name()
+        return nom if nom.strip() else obj.enregistre_par.username
+
+
+class AssocieSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Associe
         fields = "__all__"
 

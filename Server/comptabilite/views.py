@@ -12,11 +12,11 @@ from utilisateurs.permissions import EstGestionnaireFinancier
 from django.db.models import Sum
 from .models import (
     BonSortie, Depense, DetteFournisseur,
-    CategorieDecaissement, Decaissement, TauxChange, SaisonComptable, ObservationBeneficeGlobal,
+    CategorieDecaissement, Decaissement, TauxChange, SaisonComptable, ObservationBeneficeGlobal, Dette, Associe,
 )
 from .serializers import (
     BonSortieSerializer, DepenseSerializer, DetteFournisseurSerializer,
-    CategorieDecaissementSerializer, DecaissementSerializer, TauxChangeSerializer, SaisonComptableSerializer, ObservationBeneficeGlobalSerializer,
+    CategorieDecaissementSerializer, DecaissementSerializer, TauxChangeSerializer, SaisonComptableSerializer, ObservationBeneficeGlobalSerializer, DetteSerializer, AssocieSerializer,
 )
 
 
@@ -329,3 +329,124 @@ class BeneficeGlobalView(APIView):
         obs.texte = texte
         obs.save()
         return Response({"detail": "Observation enregistrée."})
+
+
+class DetteViewSet(viewsets.ModelViewSet):
+    queryset = Dette.objects.select_related("associe", "enregistre_par").all()
+    serializer_class = DetteSerializer
+    permission_classes = [EstGestionnaireFinancier]
+    filterset_fields = ["soldee", "associe", "devise"]
+    search_fields = ["nom", "prenom"]
+
+    def perform_create(self, serializer):
+        with set_actor(self.request.user):
+            serializer.save(enregistre_par=self.request.user)
+
+    def perform_update(self, serializer):
+        with set_actor(self.request.user):
+            serializer.save()
+
+    def perform_destroy(self, instance):
+        with set_actor(self.request.user):
+            instance.delete()
+
+
+class AssocieViewSet(viewsets.ModelViewSet):
+    queryset = Associe.objects.all()
+    serializer_class = AssocieSerializer
+    permission_classes = [EstGestionnaireFinancier]
+
+
+class BeneficeIndividuelView(APIView):
+    permission_classes = [EstGestionnaireFinancier]
+
+    def get(self, request):
+        activite = request.query_params.get("activite", "hajj")
+        saison_id = request.query_params.get("saison")
+        taux, _ = TauxChange.objects.get_or_create(id=1, defaults={"taux_usd": 8600, "taux_sar": 2300})
+
+        # --- Récupère le bénéfice global déjà calculé, via la même logique que BeneficeGlobalView ---
+        from paiements.models import Paiement
+        type_voyage = "pelerinage" if activite == "hajj" else "oumra"
+
+        if saison_id:
+            paiements_saison = Paiement.objects.filter(saison_id=saison_id)
+            total_encaisse = float(
+                (paiements_saison if paiements_saison.exists() else Paiement.objects.filter(pelerin__type_voyage=type_voyage))
+                .aggregate(t=Sum("montant"))["t"] or 0
+            )
+        else:
+            total_encaisse = float(Paiement.objects.filter(pelerin__type_voyage=type_voyage).aggregate(t=Sum("montant"))["t"] or 0)
+
+        decaissements_saison = Decaissement.objects.filter(activite=activite)
+        if saison_id:
+            decaissements_saison = decaissements_saison.filter(saison_id=saison_id)
+        total_decaisse = 0.0
+        for d in decaissements_saison:
+            montant = float(d.montant)
+            if d.devise == "USD":
+                montant *= float(taux.taux_usd)
+            elif d.devise == "SAR":
+                montant *= float(taux.taux_sar)
+            total_decaisse += montant
+
+        total_creance = float(BonSortie.objects.filter(activite=activite, justifie=False).aggregate(t=Sum("montant"))["t"] or 0)
+        total_dette_fournisseur = float(DetteFournisseur.objects.filter(activite=activite, soldee=False).aggregate(t=Sum("montant_du"))["t"] or 0)
+
+        benefice_provisoire = total_encaisse - total_decaisse
+        difference = total_creance - total_dette_fournisseur
+        benefice_reel = benefice_provisoire - difference
+
+        def convertir(montant_gnf):
+            return {
+                "gnf": round(montant_gnf, 2),
+                "usd": round(montant_gnf / float(taux.taux_usd), 2) if taux.taux_usd else 0,
+                "sar": round(montant_gnf / float(taux.taux_sar), 2) if taux.taux_sar else 0,
+            }
+
+        # --- Répartition par associé ---
+        associes = Associe.objects.all().order_by("ordre")
+        resultats = []
+        for a in associes:
+            part_benefice_gnf = benefice_reel * (float(a.pourcentage_part) / 100)
+
+            if a.est_caisse:
+                # La caisse ne porte pas de dette personnelle — juste sa part (10%)
+                resultats.append({
+                    "associe_id": a.id,
+                    "nom": a.nom_complet,
+                    "pourcentage": float(a.pourcentage_part),
+                    "lignes": [
+                        {"designation": f"{a.pourcentage_part}% du Bénéfice global", "valeurs": convertir(part_benefice_gnf)},
+                    ],
+                })
+                continue
+
+            total_dettes_associe_gnf = 0.0
+            for dette in Dette.objects.filter(associe=a, soldee=False):
+                montant = float(dette.montant)
+                if dette.devise == "USD":
+                    montant *= float(taux.taux_usd)
+                elif dette.devise == "SAR":
+                    montant *= float(taux.taux_sar)
+                total_dettes_associe_gnf += montant
+
+            difference_dette_benefice = total_dettes_associe_gnf - part_benefice_gnf
+            benefice_net_individuel = part_benefice_gnf - total_dettes_associe_gnf
+
+            resultats.append({
+                "associe_id": a.id,
+                "nom": a.nom_complet,
+                "pourcentage": float(a.pourcentage_part),
+                "lignes": [
+                    {"designation": f"{a.pourcentage_part}% du Bénéfice global", "valeurs": convertir(part_benefice_gnf)},
+                    {"designation": "Total de ses dettes", "valeurs": convertir(total_dettes_associe_gnf)},
+                    {"designation": "Différence entre Dette et Bénéfice", "valeurs": convertir(difference_dette_benefice)},
+                    {"designation": "Bénéfice net individuel", "valeurs": convertir(benefice_net_individuel)},
+                ],
+            })
+
+        return Response({
+            "benefice_reel_global": convertir(benefice_reel),
+            "associes": resultats,
+        })

@@ -22,4 +22,10 @@ export const decaissementService = {
   obtenirEncaissements: (activite) => api.get(CONFIG.API_ENCAISSEMENTS, { params: { activite } }),
   obtenirBeneficeGlobal: (activite, saison) => api.get(CONFIG.API_BENEFICE_GLOBAL, { params: { activite, saison } }),
   enregistrerObservationBeneficeGlobal: (saison, observation) => api.patch(CONFIG.API_BENEFICE_GLOBAL, { saison, observation }),
+  listerDettes: (params) => api.get(CONFIG.API_DETTES, { params }),
+  creerDette: (donnees) => api.post(CONFIG.API_DETTES, donnees),
+  modifierDette: (id, donnees) => api.patch(CONFIG.API_DETTE_DETAIL(id), donnees),
+  supprimerDette: (id) => api.delete(CONFIG.API_DETTE_DETAIL(id)),
+  listerAssocies: () => api.get(CONFIG.API_ASSOCIES),
+  obtenirBeneficeIndividuel: (activite, saison) => api.get(CONFIG.API_BENEFICE_INDIVIDUEL, { params: { activite, saison } }),
 };

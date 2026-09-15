@@ -100,6 +100,12 @@ const CONFIG = {
 
   API_BENEFICE_GLOBAL: `${BASE_URL}/api/comptabilite/benefice-global/`,
 
+  API_BENEFICE_INDIVIDUEL: `${BASE_URL}/api/comptabilite/benefice-individuel/`,
+
+  API_DETTES: `${BASE_URL}/api/comptabilite/dettes/`,
+  API_DETTE_DETAIL: (id) => `${BASE_URL}/api/comptabilite/dettes/${id}/`,
+  API_ASSOCIES: `${BASE_URL}/api/comptabilite/associes/`,
+
   // --- Formules / Programmes ---
   API_PROGRAMMES: `${BASE_URL}/api/formules/programmes/`,
 

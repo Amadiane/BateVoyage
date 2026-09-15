@@ -3,7 +3,7 @@ from rest_framework.routers import DefaultRouter
 from .views import (
     BonSortieViewSet, DepenseViewSet, DetteFournisseurViewSet, ResumeComptabiliteView,
     CategorieDecaissementViewSet, DecaissementViewSet, TauxChangeView,
-    SaisonComptableViewSet, EncaissementView, BeneficeGlobalView,
+    SaisonComptableViewSet, EncaissementView, BeneficeGlobalView, DetteViewSet, BeneficeIndividuelView, AssocieViewSet
 )
 
 router = DefaultRouter()
@@ -13,11 +13,14 @@ router.register("dettes-fournisseurs", DetteFournisseurViewSet, basename="dettes
 router.register("categories-decaissement", CategorieDecaissementViewSet, basename="categories-decaissement")
 router.register("decaissements", DecaissementViewSet, basename="decaissements")
 router.register("saisons", SaisonComptableViewSet, basename="saisons")
+router.register("dettes", DetteViewSet, basename="dettes")
+router.register("associes", AssocieViewSet, basename="associes")
 
 urlpatterns = [
     path("resume/", ResumeComptabiliteView.as_view(), name="resume-comptabilite"),
     path("taux-change/", TauxChangeView.as_view(), name="taux-change"),
     path("encaissements/", EncaissementView.as_view(), name="encaissements"),
     path("benefice-global/", BeneficeGlobalView.as_view(), name="benefice-global"),
+    path("benefice-individuel/", BeneficeIndividuelView.as_view(), name="benefice-individuel"),
     path("", include(router.urls)),
 ]

@@ -796,7 +796,20 @@
   "benefice_global": "Bénéfices Global",
   "designation": "Désignation",
   "observation": "Observation",
-  "observation_placeholder": "Remarques libres sur cette saison..."
+  "observation_placeholder": "Remarques libres sur cette saison...",
+
+  "dette": "Dette",
+  "nouvelle_dette": "Nouvelle dette",
+  "modifier_dette": "Modifier la dette",
+  "associe": "Associé",
+  "aide_associe_dette": "Si cette dette concerne un associé, elle sera automatiquement prise en compte dans Bénéfices Individuels.",
+  "tous": "Tous",
+  "non_soldee": "Non soldée",
+  "soldee": "Soldée",
+  "marquer_soldee": "Marquer comme soldée",
+
+  "benefice_individuel": "Bénéfices Individuels",
+  "benefice_reel_global": "Bénéfice réel global de la saison"
 
 
 

@@ -40,6 +40,8 @@ import DetailVehicule from "./pages/moduleVoyage/DetailVehicule";
 import PageDecaissementDetail from "./pages/comptabilite/PageDecaissementDetail";
 import PageEncaissement from "./pages/comptabilite/PageEncaissement";
 import PageBeneficeGlobal from "./pages/comptabilite/PageBeneficeGlobal";
+import PageDettePersonnelle from "./pages/comptabilite/PageDettePersonnelle";
+import PageBeneficeIndividuel from "./pages/comptabilite/PageBeneficeIndividuel";
 
 import "./globals.css";
 
@@ -95,6 +97,8 @@ function App() {
           <Route path="/hajj/finances/encaissement" element={<PageEncaissement activite="hajj" basePath="/hajj" />} />
           <Route path="/hajj/finances/frais-personnels" element={<PageDecaissementDetail activite="personnel" basePath="/hajj" />} />
           <Route path="/hajj/finances/benefice-global" element={<PageBeneficeGlobal activite="hajj" basePath="/hajj" />} />
+          <Route path="/hajj/finances/dette" element={<PageDettePersonnelle basePath="/hajj" />} />
+          <Route path="/hajj/finances/benefice-individuel" element={<PageBeneficeIndividuel activite="hajj" basePath="/hajj" />} />
 
           {/* Module Oumra */}
           <Route path="/oumra" element={<PageModuleVoyage typeVoyage="oumra" basePath="/oumra" titreCle="menu_oumra" />} />
