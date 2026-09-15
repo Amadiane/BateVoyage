@@ -106,6 +106,8 @@ const CONFIG = {
   API_DETTE_DETAIL: (id) => `${BASE_URL}/api/comptabilite/dettes/${id}/`,
   API_ASSOCIES: `${BASE_URL}/api/comptabilite/associes/`,
 
+  API_DEPENSES_PELERIN: `${BASE_URL}/api/comptabilite/depenses-pelerin/`,
+
   // --- Formules / Programmes ---
   API_PROGRAMMES: `${BASE_URL}/api/formules/programmes/`,
 

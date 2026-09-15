@@ -809,7 +809,12 @@
   "marquer_soldee": "Marquer comme soldée",
 
   "benefice_individuel": "Bénéfices Individuels",
-  "benefice_reel_global": "Bénéfice réel global de la saison"
+  "benefice_reel_global": "Bénéfice réel global de la saison",
+
+  "benefice_pelerin": "Bénéfices par Pèlerin",
+  "selectionner_pelerin": "Sélectionner un pèlerin",
+  "ajouter_depense": "Ajouter une dépense",
+  "detail_depenses": "Détail des dépenses"
 
 
 

@@ -28,4 +28,8 @@ export const decaissementService = {
   supprimerDette: (id) => api.delete(CONFIG.API_DETTE_DETAIL(id)),
   listerAssocies: () => api.get(CONFIG.API_ASSOCIES),
   obtenirBeneficeIndividuel: (activite, saison) => api.get(CONFIG.API_BENEFICE_INDIVIDUEL, { params: { activite, saison } }),
+  listerDepensesPelerin: (pelerinId) => api.get(CONFIG.API_DEPENSES_PELERIN, { params: { pelerin: pelerinId } }),
+  creerDepensePelerin: (donnees) => api.post(CONFIG.API_DEPENSES_PELERIN, donnees),
+  supprimerDepensePelerin: (id) => api.delete(`${CONFIG.API_DEPENSES_PELERIN}${id}/`),
+  obtenirRecapPelerin: (pelerinId) => api.get(`${CONFIG.API_DEPENSES_PELERIN}recapitulatif-pelerin/`, { params: { pelerin: pelerinId } }),
 };

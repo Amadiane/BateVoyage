@@ -802,7 +802,12 @@
   "marquer_soldee": "وضع علامة كمسددة",
 
   "benefice_individuel": "الأرباح الفردية",
-  "benefice_reel_global": "الربح الحقيقي الإجمالي للموسم"
+  "benefice_reel_global": "الربح الحقيقي الإجمالي للموسم",
+
+  "benefice_pelerin": "الربح لكل حاج",
+  "selectionner_pelerin": "اختر حاجًا",
+  "ajouter_depense": "إضافة مصروف",
+  "detail_depenses": "تفاصيل المصاريف"
 
 
 

@@ -3,7 +3,7 @@ from rest_framework import serializers
 from .models import (
     BonSortie, Depense, DetteFournisseur,
     CategorieDecaissement, Decaissement, TauxChange, SaisonComptable,
-    ObservationBeneficeGlobal, Dette, Associe, 
+    ObservationBeneficeGlobal, Dette, Associe, DepensePelerin
 )
 
 class BonSortieSerializer(serializers.ModelSerializer):
@@ -110,3 +110,11 @@ class AssocieSerializer(serializers.ModelSerializer):
         model = Associe
         fields = "__all__"
 
+
+class DepensePelerinSerializer(serializers.ModelSerializer):
+    categorie_display = serializers.CharField(source="get_categorie_display", read_only=True)
+
+    class Meta:
+        model = DepensePelerin
+        fields = "__all__"
+        read_only_fields = ["enregistre_par", "date_creation"]

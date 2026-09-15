@@ -798,7 +798,12 @@
   "marquer_soldee": "Mark as settled",
 
   "benefice_individuel": "Individual Profits",
-  "benefice_reel_global": "Season's global real profit"
+  "benefice_reel_global": "Season's global real profit",
+
+  "benefice_pelerin": "Profit per Pilgrim",
+  "selectionner_pelerin": "Select a pilgrim",
+  "ajouter_depense": "Add an expense",
+  "detail_depenses": "Expense details"
 
 
 

@@ -17,8 +17,10 @@ function PageBeneficeIndividuel({ activite, basePath }) {
     if (!idSaison) { setDonnees(null); return; }
     const { data } = await decaissementService.obtenirBeneficeIndividuel(activite, idSaison);
     setDonnees(data);
-    if (!associeSelectionne && data.associes.length > 0) {
-      setAssocieSelectionne(data.associes[0].associe_id);
+    // Sélectionne toujours le premier associé après un rechargement,
+    // pour éviter qu'un ID sélectionné avant ne correspondre à rien.
+    if (data.associes.length > 0) {
+      setAssocieSelectionne(Number(data.associes[0].associe_id));
     }
   };
 
@@ -44,7 +46,11 @@ function PageBeneficeIndividuel({ activite, basePath }) {
 
   if (chargement) return <p className={styles.chargement}>{t("chargement")}</p>;
 
-  const associeAffiche = donnees?.associes.find((a) => a.associe_id === associeSelectionne);
+  // Comparaison explicitement forcée en nombre des deux côtés — évite tout
+  // échec silencieux de .find() dû à une différence string/number.
+  const associeAffiche = donnees?.associes.find(
+    (a) => Number(a.associe_id) === Number(associeSelectionne)
+  );
 
   return (
     <div>
@@ -69,15 +75,15 @@ function PageBeneficeIndividuel({ activite, basePath }) {
             {donnees.associes.map((a) => (
               <button
                 key={a.associe_id}
-                className={associeSelectionne === a.associe_id ? styles.boutonPrincipal : styles.boutonSecondaire}
-                onClick={() => setAssocieSelectionne(a.associe_id)}
+                className={Number(associeSelectionne) === Number(a.associe_id) ? styles.boutonPrincipal : styles.boutonSecondaire}
+                onClick={() => setAssocieSelectionne(Number(a.associe_id))}
               >
                 {a.nom} ({a.pourcentage}%)
               </button>
             ))}
           </div>
 
-          {associeAffiche && (
+          {associeAffiche ? (
             <div className={styles.conteneurRecap}>
               <table className={styles.tableauRecap}>
                 <thead>
@@ -100,6 +106,8 @@ function PageBeneficeIndividuel({ activite, basePath }) {
                 </tbody>
               </table>
             </div>
+          ) : (
+            <p className={styles.etatVide}>{t("aucun_associe_selectionne")}</p>
           )}
         </>
       )}

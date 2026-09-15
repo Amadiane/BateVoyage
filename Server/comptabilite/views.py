@@ -12,11 +12,11 @@ from utilisateurs.permissions import EstGestionnaireFinancier
 from django.db.models import Sum
 from .models import (
     BonSortie, Depense, DetteFournisseur,
-    CategorieDecaissement, Decaissement, TauxChange, SaisonComptable, ObservationBeneficeGlobal, Dette, Associe,
+    CategorieDecaissement, Decaissement, TauxChange, SaisonComptable, ObservationBeneficeGlobal, Dette, Associe, DepensePelerin,
 )
 from .serializers import (
     BonSortieSerializer, DepenseSerializer, DetteFournisseurSerializer,
-    CategorieDecaissementSerializer, DecaissementSerializer, TauxChangeSerializer, SaisonComptableSerializer, ObservationBeneficeGlobalSerializer, DetteSerializer, AssocieSerializer,
+    CategorieDecaissementSerializer, DecaissementSerializer, TauxChangeSerializer, SaisonComptableSerializer, ObservationBeneficeGlobalSerializer, DetteSerializer, AssocieSerializer, DepensePelerinSerializer
 )
 
 
@@ -450,3 +450,60 @@ class BeneficeIndividuelView(APIView):
             "benefice_reel_global": convertir(benefice_reel),
             "associes": resultats,
         })
+
+
+class DepensePelerinViewSet(viewsets.ModelViewSet):
+    queryset = DepensePelerin.objects.select_related("pelerin").all()
+    serializer_class = DepensePelerinSerializer
+    permission_classes = [EstGestionnaireFinancier]
+    filterset_fields = ["pelerin", "categorie"]
+
+    def perform_create(self, serializer):
+        with set_actor(self.request.user):
+            serializer.save(enregistre_par=self.request.user)
+
+    def perform_destroy(self, instance):
+        with set_actor(self.request.user):
+            instance.delete()
+
+    @action(detail=False, methods=["get"], url_path="recapitulatif-pelerin")
+    def recapitulatif_pelerin(self, request):
+        from pelerins.models import Pelerin
+        pelerin_id = request.query_params.get("pelerin")
+        if not pelerin_id:
+            return Response({"erreur": "Pèlerin requis."}, status=400)
+
+        pelerin = Pelerin.objects.get(id=pelerin_id)
+        taux, _ = TauxChange.objects.get_or_create(id=1, defaults={"taux_usd": 8600, "taux_sar": 2300})
+
+        depenses = DepensePelerin.objects.filter(pelerin=pelerin)
+
+        totaux_categorie = {}
+        for cle, label in DepensePelerin.Categorie.choices:
+            totaux_categorie[cle] = {"label": label, "gnf": 0.0}
+
+        for d in depenses:
+            montant = float(d.montant)
+            if d.devise == "USD":
+                montant *= float(taux.taux_usd)
+            elif d.devise == "SAR":
+                montant *= float(taux.taux_sar)
+            totaux_categorie[d.categorie]["gnf"] += montant
+
+        def convertir(montant_gnf):
+            return {
+                "gnf": round(montant_gnf, 2),
+                "usd": round(montant_gnf / float(taux.taux_usd), 2) if taux.taux_usd else 0,
+                "sar": round(montant_gnf / float(taux.taux_sar), 2) if taux.taux_sar else 0,
+            }
+
+        lignes = [{"designation": v["label"], "valeurs": convertir(v["gnf"])} for v in totaux_categorie.values()]
+        total_depense = sum(v["gnf"] for v in totaux_categorie.values())
+        total_versement = float(pelerin.montant_total_verse or 0)
+        benefice = total_versement - total_depense
+
+        lignes.append({"designation": "TOTAL DÉPENSE PÈLERIN", "valeurs": convertir(total_depense), "gras": True})
+        lignes.append({"designation": "TOTAL VERSEMENTS PÈLERIN", "valeurs": convertir(total_versement), "gras": True})
+        lignes.append({"designation": "BÉNÉFICE PAR PÈLERIN", "valeurs": convertir(benefice), "gras": True})
+
+        return Response({"lignes": lignes})

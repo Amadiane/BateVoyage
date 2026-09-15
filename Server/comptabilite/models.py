@@ -386,3 +386,39 @@ class Dette(models.Model):
     def __str__(self):
         return f"{self.prenom} {self.nom} — {self.montant} {self.devise}"
 
+
+class DepensePelerin(models.Model):
+    class Categorie(models.TextChoices):
+        CHARGES_COMMUNES = "charges_communes", "Charges communes"
+        IBAN = "iban", "Charges particulières IBAN"
+        CONSULAT = "consulat", "Charges particulières CONSULAT"
+        TRANSPORT_MOUNAZIM = "transport_mounazim", "Transport Mounazim"
+        PRIME_MOUNAZIM = "prime_mounazim", "Prime Mounazim"
+        SCAN_PASSEPORT = "scan_passeport", "Scan passeport pour Visa"
+        FRAIS_DOCTEUR = "frais_docteur", "Frais docteur"
+        MEDICAMENTS = "medicaments", "Frais médicaments pèlerins"
+        UNAPO = "unapo", "Cotisation UNAPO"
+        DNP = "dnp", "Frais DNP"
+        MOUTON = "mouton", "Frais mouton"
+        DIFFERENCE_TAUX = "difference_taux", "Différence de taux d'échange"
+        ENVOI_CONSULAT = "envoi_consulat", "Frais d'envoi au consulat"
+        PRIME_GUIDE = "prime_guide", "Prime Guide"
+        DEPENSES_PERSONNELLES = "depenses_personnelles", "Dépenses personnelles"
+        AUTRE = "autre", "Autres dépenses"
+
+    pelerin = models.ForeignKey("pelerins.Pelerin", on_delete=models.CASCADE, related_name="depenses_individuelles")
+    categorie = models.CharField(max_length=30, choices=Categorie.choices)
+    libelle_complementaire = models.CharField(max_length=255, blank=True)
+    montant = models.DecimalField(max_digits=14, decimal_places=2)
+    devise = models.CharField(max_length=3, choices=Devise.choices, default=Devise.GNF)
+    date = models.DateField()
+    enregistre_par = models.ForeignKey("utilisateurs.Utilisateur", on_delete=models.PROTECT, related_name="depenses_pelerin_enregistrees")
+    date_creation = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["-date"]
+        verbose_name = "Dépense par pèlerin"
+
+    def __str__(self):
+        return f"{self.pelerin} — {self.get_categorie_display()} — {self.montant} {self.devise}"
+
