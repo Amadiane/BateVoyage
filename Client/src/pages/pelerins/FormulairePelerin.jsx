@@ -198,6 +198,7 @@ function FormulairePelerin() {
   if (!modeEdition && !typeVoyageFixe) {
     return (
       <div className={styles.page}>
+        <button className={styles.retour} onClick={() => navigate(-1)}>← {t("retour")}</button>
         <h1 className={styles.titre}>{t("choisir_type_voyage")}</h1>
         <div className={styles.choixType}>
           <button className={styles.carteChoixType} onClick={() => navigate("/pelerins/nouveau?type=pelerinage")}>
@@ -213,6 +214,7 @@ function FormulairePelerin() {
 
   return (
     <div className={styles.page}>
+      <button className={styles.retour} onClick={() => navigate(-1)}>← {t("retour")}</button>
       <h1 className={styles.titre}>{modeEdition ? t("modifier_pelerin") : t("nouveau_pelerin")}</h1>
 
       <div className={styles.etapes}>

@@ -539,3 +539,14 @@
   cursor: pointer;
 }
 .boutonContinuerPlusTard:hover { background-color: #F9FAFB; }
+
+.retour {
+  background: none;
+  border: none;
+  color: #8B8578;
+  font-size: 13px;
+  cursor: pointer;
+  padding: 0;
+  margin-bottom: 20px;
+}
+.retour:hover { color: var(--color-brand); }

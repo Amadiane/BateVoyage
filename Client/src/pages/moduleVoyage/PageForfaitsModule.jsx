@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { Plus, X, Download, Trash2, Pencil } from "lucide-react";
+import { Plus, X, Trash2, Pencil, Users, Download } from "lucide-react";
 import { forfaitService } from "../../services/forfaitService";
 import { telechargerFichierProtege } from "../../utils/telechargement";
+import ModalConfirmation from "../../components/ModalConfirmation/ModalConfirmation";
 import styles from "../../theme/pages/moduleVoyage/PageForfaitsModule.module.css";
 
 const PRESTATIONS_TOUJOURS = ["Billet d'avion", "Visa", "Hôtel Makkah", "Hôtel Médine", "Restauration", "Transport"];
@@ -31,6 +32,7 @@ function PageForfaitsModule({ typeVoyage, basePath }) {
   const [lignes, setLignes] = useState([]);
   const [envoi, setEnvoi] = useState(false);
   const [erreur, setErreur] = useState("");
+  const [aSupprimer, setASupprimer] = useState(null);
 
   const charger = () => {
     setChargement(true);
@@ -62,27 +64,20 @@ function PageForfaitsModule({ typeVoyage, basePath }) {
   };
 
   const majChamp = (champ, val) => setValeurs((v) => ({ ...v, [champ]: val }));
-
-  const majLigne = (index, champ, val) => {
-    setLignes((liste) => liste.map((l, i) => (i === index ? { ...l, [champ]: val } : l)));
-  };
-
+  const majLigne = (index, champ, val) => setLignes((liste) => liste.map((l, i) => (i === index ? { ...l, [champ]: val } : l)));
   const ajouterLigne = () => setLignes((liste) => [...liste, { libelle: "", montant: "" }]);
   const retirerLigne = (index) => setLignes((liste) => liste.filter((_, i) => i !== index));
 
   const totalLignes = lignes.reduce((s, l) => s + (parseInt(l.montant) || 0), 0);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleSubmit = async () => {
     setErreur("");
     setEnvoi(true);
     try {
       const donnees = {
         ...valeurs,
         type_voyage: typeVoyage,
-        lignes: lignes
-          .filter((l) => l.libelle.trim())
-          .map((l) => ({ libelle: l.libelle, montant: parseInt(l.montant) || 0 })),
+        lignes: lignes.filter((l) => l.libelle.trim()).map((l) => ({ libelle: l.libelle, montant: parseInt(l.montant) || 0 })),
       };
       if (forfaitAModifier) {
         await forfaitService.modifier(forfaitAModifier.id, donnees);
@@ -98,18 +93,21 @@ function PageForfaitsModule({ typeVoyage, basePath }) {
     }
   };
 
-  const supprimer = async (id) => {
-    if (!window.confirm(t("confirmer_suppression"))) return;
-    await forfaitService.supprimer(id);
+  const confirmerSuppression = async () => {
+    await forfaitService.supprimer(aSupprimer.id);
+    setASupprimer(null);
     charger();
   };
 
-  const exporterPdf = (f) => {
+  const exporterPdf = (f, e) => {
+    e.stopPropagation();
     telechargerFichierProtege(forfaitService.urlExportPdf(f.id), `devis_${f.nom}.pdf`);
   };
 
+  const COULEURS_STANDARD = { vip: "#C7A44A", semi_vip: "#2B6CE0", standard: "#2F9E5C" };
+
   return (
-    <div>
+    <div className={styles.page}>
       <button className={styles.retour} onClick={() => navigate(basePath)}>← {t("retour")}</button>
 
       <div className={styles.entete}>
@@ -123,12 +121,13 @@ function PageForfaitsModule({ typeVoyage, basePath }) {
         {chargement && <p className={styles.etatVide}>{t("chargement")}</p>}
         {!chargement && forfaits.length === 0 && <p className={styles.etatVide}>{t("aucun_forfait")}</p>}
         {!chargement && forfaits.map((f) => (
-          <div key={f.id} className={`${styles.carte} ${styles["bordure_" + f.standard]}`}>
+          <div key={f.id} className={styles.carte} style={{ "--couleur-standard": COULEURS_STANDARD[f.standard] }}>
+            <span className={styles.barreHaut} />
             <div className={styles.bandeau}>
-              <span className={`${styles.badge} ${styles["badge_" + f.standard]}`}>{f.standard_display}</span>
+              <span className={styles.badge}>{f.standard_display}</span>
               <div className={styles.actions}>
-                <button onClick={() => ouvrirModification(f)} title={t("modifier")}><Pencil size={13} /></button>
-                <button onClick={() => supprimer(f.id)} title={t("supprimer")} className={styles.boutonSupprimer}><Trash2 size={13} /></button>
+                <button onClick={(e) => { e.stopPropagation(); ouvrirModification(f); }} title={t("modifier")}><Pencil size={13} /></button>
+                <button onClick={(e) => { e.stopPropagation(); setASupprimer(f); }} title={t("supprimer")} className={styles.boutonSupprimer}><Trash2 size={13} /></button>
               </div>
             </div>
             <h3 className={styles.nom}>{f.nom}</h3>
@@ -142,8 +141,8 @@ function PageForfaitsModule({ typeVoyage, basePath }) {
               </span>
             </div>
             <p className={styles.places}>{f.nombre_places} {t("places_disponibles")}</p>
-            <button className={styles.boutonExport} onClick={() => exporterPdf(f)}>
-              <Download size={14} /> {t("exporter_pdf")}
+            <button className={styles.boutonExport} onClick={(e) => exporterPdf(f, e)}>
+              <Download size={13} /> {t("exporter_pdf")}
             </button>
           </div>
         ))}
@@ -156,15 +155,15 @@ function PageForfaitsModule({ typeVoyage, basePath }) {
               <h2>{forfaitAModifier ? t("modifier_forfait") : t("nouveau_forfait")}</h2>
               <button className={styles.boutonFermer} onClick={() => setModalOuverte(false)}><X size={16} /></button>
             </div>
-            <form onSubmit={handleSubmit} className={styles.formulaire}>
+            <div className={styles.formulaire}>
               <div className={styles.champ}>
                 <label>{t("nom_forfait")}</label>
-                <input value={valeurs.nom} onChange={(e) => majChamp("nom", e.target.value)} required placeholder="Hajj VIP 2027" />
+                <input value={valeurs.nom} onChange={(e) => majChamp("nom", e.target.value)} placeholder="Hajj VIP 2027" />
               </div>
               <div className={styles.ligneDeux}>
                 <div className={styles.champ}>
                   <label>{t("standard")}</label>
-                  <select value={valeurs.standard} onChange={(e) => majChamp("standard", e.target.value)} required>
+                  <select value={valeurs.standard} onChange={(e) => majChamp("standard", e.target.value)}>
                     <option value="">—</option>
                     <option value="vip">VIP</option>
                     <option value="semi_vip">Semi-VIP</option>
@@ -173,7 +172,7 @@ function PageForfaitsModule({ typeVoyage, basePath }) {
                 </div>
                 <div className={styles.champ}>
                   <label>{t("annee")}</label>
-                  <input type="number" value={valeurs.annee} onChange={(e) => majChamp("annee", e.target.value)} required />
+                  <input type="number" value={valeurs.annee} onChange={(e) => majChamp("annee", e.target.value)} />
                 </div>
               </div>
 
@@ -188,8 +187,7 @@ function PageForfaitsModule({ typeVoyage, basePath }) {
                       placeholder={t("nom_prestation")}
                     />
                     <input
-                      type="number"
-                      min="0"
+                      type="number" min="0"
                       className={styles.inputMontant}
                       value={ligne.montant}
                       onChange={(e) => majLigne(index, "montant", e.target.value)}
@@ -214,26 +212,35 @@ function PageForfaitsModule({ typeVoyage, basePath }) {
               <div className={styles.ligneDeux}>
                 <div className={styles.champ}>
                   <label>{t("prix_vente")} (GNF)</label>
-                  <input type="number" min="0" value={valeurs.prix_vente} onChange={(e) => majChamp("prix_vente", e.target.value)} required />
+                  <input type="number" min="0" value={valeurs.prix_vente} onChange={(e) => majChamp("prix_vente", e.target.value)} />
                 </div>
                 <div className={styles.champ}>
                   <label>{t("cout_reel")} (GNF)</label>
-                  <input type="number" min="0" value={valeurs.cout_reel} onChange={(e) => majChamp("cout_reel", e.target.value)} required />
+                  <input type="number" min="0" value={valeurs.cout_reel} onChange={(e) => majChamp("cout_reel", e.target.value)} />
                 </div>
               </div>
               <div className={styles.champ}>
                 <label>{t("nombre_places")}</label>
-                <input type="number" min="0" value={valeurs.nombre_places} onChange={(e) => majChamp("nombre_places", e.target.value)} required />
+                <input type="number" min="0" value={valeurs.nombre_places} onChange={(e) => majChamp("nombre_places", e.target.value)} />
               </div>
 
               {erreur && <p className={styles.erreur}>{erreur}</p>}
               <div className={styles.navigationModal}>
                 <button type="button" className={styles.boutonSecondaire} onClick={() => setModalOuverte(false)}>{t("annuler")}</button>
-                <button type="submit" className={styles.boutonPrincipal} disabled={envoi}>{envoi ? t("enregistrement") : t("enregistrer")}</button>
+                <button type="button" className={styles.boutonPrincipal} onClick={handleSubmit} disabled={envoi}>{envoi ? t("enregistrement") : t("enregistrer")}</button>
               </div>
-            </form>
+            </div>
           </div>
         </div>
+      )}
+
+      {aSupprimer && (
+        <ModalConfirmation
+          titre={t("confirmer_suppression_titre")}
+          message={t("confirmer_suppression_message")}
+          onConfirmer={confirmerSuppression}
+          onAnnuler={() => setASupprimer(null)}
+        />
       )}
     </div>
   );

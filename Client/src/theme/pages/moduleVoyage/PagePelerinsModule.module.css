@@ -1,83 +1,86 @@
 .page {
-  min-height: calc(100vh - 64px);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
+  max-width: 640px;
+  margin: 0 auto;
 }
 
 .retour {
   background: none;
   border: none;
-  color: #6B7280;
+  color: #8B8578;
   font-size: 13px;
   cursor: pointer;
   padding: 0;
-  position: absolute;
-  top: 0;
-  left: 0;
+  margin-bottom: 20px;
 }
 .retour:hover { color: var(--color-brand); }
 
 .titre {
   font-family: var(--font-display);
   font-size: 24px;
-  color: var(--color-brand-dark);
-  margin: 0 0 32px;
+  color: #10151F;
+  margin: 0 0 28px;
+  letter-spacing: -0.01em;
 }
 
 .grilleActions {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 32px;
-  width: 100%;
-  max-width: 640px;
+  gap: 20px;
 }
 
 .carteAction {
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  gap: 20px;
-  padding: 52px 28px;
-  border: 2px solid var(--color-border);
-  border-radius: 18px;
-  background-color: #fff;
+  gap: 12px;
+  padding: 36px 20px 26px;
+  border: 1px solid #E4E1D8;
+  border-radius: 16px;
+  background-color: #FFFFFF;
   cursor: pointer;
-  transition: border-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
+  overflow: hidden;
+  text-align: center;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
 .carteAction:hover {
-  box-shadow: 0 10px 24px rgba(11,14,20,0.1);
   transform: translateY(-3px);
+  box-shadow: 0 12px 28px rgba(16,21,31,0.09);
 }
 
-.bordure_bleu { border-color: #93C5FD; }
-.bordure_or { border-color: #E8C766; }
+.barreHaut {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+}
 
 .iconeCercle {
-  width: 68px;
-  height: 68px;
-  border-radius: 16px;
+  width: 56px;
+  height: 56px;
+  border-radius: 15px;
   display: flex;
   align-items: center;
   justify-content: center;
+  color: #FFFFFF;
 }
 
-.cercle_bleu { background-color: #DBEAFE; color: #1E40AF; }
-.cercle_or { background-color: #FBF6EA; color: #A88530; }
-
 .libelle {
-  font-size: 17px;
+  font-size: 15px;
   font-weight: 700;
-  color: var(--color-ink);
+  color: #10151F;
+}
+
+.description {
+  font-size: 12px;
+  color: #8B8578;
+  line-height: 1.4;
 }
 
 @media (max-width: 560px) {
   .grilleActions {
     grid-template-columns: 1fr;
-    max-width: 280px;
   }
 }

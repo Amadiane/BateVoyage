@@ -833,7 +833,15 @@
   "paye": "Payé",
   "non_paye": "Non payé",
   "marquer_paye": "Marquer comme payé",
-  "client_nom_libre": "Nom du client (si pas un pèlerin)"
+  "client_nom_libre": "Nom du client (si pas un pèlerin)",
+
+  "section_tresorerie": "Trésorerie",
+  "section_rentabilite": "Rentabilité",
+  "section_dettes_creances": "Dettes & Créances",
+  "section_documents_suivi": "Documents & Suivi",
+
+  "desc_nouveau_pelerin": "Inscrire un nouveau pèlerin au programme",
+  "desc_liste_pelerins": "Consulter et gérer les dossiers existants"
 
 
 

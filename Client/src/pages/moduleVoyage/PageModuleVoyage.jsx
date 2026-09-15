@@ -29,12 +29,13 @@ function PageModuleVoyage({ typeVoyage, basePath, titreCle }) {
           return (
             <button
               key={m.cle}
-              className={`${styles.carteSousModule} ${styles["bordure_" + m.couleur]} ${!m.actif ? styles.carteDesactivee : ""}`}
+              className={`${styles.carteSousModule} ${!m.actif ? styles.carteDesactivee : ""}`}
               disabled={!m.actif}
               onClick={() => m.actif && navigate(`${basePath}/${m.cle}`)}
             >
+              <span className={`${styles.barreHaut} ${styles["barre_" + m.couleur]}`} />
               <div className={`${styles.iconeCercle} ${styles["cercle_" + m.couleur]}`}>
-                <Icone size={30} />
+                <Icone size={22} />
               </div>
               <span className={styles.libelle}>{t(`sous_module_${m.cle}`)}</span>
               {!m.actif && <span className={styles.badgeBientot}>{t("bientot")}</span>}

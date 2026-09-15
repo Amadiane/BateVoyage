@@ -822,7 +822,15 @@
   "paye": "Paid",
   "non_paye": "Unpaid",
   "marquer_paye": "Mark as paid",
-  "client_nom_libre": "Client name (if not a pilgrim)"
+  "client_nom_libre": "Client name (if not a pilgrim)",
+
+  "section_tresorerie": "Cash Flow",
+  "section_rentabilite": "Profitability",
+  "section_dettes_creances": "Debts & Receivables",
+  "section_documents_suivi": "Documents & Tracking",
+
+  "desc_nouveau_pelerin": "Register a new pilgrim to the program",
+  "desc_liste_pelerins": "View and manage existing records"
 
 
 

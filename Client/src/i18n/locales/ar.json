@@ -826,7 +826,15 @@
   "paye": "مدفوع",
   "non_paye": "غير مدفوع",
   "marquer_paye": "وضع علامة كمدفوع",
-  "client_nom_libre": "اسم العميل (إذا لم يكن حاجًا)"
+  "client_nom_libre": "اسم العميل (إذا لم يكن حاجًا)",
+
+  "section_tresorerie": "التدفق النقدي",
+  "section_rentabilite": "الربحية",
+  "section_dettes_creances": "الديون والمستحقات",
+  "section_documents_suivi": "المستندات والمتابعة",
+
+  "desc_nouveau_pelerin": "تسجيل حاج جديد في البرنامج",
+  "desc_liste_pelerins": "عرض وإدارة الملفات الحالية"
 
 
 
