@@ -1,6 +1,10 @@
 from rest_framework import serializers
-from .models import BonSortie, Depense, DetteFournisseur, CategorieDecaissement, Decaissement, TauxChange, SaisonComptable
-
+from rest_framework import serializers
+from .models import (
+    BonSortie, Depense, DetteFournisseur,
+    CategorieDecaissement, Decaissement, TauxChange, SaisonComptable,
+    ObservationBeneficeGlobal,
+)
 
 class BonSortieSerializer(serializers.ModelSerializer):
     numero_bon = serializers.CharField(read_only=True)
@@ -80,5 +84,10 @@ class TauxChangeSerializer(serializers.ModelSerializer):
 class SaisonComptableSerializer(serializers.ModelSerializer):
     class Meta:
         model = SaisonComptable
+        fields = "__all__"
+
+class ObservationBeneficeGlobalSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ObservationBeneficeGlobal
         fields = "__all__"
 

@@ -98,6 +98,8 @@ const CONFIG = {
 
   API_ENCAISSEMENTS: `${BASE_URL}/api/comptabilite/encaissements/`,
 
+  API_BENEFICE_GLOBAL: `${BASE_URL}/api/comptabilite/benefice-global/`,
+
   // --- Formules / Programmes ---
   API_PROGRAMMES: `${BASE_URL}/api/formules/programmes/`,
 

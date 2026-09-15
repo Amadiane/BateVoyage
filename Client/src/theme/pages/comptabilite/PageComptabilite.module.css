@@ -121,3 +121,14 @@
 .libelleBouton { font-size: 14px; font-weight: 700; color: var(--color-ink); text-align: center; }
 .bordure_vert { border-color: #86EFAC; }
 .cercle_vert { background-color: #DCFCE7; color: #166534; }
+
+.bordure_cyan { border-color: #7DD3FC; }
+.cercle_cyan { background-color: #E0F2FE; color: #0C4A6E; }
+
+.bordure_cyan { border-color: #7DD3FC; }
+.cercle_cyan { background-color: #E0F2FE; color: #0C4A6E; }
+
+.avertissementLigne { font-size: 10.5px; color: #9A3412; font-weight: 500; margin-top: 3px; font-style: italic; }
+
+.bordure_or { border-color: #E8C766; }
+.cercle_or { background-color: #FBF6EA; color: #A88530; }

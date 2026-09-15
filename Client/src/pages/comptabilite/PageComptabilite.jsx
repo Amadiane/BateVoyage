@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { Wallet, Receipt, TrendingDown, TrendingUp, Building2 } from "lucide-react";
+import { Wallet, Receipt, TrendingDown, TrendingUp, Building2, Home, PiggyBank } from "lucide-react";
 import styles from "../../theme/pages/comptabilite/PageComptabilite.module.css";
 
 function PageComptabilite({ basePath }) {
@@ -10,6 +10,8 @@ function PageComptabilite({ basePath }) {
   const boutons = [
     { cle: "decaissement", label: t("decaissements"), icone: TrendingDown, couleur: "rouge" },
     { cle: "encaissement", label: t("encaissements"), icone: TrendingUp, couleur: "vert" },
+    { cle: "frais-personnels", label: t("frais_personnels"), icone: Home, couleur: "cyan" },
+    { cle: "benefice-global", label: t("benefice_global"), icone: PiggyBank, couleur: "or" },
     { cle: "bons-sortie", label: t("bons_sortie"), icone: Receipt, couleur: "orange" },
     { cle: "depenses", label: t("depenses"), icone: Wallet, couleur: "violet" },
     { cle: "dettes", label: t("dettes_fournisseurs"), icone: Building2, couleur: "bleu" },

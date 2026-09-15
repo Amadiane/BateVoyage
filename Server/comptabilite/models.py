@@ -347,3 +347,11 @@ class TauxChange(models.Model):
     def __str__(self):
         return f"1 USD = {self.taux_usd} GNF — 1 SAR = {self.taux_sar} GNF"
 
+class ObservationBeneficeGlobal(models.Model):
+    saison = models.OneToOneField(SaisonComptable, on_delete=models.CASCADE, related_name="observation_benefice")
+    texte = models.TextField(blank=True)
+    date_modification = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = "Observation Bénéfice Global"
+

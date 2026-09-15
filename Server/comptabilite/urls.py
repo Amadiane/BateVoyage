@@ -2,9 +2,9 @@ from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from .views import (
     BonSortieViewSet, DepenseViewSet, DetteFournisseurViewSet, ResumeComptabiliteView,
-    CategorieDecaissementViewSet, DecaissementViewSet, TauxChangeView, SaisonComptableViewSet,
+    CategorieDecaissementViewSet, DecaissementViewSet, TauxChangeView,
+    SaisonComptableViewSet, EncaissementView, BeneficeGlobalView,
 )
-from .views import EncaissementView
 
 router = DefaultRouter()
 router.register("bons-sortie", BonSortieViewSet, basename="bons-sortie")
@@ -14,11 +14,10 @@ router.register("categories-decaissement", CategorieDecaissementViewSet, basenam
 router.register("decaissements", DecaissementViewSet, basename="decaissements")
 router.register("saisons", SaisonComptableViewSet, basename="saisons")
 
-
-
 urlpatterns = [
     path("resume/", ResumeComptabiliteView.as_view(), name="resume-comptabilite"),
     path("taux-change/", TauxChangeView.as_view(), name="taux-change"),
     path("encaissements/", EncaissementView.as_view(), name="encaissements"),
+    path("benefice-global/", BeneficeGlobalView.as_view(), name="benefice-global"),
     path("", include(router.urls)),
 ]

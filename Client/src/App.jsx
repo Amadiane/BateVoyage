@@ -39,6 +39,8 @@ import PageTransportModule from "./pages/moduleVoyage/PageTransportModule";
 import DetailVehicule from "./pages/moduleVoyage/DetailVehicule";
 import PageDecaissementDetail from "./pages/comptabilite/PageDecaissementDetail";
 import PageEncaissement from "./pages/comptabilite/PageEncaissement";
+import PageBeneficeGlobal from "./pages/comptabilite/PageBeneficeGlobal";
+
 import "./globals.css";
 
 const ROLES_FINANCIERS = ["fondateur", "admin_general", "comptable", "secretaire"];
@@ -86,6 +88,13 @@ function App() {
           <Route path="/hajj/finances/decaissement" element={<PageDecaissementDetail activite="hajj" basePath="/hajj" />} />
           <Route path="/oumra/finances/decaissement" element={<PageDecaissementDetail activite="oumra" basePath="/oumra" />} />
           <Route path="/hajj/finances/encaissement" element={<PageEncaissement activite="hajj" basePath="/hajj" />} />
+          <Route path="/hajj/finances/frais-personnels" element={<PageDecaissementDetail activite="personnel" basePath="/hajj" />} />
+
+          <Route path="/hajj/finances" element={<PageComptabilite basePath="/hajj" />} />
+          <Route path="/hajj/finances/decaissement" element={<PageDecaissementDetail activite="hajj" basePath="/hajj" />} />
+          <Route path="/hajj/finances/encaissement" element={<PageEncaissement activite="hajj" basePath="/hajj" />} />
+          <Route path="/hajj/finances/frais-personnels" element={<PageDecaissementDetail activite="personnel" basePath="/hajj" />} />
+          <Route path="/hajj/finances/benefice-global" element={<PageBeneficeGlobal activite="hajj" basePath="/hajj" />} />
 
           {/* Module Oumra */}
           <Route path="/oumra" element={<PageModuleVoyage typeVoyage="oumra" basePath="/oumra" titreCle="menu_oumra" />} />

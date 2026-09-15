@@ -783,7 +783,13 @@
   "historique_encaissements": "سجل المقبوضات",
   "recu": "رقم الإيصال",
   "pelerin": "الحاج",
-  "mode_paiement_label": "طريقة الدفع"
+  "mode_paiement_label": "طريقة الدفع",
+  "frais_personnels": "المصاريف الشخصية",
+
+  "benefice_global": "الأرباح الإجمالية",
+  "designation": "البيان",
+  "observation": "ملاحظة",
+  "observation_placeholder": "ملاحظات حرة حول هذا الموسم..."
 
 
 

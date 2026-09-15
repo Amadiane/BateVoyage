@@ -789,7 +789,14 @@
   "historique_encaissements": "Historique des encaissements",
   "recu": "N° Reçu",
   "pelerin": "Pèlerin",
-  "mode_paiement_label": "Mode de paiement"
+  "mode_paiement_label": "Mode de paiement",
+
+  "frais_personnels": "Frais personnels",
+
+  "benefice_global": "Bénéfices Global",
+  "designation": "Désignation",
+  "observation": "Observation",
+  "observation_placeholder": "Remarques libres sur cette saison..."
 
 
 

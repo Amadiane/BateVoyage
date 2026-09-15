@@ -30,6 +30,9 @@ class Paiement(models.Model):
     enregistre_par = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.PROTECT, related_name="paiements_enregistres"
     )
+    saison = models.ForeignKey(
+        "comptabilite.SaisonComptable", on_delete=models.SET_NULL, null=True, blank=True, related_name="paiements"
+    )
     motif_suppression = models.TextField(blank=True)
     date_creation = models.DateTimeField(auto_now_add=True)
 

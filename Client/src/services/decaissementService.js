@@ -20,4 +20,6 @@ export const decaissementService = {
   obtenirRecapitulatif: (activite, annee, saison) => api.get(`${CONFIG.API_DECAISSEMENTS}recapitulatif/`, { params: { activite, saison } }),
   obtenirHistoriqueDecaissement: (id) => api.get(`${CONFIG.API_DECAISSEMENT_DETAIL(id)}historique/`),
   obtenirEncaissements: (activite) => api.get(CONFIG.API_ENCAISSEMENTS, { params: { activite } }),
+  obtenirBeneficeGlobal: (activite, saison) => api.get(CONFIG.API_BENEFICE_GLOBAL, { params: { activite, saison } }),
+  enregistrerObservationBeneficeGlobal: (saison, observation) => api.patch(CONFIG.API_BENEFICE_GLOBAL, { saison, observation }),
 };

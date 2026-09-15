@@ -778,7 +778,14 @@
   "historique_encaissements": "Receipts history",
   "recu": "Receipt No.",
   "pelerin": "Pilgrim",
-  "mode_paiement_label": "Payment method"
+  "mode_paiement_label": "Payment method",
+
+  "frais_personnels": "Personal expenses",
+
+  "benefice_global": "Global Profit",
+  "designation": "Description",
+  "observation": "Observation",
+  "observation_placeholder": "Free notes about this season..."
 
 
 
