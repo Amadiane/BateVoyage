@@ -167,8 +167,6 @@ function PageDecaissementDetail({ activite, basePath }) {
     }
   };
 
-  const anneesAffichees = saisons;
-
   if (chargementInitial) return <p className={styles.chargement}>{t("chargement")}</p>;
 
   return (
@@ -184,7 +182,7 @@ function PageDecaissementDetail({ activite, basePath }) {
             className={styles.selectAnnee}
           >
             {saisons.length === 0 && <option value="">{t("aucune_saison")}</option>}
-            {anneesAffichees.map((s) => <option key={s.id} value={s.id}>{s.nom}</option>)}
+            {saisons.map((s) => <option key={s.id} value={s.id}>{s.nom}</option>)}
           </select>
           <button className={styles.boutonTaux} onClick={ouvrirNouvelleSaison}>
             <Plus size={14} /> {t("nouvelle_saison")}
@@ -205,6 +203,8 @@ function PageDecaissementDetail({ activite, basePath }) {
           <p className={styles.tauxActuel}>
             {t("taux_actuels")} : 1 USD = {parseFloat(recap.taux.taux_usd).toLocaleString("fr-FR")} GNF — 1 USD = {parseFloat(recap.taux.taux_sar).toLocaleString("fr-FR")} SAR
           </p>
+
+          <h2 className={styles.sousTitreListe}>{t("frais_generaux")}</h2>
           <div className={styles.conteneurRecap}>
             <table className={styles.tableauRecap}>
               <thead>
@@ -233,6 +233,45 @@ function PageDecaissementDetail({ activite, basePath }) {
               </tbody>
             </table>
           </div>
+
+          {recap.categories_personnel && recap.categories_personnel.length > 0 && (
+            <>
+              <h2 className={styles.sousTitreListe} style={{ marginTop: 22 }}>{t("frais_personnels")}</h2>
+              <div className={styles.conteneurRecap}>
+                <table className={styles.tableauRecap}>
+                  <thead>
+                    <tr>
+                      <th>{t("frais_generaux")}</th>
+                      <th>GNF</th>
+                      <th>USD</th>
+                      <th>SAR</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {recap.categories_personnel.map((c) => (
+                      <tr key={c.categorie_id}>
+                        <td className={styles.cellCategorie}>{c.categorie_nom}</td>
+                        <td className={styles.cellMontant}>{c.total_gnf.toLocaleString("fr-FR")}</td>
+                        <td className={styles.cellMontant}>{c.total_usd.toLocaleString("fr-FR")}</td>
+                        <td className={styles.cellMontant}>{c.total_sar.toLocaleString("fr-FR")}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </>
+          )}
+
+          {recap.total_general && (
+            <div className={styles.totalGeneralBloc}>
+              <span>{t("total_general_decaissement")}</span>
+              <div className={styles.totalGeneralValeurs}>
+                <strong>{recap.total_general.gnf.toLocaleString("fr-FR")} GNF</strong>
+                <span>{recap.total_general.usd.toLocaleString("fr-FR")} USD</span>
+                <span>{recap.total_general.sar.toLocaleString("fr-FR")} SAR</span>
+              </div>
+            </div>
+          )}
         </>
       )}
 

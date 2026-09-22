@@ -145,28 +145,50 @@ class DecaissementViewSet(viewsets.ModelViewSet):
             liste.insert(0, annee_courante)
         return Response(liste)
 
+    
     @action(detail=False, methods=["get"], url_path="recapitulatif")
     def recapitulatif(self, request):
         activite = request.query_params.get("activite", "hajj")
         saison_id = request.query_params.get("saison")
         taux, _ = TauxChange.objects.get_or_create(id=1, defaults={"taux_usd": 8600, "taux_sar": 2300})
 
-        categories = CategorieDecaissement.objects.filter(activite=activite)
-        resultats = []
-        for cat in categories:
-            decaissements_cat = Decaissement.objects.filter(categorie=cat)
-            if saison_id:
-                decaissements_cat = decaissements_cat.filter(saison_id=saison_id)
+        def calculer_total_categories(activite_cible, saison_cible_id):
+            categories = CategorieDecaissement.objects.filter(activite=activite_cible)
+            lignes = []
+            for cat in categories:
+                decaissements_cat = Decaissement.objects.filter(categorie=cat)
+                if saison_cible_id:
+                    decaissements_cat = decaissements_cat.filter(saison_id=saison_cible_id)
+                total_gnf_equiv = sum(convertir_vers_gnf(d.montant, d.devise, taux) for d in decaissements_cat)
+                converti = convertir_depuis_gnf(total_gnf_equiv, taux)
+                lignes.append({
+                    "categorie_id": cat.id,
+                    "categorie_nom": cat.nom,
+                    "total_gnf": converti["gnf"],
+                    "total_usd": converti["usd"],
+                    "total_sar": converti["sar"],
+                })
+            return lignes
 
-            total_gnf_equiv = sum(convertir_vers_gnf(d.montant, d.devise, taux) for d in decaissements_cat)
-            converti = convertir_depuis_gnf(total_gnf_equiv, taux)
+        resultats = calculer_total_categories(activite, saison_id)
 
-            resultats.append({
-                "categorie_id": cat.id,
-                "categorie_nom": cat.nom,
-                "total_gnf": converti["gnf"],
-                "total_usd": converti["usd"],
-                "total_sar": converti["sar"],
+        # Frais personnels de l'agence — fusionnés dans le total global de
+        # Décaissement Hajj/Oumra, indépendamment de la saison Hajj/Oumra
+        # sélectionnée (les frais personnels suivent leur propre saison active).
+        resultats_personnel = []
+        if activite in ("hajj", "oumra"):
+            saison_personnel = SaisonComptable.objects.filter(activite="personnel", est_active=True).first()
+            if saison_personnel:
+                resultats_personnel = calculer_total_categories("personnel", saison_personnel.id)
+
+        total_general_gnf = sum(l["total_gnf"] for l in resultats) + sum(l["total_gnf"] for l in resultats_personnel)
+        total_general_converti = convertir_depuis_gnf(total_general_gnf, taux)
+
+        return Response({
+            "taux": TauxChangeSerializer(taux).data,
+            "categories": resultats,
+            "categories_personnel": resultats_personnel,
+            "total_general": total_general_converti,
             })
         return Response({"taux": TauxChangeSerializer(taux).data, "categories": resultats})
 

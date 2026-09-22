@@ -833,7 +833,9 @@
   "desc_liste_pelerins": "View and manage existing records",
 
   "taux_sar": "SAR rate (per 1 USD)",
-  "aide_taux_sar": "How many Saudi Riyals for 1 US Dollar (e.g. 3.75)."
+  "aide_taux_sar": "How many Saudi Riyals for 1 US Dollar (e.g. 3.75).",
+
+  "total_general_decaissement": "Grand total (General expenses + Personal expenses)"
 
 
 

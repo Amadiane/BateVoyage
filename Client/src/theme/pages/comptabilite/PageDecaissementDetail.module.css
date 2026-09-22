@@ -188,3 +188,13 @@
   .entete { flex-direction: column; align-items: stretch; }
   .boutonPrincipal, .boutonSecondaire { justify-content: center; }
 }
+
+.totalGeneralBloc {
+  display: flex; justify-content: space-between; align-items: center;
+  background-color: #10151F; color: #FAF9F5; padding: 16px 20px;
+  border-radius: 14px; margin: 16px 0 28px; flex-wrap: wrap; gap: 10px;
+}
+.totalGeneralBloc span:first-child { font-size: 13px; font-weight: 500; }
+.totalGeneralValeurs { display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; }
+.totalGeneralValeurs strong { color: var(--color-gold); font-size: 18px; }
+.totalGeneralValeurs span { font-size: 12.5px; color: #C4C0B5; }
