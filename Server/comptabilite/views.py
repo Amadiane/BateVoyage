@@ -18,7 +18,7 @@ from .serializers import (
     BonSortieSerializer, DepenseSerializer, DetteFournisseurSerializer,
     CategorieDecaissementSerializer, DecaissementSerializer, TauxChangeSerializer, SaisonComptableSerializer, ObservationBeneficeGlobalSerializer, DetteSerializer, AssocieSerializer, DepensePelerinSerializer, CreanceSerializer, DevisFactureSerializer
 )
-
+from .utils import convertir_depuis_gnf, convertir_vers_gnf
 
 class BonSortieViewSet(viewsets.ModelViewSet):
     queryset = BonSortie.objects.select_related("enregistre_par", "beneficiaire_utilisateur").all()
@@ -137,10 +137,7 @@ class DecaissementViewSet(viewsets.ModelViewSet):
 
     @action(detail=False, methods=["get"], url_path="annees-disponibles")
     def annees_disponibles(self, request):
-        annees = (
-            Decaissement.objects
-            .dates("date_decaissement", "year")
-        )
+        annees = Decaissement.objects.dates("date_decaissement", "year")
         liste = sorted({d.year for d in annees}, reverse=True)
         from django.utils import timezone
         annee_courante = timezone.now().year
@@ -160,27 +157,19 @@ class DecaissementViewSet(viewsets.ModelViewSet):
             decaissements_cat = Decaissement.objects.filter(categorie=cat)
             if saison_id:
                 decaissements_cat = decaissements_cat.filter(saison_id=saison_id)
-            else:
-                decaissements_cat = decaissements_cat.none()  # aucune saison sélectionnée = rien à afficher
 
-            total_gnf_equiv = 0
-            for d in decaissements_cat:
-                montant = float(d.montant)
-                if d.devise == "GNF":
-                    total_gnf_equiv += montant
-                elif d.devise == "USD":
-                    total_gnf_equiv += montant * float(taux.taux_usd)
-                elif d.devise == "SAR":
-                    total_gnf_equiv += montant * float(taux.taux_sar)
+            total_gnf_equiv = sum(convertir_vers_gnf(d.montant, d.devise, taux) for d in decaissements_cat)
+            converti = convertir_depuis_gnf(total_gnf_equiv, taux)
 
             resultats.append({
                 "categorie_id": cat.id,
                 "categorie_nom": cat.nom,
-                "total_gnf": round(total_gnf_equiv, 2),
-                "total_usd": round(total_gnf_equiv / float(taux.taux_usd), 2) if taux.taux_usd else 0,
-                "total_sar": round(total_gnf_equiv / float(taux.taux_sar), 2) if taux.taux_sar else 0,
+                "total_gnf": converti["gnf"],
+                "total_usd": converti["usd"],
+                "total_sar": converti["sar"],
             })
         return Response({"taux": TauxChangeSerializer(taux).data, "categories": resultats})
+
 
 class TauxChangeView(APIView):
     permission_classes = [EstGestionnaireFinancier]
@@ -196,11 +185,6 @@ class TauxChangeView(APIView):
         serializer.save()
         return Response(serializer.data)
 
-class SaisonComptableViewSet(viewsets.ModelViewSet):
-    queryset = SaisonComptable.objects.all()
-    serializer_class = SaisonComptableSerializer
-    permission_classes = [EstGestionnaireFinancier]
-    filterset_fields = ["activite"]
 
 class SaisonComptableViewSet(viewsets.ModelViewSet):
     queryset = SaisonComptable.objects.all()
@@ -216,12 +200,12 @@ class SaisonComptableViewSet(viewsets.ModelViewSet):
         with set_actor(self.request.user):
             serializer.save()
 
+
 class EncaissementView(APIView):
     permission_classes = [EstGestionnaireFinancier]
 
     def get(self, request):
         from paiements.models import Paiement
-        from pelerins.models import Pelerin
 
         activite = request.query_params.get("activite", "hajj")
         type_voyage = "pelerinage" if activite == "hajj" else "oumra"
@@ -250,7 +234,6 @@ class BeneficeGlobalView(APIView):
 
     def get(self, request):
         from paiements.models import Paiement
-        from pelerins.models import Pelerin
 
         activite = request.query_params.get("activite", "hajj")
         saison_id = request.query_params.get("saison")
@@ -264,9 +247,6 @@ class BeneficeGlobalView(APIView):
             if paiements_saison.exists():
                 total_encaisse = float(paiements_saison.aggregate(t=Sum("montant"))["t"] or 0)
             else:
-                # Aucun paiement encore rattaché à cette saison précise —
-                # on retombe sur l'ensemble des paiements du type de voyage,
-                # en le signalant clairement au client.
                 total_encaisse = float(
                     Paiement.objects.filter(pelerin__type_voyage=type_voyage).aggregate(t=Sum("montant"))["t"] or 0
                 )
@@ -275,19 +255,14 @@ class BeneficeGlobalView(APIView):
             total_encaisse = float(Paiement.objects.filter(pelerin__type_voyage=type_voyage).aggregate(t=Sum("montant"))["t"] or 0)
 
         # --- Total décaissé (uniquement les Décaissements de la saison sélectionnée) ---
+        # Initialisé à 0 AVANT le if : évite le NameError si aucune saison n'est passée.
+        total_decaisse = 0.0
         decaissements_saison = Decaissement.objects.filter(activite=activite)
         if saison_id:
             decaissements_saison = decaissements_saison.filter(saison_id=saison_id)
-        total_decaisse = 0
-        for d in decaissements_saison:
-            montant = float(d.montant)
-            if d.devise == "USD":
-                montant *= float(taux.taux_usd)
-            elif d.devise == "SAR":
-                montant *= float(taux.taux_sar)
-            total_decaisse += montant
+        total_decaisse = sum(convertir_vers_gnf(d.montant, d.devise, taux) for d in decaissements_saison)
 
-        # --- Créances / Dettes (Bons de sortie / Dettes fournisseurs, par activité) ---
+        # --- Créances / Dettes ---
         total_creance = float(BonSortie.objects.filter(activite=activite, justifie=False).aggregate(t=Sum("montant"))["t"] or 0)
         total_dette = float(DetteFournisseur.objects.filter(activite=activite, soldee=False).aggregate(t=Sum("montant_du"))["t"] or 0)
 
@@ -296,11 +271,7 @@ class BeneficeGlobalView(APIView):
         benefice_reel = benefice_provisoire - difference
 
         def convertir(montant_gnf):
-            return {
-                "gnf": round(montant_gnf, 2),
-                "usd": round(montant_gnf / float(taux.taux_usd), 2) if taux.taux_usd else 0,
-                "sar": round(montant_gnf / float(taux.taux_sar), 2) if taux.taux_sar else 0,
-            }
+            return convertir_depuis_gnf(montant_gnf, taux)
 
         observation = ""
         if saison_id:
@@ -365,7 +336,6 @@ class BeneficeIndividuelView(APIView):
         saison_id = request.query_params.get("saison")
         taux, _ = TauxChange.objects.get_or_create(id=1, defaults={"taux_usd": 8600, "taux_sar": 2300})
 
-        # --- Récupère le bénéfice global déjà calculé, via la même logique que BeneficeGlobalView ---
         from paiements.models import Paiement
         type_voyage = "pelerinage" if activite == "hajj" else "oumra"
 
@@ -378,17 +348,12 @@ class BeneficeIndividuelView(APIView):
         else:
             total_encaisse = float(Paiement.objects.filter(pelerin__type_voyage=type_voyage).aggregate(t=Sum("montant"))["t"] or 0)
 
+        # Initialisé à 0 AVANT le if : même correctif que BeneficeGlobalView.
+        total_decaisse = 0.0
         decaissements_saison = Decaissement.objects.filter(activite=activite)
         if saison_id:
             decaissements_saison = decaissements_saison.filter(saison_id=saison_id)
-        total_decaisse = 0.0
-        for d in decaissements_saison:
-            montant = float(d.montant)
-            if d.devise == "USD":
-                montant *= float(taux.taux_usd)
-            elif d.devise == "SAR":
-                montant *= float(taux.taux_sar)
-            total_decaisse += montant
+        total_decaisse = sum(convertir_vers_gnf(d.montant, d.devise, taux) for d in decaissements_saison)
 
         total_creance = float(BonSortie.objects.filter(activite=activite, justifie=False).aggregate(t=Sum("montant"))["t"] or 0)
         total_dette_fournisseur = float(DetteFournisseur.objects.filter(activite=activite, soldee=False).aggregate(t=Sum("montant_du"))["t"] or 0)
@@ -398,20 +363,14 @@ class BeneficeIndividuelView(APIView):
         benefice_reel = benefice_provisoire - difference
 
         def convertir(montant_gnf):
-            return {
-                "gnf": round(montant_gnf, 2),
-                "usd": round(montant_gnf / float(taux.taux_usd), 2) if taux.taux_usd else 0,
-                "sar": round(montant_gnf / float(taux.taux_sar), 2) if taux.taux_sar else 0,
-            }
+            return convertir_depuis_gnf(montant_gnf, taux)
 
-        # --- Répartition par associé ---
         associes = Associe.objects.all().order_by("ordre")
         resultats = []
         for a in associes:
             part_benefice_gnf = benefice_reel * (float(a.pourcentage_part) / 100)
 
             if a.est_caisse:
-                # La caisse ne porte pas de dette personnelle — juste sa part (10%)
                 resultats.append({
                     "associe_id": a.id,
                     "nom": a.nom_complet,
@@ -422,14 +381,10 @@ class BeneficeIndividuelView(APIView):
                 })
                 continue
 
-            total_dettes_associe_gnf = 0.0
-            for dette in Dette.objects.filter(associe=a, soldee=False):
-                montant = float(dette.montant)
-                if dette.devise == "USD":
-                    montant *= float(taux.taux_usd)
-                elif dette.devise == "SAR":
-                    montant *= float(taux.taux_sar)
-                total_dettes_associe_gnf += montant
+            total_dettes_associe_gnf = sum(
+                convertir_vers_gnf(dette.montant, dette.devise, taux)
+                for dette in Dette.objects.filter(associe=a, soldee=False)
+            )
 
             difference_dette_benefice = total_dettes_associe_gnf - part_benefice_gnf
             benefice_net_individuel = part_benefice_gnf - total_dettes_associe_gnf
@@ -483,19 +438,10 @@ class DepensePelerinViewSet(viewsets.ModelViewSet):
             totaux_categorie[cle] = {"label": label, "gnf": 0.0}
 
         for d in depenses:
-            montant = float(d.montant)
-            if d.devise == "USD":
-                montant *= float(taux.taux_usd)
-            elif d.devise == "SAR":
-                montant *= float(taux.taux_sar)
-            totaux_categorie[d.categorie]["gnf"] += montant
+            totaux_categorie[d.categorie]["gnf"] += convertir_vers_gnf(d.montant, d.devise, taux)
 
         def convertir(montant_gnf):
-            return {
-                "gnf": round(montant_gnf, 2),
-                "usd": round(montant_gnf / float(taux.taux_usd), 2) if taux.taux_usd else 0,
-                "sar": round(montant_gnf / float(taux.taux_sar), 2) if taux.taux_sar else 0,
-            }
+            return convertir_depuis_gnf(montant_gnf, taux)
 
         lignes = [{"designation": v["label"], "valeurs": convertir(v["gnf"])} for v in totaux_categorie.values()]
         total_depense = sum(v["gnf"] for v in totaux_categorie.values())

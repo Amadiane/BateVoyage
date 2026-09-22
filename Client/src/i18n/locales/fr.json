@@ -841,7 +841,10 @@
   "section_documents_suivi": "Documents & Suivi",
 
   "desc_nouveau_pelerin": "Inscrire un nouveau pèlerin au programme",
-  "desc_liste_pelerins": "Consulter et gérer les dossiers existants"
+  "desc_liste_pelerins": "Consulter et gérer les dossiers existants",
+
+  "taux_sar": "Taux SAR (pour 1 USD)",
+  "aide_taux_sar": "Combien de rials saoudiens pour 1 dollar (ex: 3.75)."
 
 
 

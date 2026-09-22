@@ -82,8 +82,6 @@ function PageDecaissementDetail({ activite, basePath }) {
 
   const ouvrirNouveau = () => {
     setDecaissementAModifier(null);
-    // La saison du formulaire démarre alignée sur celle affichée à l'écran,
-    // mais reste un choix EXPLICITE et modifiable — jamais déduite de la date.
     setValeurs({ ...VALEURS_INITIALES, saison: saisonSelectionnee || "" });
     setErreur("");
     setModalOuverte(true);
@@ -119,10 +117,6 @@ function PageDecaissementDetail({ activite, basePath }) {
     }
     setEnvoi(true);
     try {
-      // La saison enregistrée est EXACTEMENT celle choisie dans le formulaire,
-      // jamais recalculée depuis la date — deux activités à la même date
-      // peuvent donc appartenir à deux saisons différentes si l'utilisateur
-      // le décide.
       const donnees = { ...valeurs, activite };
       if (decaissementAModifier) {
         await decaissementService.modifier(decaissementAModifier.id, donnees);
@@ -130,9 +124,6 @@ function PageDecaissementDetail({ activite, basePath }) {
         await decaissementService.creer(donnees);
       }
       setModalOuverte(false);
-      // On recharge la vue actuelle : si l'entrée créée/modifiée appartient à
-      // une AUTRE saison que celle affichée, elle disparaîtra logiquement de
-      // la liste courante — c'est le comportement voulu.
       await chargerDonneesSaison(saisonSelectionnee);
     } catch {
       setErreur(t("erreur_enregistrement"));
@@ -176,6 +167,8 @@ function PageDecaissementDetail({ activite, basePath }) {
     }
   };
 
+  const anneesAffichees = saisons;
+
   if (chargementInitial) return <p className={styles.chargement}>{t("chargement")}</p>;
 
   return (
@@ -191,7 +184,7 @@ function PageDecaissementDetail({ activite, basePath }) {
             className={styles.selectAnnee}
           >
             {saisons.length === 0 && <option value="">{t("aucune_saison")}</option>}
-            {saisons.map((s) => <option key={s.id} value={s.id}>{s.nom}</option>)}
+            {anneesAffichees.map((s) => <option key={s.id} value={s.id}>{s.nom}</option>)}
           </select>
           <button className={styles.boutonTaux} onClick={ouvrirNouvelleSaison}>
             <Plus size={14} /> {t("nouvelle_saison")}
@@ -210,7 +203,7 @@ function PageDecaissementDetail({ activite, basePath }) {
       {recap && (
         <>
           <p className={styles.tauxActuel}>
-            {t("taux_actuels")} : 1 USD = {parseFloat(recap.taux.taux_usd).toLocaleString("fr-FR")} GNF — 1 SAR = {parseFloat(recap.taux.taux_sar).toLocaleString("fr-FR")} GNF
+            {t("taux_actuels")} : 1 USD = {parseFloat(recap.taux.taux_usd).toLocaleString("fr-FR")} GNF — 1 USD = {parseFloat(recap.taux.taux_sar).toLocaleString("fr-FR")} SAR
           </p>
           <div className={styles.conteneurRecap}>
             <table className={styles.tableauRecap}>
@@ -359,12 +352,14 @@ function PageDecaissementDetail({ activite, basePath }) {
             </div>
             <div className={styles.formulaire}>
               <div className={styles.champ}>
-                <label>{t("taux_usd")} (GNF)</label>
-                <input type="number" value={tauxTemp.taux_usd} onChange={(e) => setTauxTemp({ ...tauxTemp, taux_usd: e.target.value })} />
+                <label>{t("taux_usd")}</label>
+                <input type="number" step="0.01" value={tauxTemp.taux_usd} onChange={(e) => setTauxTemp({ ...tauxTemp, taux_usd: e.target.value })} placeholder="8600" />
+                <p className={styles.aideSaison}>{t("aide_taux_usd")}</p>
               </div>
               <div className={styles.champ}>
-                <label>{t("taux_sar")} (GNF)</label>
-                <input type="number" value={tauxTemp.taux_sar} onChange={(e) => setTauxTemp({ ...tauxTemp, taux_sar: e.target.value })} />
+                <label>{t("taux_sar")}</label>
+                <input type="number" step="0.01" value={tauxTemp.taux_sar} onChange={(e) => setTauxTemp({ ...tauxTemp, taux_sar: e.target.value })} placeholder="3.75" />
+                <p className={styles.aideSaison}>{t("aide_taux_sar")}</p>
               </div>
               <div className={styles.navigationModal}>
                 <button type="button" className={styles.boutonSecondaire} onClick={() => setModalTauxOuverte(false)}>{t("annuler")}</button>
