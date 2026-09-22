@@ -174,7 +174,7 @@ function PageDecaissementDetail({ activite, basePath }) {
       <button className={styles.retour} onClick={() => navigate(`${basePath}/finances`)}>← {t("retour")}</button>
 
       <div className={styles.entete}>
-        <h1 className={styles.titre}>{t("decaissements")}</h1>
+        <h1 className={styles.titre}>{activite === "personnel" ? t("budget_fonctionnement") : t("decaissements")}</h1>
         <div className={styles.groupeBoutons}>
           <select
             value={saisonSelectionnee || ""}
@@ -184,6 +184,11 @@ function PageDecaissementDetail({ activite, basePath }) {
             {saisons.length === 0 && <option value="">{t("aucune_saison")}</option>}
             {saisons.map((s) => <option key={s.id} value={s.id}>{s.nom}</option>)}
           </select>
+          {activite !== "personnel" && (
+            <button className={styles.boutonTaux} onClick={() => navigate(`${basePath}/finances/frais-personnels`)}>
+              🏠 {t("gerer_frais_personnels")}
+            </button>
+          )}
           <button className={styles.boutonTaux} onClick={ouvrirNouvelleSaison}>
             <Plus size={14} /> {t("nouvelle_saison")}
           </button>
@@ -236,7 +241,7 @@ function PageDecaissementDetail({ activite, basePath }) {
 
           {recap.categories_personnel && recap.categories_personnel.length > 0 && (
             <>
-              <h2 className={styles.sousTitreListe} style={{ marginTop: 22 }}>{t("frais_personnels")}</h2>
+              <h2 className={styles.sousTitreListe} style={{ marginTop: 22 }}>{t("budget_fonctionnement")}</h2>
               <div className={styles.conteneurRecap}>
                 <table className={styles.tableauRecap}>
                   <thead>

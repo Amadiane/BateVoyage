@@ -835,7 +835,11 @@
   "taux_sar": "SAR rate (per 1 USD)",
   "aide_taux_sar": "How many Saudi Riyals for 1 US Dollar (e.g. 3.75).",
 
-  "total_general_decaissement": "Grand total (General expenses + Personal expenses)"
+  "total_general_decaissement": "Grand total (General expenses + Personal expenses)",
+
+  "gerer_frais_personnels": "Manage personal expenses",
+
+  "budget_fonctionnement": "Operating budget"
 
 
 

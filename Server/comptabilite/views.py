@@ -9,7 +9,6 @@ from django.contrib.contenttypes.models import ContentType
 from auditlog.models import LogEntry
 from activite.serializers import EntreeJournalDetailSerializer
 from utilisateurs.permissions import EstGestionnaireFinancier
-from django.db.models import Sum
 from .models import (
     BonSortie, Depense, DetteFournisseur,
     CategorieDecaissement, Decaissement, TauxChange, SaisonComptable, ObservationBeneficeGlobal, Dette, Associe, DepensePelerin, Creance, DevisFacture,
@@ -19,6 +18,7 @@ from .serializers import (
     CategorieDecaissementSerializer, DecaissementSerializer, TauxChangeSerializer, SaisonComptableSerializer, ObservationBeneficeGlobalSerializer, DetteSerializer, AssocieSerializer, DepensePelerinSerializer, CreanceSerializer, DevisFactureSerializer
 )
 from .utils import convertir_depuis_gnf, convertir_vers_gnf
+
 
 class BonSortieViewSet(viewsets.ModelViewSet):
     queryset = BonSortie.objects.select_related("enregistre_par", "beneficiaire_utilisateur").all()
@@ -145,7 +145,6 @@ class DecaissementViewSet(viewsets.ModelViewSet):
             liste.insert(0, annee_courante)
         return Response(liste)
 
-    
     @action(detail=False, methods=["get"], url_path="recapitulatif")
     def recapitulatif(self, request):
         activite = request.query_params.get("activite", "hajj")
@@ -189,8 +188,7 @@ class DecaissementViewSet(viewsets.ModelViewSet):
             "categories": resultats,
             "categories_personnel": resultats_personnel,
             "total_general": total_general_converti,
-            })
-        return Response({"taux": TauxChangeSerializer(taux).data, "categories": resultats})
+        })
 
 
 class TauxChangeView(APIView):
@@ -276,13 +274,16 @@ class BeneficeGlobalView(APIView):
         else:
             total_encaisse = float(Paiement.objects.filter(pelerin__type_voyage=type_voyage).aggregate(t=Sum("montant"))["t"] or 0)
 
-        # --- Total décaissé (uniquement les Décaissements de la saison sélectionnée) ---
-        # Initialisé à 0 AVANT le if : évite le NameError si aucune saison n'est passée.
-        total_decaisse = 0.0
+        # --- Total décaissé = Frais généraux (Hajj/Oumra) de la saison + Frais personnels de leur saison active ---
         decaissements_saison = Decaissement.objects.filter(activite=activite)
         if saison_id:
             decaissements_saison = decaissements_saison.filter(saison_id=saison_id)
         total_decaisse = sum(convertir_vers_gnf(d.montant, d.devise, taux) for d in decaissements_saison)
+
+        saison_personnel = SaisonComptable.objects.filter(activite="personnel", est_active=True).first()
+        if saison_personnel:
+            decaissements_personnel = Decaissement.objects.filter(activite="personnel", saison=saison_personnel)
+            total_decaisse += sum(convertir_vers_gnf(d.montant, d.devise, taux) for d in decaissements_personnel)
 
         # --- Créances / Dettes ---
         total_creance = float(BonSortie.objects.filter(activite=activite, justifie=False).aggregate(t=Sum("montant"))["t"] or 0)
@@ -303,7 +304,7 @@ class BeneficeGlobalView(APIView):
         return Response({
             "lignes": [
                 {"designation": "Total encaissé", "cle": "total_encaisse", "valeurs": convertir(total_encaisse), "avertissement": avertissement_encaisse},
-                {"designation": "Total décaissé", "cle": "total_decaisse", "valeurs": convertir(total_decaisse), "avertissement": "Inclut uniquement les Décaissements de la saison sélectionnée."},
+                {"designation": "Total décaissé", "cle": "total_decaisse", "valeurs": convertir(total_decaisse), "avertissement": "Inclut les Frais généraux de la saison sélectionnée et les Frais personnels de la saison active."},
                 {"designation": "Bénéfice provisoire", "cle": "benefice_provisoire", "valeurs": convertir(benefice_provisoire)},
                 {"designation": "Total créances", "cle": "total_creance", "valeurs": convertir(total_creance), "avertissement": "Bons de sortie non justifiés, toutes saisons confondues pour cette activité."},
                 {"designation": "Total dettes", "cle": "total_dette", "valeurs": convertir(total_dette), "avertissement": "Dettes fournisseurs non soldées, toutes saisons confondues pour cette activité."},
@@ -370,12 +371,16 @@ class BeneficeIndividuelView(APIView):
         else:
             total_encaisse = float(Paiement.objects.filter(pelerin__type_voyage=type_voyage).aggregate(t=Sum("montant"))["t"] or 0)
 
-        # Initialisé à 0 AVANT le if : même correctif que BeneficeGlobalView.
-        total_decaisse = 0.0
+        # --- Total décaissé = Frais généraux (Hajj/Oumra) de la saison + Frais personnels de leur saison active ---
         decaissements_saison = Decaissement.objects.filter(activite=activite)
         if saison_id:
             decaissements_saison = decaissements_saison.filter(saison_id=saison_id)
         total_decaisse = sum(convertir_vers_gnf(d.montant, d.devise, taux) for d in decaissements_saison)
+
+        saison_personnel = SaisonComptable.objects.filter(activite="personnel", est_active=True).first()
+        if saison_personnel:
+            decaissements_personnel = Decaissement.objects.filter(activite="personnel", saison=saison_personnel)
+            total_decaisse += sum(convertir_vers_gnf(d.montant, d.devise, taux) for d in decaissements_personnel)
 
         total_creance = float(BonSortie.objects.filter(activite=activite, justifie=False).aggregate(t=Sum("montant"))["t"] or 0)
         total_dette_fournisseur = float(DetteFournisseur.objects.filter(activite=activite, soldee=False).aggregate(t=Sum("montant_du"))["t"] or 0)
