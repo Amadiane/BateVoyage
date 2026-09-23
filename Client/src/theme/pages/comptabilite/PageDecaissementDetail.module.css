@@ -310,3 +310,90 @@
   border-radius: 2px;
   background-color: var(--color-gold);
 }
+
+/* ============================================================
+   RESPONSIVE — plusieurs paliers
+   ============================================================ */
+
+/* ---------- Tablette (≤ 900px) ---------- */
+@media (max-width: 900px) {
+  .entete { gap: 14px; }
+  .groupeBoutons { width: 100%; }
+  .selectAnnee { flex: 1; min-width: 140px; }
+}
+
+/* ---------- Petite tablette / grand mobile (≤ 700px) ---------- */
+@media (max-width: 700px) {
+  .entete {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .titre { font-size: 19px; }
+
+  .groupeBoutons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+  .selectAnnee { grid-column: 1 / -1; }
+  .boutonPrincipal { grid-column: 1 / -1; justify-content: center; }
+  .boutonTaux { justify-content: center; }
+
+  .ongletsSection {
+    width: 100%;
+    display: flex;
+  }
+  .onglet, .ongletActif { flex: 1; text-align: center; padding: 9px 8px; }
+
+  .totalGeneralBloc { flex-direction: column; align-items: flex-start; }
+  .totalGeneralValeurs { width: 100%; justify-content: space-between; }
+
+  /* Tableaux : on garde le défilement horizontal, mais on réduit
+     le padding et la taille de police pour limiter le scroll nécessaire. */
+  .tableauRecap, .tableau {
+    font-size: 12.5px;
+    min-width: 460px;
+  }
+  .tableauRecap thead th, .tableau thead th { padding: 10px 12px; font-size: 10.5px; }
+  .tableauRecap td, .tableau td { padding: 9px 12px; }
+
+  .navigationModal { flex-direction: column-reverse; }
+  .navigationModal button { width: 100%; justify-content: center; }
+}
+
+/* ---------- Mobile étroit (≤ 480px) ---------- */
+@media (max-width: 480px) {
+  .titre { font-size: 17px; }
+  .sousTitre { font-size: 12px; }
+
+  .panneau, .panneauEtroit {
+    padding: 18px;
+    border-radius: 14px;
+    max-height: 92vh;
+  }
+  .enteteModal h2 { font-size: 15px; }
+
+  .ligneDeux { grid-template-columns: 1fr; }
+
+  .tableauRecap, .tableau { min-width: 400px; }
+
+  /* La pastille décorative devant chaque catégorie prend trop de place
+     sur très petit écran : on la retire pour garder le texte lisible. */
+  .tableauRecap .cellCategorie::before { display: none; }
+  .tableauRecap .cellCategorie { gap: 0; }
+
+  .badgeDevise { display: block; margin-left: 0; margin-top: 3px; width: fit-content; }
+
+  .totalGeneralValeurs { flex-direction: column; align-items: flex-start; gap: 4px; }
+  .totalGeneralValeurs strong { font-size: 17px; }
+
+  .enteteHistoriqueRepliable { font-size: 12.5px; padding: 11px 14px; }
+
+  .boutonTaux, .boutonPrincipal { font-size: 12px; padding: 9px 12px; }
+}
+
+/* ---------- Très petit écran (≤ 360px) ---------- */
+@media (max-width: 360px) {
+  .groupeBoutons { grid-template-columns: 1fr; }
+  .boutonTaux { grid-column: 1 / -1; }
+}
