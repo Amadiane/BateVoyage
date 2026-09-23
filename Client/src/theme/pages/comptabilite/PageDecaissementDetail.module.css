@@ -198,3 +198,32 @@
 .totalGeneralValeurs { display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; }
 .totalGeneralValeurs strong { color: var(--color-gold); font-size: 18px; }
 .totalGeneralValeurs span { font-size: 12.5px; color: #C4C0B5; }
+
+
+.ongletsSection {
+  display: inline-flex;
+  gap: 3px;
+  background-color: #F0EEE7;
+  padding: 4px;
+  border-radius: 11px;
+  margin-bottom: 18px;
+}
+
+.onglet, .ongletActif {
+  padding: 9px 18px;
+  border: none;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 550;
+  cursor: pointer;
+}
+.onglet {
+  background: none;
+  color: #8B8578;
+}
+.onglet:hover { color: #10151F; }
+.ongletActif {
+  background-color: #FFFFFF;
+  color: #10151F;
+  box-shadow: 0 1px 4px rgba(16,21,31,0.10);
+}

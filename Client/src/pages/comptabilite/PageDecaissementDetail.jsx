@@ -17,12 +17,18 @@ const VALEURS_SAISON_INITIALES = { nom: "", date_debut: "", date_fin: "" };
 function PageDecaissementDetail({ activite, basePath }) {
   const { t } = useTranslation();
   const navigate = useNavigate();
+
+  // "generaux" affiche activite (hajj/oumra) ; "personnel" affiche toujours "personnel"
+  // — ignoré si la page est déjà activite="personnel" (accès direct).
+  const [ongletActif, setOngletActif] = useState("generaux");
+  const activiteAffichee = activite === "personnel" ? "personnel" : (ongletActif === "generaux" ? activite : "personnel");
+
   const [categories, setCategories] = useState([]);
   const [decaissements, setDecaissements] = useState([]);
   const [saisons, setSaisons] = useState([]);
   const [saisonSelectionnee, setSaisonSelectionnee] = useState(null);
   const [recap, setRecap] = useState(null);
-  const [chargementInitial, setChargementInitial] = useState(true);
+  const [chargement, setChargement] = useState(true);
   const [historiqueOuvert, setHistoriqueOuvert] = useState(false);
 
   const [modalOuverte, setModalOuverte] = useState(false);
@@ -43,42 +49,44 @@ function PageDecaissementDetail({ activite, basePath }) {
   const [ajoutCategorieOuvert, setAjoutCategorieOuvert] = useState(false);
   const [nouvelleCategorieNom, setNouvelleCategorieNom] = useState("");
 
-  const chargerDonneesSaison = async (idSaison) => {
-    if (!idSaison) {
+  const chargerTout = async (activiteCible, idSaison) => {
+    const [catRes, saisonsRes] = await Promise.all([
+      decaissementService.listerCategories(activiteCible),
+      decaissementService.listerSaisons(activiteCible),
+    ]);
+    setCategories(catRes.data);
+    setSaisons(saisonsRes.data);
+
+    const saisonCible = idSaison && saisonsRes.data.some((s) => s.id === idSaison)
+      ? idSaison
+      : (saisonsRes.data.find((s) => s.est_active) || saisonsRes.data[0])?.id || null;
+    setSaisonSelectionnee(saisonCible);
+
+    if (!saisonCible) {
       setDecaissements([]);
       setRecap(null);
       return;
     }
     const [decRes, recapRes] = await Promise.all([
-      decaissementService.lister({ activite, saison: idSaison }),
-      decaissementService.obtenirRecapitulatif(activite, null, idSaison),
+      decaissementService.lister({ activite: activiteCible, saison: saisonCible }),
+      decaissementService.obtenirRecapitulatif(activiteCible, null, saisonCible),
     ]);
     setDecaissements(decRes.data);
     setRecap(recapRes.data);
   };
 
-  const chargerInitial = async () => {
-    const [catRes, saisonsRes] = await Promise.all([
-      decaissementService.listerCategories(activite),
-      decaissementService.listerSaisons(activite),
-    ]);
-    setCategories(catRes.data);
-    setSaisons(saisonsRes.data);
-
-    const saisonParDefaut = (saisonsRes.data.find((s) => s.est_active) || saisonsRes.data[0])?.id || null;
-    setSaisonSelectionnee(saisonParDefaut);
-    await chargerDonneesSaison(saisonParDefaut);
-  };
-
   useEffect(() => {
-    setChargementInitial(true);
-    chargerInitial().finally(() => setChargementInitial(false));
-  }, [activite]);
+    setChargement(true);
+    chargerTout(activiteAffichee, null).finally(() => setChargement(false));
+  }, [activiteAffichee]);
 
   const changerSaisonAffichee = async (idSaison) => {
-    setSaisonSelectionnee(idSaison);
-    await chargerDonneesSaison(idSaison);
+    setChargement(true);
+    await chargerTout(activiteAffichee, idSaison);
+    setChargement(false);
   };
+
+  const rechargerVueActuelle = () => chargerTout(activiteAffichee, saisonSelectionnee);
 
   const ouvrirNouveau = () => {
     setDecaissementAModifier(null);
@@ -102,7 +110,7 @@ function PageDecaissementDetail({ activite, basePath }) {
 
   const ajouterCategorieLibre = async () => {
     if (!nouvelleCategorieNom.trim()) return;
-    const { data } = await decaissementService.creerCategorie({ activite, nom: nouvelleCategorieNom });
+    const { data } = await decaissementService.creerCategorie({ activite: activiteAffichee, nom: nouvelleCategorieNom });
     setCategories((c) => [...c, data]);
     majChamp("categorie", data.id);
     setNouvelleCategorieNom("");
@@ -117,14 +125,14 @@ function PageDecaissementDetail({ activite, basePath }) {
     }
     setEnvoi(true);
     try {
-      const donnees = { ...valeurs, activite };
+      const donnees = { ...valeurs, activite: activiteAffichee };
       if (decaissementAModifier) {
         await decaissementService.modifier(decaissementAModifier.id, donnees);
       } else {
         await decaissementService.creer(donnees);
       }
       setModalOuverte(false);
-      await chargerDonneesSaison(saisonSelectionnee);
+      await rechargerVueActuelle();
     } catch {
       setErreur(t("erreur_enregistrement"));
     } finally {
@@ -135,7 +143,7 @@ function PageDecaissementDetail({ activite, basePath }) {
   const confirmerSuppression = async () => {
     await decaissementService.supprimer(aSupprimer.id);
     setASupprimer(null);
-    await chargerDonneesSaison(saisonSelectionnee);
+    await rechargerVueActuelle();
   };
 
   const ouvrirModalTaux = () => {
@@ -146,7 +154,7 @@ function PageDecaissementDetail({ activite, basePath }) {
   const enregistrerTaux = async () => {
     await decaissementService.modifierTauxChange(tauxTemp);
     setModalTauxOuverte(false);
-    await chargerDonneesSaison(saisonSelectionnee);
+    await rechargerVueActuelle();
   };
 
   const ouvrirNouvelleSaison = () => {
@@ -158,23 +166,22 @@ function PageDecaissementDetail({ activite, basePath }) {
     if (!valeursSaison.nom || !valeursSaison.date_debut || !valeursSaison.date_fin) return;
     setEnvoiSaison(true);
     try {
-      const { data } = await decaissementService.creerSaison({ ...valeursSaison, activite });
-      setSaisons((s) => [data, ...s]);
+      const { data } = await decaissementService.creerSaison({ ...valeursSaison, activite: activiteAffichee });
       setModalSaisonOuverte(false);
-      await changerSaisonAffichee(data.id);
+      await chargerTout(activiteAffichee, data.id);
     } finally {
       setEnvoiSaison(false);
     }
   };
 
-  if (chargementInitial) return <p className={styles.chargement}>{t("chargement")}</p>;
+  const montrerOnglets = activite !== "personnel";
 
   return (
     <div>
       <button className={styles.retour} onClick={() => navigate(`${basePath}/finances`)}>← {t("retour")}</button>
 
       <div className={styles.entete}>
-        <h1 className={styles.titre}>{activite === "personnel" ? t("budget_fonctionnement") : t("decaissements")}</h1>
+        <h1 className={styles.titre}>{t("decaissements")}</h1>
         <div className={styles.groupeBoutons}>
           <select
             value={saisonSelectionnee || ""}
@@ -184,11 +191,6 @@ function PageDecaissementDetail({ activite, basePath }) {
             {saisons.length === 0 && <option value="">{t("aucune_saison")}</option>}
             {saisons.map((s) => <option key={s.id} value={s.id}>{s.nom}</option>)}
           </select>
-          {activite !== "personnel" && (
-            <button className={styles.boutonTaux} onClick={() => navigate(`${basePath}/finances/frais-personnels`)}>
-              🏠 {t("gerer_frais_personnels")}
-            </button>
-          )}
           <button className={styles.boutonTaux} onClick={ouvrirNouvelleSaison}>
             <Plus size={14} /> {t("nouvelle_saison")}
           </button>
@@ -201,20 +203,38 @@ function PageDecaissementDetail({ activite, basePath }) {
         </div>
       </div>
 
+      {montrerOnglets && (
+        <div className={styles.ongletsSection}>
+          <button
+            className={ongletActif === "generaux" ? styles.ongletActif : styles.onglet}
+            onClick={() => setOngletActif("generaux")}
+          >
+            {t("frais_generaux")}
+          </button>
+          <button
+            className={ongletActif === "personnel" ? styles.ongletActif : styles.onglet}
+            onClick={() => setOngletActif("personnel")}
+          >
+            {t("frais_personnels")}
+          </button>
+        </div>
+      )}
+
       <p className={styles.noteAffichage}>{t("note_filtre_affichage")}</p>
 
-      {recap && (
+      {chargement && <p className={styles.chargement}>{t("chargement")}</p>}
+
+      {!chargement && recap && (
         <>
           <p className={styles.tauxActuel}>
             {t("taux_actuels")} : 1 USD = {parseFloat(recap.taux.taux_usd).toLocaleString("fr-FR")} GNF — 1 USD = {parseFloat(recap.taux.taux_sar).toLocaleString("fr-FR")} SAR
           </p>
 
-          <h2 className={styles.sousTitreListe}>{t("frais_generaux")}</h2>
           <div className={styles.conteneurRecap}>
             <table className={styles.tableauRecap}>
               <thead>
                 <tr>
-                  <th>{t("frais_generaux")}</th>
+                  <th>{t("designation")}</th>
                   <th>GNF</th>
                   <th>USD</th>
                   <th>SAR</th>
@@ -239,35 +259,7 @@ function PageDecaissementDetail({ activite, basePath }) {
             </table>
           </div>
 
-          {recap.categories_personnel && recap.categories_personnel.length > 0 && (
-            <>
-              <h2 className={styles.sousTitreListe} style={{ marginTop: 22 }}>{t("budget_fonctionnement")}</h2>
-              <div className={styles.conteneurRecap}>
-                <table className={styles.tableauRecap}>
-                  <thead>
-                    <tr>
-                      <th>{t("frais_generaux")}</th>
-                      <th>GNF</th>
-                      <th>USD</th>
-                      <th>SAR</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {recap.categories_personnel.map((c) => (
-                      <tr key={c.categorie_id}>
-                        <td className={styles.cellCategorie}>{c.categorie_nom}</td>
-                        <td className={styles.cellMontant}>{c.total_gnf.toLocaleString("fr-FR")}</td>
-                        <td className={styles.cellMontant}>{c.total_usd.toLocaleString("fr-FR")}</td>
-                        <td className={styles.cellMontant}>{c.total_sar.toLocaleString("fr-FR")}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </>
-          )}
-
-          {recap.total_general && (
+          {recap.total_general && montrerOnglets && (
             <div className={styles.totalGeneralBloc}>
               <span>{t("total_general_decaissement")}</span>
               <div className={styles.totalGeneralValeurs}>
