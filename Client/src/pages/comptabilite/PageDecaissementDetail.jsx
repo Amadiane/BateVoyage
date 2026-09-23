@@ -18,9 +18,12 @@ function PageDecaissementDetail({ activite, basePath }) {
   const { t } = useTranslation();
   const navigate = useNavigate();
 
-  // "generaux" affiche activite (hajj/oumra) ; "personnel" affiche toujours "personnel"
-  // — ignoré si la page est déjà activite="personnel" (accès direct).
+  const montrerOnglets = activite !== "personnel";
   const [ongletActif, setOngletActif] = useState("generaux");
+  // L'activité affichée pour l'historique/la création suit l'onglet.
+  // Le récapitulatif (recap), lui, reste TOUJOURS calculé sur l'activité
+  // racine (hajj/oumra) côté backend, jamais "personnel" — c'est ce qui
+  // garantit que le total général additionne toujours les deux.
   const activiteAffichee = activite === "personnel" ? "personnel" : (ongletActif === "generaux" ? activite : "personnel");
 
   const [categories, setCategories] = useState([]);
@@ -28,6 +31,7 @@ function PageDecaissementDetail({ activite, basePath }) {
   const [saisons, setSaisons] = useState([]);
   const [saisonSelectionnee, setSaisonSelectionnee] = useState(null);
   const [recap, setRecap] = useState(null);
+  const [saisonRecap, setSaisonRecap] = useState(null); // saison Hajj/Oumra utilisée pour le récap, stable entre les onglets
   const [chargement, setChargement] = useState(true);
   const [historiqueOuvert, setHistoriqueOuvert] = useState(false);
 
@@ -49,7 +53,24 @@ function PageDecaissementDetail({ activite, basePath }) {
   const [ajoutCategorieOuvert, setAjoutCategorieOuvert] = useState(false);
   const [nouvelleCategorieNom, setNouvelleCategorieNom] = useState("");
 
-  const chargerTout = async (activiteCible, idSaison) => {
+  // Récapitulatif — toujours basé sur l'activité RACINE (jamais "personnel"),
+  // pour que le total général reste correct peu importe l'onglet ouvert.
+  const chargerRecap = async (idSaisonRoot) => {
+    if (activite === "personnel") {
+      // Accès direct à la page Frais personnels (hors onglets) : le récap
+      // se base alors normalement sur "personnel" lui-même.
+      const { data } = await decaissementService.obtenirRecapitulatif("personnel", null, idSaisonRoot);
+      setRecap(data);
+      return;
+    }
+    if (!idSaisonRoot) { setRecap(null); return; }
+    const { data } = await decaissementService.obtenirRecapitulatif(activite, null, idSaisonRoot);
+    setRecap(data);
+  };
+
+  // Historique + catégories + saisons — suit l'onglet actif (ou l'activité
+  // directe si on est sur la page dédiée Frais personnels).
+  const chargerListeCourante = async (activiteCible, idSaison) => {
     const [catRes, saisonsRes] = await Promise.all([
       decaissementService.listerCategories(activiteCible),
       decaissementService.listerSaisons(activiteCible),
@@ -64,29 +85,37 @@ function PageDecaissementDetail({ activite, basePath }) {
 
     if (!saisonCible) {
       setDecaissements([]);
-      setRecap(null);
       return;
     }
-    const [decRes, recapRes] = await Promise.all([
-      decaissementService.lister({ activite: activiteCible, saison: saisonCible }),
-      decaissementService.obtenirRecapitulatif(activiteCible, null, saisonCible),
-    ]);
-    setDecaissements(decRes.data);
-    setRecap(recapRes.data);
+    const { data } = await decaissementService.lister({ activite: activiteCible, saison: saisonCible });
+    setDecaissements(data);
+
+    // Si l'onglet courant correspond à l'activité racine, cette même saison
+    // sert aussi de référence pour le récapitulatif.
+    if (activiteCible !== "personnel") {
+      setSaisonRecap(saisonCible);
+      await chargerRecap(saisonCible);
+    } else if (activite === "personnel") {
+      await chargerRecap(saisonCible);
+    } else {
+      // Onglet "Frais personnels" dans la vue combinée : le récap garde la
+      // dernière saison racine connue, sans être re-fetché inutilement.
+      await chargerRecap(saisonRecap);
+    }
   };
 
   useEffect(() => {
     setChargement(true);
-    chargerTout(activiteAffichee, null).finally(() => setChargement(false));
+    chargerListeCourante(activiteAffichee, null).finally(() => setChargement(false));
   }, [activiteAffichee]);
 
   const changerSaisonAffichee = async (idSaison) => {
     setChargement(true);
-    await chargerTout(activiteAffichee, idSaison);
+    await chargerListeCourante(activiteAffichee, idSaison);
     setChargement(false);
   };
 
-  const rechargerVueActuelle = () => chargerTout(activiteAffichee, saisonSelectionnee);
+  const rechargerVueActuelle = () => chargerListeCourante(activiteAffichee, saisonSelectionnee);
 
   const ouvrirNouveau = () => {
     setDecaissementAModifier(null);
@@ -168,13 +197,11 @@ function PageDecaissementDetail({ activite, basePath }) {
     try {
       const { data } = await decaissementService.creerSaison({ ...valeursSaison, activite: activiteAffichee });
       setModalSaisonOuverte(false);
-      await chargerTout(activiteAffichee, data.id);
+      await chargerListeCourante(activiteAffichee, data.id);
     } finally {
       setEnvoiSaison(false);
     }
   };
-
-  const montrerOnglets = activite !== "personnel";
 
   return (
     <div>
@@ -241,7 +268,7 @@ function PageDecaissementDetail({ activite, basePath }) {
                 </tr>
               </thead>
               <tbody>
-                {recap.categories.map((c) => (
+                {(ongletActif === "generaux" || !montrerOnglets ? recap.categories : (recap.categories_personnel || [])).map((c) => (
                   <tr key={c.categorie_id}>
                     <td className={styles.cellCategorie}>{c.categorie_nom}</td>
                     <td className={styles.cellMontant}>{c.total_gnf.toLocaleString("fr-FR")}</td>
@@ -249,12 +276,17 @@ function PageDecaissementDetail({ activite, basePath }) {
                     <td className={styles.cellMontant}>{c.total_sar.toLocaleString("fr-FR")}</td>
                   </tr>
                 ))}
-                <tr className={styles.ligneTotalRecap}>
-                  <td>{t("total")}</td>
-                  <td>{recap.categories.reduce((s, c) => s + c.total_gnf, 0).toLocaleString("fr-FR")}</td>
-                  <td>{recap.categories.reduce((s, c) => s + c.total_usd, 0).toLocaleString("fr-FR")}</td>
-                  <td>{recap.categories.reduce((s, c) => s + c.total_sar, 0).toLocaleString("fr-FR")}</td>
-                </tr>
+                {(() => {
+                  const lignes = ongletActif === "generaux" || !montrerOnglets ? recap.categories : (recap.categories_personnel || []);
+                  return (
+                    <tr className={styles.ligneTotalRecap}>
+                      <td>{t("total")}</td>
+                      <td>{lignes.reduce((s, c) => s + c.total_gnf, 0).toLocaleString("fr-FR")}</td>
+                      <td>{lignes.reduce((s, c) => s + c.total_usd, 0).toLocaleString("fr-FR")}</td>
+                      <td>{lignes.reduce((s, c) => s + c.total_sar, 0).toLocaleString("fr-FR")}</td>
+                    </tr>
+                  );
+                })()}
               </tbody>
             </table>
           </div>

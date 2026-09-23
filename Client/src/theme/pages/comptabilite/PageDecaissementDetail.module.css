@@ -34,7 +34,17 @@
   font-size: 13px; font-weight: 500; background-color: #FFFFFF; color: #10151F;
 }
 
-/* ---------- Registre récapitulatif (façon livre de comptes) ---------- */
+/* ---------- Onglets Frais généraux / Frais personnels ---------- */
+.ongletsSection {
+  display: inline-flex; gap: 3px; background-color: #F0EEE7;
+  padding: 4px; border-radius: 11px; margin-bottom: 18px;
+}
+.onglet, .ongletActif { padding: 9px 18px; border: none; border-radius: 8px; font-size: 13px; font-weight: 550; cursor: pointer; }
+.onglet { background: none; color: #8B8578; }
+.onglet:hover { color: #10151F; }
+.ongletActif { background-color: #FFFFFF; color: #10151F; box-shadow: 0 1px 4px rgba(16,21,31,0.10); }
+
+/* ---------- Registre récapitulatif — coloré ---------- */
 .conteneurRecap {
   background-color: #FFFFFF;
   border: 1px solid #E4E1D8;
@@ -51,24 +61,35 @@
   font-variant-numeric: tabular-nums;
 }
 
-.tableauRecap th {
+.tableauRecap thead th {
   text-align: left;
   padding: 13px 18px;
-  color: #8B8578;
+  color: #E8D9AF;
   font-weight: 600;
-  font-size: 11.5px;
-  border-bottom: 1px solid #E4E1D8;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  background-color: #10151F;
 }
-.tableauRecap th:not(:first-child) { text-align: right; }
+.tableauRecap thead th:first-child { color: #FAF9F5; text-transform: none; font-size: 12px; }
+.tableauRecap thead th:not(:first-child) { text-align: right; }
 
 .tableauRecap td {
   padding: 12px 18px;
   border-bottom: 1px solid #F0EEE7;
 }
-.tableauRecap td:not(:first-child) { text-align: right; }
+.tableauRecap td:not(:first-child) { text-align: right; font-weight: 600; }
+
+.tableauRecap tbody tr:nth-child(even) { background-color: #FBFAF7; }
+.tableauRecap tbody tr:hover { background-color: #F4F1EA; }
 
 .cellCategorie { font-weight: 450; color: #10151F; }
-.cellMontant { font-weight: 600; color: #10151F; }
+.cellMontant { color: #10151F; }
+
+/* GNF = navy, USD = vert, SAR = or — colonnes distinguées visuellement */
+.tableauRecap tbody td:nth-child(2) { color: #1E3A7A; }
+.tableauRecap tbody td:nth-child(3) { color: #1F7A4D; }
+.tableauRecap tbody td:nth-child(4) { color: #A88530; }
 
 .ligneTotalRecap td {
   font-weight: 700;
@@ -76,12 +97,33 @@
   border-bottom: none;
   padding-top: 15px;
   padding-bottom: 15px;
-  color: #10151F;
+  background: linear-gradient(135deg, #FBF6EA, #F5ECD4);
 }
-.ligneTotalRecap .cellMontant { color: var(--color-brand); font-size: 14.5px; }
+.ligneTotalRecap td:first-child { color: #10151F; }
+.ligneTotalRecap td:nth-child(2) { color: #1E3A7A; font-size: 14.5px; }
+.ligneTotalRecap td:nth-child(3) { color: #1F7A4D; font-size: 14.5px; }
+.ligneTotalRecap td:nth-child(4) { color: #A88530; font-size: 14.5px; }
 
 .avertissementLigne { font-size: 10.5px; color: #A88530; font-weight: 400; margin-top: 4px; font-style: italic; }
 .messageConfirmation { font-size: 12.5px; color: #166534; font-weight: 600; }
+
+/* ---------- Bandeau Total général ---------- */
+.totalGeneralBloc {
+  display: flex; justify-content: space-between; align-items: center;
+  background: linear-gradient(135deg, #10151F, #1A2440);
+  color: #FAF9F5;
+  padding: 16px 20px;
+  border-radius: 14px;
+  margin: 4px 0 28px;
+  flex-wrap: wrap;
+  gap: 10px;
+  border: 1px solid #2A3350;
+}
+.totalGeneralBloc span:first-child { font-size: 13px; font-weight: 500; }
+.totalGeneralValeurs { display: flex; align-items: baseline; gap: 16px; flex-wrap: wrap; }
+.totalGeneralValeurs strong { color: var(--color-gold); font-size: 19px; }
+.totalGeneralValeurs span { font-size: 12.5px; color: #9CD9B0; font-weight: 600; }
+.totalGeneralValeurs span:last-child { color: #C4C0B5; font-weight: 500; }
 
 /* ---------- Historique repliable ---------- */
 .enteteHistoriqueRepliable {
@@ -96,7 +138,7 @@
 
 .sousTitreListe { font-size: 14.5px; font-weight: 600; color: #10151F; margin: 0 0 12px; }
 
-/* ---------- Tableau détaillé (liste) ---------- */
+/* ---------- Tableau détaillé (liste) — coloré aussi ---------- */
 .conteneurTableau {
   background-color: #FFFFFF;
   border: 1px solid #E4E1D8;
@@ -113,13 +155,14 @@
   font-variant-numeric: tabular-nums;
 }
 
-.tableau th {
+.tableau thead th {
   text-align: left;
   padding: 13px 18px;
   color: #8B8578;
   font-weight: 600;
   font-size: 11.5px;
-  border-bottom: 1px solid #E4E1D8;
+  border-bottom: 2px solid var(--color-gold);
+  background-color: #FBF6EA;
 }
 
 .tableau td {
@@ -129,12 +172,11 @@
 }
 
 .tableau tbody tr:last-child td { border-bottom: none; }
-.tableau tbody tr:hover td { background-color: #FAF9F5; }
+.tableau tbody tr:hover td { background-color: #F4F1EA; }
 
 .etatVide { text-align: center; padding: 36px; color: #8B8578; font-size: 13px; }
 .libelleComplementaire { color: #8B8578; font-size: 12px; }
-.cellMontantListe { font-weight: 600; color: #10151F; text-align: right; }
-.ligneCliquable { cursor: pointer; }
+.cellMontantListe { font-weight: 700; color: #1E3A7A; text-align: right; }
 
 .badgeVert { font-size: 11px; font-weight: 600; padding: 3px 11px; border-radius: 999px; background-color: #EBF5EE; color: #2A6B45; }
 .badgeRouge { font-size: 11px; font-weight: 600; padding: 3px 11px; border-radius: 999px; background-color: #FBEDEA; color: #A03D2E; }
@@ -189,41 +231,82 @@
   .boutonPrincipal, .boutonSecondaire { justify-content: center; }
 }
 
+/* ---------- Pastilles de catégorie dans le tableau récapitulatif ---------- */
+.tableauRecap .cellCategorie {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.tableauRecap .cellCategorie::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  background: linear-gradient(135deg, var(--color-brand), var(--color-gold));
+}
+.ligneTotalRecap .cellCategorie::before { display: none; }
+
+/* ---------- Badges de devise colorés (historique) ---------- */
+.badgeDevise {
+  display: inline-block;
+  font-size: 9.5px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 5px;
+  margin-left: 6px;
+  letter-spacing: 0.02em;
+}
+.badgeDevise.gnf { background-color: #E4EBF9; color: #1E3A7A; }
+.badgeDevise.usd { background-color: #E2F3E9; color: #1F7A4D; }
+.badgeDevise.sar { background-color: #FBF6EA; color: #A88530; }
+
+/* ---------- Bordure gauche colorée sur les lignes de l'historique ---------- */
+.tableau tbody tr {
+  border-left: 3px solid transparent;
+  transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+.tableau tbody tr:hover {
+  border-left-color: var(--color-gold);
+}
+
+/* ---------- Barre de progression décorative sous le total général ---------- */
 .totalGeneralBloc {
-  display: flex; justify-content: space-between; align-items: center;
-  background-color: #10151F; color: #FAF9F5; padding: 16px 20px;
-  border-radius: 14px; margin: 16px 0 28px; flex-wrap: wrap; gap: 10px;
+  position: relative;
+  overflow: hidden;
 }
-.totalGeneralBloc span:first-child { font-size: 13px; font-weight: 500; }
-.totalGeneralValeurs { display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; }
-.totalGeneralValeurs strong { color: var(--color-gold); font-size: 18px; }
-.totalGeneralValeurs span { font-size: 12.5px; color: #C4C0B5; }
-
-
-.ongletsSection {
-  display: inline-flex;
-  gap: 3px;
-  background-color: #F0EEE7;
-  padding: 4px;
-  border-radius: 11px;
-  margin-bottom: 18px;
+.totalGeneralBloc::after {
+  content: "";
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--color-gold), #1F7A4D, var(--color-brand));
 }
 
-.onglet, .ongletActif {
-  padding: 9px 18px;
-  border: none;
-  border-radius: 8px;
-  font-size: 13px;
-  font-weight: 550;
-  cursor: pointer;
+/* ---------- En-tête de section avec accent coloré ---------- */
+.sousTitreListe {
+  position: relative;
+  padding-left: 14px;
 }
-.onglet {
-  background: none;
-  color: #8B8578;
+.sousTitreListe::before {
+  content: "";
+  position: absolute;
+  left: 0; top: 2px; bottom: 2px;
+  width: 4px;
+  border-radius: 2px;
+  background: linear-gradient(180deg, var(--color-brand), var(--color-gold));
 }
-.onglet:hover { color: #10151F; }
+
+/* ---------- Onglets avec indicateur coloré actif ---------- */
 .ongletActif {
-  background-color: #FFFFFF;
-  color: #10151F;
-  box-shadow: 0 1px 4px rgba(16,21,31,0.10);
+  position: relative;
+}
+.ongletActif::after {
+  content: "";
+  position: absolute;
+  bottom: -4px; left: 50%;
+  transform: translateX(-50%);
+  width: 16px; height: 2px;
+  border-radius: 2px;
+  background-color: var(--color-gold);
 }
