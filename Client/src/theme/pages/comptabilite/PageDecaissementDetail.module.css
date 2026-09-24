@@ -34,17 +34,20 @@
   font-size: 13px; font-weight: 500; background-color: #FFFFFF; color: #10151F;
 }
 
-/* ---------- Onglets Frais généraux / Frais personnels ---------- */
-.ongletsSection {
-  display: inline-flex; gap: 3px; background-color: #F0EEE7;
-  padding: 4px; border-radius: 11px; margin-bottom: 18px;
-}
-.onglet, .ongletActif { padding: 9px 18px; border: none; border-radius: 8px; font-size: 13px; font-weight: 550; cursor: pointer; }
+/* ---------- Onglets ---------- */
+.ongletsSection { display: inline-flex; gap: 3px; background-color: #F0EEE7; padding: 4px; border-radius: 11px; margin-bottom: 18px; }
+.onglet, .ongletActif { padding: 9px 18px; border: none; border-radius: 8px; font-size: 13px; font-weight: 550; cursor: pointer; position: relative; }
 .onglet { background: none; color: #8B8578; }
 .onglet:hover { color: #10151F; }
 .ongletActif { background-color: #FFFFFF; color: #10151F; box-shadow: 0 1px 4px rgba(16,21,31,0.10); }
+.ongletActif::after { content: ""; position: absolute; bottom: -4px; left: 50%; transform: translateX(-50%); width: 16px; height: 2px; border-radius: 2px; background-color: var(--color-gold); }
 
-/* ---------- Registre récapitulatif — coloré ---------- */
+/* ============================================================
+   TABLEAUX — la règle clé pour le défilement mobile : le CONTENEUR
+   a overflow-x:auto, le TABLEAU a une min-width fixe. Le tableau ne
+   se compresse jamais, c'est le conteneur qui défile horizontalement.
+   ============================================================ */
+
 .conteneurRecap {
   background-color: #FFFFFF;
   border: 1px solid #E4E1D8;
@@ -52,11 +55,12 @@
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
   margin-bottom: 32px;
+  max-width: 100%;
 }
 
 .tableauRecap {
   width: 100%;
-  min-width: 500px;
+  min-width: 560px;
   border-collapse: collapse;
   font-size: 13.5px;
   font-variant-numeric: tabular-nums;
@@ -71,23 +75,22 @@
   text-transform: uppercase;
   letter-spacing: 0.03em;
   background-color: #10151F;
+  white-space: nowrap;
 }
 .tableauRecap thead th:first-child { color: #FAF9F5; text-transform: none; font-size: 12px; }
 .tableauRecap thead th:not(:first-child) { text-align: right; }
 
-.tableauRecap td {
-  padding: 12px 18px;
-  border-bottom: 1px solid #F0EEE7;
-}
-.tableauRecap td:not(:first-child) { text-align: right; font-weight: 600; }
+.tableauRecap td { padding: 12px 18px; border-bottom: 1px solid #F0EEE7; }
+.tableauRecap td:not(:first-child) { text-align: right; font-weight: 600; white-space: nowrap; }
 
 .tableauRecap tbody tr:nth-child(even) { background-color: #FBFAF7; }
 .tableauRecap tbody tr:hover { background-color: #F4F1EA; }
 
-.cellCategorie { font-weight: 450; color: #10151F; }
-.cellMontant { color: #10151F; }
+.cellCategorie { display: flex; align-items: center; gap: 10px; font-weight: 450; color: #10151F; }
+.cellCategorie::before { content: ""; width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; background: linear-gradient(135deg, var(--color-brand), var(--color-gold)); }
+.ligneTotalRecap .cellCategorie::before { display: none; }
 
-/* GNF = navy, USD = vert, SAR = or — colonnes distinguées visuellement */
+.cellMontant { color: #10151F; }
 .tableauRecap tbody td:nth-child(2) { color: #1E3A7A; }
 .tableauRecap tbody td:nth-child(3) { color: #1F7A4D; }
 .tableauRecap tbody td:nth-child(4) { color: #A88530; }
@@ -105,21 +108,18 @@
 .ligneTotalRecap td:nth-child(3) { color: #1F7A4D; font-size: 14.5px; }
 .ligneTotalRecap td:nth-child(4) { color: #A88530; font-size: 14.5px; }
 
-.avertissementLigne { font-size: 10.5px; color: #A88530; font-weight: 400; margin-top: 4px; font-style: italic; }
+.avertissementLigne { font-size: 10.5px; color: #A88530; font-weight: 400; margin-top: 4px; font-style: italic; white-space: normal; }
 .messageConfirmation { font-size: 12.5px; color: #166534; font-weight: 600; }
 
-/* ---------- Bandeau Total général ---------- */
+/* ---------- Total général ---------- */
 .totalGeneralBloc {
+  position: relative; overflow: hidden;
   display: flex; justify-content: space-between; align-items: center;
   background: linear-gradient(135deg, #10151F, #1A2440);
-  color: #FAF9F5;
-  padding: 16px 20px;
-  border-radius: 14px;
-  margin: 4px 0 28px;
-  flex-wrap: wrap;
-  gap: 10px;
-  border: 1px solid #2A3350;
+  color: #FAF9F5; padding: 16px 20px; border-radius: 14px;
+  margin: 4px 0 28px; flex-wrap: wrap; gap: 10px; border: 1px solid #2A3350;
 }
+.totalGeneralBloc::after { content: ""; position: absolute; bottom: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, var(--color-gold), #1F7A4D, var(--color-brand)); }
 .totalGeneralBloc span:first-child { font-size: 13px; font-weight: 500; }
 .totalGeneralValeurs { display: flex; align-items: baseline; gap: 16px; flex-wrap: wrap; }
 .totalGeneralValeurs strong { color: var(--color-gold); font-size: 19px; }
@@ -134,50 +134,48 @@
   cursor: pointer; margin-bottom: 14px;
 }
 .enteteHistoriqueRepliable:hover { background-color: #FAF9F5; }
-.chevron { transition: transform 0.2s ease; color: #8B8578; }
+.chevron { transition: transform 0.2s ease; color: #8B8578; flex-shrink: 0; }
 .chevronOuvert { transform: rotate(180deg); }
 
-.sousTitreListe { font-size: 14.5px; font-weight: 600; color: #10151F; margin: 0 0 12px; }
+.sousTitreListe { position: relative; padding-left: 14px; font-size: 14.5px; font-weight: 600; color: #10151F; margin: 0 0 12px; }
+.sousTitreListe::before { content: ""; position: absolute; left: 0; top: 2px; bottom: 2px; width: 4px; border-radius: 2px; background: linear-gradient(180deg, var(--color-brand), var(--color-gold)); }
 
-/* ---------- Tableau détaillé (liste) — coloré aussi ---------- */
 .conteneurTableau {
   background-color: #FFFFFF;
   border: 1px solid #E4E1D8;
   border-radius: 14px;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
+  max-width: 100%;
 }
 
 .tableau {
   width: 100%;
-  min-width: 600px;
+  min-width: 560px;
   border-collapse: collapse;
   font-size: 13.5px;
   font-variant-numeric: tabular-nums;
 }
 
 .tableau thead th {
-  text-align: left;
-  padding: 13px 18px;
-  color: #8B8578;
-  font-weight: 600;
-  font-size: 11.5px;
-  border-bottom: 2px solid var(--color-gold);
-  background-color: #FBF6EA;
+  text-align: left; padding: 13px 18px; color: #8B8578; font-weight: 600;
+  font-size: 11.5px; border-bottom: 2px solid var(--color-gold);
+  background-color: #FBF6EA; white-space: nowrap;
 }
 
-.tableau td {
-  padding: 12px 18px;
-  border-bottom: 1px solid #F0EEE7;
-  color: #10151F;
-}
-
+.tableau td { padding: 12px 18px; border-bottom: 1px solid #F0EEE7; color: #10151F; }
+.tableau tbody tr { border-left: 3px solid transparent; transition: border-color 0.15s ease, background-color 0.15s ease; }
+.tableau tbody tr:hover { border-left-color: var(--color-gold); background-color: #F4F1EA; }
 .tableau tbody tr:last-child td { border-bottom: none; }
-.tableau tbody tr:hover td { background-color: #F4F1EA; }
 
 .etatVide { text-align: center; padding: 36px; color: #8B8578; font-size: 13px; }
 .libelleComplementaire { color: #8B8578; font-size: 12px; }
-.cellMontantListe { font-weight: 700; color: #1E3A7A; text-align: right; }
+.cellMontantListe { font-weight: 700; color: #1E3A7A; text-align: right; white-space: nowrap; }
+
+.badgeDevise { display: inline-block; font-size: 9.5px; font-weight: 700; padding: 2px 7px; border-radius: 5px; margin-left: 6px; letter-spacing: 0.02em; }
+.badgeDevise.gnf { background-color: #E4EBF9; color: #1E3A7A; }
+.badgeDevise.usd { background-color: #E2F3E9; color: #1F7A4D; }
+.badgeDevise.sar { background-color: #FBF6EA; color: #A88530; }
 
 .badgeVert { font-size: 11px; font-weight: 600; padding: 3px 11px; border-radius: 999px; background-color: #EBF5EE; color: #2A6B45; }
 .badgeRouge { font-size: 11px; font-weight: 600; padding: 3px 11px; border-radius: 999px; background-color: #FBEDEA; color: #A03D2E; }
@@ -186,16 +184,13 @@
 .cellActions button {
   width: 28px; height: 28px; border: 1px solid #E4E1D8; border-radius: 7px;
   background: #FFFFFF; cursor: pointer; display: inline-flex; align-items: center; justify-content: center;
-  color: #6B6659; transition: background-color 0.15s ease, color 0.15s ease;
+  color: #6B6659; transition: background-color 0.15s ease, color 0.15s ease; flex-shrink: 0;
 }
 .cellActions button:hover { background-color: #FAF9F5; color: #10151F; }
 .boutonSupprimer:hover { background-color: #FBEDEA !important; color: #A03D2E !important; border-color: #E8C4BC !important; }
 
 /* ---------- Modales ---------- */
-.superposition {
-  position: fixed; inset: 0; background-color: rgba(16,21,31,0.5);
-  display: flex; align-items: center; justify-content: center; z-index: 50; padding: 16px;
-}
+.superposition { position: fixed; inset: 0; background-color: rgba(16,21,31,0.5); display: flex; align-items: center; justify-content: center; z-index: 50; padding: 16px; }
 .panneau { width: 460px; max-width: 100%; max-height: 90vh; overflow-y: auto; background-color: #FFFFFF; border-radius: 16px; padding: 26px; }
 .panneauEtroit { width: 340px; max-width: 100%; background-color: #FFFFFF; border-radius: 16px; padding: 26px; }
 .enteteModal { display: flex; justify-content: space-between; align-items: center; margin-bottom: 22px; }
@@ -227,134 +222,32 @@
 }
 .boutonSecondaire:hover { background-color: #FAF9F5; }
 
-@media (max-width: 700px) {
-  .entete { flex-direction: column; align-items: stretch; }
-  .boutonPrincipal, .boutonSecondaire { justify-content: center; }
-}
-
-/* ---------- Pastilles de catégorie dans le tableau récapitulatif ---------- */
-.tableauRecap .cellCategorie {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-.tableauRecap .cellCategorie::before {
-  content: "";
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  flex-shrink: 0;
-  background: linear-gradient(135deg, var(--color-brand), var(--color-gold));
-}
-.ligneTotalRecap .cellCategorie::before { display: none; }
-
-/* ---------- Badges de devise colorés (historique) ---------- */
-.badgeDevise {
-  display: inline-block;
-  font-size: 9.5px;
-  font-weight: 700;
-  padding: 2px 7px;
-  border-radius: 5px;
-  margin-left: 6px;
-  letter-spacing: 0.02em;
-}
-.badgeDevise.gnf { background-color: #E4EBF9; color: #1E3A7A; }
-.badgeDevise.usd { background-color: #E2F3E9; color: #1F7A4D; }
-.badgeDevise.sar { background-color: #FBF6EA; color: #A88530; }
-
-/* ---------- Bordure gauche colorée sur les lignes de l'historique ---------- */
-.tableau tbody tr {
-  border-left: 3px solid transparent;
-  transition: border-color 0.15s ease, background-color 0.15s ease;
-}
-.tableau tbody tr:hover {
-  border-left-color: var(--color-gold);
-}
-
-/* ---------- Barre de progression décorative sous le total général ---------- */
-.totalGeneralBloc {
-  position: relative;
-  overflow: hidden;
-}
-.totalGeneralBloc::after {
-  content: "";
-  position: absolute;
-  bottom: 0; left: 0; right: 0;
-  height: 3px;
-  background: linear-gradient(90deg, var(--color-gold), #1F7A4D, var(--color-brand));
-}
-
-/* ---------- En-tête de section avec accent coloré ---------- */
-.sousTitreListe {
-  position: relative;
-  padding-left: 14px;
-}
-.sousTitreListe::before {
-  content: "";
-  position: absolute;
-  left: 0; top: 2px; bottom: 2px;
-  width: 4px;
-  border-radius: 2px;
-  background: linear-gradient(180deg, var(--color-brand), var(--color-gold));
-}
-
-/* ---------- Onglets avec indicateur coloré actif ---------- */
-.ongletActif {
-  position: relative;
-}
-.ongletActif::after {
-  content: "";
-  position: absolute;
-  bottom: -4px; left: 50%;
-  transform: translateX(-50%);
-  width: 16px; height: 2px;
-  border-radius: 2px;
-  background-color: var(--color-gold);
-}
-
 /* ============================================================
-   RESPONSIVE — plusieurs paliers
+   RESPONSIVE
    ============================================================ */
 
-/* ---------- Tablette (≤ 900px) ---------- */
 @media (max-width: 900px) {
   .entete { gap: 14px; }
   .groupeBoutons { width: 100%; }
   .selectAnnee { flex: 1; min-width: 140px; }
 }
 
-/* ---------- Petite tablette / grand mobile (≤ 700px) ---------- */
 @media (max-width: 700px) {
-  .entete {
-    flex-direction: column;
-    align-items: stretch;
-  }
+  .entete { flex-direction: column; align-items: stretch; }
   .titre { font-size: 19px; }
 
-  .groupeBoutons {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 8px;
-  }
+  .groupeBoutons { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
   .selectAnnee { grid-column: 1 / -1; }
   .boutonPrincipal { grid-column: 1 / -1; justify-content: center; }
   .boutonTaux { justify-content: center; }
 
-  .ongletsSection {
-    width: 100%;
-    display: flex;
-  }
+  .ongletsSection { width: 100%; display: flex; }
   .onglet, .ongletActif { flex: 1; text-align: center; padding: 9px 8px; }
 
   .totalGeneralBloc { flex-direction: column; align-items: flex-start; }
   .totalGeneralValeurs { width: 100%; justify-content: space-between; }
 
-  /* Tableaux : on garde le défilement horizontal, mais on réduit
-     le padding et la taille de police pour limiter le scroll nécessaire. */
-  .tableauRecap, .tableau {
-    font-size: 12.5px;
-    min-width: 460px;
-  }
+  .tableauRecap, .tableau { font-size: 12.5px; min-width: 480px; }
   .tableauRecap thead th, .tableau thead th { padding: 10px 12px; font-size: 10.5px; }
   .tableauRecap td, .tableau td { padding: 9px 12px; }
 
@@ -362,26 +255,18 @@
   .navigationModal button { width: 100%; justify-content: center; }
 }
 
-/* ---------- Mobile étroit (≤ 480px) ---------- */
 @media (max-width: 480px) {
   .titre { font-size: 17px; }
-  .sousTitre { font-size: 12px; }
 
-  .panneau, .panneauEtroit {
-    padding: 18px;
-    border-radius: 14px;
-    max-height: 92vh;
-  }
+  .panneau, .panneauEtroit { padding: 18px; border-radius: 14px; max-height: 92vh; }
   .enteteModal h2 { font-size: 15px; }
 
   .ligneDeux { grid-template-columns: 1fr; }
 
-  .tableauRecap, .tableau { min-width: 400px; }
+  .tableauRecap, .tableau { min-width: 420px; }
 
-  /* La pastille décorative devant chaque catégorie prend trop de place
-     sur très petit écran : on la retire pour garder le texte lisible. */
-  .tableauRecap .cellCategorie::before { display: none; }
-  .tableauRecap .cellCategorie { gap: 0; }
+  .cellCategorie::before { display: none; }
+  .cellCategorie { gap: 0; }
 
   .badgeDevise { display: block; margin-left: 0; margin-top: 3px; width: fit-content; }
 
@@ -389,21 +274,11 @@
   .totalGeneralValeurs strong { font-size: 17px; }
 
   .enteteHistoriqueRepliable { font-size: 12.5px; padding: 11px 14px; }
-
   .boutonTaux, .boutonPrincipal { font-size: 12px; padding: 9px 12px; }
 }
 
-/* ---------- Très petit écran (≤ 360px) ---------- */
 @media (max-width: 360px) {
   .groupeBoutons { grid-template-columns: 1fr; }
   .boutonTaux { grid-column: 1 / -1; }
-}
-
-.conteneurRecap {
-  overflow: hidden;
-}
-
-.conteneurTableau {
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
+  .tableauRecap, .tableau { min-width: 380px; }
 }
