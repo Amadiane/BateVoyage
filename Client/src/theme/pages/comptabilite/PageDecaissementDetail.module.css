@@ -49,7 +49,8 @@
   background-color: #FFFFFF;
   border: 1px solid #E4E1D8;
   border-radius: 14px;
-  overflow: hidden;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
   margin-bottom: 32px;
 }
 
@@ -396,4 +397,13 @@
 @media (max-width: 360px) {
   .groupeBoutons { grid-template-columns: 1fr; }
   .boutonTaux { grid-column: 1 / -1; }
+}
+
+.conteneurRecap {
+  overflow: hidden;
+}
+
+.conteneurTableau {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 }
