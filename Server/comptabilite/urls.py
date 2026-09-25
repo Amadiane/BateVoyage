@@ -5,7 +5,7 @@ from .views import (
     CategorieDecaissementViewSet, DecaissementViewSet, TauxChangeView,
     SaisonComptableViewSet, EncaissementView, BeneficeGlobalView,
     DetteViewSet, AssocieViewSet, BeneficeIndividuelView, DepensePelerinViewSet,
-    CreanceViewSet, DevisFactureViewSet,
+    CreanceViewSet, DevisFactureViewSet, LigneBudgetFonctionnementViewSet
 )
 
 router = DefaultRouter()
@@ -20,6 +20,7 @@ router.register("associes", AssocieViewSet, basename="associes")
 router.register("depenses-pelerin", DepensePelerinViewSet, basename="depenses-pelerin")
 router.register("creances", CreanceViewSet, basename="creances")
 router.register("devis-factures", DevisFactureViewSet, basename="devis-factures")
+router.register("budget-fonctionnement", LigneBudgetFonctionnementViewSet, basename="budget-fonctionnement")
 
 urlpatterns = [
     path("resume/", ResumeComptabiliteView.as_view(), name="resume-comptabilite"),

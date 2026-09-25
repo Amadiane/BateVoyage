@@ -850,7 +850,22 @@
 
   "gerer_frais_personnels": "Gérer les frais personnels",
 
-  "budget_fonctionnement": "Budget de fonctionnement"
+  "budget_fonctionnement": "Budget de fonctionnement",
+
+  
+  "nouvelle_ligne": "Nouvelle ligne",
+  "modifier_ligne": "Modifier la ligne",
+  "total_entree": "Total entrée",
+  "total_depense": "Total dépensé",
+  "total_restant": "Total restant",
+  "entree": "Entrée",
+  "sortie": "Sortie",
+  "entree_abbr": "entrée",
+  "sortie_abbr": "sortie",
+  "solde": "Solde",
+  "type_mouvement": "Type de mouvement",
+  "ex_designation_budget": "Ex: Apport initial, Achat fournitures..."
+
 
 
 

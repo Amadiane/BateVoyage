@@ -44,4 +44,9 @@ export const decaissementService = {
   modifierDevisFacture: (id, donnees) => api.patch(CONFIG.API_DEVIS_FACTURE_DETAIL(id), donnees),
   supprimerDevisFacture: (id) => api.delete(CONFIG.API_DEVIS_FACTURE_DETAIL(id)),
   obtenirImpayes: () => api.get(`${CONFIG.API_DEVIS_FACTURES}impayes/`),
+  listerBudgetFonctionnement: () => api.get(CONFIG.API_BUDGET_FONCTIONNEMENT),
+  creerLigneBudget: (donnees) => api.post(CONFIG.API_BUDGET_FONCTIONNEMENT, donnees),
+  modifierLigneBudget: (id, donnees) => api.patch(CONFIG.API_BUDGET_FONCTIONNEMENT_DETAIL(id), donnees),
+  supprimerLigneBudget: (id) => api.delete(CONFIG.API_BUDGET_FONCTIONNEMENT_DETAIL(id)),
+  obtenirRecapBudget: () => api.get(`${CONFIG.API_BUDGET_FONCTIONNEMENT}recapitulatif/`),
 };

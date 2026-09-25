@@ -13,7 +13,7 @@ const SECTIONS = [
     boutons: [
       { cle: "decaissement", label: "decaissements", icone: TrendingDown },
       { cle: "encaissement", label: "encaissements", icone: TrendingUp },
-      { cle: "frais-personnels", label: "budget_fonctionnement", icone: Wallet2 },
+      { cle: "budget-fonctionnement", label: "budget_fonctionnement", icone: Wallet2 },
     ],
   },
   {

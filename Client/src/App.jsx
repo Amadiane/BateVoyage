@@ -45,6 +45,7 @@ import PageBeneficeIndividuel from "./pages/comptabilite/PageBeneficeIndividuel"
 import PageBeneficePelerin from "./pages/comptabilite/PageBeneficePelerin";
 import PageCreance from "./pages/comptabilite/PageCreance";
 import PageDevisFacture from "./pages/comptabilite/PageDevisFacture";
+import PageBudgetFonctionnement from "./pages/comptabilite/PageBudgetFonctionnement";
 
 import "./globals.css";
 
@@ -105,6 +106,7 @@ function App() {
           <Route path="/hajj/finances/benefice-pelerin" element={<PageBeneficePelerin basePath="/hajj" />} />
           <Route path="/hajj/finances/creance" element={<PageCreance basePath="/hajj" />} />
           <Route path="/hajj/finances/devis-facture" element={<PageDevisFacture basePath="/hajj" />} />
+          <Route path="/hajj/finances/budget-fonctionnement" element={<PageBudgetFonctionnement basePath="/hajj" />} />
 
           {/* Module Oumra */}
           <Route path="/oumra" element={<PageModuleVoyage typeVoyage="oumra" basePath="/oumra" titreCle="menu_oumra" />} />

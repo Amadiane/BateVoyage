@@ -422,3 +422,21 @@ class DepensePelerin(models.Model):
     def __str__(self):
         return f"{self.pelerin} — {self.get_categorie_display()} — {self.montant} {self.devise}"
 
+
+
+class LigneBudgetFonctionnement(models.Model):
+    designation = models.CharField(max_length=255)
+    montant_entree = models.DecimalField(max_digits=14, decimal_places=2, null=True, blank=True)
+    montant_sortie = models.DecimalField(max_digits=14, decimal_places=2, null=True, blank=True)
+    date = models.DateField()
+    notes = models.TextField(blank=True)
+    enregistre_par = models.ForeignKey("utilisateurs.Utilisateur", on_delete=models.PROTECT, related_name="lignes_budget_fonctionnement")
+    date_creation = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["date_creation"]
+        verbose_name = "Ligne budget de fonctionnement"
+
+    def __str__(self):
+        return f"{self.designation} — {self.date}"
+

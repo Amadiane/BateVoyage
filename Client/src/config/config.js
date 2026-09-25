@@ -113,6 +113,9 @@ const CONFIG = {
   API_DEVIS_FACTURES: `${BASE_URL}/api/comptabilite/devis-factures/`,
   API_DEVIS_FACTURE_DETAIL: (id) => `${BASE_URL}/api/comptabilite/devis-factures/${id}/`,
 
+  API_BUDGET_FONCTIONNEMENT: `${BASE_URL}/api/comptabilite/budget-fonctionnement/`,
+  API_BUDGET_FONCTIONNEMENT_DETAIL: (id) => `${BASE_URL}/api/comptabilite/budget-fonctionnement/${id}/`,
+
   // --- Formules / Programmes ---
   API_PROGRAMMES: `${BASE_URL}/api/formules/programmes/`,
 

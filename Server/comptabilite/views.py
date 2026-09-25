@@ -11,11 +11,11 @@ from activite.serializers import EntreeJournalDetailSerializer
 from utilisateurs.permissions import EstGestionnaireFinancier
 from .models import (
     BonSortie, Depense, DetteFournisseur,
-    CategorieDecaissement, Decaissement, TauxChange, SaisonComptable, ObservationBeneficeGlobal, Dette, Associe, DepensePelerin, Creance, DevisFacture,
+    CategorieDecaissement, Decaissement, TauxChange, SaisonComptable, ObservationBeneficeGlobal, Dette, Associe, DepensePelerin, Creance, DevisFacture, LigneBudgetFonctionnement
 )
 from .serializers import (
     BonSortieSerializer, DepenseSerializer, DetteFournisseurSerializer,
-    CategorieDecaissementSerializer, DecaissementSerializer, TauxChangeSerializer, SaisonComptableSerializer, ObservationBeneficeGlobalSerializer, DetteSerializer, AssocieSerializer, DepensePelerinSerializer, CreanceSerializer, DevisFactureSerializer
+    CategorieDecaissementSerializer, DecaissementSerializer, TauxChangeSerializer, SaisonComptableSerializer, ObservationBeneficeGlobalSerializer, DetteSerializer, AssocieSerializer, DepensePelerinSerializer, CreanceSerializer, DevisFactureSerializer, LigneBudgetFonctionnementSerializer
 )
 from .utils import convertir_depuis_gnf, convertir_vers_gnf
 
@@ -526,3 +526,33 @@ class DevisFactureViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(impayes, many=True)
         total = sum(float(d.montant) for d in impayes)
         return Response({"documents": serializer.data, "total_impaye": total})
+
+
+class LigneBudgetFonctionnementViewSet(viewsets.ModelViewSet):
+    queryset = LigneBudgetFonctionnement.objects.select_related("enregistre_par").all()
+    serializer_class = LigneBudgetFonctionnementSerializer
+    permission_classes = [EstGestionnaireFinancier]
+
+    def perform_create(self, serializer):
+        with set_actor(self.request.user):
+            serializer.save(enregistre_par=self.request.user)
+
+    def perform_update(self, serializer):
+        with set_actor(self.request.user):
+            serializer.save()
+
+    def perform_destroy(self, instance):
+        with set_actor(self.request.user):
+            instance.delete()
+
+    @action(detail=False, methods=["get"], url_path="recapitulatif")
+    def recapitulatif(self, request):
+        lignes = LigneBudgetFonctionnement.objects.all()
+        total_entree = sum(float(l.montant_entree or 0) for l in lignes)
+        total_sortie = sum(float(l.montant_sortie or 0) for l in lignes)
+        total_restant = total_entree - total_sortie
+        return Response({
+            "total_entree": round(total_entree, 2),
+            "total_sortie": round(total_sortie, 2),
+            "total_restant": round(total_restant, 2),
+        })

@@ -3,7 +3,7 @@ from rest_framework import serializers
 from .models import (
     BonSortie, Depense, DetteFournisseur,
     CategorieDecaissement, Decaissement, TauxChange, SaisonComptable,
-    ObservationBeneficeGlobal, Dette, Associe, DepensePelerin, Creance, DevisFacture,
+    ObservationBeneficeGlobal, Dette, Associe, DepensePelerin, Creance, DevisFacture, LigneBudgetFonctionnement,
 )
 
 class BonSortieSerializer(serializers.ModelSerializer):
@@ -144,3 +144,17 @@ class DevisFactureSerializer(serializers.ModelSerializer):
 
     def get_pelerin_nom(self, obj):
         return f"{obj.pelerin.prenom} {obj.pelerin.nom}" if obj.pelerin else None
+
+
+
+class LigneBudgetFonctionnementSerializer(serializers.ModelSerializer):
+    enregistre_par_nom = serializers.SerializerMethodField()
+
+    class Meta:
+        model = LigneBudgetFonctionnement
+        fields = "__all__"
+        read_only_fields = ["enregistre_par", "date_creation"]
+
+    def get_enregistre_par_nom(self, obj):
+        nom = obj.enregistre_par.get_full_name()
+        return nom if nom.strip() else obj.enregistre_par.username
