@@ -1,10 +1,10 @@
-// Utilitaire générique d'export pour les tableaux de Comptabilité (Excel + PDF).
+// Utilitaire générique d'export pour les tableaux de Comptabilité (Excel + PDF/Impression).
 // Utilisé par le composant <BoutonExporter /> sur toutes les pages : Budget de fonctionnement,
 // Bénéfices Global, Bénéfices Individuel, Bénéfices par Pèlerin, Dette, Créance,
 // Devis/Facture, Bons de sortie, Dépenses, Dettes fournisseurs, etc.
 //
-// exceljs / jsPDF sont chargés en import dynamique : ils n'entrent dans le bundle qu'au
-// moment où l'utilisateur clique réellement sur "Exporter".
+// exceljs est chargé en import dynamique : il n'entre dans le bundle qu'au moment
+// où l'utilisateur clique réellement sur "Exporter en Excel".
 
 const COULEUR_ENTETE = "FF10151F"; // navy
 const COULEUR_OR = "FFC9972B"; // or / accent
@@ -20,7 +20,7 @@ function formaterNomFichier(base) {
   const nomPropre = (base || "export")
     .toString()
     .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[̀-ͯ]/g, "")
     .replace(/[^a-zA-Z0-9]+/g, "_")
     .replace(/^_+|_+$/g, "");
   return `BVG_${nomPropre}_${horodatage}.xlsx`;
@@ -168,37 +168,63 @@ export async function exporterTableauPdf({ titre, sousTitre = "", colonnes, lign
   const { jsPDF } = await import("jspdf");
   const { default: autoTable } = await import("jspdf-autotable");
 
+  // toLocaleString("fr-FR") utilise une espace fine insécable (U+202F) comme séparateur
+  // de milliers : les polices standard embarquées dans un PDF n'ont pas ce glyphe et le
+  // remplacent par un caractère parasite (ex: "395 600" devient "395/600"). On formate
+  // donc les nombres nous-mêmes avec une espace normale, sûre à l'impression.
+  const formaterNombrePdf = (valeur, decimales = 0) => {
+    const n = Number(valeur);
+    if (Number.isNaN(n)) return "-";
+    const negatif = n < 0;
+    const fixe = Math.abs(n).toFixed(decimales);
+    const [entier, dec] = fixe.split(".");
+    const entierEspace = entier.replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+    const resultat = dec ? `${entierEspace},${dec}` : entierEspace;
+    return negatif ? `-${resultat}` : resultat;
+  };
+
+  // Les polices standard de jsPDF n'ont pas toujours le glyphe du tiret cadratin "—" :
+  // on utilise un tiret simple pour les valeurs vides, plus sûr à l'impression.
   const formaterValeur = (colonne, valeur) => {
-    if (valeur === null || valeur === undefined || valeur === "") return "—";
+    if (valeur === null || valeur === undefined || valeur === "") return "-";
     if (colonne.format === "date") {
       const d = valeur instanceof Date ? valeur : new Date(valeur);
-      if (Number.isNaN(d.getTime())) return "—";
+      if (Number.isNaN(d.getTime())) return "-";
       return d.toLocaleDateString("fr-FR");
     }
     if (colonne.format === "nombre" || colonne.format === "devise") {
-      const n = Number(valeur);
-      if (Number.isNaN(n)) return "—";
-      return n.toLocaleString("fr-FR", {
-        minimumFractionDigits: colonne.decimales || 0,
-        maximumFractionDigits: colonne.decimales || 0,
-      });
+      return formaterNombrePdf(valeur, colonne.decimales || 0);
     }
     return String(valeur);
   };
 
   const doc = new jsPDF({ orientation: "landscape", unit: "mm", format: "a4" });
+  const MARGE = 12;
+  const largeurPage = doc.internal.pageSize.getWidth();
+  const largeurDisponible = largeurPage - MARGE * 2;
 
-  doc.setFontSize(14);
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(15);
   doc.setTextColor(16, 21, 31);
-  doc.text(`BateVoyage Guinée — ${titre}`, 14, 15);
+  doc.text("BateVoyage Guinée", MARGE, 14);
 
-  let startY = 20;
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(11);
+  doc.setTextColor(11, 63, 160);
+  doc.text(titre, MARGE, 21);
+
+  let startY = 27;
   if (sousTitre) {
-    doc.setFontSize(10);
+    doc.setFontSize(9);
     doc.setTextColor(107, 114, 128);
-    doc.text(sousTitre, 14, 21);
-    startY = 26;
+    doc.text(sousTitre, MARGE, 26.5);
+    startY = 31;
   }
+
+  // Liseré doré sous l'en-tête, comme le reste de l'interface.
+  doc.setDrawColor(201, 151, 43);
+  doc.setLineWidth(0.6);
+  doc.line(MARGE, startY - 3, largeurPage - MARGE, startY - 3);
 
   const head = [colonnes.map((c) => c.entete)];
   const body = lignes.map((ligne) => colonnes.map((c) => formaterValeur(c, ligne[c.cle])));
@@ -211,29 +237,76 @@ export async function exporterTableauPdf({ titre, sousTitre = "", colonnes, lign
       ]
     : undefined;
 
-  const colonnesNumeriques = colonnes
-    .map((c, i) => ((c.format === "nombre" || c.format === "devise") ? i : null))
-    .filter((i) => i !== null);
+  // Largeurs de colonnes proportionnelles à "largeur" (mêmes proportions que l'export
+  // Excel), réparties sur toute la largeur disponible de la page — évite les colonnes
+  // trop étroites ou des espaces vides mal répartis.
+  const totalUnites = colonnes.reduce((s, c) => s + (c.largeur || 18), 0);
+  const columnStyles = Object.fromEntries(
+    colonnes.map((c, i) => {
+      const estNumerique = c.format === "nombre" || c.format === "devise";
+      return [
+        i,
+        {
+          cellWidth: ((c.largeur || 18) / totalUnites) * largeurDisponible,
+          halign: c.align || (estNumerique ? "right" : "left"),
+          valign: "middle",
+        },
+      ];
+    })
+  );
 
   autoTable(doc, {
     startY,
     head,
     body,
     foot,
-    styles: { fontSize: 9, cellPadding: 2.2, textColor: [31, 41, 55], font: "helvetica" },
-    headStyles: { fillColor: [16, 21, 31], textColor: 255, fontStyle: "bold" },
-    footStyles: { fillColor: [250, 243, 224], textColor: [16, 21, 31], fontStyle: "bold" },
+    theme: "grid",
+    margin: { left: MARGE, right: MARGE, top: MARGE, bottom: 10 },
+    tableWidth: largeurDisponible,
+    pageBreak: "auto",
+    rowPageBreak: "avoid",
+    styles: {
+      font: "helvetica",
+      fontSize: 8.5,
+      cellPadding: { top: 2.2, right: 3.5, bottom: 2.2, left: 3.5 },
+      textColor: [31, 41, 55],
+      lineColor: [230, 227, 214],
+      lineWidth: 0.15,
+      overflow: "linebreak",
+      valign: "middle",
+      minCellHeight: 0,
+    },
+    headStyles: {
+      fillColor: [16, 21, 31],
+      textColor: 255,
+      fontStyle: "bold",
+      fontSize: 8.8,
+      halign: "center",
+      lineColor: [201, 151, 43],
+      lineWidth: { bottom: 0.5 },
+      cellPadding: { top: 2.6, right: 3.5, bottom: 2.6, left: 3.5 },
+    },
+    footStyles: {
+      fillColor: [250, 243, 224],
+      textColor: [16, 21, 31],
+      fontStyle: "bold",
+      fontSize: 8.8,
+      lineColor: [201, 151, 43],
+      lineWidth: { top: 0.5 },
+      cellPadding: { top: 2.6, right: 3.5, bottom: 2.6, left: 3.5 },
+    },
     alternateRowStyles: { fillColor: [250, 249, 245] },
-    columnStyles: Object.fromEntries(colonnesNumeriques.map((i) => [i, { halign: "right" }])),
+    columnStyles,
     didDrawPage: () => {
       const pageSize = doc.internal.pageSize;
       const pageHeight = pageSize.getHeight();
-      doc.setFontSize(8);
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(7.5);
       doc.setTextColor(156, 163, 175);
       doc.text(
-        `Généré le ${new Date().toLocaleDateString("fr-FR")} à ${new Date().toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" })}`,
-        14,
-        pageHeight - 8
+        `Genere le ${new Date().toLocaleDateString("fr-FR")} a ${new Date().toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" })}`,
+        MARGE,
+        pageHeight - 7
       );
     },
   });

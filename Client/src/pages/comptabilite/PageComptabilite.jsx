@@ -1,48 +1,84 @@
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import {
-  Wallet, Receipt, TrendingDown, TrendingUp, Building2, Wallet2,
-  PiggyBank, UserX, Users, UserCheck, UserPlus, FileText, ArrowRight,
+  TrendingDown, TrendingUp, Wallet2,
+  PiggyBank, Users, UserCheck,
+  UserX, UserPlus, ArrowUpRight,
 } from "lucide-react";
 import styles from "../../theme/pages/comptabilite/PageComptabilite.module.css";
 
-const SECTIONS = [
+const BOUTONS = [
   {
-    cle: "tresorerie",
+    cle: "decaissement",
+    label: "decaissements",
+    categorie: "section_tresorerie",
+    icone: TrendingDown,
     couleur: "#2B6CE0",
-    boutons: [
-      { cle: "decaissement", label: "decaissements", icone: TrendingDown },
-      { cle: "encaissement", label: "encaissements", icone: TrendingUp },
-      { cle: "budget-fonctionnement", label: "budget_fonctionnement", icone: Wallet2 },
-    ],
+    taille: "grand",
   },
   {
-    cle: "rentabilite",
+    cle: "encaissement",
+    label: "encaissements",
+    categorie: "section_tresorerie",
+    icone: TrendingUp,
+    couleur: "#2B6CE0",
+    taille: "normal",
+  },
+  {
+    cle: "budget-fonctionnement",
+    label: "budget_fonctionnement",
+    categorie: "section_tresorerie",
+    icone: Wallet2,
+    couleur: "#2B6CE0",
+    taille: "normal",
+  },
+  {
+    cle: "benefice-individuel",
+    label: "benefice_individuel",
+    categorie: "section_rentabilite",
+    icone: Users,
     couleur: "#C7A44A",
-    boutons: [
-      { cle: "benefice-global", label: "benefice_global", icone: PiggyBank },
-      { cle: "benefice-individuel", label: "benefice_individuel", icone: Users },
-      { cle: "benefice-pelerin", label: "benefice_pelerin", icone: UserCheck },
-    ],
+    taille: "normal",
   },
   {
-    cle: "dettes_creances",
-    couleur: "#D64A8A",
-    boutons: [
-      { cle: "dette", label: "dette", icone: UserX },
-      { cle: "creance", label: "creance", icone: UserPlus },
-    ],
+    cle: "benefice-pelerin",
+    label: "benefice_pelerin",
+    categorie: "section_rentabilite",
+    icone: UserCheck,
+    couleur: "#C7A44A",
+    taille: "normal",
   },
-  // {
-  //   cle: "documents_suivi",
-  //   couleur: "#2F9E5C",
-  //   boutons: [
-  //     { cle: "bons-sortie", label: "bons_sortie", icone: Receipt },
-  //     { cle: "depenses", label: "depenses", icone: Wallet },
-  //     { cle: "devis-facture", label: "devis_facture", icone: FileText },
-  //   ],
-  // },
+  {
+    cle: "benefice-global",
+    label: "benefice_global",
+    categorie: "section_rentabilite",
+    icone: PiggyBank,
+    couleur: "#C7A44A",
+    taille: "large",
+  },
+  {
+    cle: "dette",
+    label: "dette",
+    categorie: "section_dettes_creances",
+    icone: UserX,
+    couleur: "#D64A8A",
+    taille: "normal",
+  },
+  {
+    cle: "creance",
+    label: "creance",
+    categorie: "section_dettes_creances",
+    icone: UserPlus,
+    couleur: "#D64A8A",
+    taille: "normal",
+  },
 ];
+
+const CLASSE_TAILLE = {
+  grand: "tuileGrande",
+  large: "tuileLarge",
+  normal: "",
+};
 
 function PageComptabilite({ basePath }) {
   const { t } = useTranslation();
@@ -57,32 +93,37 @@ function PageComptabilite({ basePath }) {
       <h1 className={styles.titre}>{t("menu_comptabilite")}</h1>
       <p className={styles.sousTitre}>{t("comptabilite_description")}</p>
 
-      {SECTIONS.map((section) => (
-        <div key={section.cle} className={styles.section}>
-          <div className={styles.enteteSection}>
-            <span className={styles.puceSection} style={{ backgroundColor: section.couleur }} />
-            <h2 className={styles.titreSection}>{t(`section_${section.cle}`)}</h2>
-          </div>
-          <div className={styles.grilleBoutons}>
-            {section.boutons.map((b) => {
-              const Icone = b.icone;
-              return (
-                <button
-                  key={b.cle}
-                  className={styles.carteBouton}
-                  onClick={() => navigate(`${basePath}/finances/${b.cle}`)}
-                >
-                  <div className={styles.iconeCercle} style={{ backgroundColor: `${section.couleur}18`, color: section.couleur }}>
-                    <Icone size={19} />
-                  </div>
-                  <span className={styles.libelleBouton}>{t(b.label)}</span>
-                  <ArrowRight size={15} className={styles.flecheBouton} />
-                </button>
-              );
-            })}
-          </div>
-        </div>
-      ))}
+      <div className={styles.bento}>
+        {BOUTONS.map((b) => {
+          const Icone = b.icone;
+          return (
+            <button
+              key={b.cle}
+              className={`${styles.tuile} ${styles[CLASSE_TAILLE[b.taille]] || ""}`}
+              style={{
+                "--couleur": b.couleur,
+                background: `linear-gradient(155deg, ${b.couleur}14, ${b.couleur}05 60%)`,
+                borderColor: `${b.couleur}26`,
+              }}
+              onClick={() => navigate(`${basePath}/finances/${b.cle}`)}
+            >
+              <Icone className={styles.iconeFantome} strokeWidth={1.4} />
+
+              <span className={styles.categorieTuile} style={{ color: b.couleur }}>
+                {t(b.categorie)}
+              </span>
+
+              <div className={styles.basTuile}>
+                <div className={styles.iconeRonde} style={{ backgroundColor: b.couleur }}>
+                  <Icone size={17} color="#fff" strokeWidth={2} />
+                </div>
+                <span className={styles.libelleTuile}>{t(b.label)}</span>
+                <ArrowUpRight size={17} className={styles.flecheTuile} style={{ color: b.couleur }} />
+              </div>
+            </button>
+          );
+        })}
+      </div>
     </div>
   );
 }
