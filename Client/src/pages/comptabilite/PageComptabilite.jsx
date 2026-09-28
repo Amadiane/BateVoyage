@@ -31,7 +31,6 @@ const SECTIONS = [
     boutons: [
       { cle: "dette", label: "dette", icone: UserX },
       { cle: "creance", label: "creance", icone: UserPlus },
-      { cle: "dettes", label: "dettes_fournisseurs", icone: Building2 },
     ],
   },
   // {

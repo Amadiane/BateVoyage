@@ -9,12 +9,8 @@ export const decaissementService = {
   modifier: (id, donnees) => api.patch(CONFIG.API_DECAISSEMENT_DETAIL(id), donnees),
   supprimer: (id) => api.delete(CONFIG.API_DECAISSEMENT_DETAIL(id)),
   listerAnneesDisponibles: () => api.get(`${CONFIG.API_DECAISSEMENTS}annees-disponibles/`),
-  obtenirRecapitulatif: (activite, annee) => api.get(`${CONFIG.API_DECAISSEMENTS}recapitulatif/`, { params: { activite, annee } }),
   obtenirTauxChange: () => api.get(CONFIG.API_TAUX_CHANGE),
   modifierTauxChange: (donnees) => api.patch(CONFIG.API_TAUX_CHANGE, donnees),
-  listerSaisons: (activite) => api.get(CONFIG.API_SAISONS, { params: { activite } }),
-  creerSaison: (donnees) => api.post(CONFIG.API_SAISONS, donnees),
-  obtenirHistoriqueDecaissement: (id) => api.get(`${CONFIG.API_DECAISSEMENT_DETAIL(id)}historique/`),
   listerSaisons: (activite) => api.get(CONFIG.API_SAISONS, { params: { activite } }),
   creerSaison: (donnees) => api.post(CONFIG.API_SAISONS, donnees),
   obtenirRecapitulatif: (activite, annee, saison) => api.get(`${CONFIG.API_DECAISSEMENTS}recapitulatif/`, { params: { activite, saison } }),
@@ -28,11 +24,14 @@ export const decaissementService = {
   supprimerDette: (id) => api.delete(CONFIG.API_DETTE_DETAIL(id)),
   listerAssocies: () => api.get(CONFIG.API_ASSOCIES),
   obtenirBeneficeIndividuel: (activite, saison) => api.get(CONFIG.API_BENEFICE_INDIVIDUEL, { params: { activite, saison } }),
-  listerDepensesPelerin: (pelerinId) => api.get(CONFIG.API_DEPENSES_PELERIN, { params: { pelerin: pelerinId } }),
+
+  // Dépenses par pèlerin : "params" accepte { devise, pelerin, ... }. Le pèlerin est
+  // optionnel : une dépense sans pèlerin représente une charge commune à tous les pèlerins.
+  listerDepensesPelerin: (params) => api.get(CONFIG.API_DEPENSES_PELERIN, { params }),
   creerDepensePelerin: (donnees) => api.post(CONFIG.API_DEPENSES_PELERIN, donnees),
+  modifierDepensePelerin: (id, donnees) => api.patch(`${CONFIG.API_DEPENSES_PELERIN}${id}/`, donnees),
   supprimerDepensePelerin: (id) => api.delete(`${CONFIG.API_DEPENSES_PELERIN}${id}/`),
   obtenirRecapPelerin: (pelerinId) => api.get(`${CONFIG.API_DEPENSES_PELERIN}recapitulatif-pelerin/`, { params: { pelerin: pelerinId } }),
-
 
   listerCreances: (params) => api.get(CONFIG.API_CREANCES, { params }),
   creerCreance: (donnees) => api.post(CONFIG.API_CREANCES, donnees),
@@ -44,11 +43,13 @@ export const decaissementService = {
   modifierDevisFacture: (id, donnees) => api.patch(CONFIG.API_DEVIS_FACTURE_DETAIL(id), donnees),
   supprimerDevisFacture: (id) => api.delete(CONFIG.API_DEVIS_FACTURE_DETAIL(id)),
   obtenirImpayes: () => api.get(`${CONFIG.API_DEVIS_FACTURES}impayes/`),
+
   listerBudgetFonctionnement: () => api.get(CONFIG.API_BUDGET_FONCTIONNEMENT),
   creerLigneBudget: (donnees) => api.post(CONFIG.API_BUDGET_FONCTIONNEMENT, donnees),
   modifierLigneBudget: (id, donnees) => api.patch(CONFIG.API_BUDGET_FONCTIONNEMENT_DETAIL(id), donnees),
   supprimerLigneBudget: (id) => api.delete(CONFIG.API_BUDGET_FONCTIONNEMENT_DETAIL(id)),
   obtenirRecapBudget: () => api.get(`${CONFIG.API_BUDGET_FONCTIONNEMENT}recapitulatif/`),
+
   obtenirSyntheseBenefices: (activite, saison) => api.get(CONFIG.API_BENEFICE_INDIVIDUEL_SYNTHESE, { params: { activite, saison } }),
   urlSynthesePdf: (activite, saison) => `${CONFIG.API_BENEFICE_INDIVIDUEL_PDF}?activite=${activite}&saison=${saison}`,
 };

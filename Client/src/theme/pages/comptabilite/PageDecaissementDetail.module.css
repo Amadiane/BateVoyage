@@ -282,3 +282,27 @@
   .boutonTaux { grid-column: 1 / -1; }
   .tableauRecap, .tableau { min-width: 380px; }
 }
+
+
+.barreTotaux {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.pilleTotal {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 7px 12px;
+  background: #FAF9F5;
+  border: 1px solid #E5E7EB;
+  border-radius: 999px;
+  font-size: 12.5px;
+  color: #4B5563;
+  font-variant-numeric: tabular-nums;
+}
+
+.pilleTotal strong {
+  color: #10151F;
+}

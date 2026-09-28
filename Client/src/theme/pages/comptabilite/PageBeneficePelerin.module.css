@@ -1,0 +1,487 @@
+/* ===== En-tête de page ===== */
+.retour {
+  background: none;
+  border: none;
+  color: #6B7280;
+  font-size: 13px;
+  cursor: pointer;
+  padding: 0;
+  margin-bottom: 14px;
+}
+.retour:hover {
+  color: #0B3FA0;
+}
+
+.entete {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.titre {
+  font-size: 20px;
+  font-weight: 800;
+  color: #10151F;
+  margin: 0;
+}
+
+.boutonPrincipal {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 16px;
+  background: linear-gradient(135deg, #10151F, #0B3FA0);
+  color: #fff;
+  border: none;
+  border-radius: 9px;
+  font-size: 13.5px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 3px 10px rgba(11, 63, 160, 0.25);
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+.boutonPrincipal:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(11, 63, 160, 0.32);
+}
+.boutonPrincipal:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.boutonSecondaire {
+  padding: 10px 16px;
+  background: #F3F4F6;
+  color: #374151;
+  border: 1px solid #E5E7EB;
+  border-radius: 9px;
+  font-size: 13.5px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.boutonSecondaire:hover {
+  background: #E5E7EB;
+}
+
+/* ===== Cartes de totaux (par devise) ===== */
+.cartesTotaux {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.carteTotal {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 16px 18px;
+  border-radius: 14px;
+  background: #FAF9F5;
+  border: 1px solid #ECE7DA;
+  position: relative;
+  overflow: hidden;
+}
+.carteTotal::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #10151F, #C9972B);
+}
+.carteTotal:nth-child(2)::before { background: linear-gradient(90deg, #0E5C3C, #16824F); }
+.carteTotal:nth-child(3)::before { background: linear-gradient(90deg, #8A5A00, #C9972B); }
+
+.chiffreTotal {
+  font-size: 24px;
+  font-weight: 800;
+  color: #10151F;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.3px;
+}
+.carteTotal:nth-child(2) .chiffreTotal { color: #0E5C3C; }
+.carteTotal:nth-child(3) .chiffreTotal { color: #8A5A00; }
+
+.labelTotal {
+  font-size: 11.5px;
+  font-weight: 700;
+  color: #9CA3AF;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+}
+
+/* ===== Barre d'outils ===== */
+.barreOutils {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.selectFiltre {
+  padding: 8px 12px;
+  border: 1px solid #E5E7EB;
+  border-radius: 8px;
+  font-size: 13px;
+  color: #374151;
+  background: #fff;
+}
+
+/* ===== Tableau ===== */
+.conteneurTableau {
+  background: #fff;
+  border: 1px solid #ECE7DA;
+  border-radius: 14px;
+  overflow-x: auto;
+  box-shadow: 0 1px 3px rgba(16, 21, 31, 0.04);
+}
+
+.tableau {
+  width: 100%;
+  min-width: 680px;
+  border-collapse: collapse;
+  font-size: 13.5px;
+}
+
+.tableau thead th {
+  background: linear-gradient(180deg, #171D2B, #10151F);
+  color: #fff;
+  text-align: left;
+  padding: 12px 14px;
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+.tableau thead th:first-child { border-top-left-radius: 14px; }
+.tableau thead th:last-child { border-top-right-radius: 14px; border-bottom: 3px solid #C9972B; }
+.tableau thead th:not(:last-child) { border-bottom: 3px solid #C9972B; }
+
+.tableau tbody tr {
+  border-bottom: 1px solid #F1F0EA;
+  transition: background 0.12s ease;
+}
+.tableau tbody tr:nth-child(even) {
+  background: #FAF9F5;
+}
+.tableau tbody tr:hover {
+  background: #F3EFE2;
+}
+
+.tableau td {
+  padding: 11px 14px;
+  color: #1F2937;
+  vertical-align: middle;
+  font-variant-numeric: tabular-nums;
+}
+
+.etatVide {
+  text-align: center;
+  color: #9CA3AF;
+  padding: 30px 10px !important;
+  font-style: italic;
+}
+
+.libelleComplementaire {
+  color: #6B7280;
+  font-style: italic;
+}
+
+.cellMontant {
+  font-weight: 700;
+  text-align: right;
+  white-space: nowrap;
+}
+.montantGNF { color: #0B3FA0; }
+.montantUSD { color: #0E5C3C; }
+.montantSAR { color: #8A5A00; }
+
+.badgeCategorie {
+  display: inline-block;
+  padding: 3px 9px;
+  border-radius: 999px;
+  background: #EEF2FF;
+  color: #0B3FA0;
+  font-size: 11.5px;
+  font-weight: 700;
+}
+
+.badgePelerin {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12.5px;
+  color: #4B5563;
+}
+.badgePelerinTous {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: #FDF3DC;
+  color: #8A5A00;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.cellActions {
+  display: flex;
+  gap: 6px;
+  justify-content: flex-end;
+}
+.cellActions button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border: none;
+  border-radius: 7px;
+  background: #F3F4F6;
+  color: #4B5563;
+  cursor: pointer;
+  transition: background 0.12s ease, color 0.12s ease;
+}
+.cellActions button:hover {
+  background: #E0E7FF;
+  color: #0B3FA0;
+}
+.boutonSupprimer:hover {
+  background: #FDECEC !important;
+  color: #8A2F22 !important;
+}
+
+/* ===== Modale ===== */
+.superposition {
+  position: fixed;
+  inset: 0;
+  background: rgba(16, 21, 31, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  z-index: 100;
+}
+
+.panneau {
+  background: #fff;
+  border-radius: 16px;
+  width: 100%;
+  max-width: 440px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 50px rgba(16, 21, 31, 0.3);
+}
+
+.enteteModal {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 20px;
+  border-bottom: 1px solid #F1F0EA;
+  background: linear-gradient(135deg, #10151F, #0B3FA0);
+  border-radius: 16px 16px 0 0;
+}
+.enteteModal h2 {
+  color: #fff;
+  font-size: 16px;
+  margin: 0;
+}
+.boutonFermer {
+  background: rgba(255, 255, 255, 0.15);
+  border: none;
+  color: #fff;
+  width: 28px;
+  height: 28px;
+  border-radius: 7px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.boutonFermer:hover {
+  background: rgba(255, 255, 255, 0.28);
+}
+
+.formulaire {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.champ {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.champ label {
+  font-size: 12px;
+  font-weight: 700;
+  color: #6B7280;
+}
+.champ input,
+.champ select,
+.champ textarea {
+  padding: 9px 11px;
+  border: 1px solid #E5E7EB;
+  border-radius: 8px;
+  font-size: 13.5px;
+  color: #10151F;
+  background: #fff;
+}
+.champ input:focus,
+.champ select:focus,
+.champ textarea:focus {
+  outline: none;
+  border-color: #0B3FA0;
+  box-shadow: 0 0 0 3px rgba(11, 63, 160, 0.12);
+}
+
+.ligneDeux {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 10px;
+}
+
+.erreur {
+  color: #8A2F22;
+  background: #FDECEC;
+  border: 1px solid #F3C2C2;
+  border-radius: 8px;
+  padding: 8px 10px;
+  font-size: 12.5px;
+  margin: 0;
+}
+
+.navigationModal {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+@media (max-width: 640px) {
+  .entete { flex-direction: column; align-items: flex-start; }
+  .cartesTotaux { grid-template-columns: repeat(3, 1fr); }
+  .chiffreTotal { font-size: 17px; }
+  .ligneDeux { grid-template-columns: 1fr; }
+}
+
+/* ===== Récapitulatif par catégorie ===== */
+.chargement {
+  color: #9CA3AF;
+  font-style: italic;
+  padding: 20px 0;
+}
+
+.conteneurRecap {
+  background: #fff;
+  border: 1px solid #ECE7DA;
+  border-radius: 14px;
+  overflow-x: auto;
+  box-shadow: 0 1px 3px rgba(16, 21, 31, 0.04);
+  margin-bottom: 16px;
+}
+
+.tableauRecap {
+  width: 100%;
+  min-width: 520px;
+  border-collapse: collapse;
+  font-size: 13.5px;
+}
+
+.tableauRecap thead th {
+  background: linear-gradient(180deg, #171D2B, #10151F);
+  color: #fff;
+  text-align: right;
+  padding: 12px 16px;
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  border-bottom: 3px solid #C9972B;
+}
+.tableauRecap thead th:first-child {
+  text-align: left;
+  border-top-left-radius: 14px;
+}
+.tableauRecap thead th:last-child {
+  border-top-right-radius: 14px;
+}
+
+.tableauRecap tbody tr {
+  border-bottom: 1px solid #F1F0EA;
+  transition: background 0.12s ease;
+}
+.tableauRecap tbody tr:nth-child(even) {
+  background: #FAF9F5;
+}
+.tableauRecap tbody tr:hover {
+  background: #F3EFE2;
+}
+
+.tableauRecap td {
+  padding: 11px 16px;
+  font-variant-numeric: tabular-nums;
+}
+
+.cellCategorie {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  color: #1F2937;
+  font-weight: 600;
+}
+
+.puce {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #C9972B;
+  flex-shrink: 0;
+}
+
+.ligneTotalRecap {
+  background: #FAF3E0 !important;
+  font-weight: 800;
+}
+.ligneTotalRecap td {
+  border-top: 2px solid #C9972B;
+  color: #10151F;
+  text-align: right;
+}
+.ligneTotalRecap td:first-child {
+  text-align: left;
+}
+
+/* ===== Historique repliable ===== */
+.enteteHistoriqueRepliable {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 12px 16px;
+  background: #F3F4F6;
+  border: 1px solid #E5E7EB;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #374151;
+  cursor: pointer;
+  margin-bottom: 10px;
+}
+.enteteHistoriqueRepliable:hover {
+  background: #E5E7EB;
+}
+
+.chevron {
+  transition: transform 0.15s ease;
+}
+.chevronOuvert {
+  transform: rotate(180deg);
+}

@@ -113,11 +113,17 @@ class AssocieSerializer(serializers.ModelSerializer):
 
 class DepensePelerinSerializer(serializers.ModelSerializer):
     categorie_display = serializers.CharField(source="get_categorie_display", read_only=True)
+    pelerin_nom = serializers.SerializerMethodField()
 
     class Meta:
         model = DepensePelerin
         fields = "__all__"
         read_only_fields = ["enregistre_par", "date_creation"]
+
+    def get_pelerin_nom(self, obj):
+        if obj.pelerin_id:
+            return f"{obj.pelerin.prenom} {obj.pelerin.nom}"
+        return None
 
 class CreanceSerializer(serializers.ModelSerializer):
     enregistre_par_nom = serializers.SerializerMethodField()

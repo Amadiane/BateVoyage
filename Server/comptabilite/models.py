@@ -406,7 +406,13 @@ class DepensePelerin(models.Model):
         DEPENSES_PERSONNELLES = "depenses_personnelles", "Dépenses personnelles"
         AUTRE = "autre", "Autres dépenses"
 
-    pelerin = models.ForeignKey("pelerins.Pelerin", on_delete=models.CASCADE, related_name="depenses_individuelles")
+    pelerin = models.ForeignKey(
+    "pelerins.Pelerin",
+    on_delete=models.CASCADE,
+    related_name="depenses_individuelles",
+    null=True,
+    blank=True,
+)
     categorie = models.CharField(max_length=30, choices=Categorie.choices)
     libelle_complementaire = models.CharField(max_length=255, blank=True)
     montant = models.DecimalField(max_digits=14, decimal_places=2)
