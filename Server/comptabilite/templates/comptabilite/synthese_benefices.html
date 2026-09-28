@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  @page { size: a4 landscape; margin: 1.4cm; }
+  body { font-family: Helvetica, Arial, sans-serif; font-size: 10px; color: #10151F; }
+
+  .bandeau { border-bottom: 2px solid #C7A44A; padding-bottom: 8px; margin-bottom: 14px; }
+  .agence { font-size: 9px; color: #A88530; font-weight: bold; }
+  h1 { font-size: 19px; margin: 2px 0 3px 0; }
+  .sous-titre { font-size: 10px; color: #6B6659; margin: 0; }
+
+  .resume { margin: 0 0 12px 0; font-size: 10.5px; }
+  .resume strong { font-size: 12px; }
+
+  table.synthese { width: 100%; border-collapse: collapse; }
+  table.synthese th {
+    background-color: #10151F; color: #E8D9AF;
+    font-size: 9px; padding: 8px 6px; text-align: right;
+  }
+  table.synthese th.libelle { text-align: left; color: #FAF9F5; }
+  table.synthese td { padding: 8px 6px; border-bottom: 1px solid #E4E1D8; text-align: right; }
+  table.synthese td.libelle { text-align: left; font-weight: bold; }
+  table.synthese td.total, table.synthese th.total { background-color: #F5F2EA; }
+  table.synthese th.total { background-color: #1A2440; }
+
+  .gnf { font-size: 11px; font-weight: bold; }
+  .devises { font-size: 8px; color: #6B6659; }
+  .pct { font-size: 8px; color: #C4C0B5; font-weight: normal; }
+
+  tr.net td { background-color: #FBF6EA; border-top: 2px solid #C7A44A; border-bottom: none; }
+  tr.net td.total { background-color: #F3E9CB; }
+  tr.net .gnf { font-size: 12.5px; }
+
+  .taux { font-size: 8.5px; color: #6B6659; margin-top: 8px; }
+
+  table.signatures { width: 100%; margin-top: 34px; }
+  table.signatures td { width: 33%; text-align: center; font-size: 9px; padding: 0 12px; }
+  .ligne-signature { border-top: 1px solid #10151F; margin-top: 36px; padding-top: 3px; }
+</style>
+</head>
+<body>
+
+<div class="bandeau">
+  <div class="agence">BATE VOYAGE GUINÉE</div>
+  <h1>Récapitulatif des bénéfices individuels</h1>
+  <p class="sous-titre">{{ titre_activite }} — {{ saison_nom }} — Édité le {{ date_generation }}</p>
+</div>
+
+<p class="resume">
+  Bénéfice réel global de la saison : <strong>{{ benefice_reel.gnf }} GNF</strong>
+  ({{ benefice_reel.usd }} USD - {{ benefice_reel.sar }} SAR)
+</p>
+
+<table class="synthese">
+  <thead>
+    <tr>
+      <th class="libelle">Désignation</th>
+      {% for c in colonnes %}
+        <th>{{ c.nom }}<br/><span class="pct">{{ c.pourcentage }} %</span></th>
+      {% endfor %}
+      <th class="total">Total</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for l in lignes %}
+    <tr {% if l.gras %}class="net"{% endif %}>
+      <td class="libelle">{{ l.designation }}</td>
+      {% for c in l.cellules %}
+        <td>
+          {% if c %}
+            <div class="gnf">{{ c.gnf }}</div>
+            <div class="devises">{{ c.usd }} USD - {{ c.sar }} SAR</div>
+          {% else %}-{% endif %}
+        </td>
+      {% endfor %}
+      <td class="total">
+        {% if l.total %}
+          <div class="gnf">{{ l.total.gnf }}</div>
+          <div class="devises">{{ l.total.usd }} USD - {{ l.total.sar }} SAR</div>
+        {% else %}-{% endif %}
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<p class="taux">Taux appliqués : 1 USD = {{ taux_usd }} GNF - 1 USD = {{ taux_sar }} SAR. Montants en GNF ; équivalents USD et SAR indicatifs.</p>
+
+<table class="signatures">
+  <tr>
+    {% for nom in signataires %}
+      <td><div class="ligne-signature">{{ nom }}</div></td>
+    {% endfor %}
+  </tr>
+</table>
+
+</body>
+</html>

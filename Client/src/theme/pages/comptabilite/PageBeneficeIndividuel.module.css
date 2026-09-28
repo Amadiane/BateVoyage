@@ -1,0 +1,66 @@
+/* Tableau récapitulatif : une colonne par associé + total.
+   Défilement horizontal dans le conteneur, première colonne figée. */
+.tableauSynthese {
+  width: 100%;
+  min-width: 760px;
+  border-collapse: collapse;
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+}
+
+.tableauSynthese thead th {
+  padding: 13px 16px;
+  background-color: #10151F;
+  color: #E8D9AF;
+  font-size: 11.5px;
+  font-weight: 600;
+  text-align: right;
+  vertical-align: bottom;
+}
+
+.tableauSynthese td {
+  padding: 13px 16px;
+  border-bottom: 1px solid #F0EEE7;
+  text-align: right;
+  vertical-align: middle;
+}
+
+.tableauSynthese tbody tr:hover td { background-color: #F4F1EA; }
+
+.nomAssocie { display: block; line-height: 1.3; }
+.pctAssocie { display: block; margin-top: 2px; font-size: 10.5px; font-weight: 500; color: #9AA0B4; }
+
+.colLibelle {
+  text-align: left !important;
+  font-weight: 600;
+  color: #10151F;
+  position: sticky;
+  left: 0;
+  background-color: #FFFFFF;
+  min-width: 190px;
+  z-index: 1;
+}
+.tableauSynthese thead .colLibelle { background-color: #10151F; color: #FAF9F5; }
+
+.colTotal { background-color: #F7F4EC; }
+.tableauSynthese thead .colTotal { background-color: #1A2440; color: #E8D9AF; }
+
+.montantGnf { display: block; font-size: 14px; font-weight: 700; color: #10151F; white-space: nowrap; }
+.montantDevises { display: block; margin-top: 2px; font-size: 10.5px; color: #8B8578; white-space: nowrap; }
+.vide { color: #C4C0B5; }
+
+/* Ligne finale : bénéfice net individuel */
+.ligneNet td {
+  border-top: 2px solid var(--color-gold);
+  border-bottom: none;
+  background: linear-gradient(135deg, #FBF6EA, #F5ECD4);
+}
+.ligneNet .colLibelle { background: #FBF6EA; }
+.ligneNet .colTotal { background: #F3E9CB; }
+.ligneNet .montantGnf { font-size: 15.5px; color: #1E3A7A; }
+
+@media (max-width: 700px) {
+  .tableauSynthese { font-size: 12px; }
+  .tableauSynthese thead th, .tableauSynthese td { padding: 10px 12px; }
+  .montantGnf { font-size: 13px; }
+}

@@ -20,6 +20,14 @@ from .serializers import (
 from .utils import convertir_depuis_gnf, convertir_vers_gnf
 
 
+from io import BytesIO
+from django.http import HttpResponse
+from django.template.loader import render_to_string
+from django.utils.text import slugify
+from xhtml2pdf import pisa
+from .synthese import calculer_synthese_benefices, preparer_contexte_pdf
+
+
 class BonSortieViewSet(viewsets.ModelViewSet):
     queryset = BonSortie.objects.select_related("enregistre_par", "beneficiaire_utilisateur").all()
     serializer_class = BonSortieSerializer
@@ -556,3 +564,33 @@ class LigneBudgetFonctionnementViewSet(viewsets.ModelViewSet):
             "total_sortie": round(total_sortie, 2),
             "total_restant": round(total_restant, 2),
         })
+
+
+class BeneficeIndividuelSyntheseView(APIView):
+    permission_classes = [EstGestionnaireFinancier]
+
+    def get(self, request):
+        activite = request.query_params.get("activite", "hajj")
+        saison_id = request.query_params.get("saison")
+        return Response(calculer_synthese_benefices(activite, saison_id))
+
+
+class BeneficeIndividuelPdfView(APIView):
+    permission_classes = [EstGestionnaireFinancier]
+
+    def get(self, request):
+        activite = request.query_params.get("activite", "hajj")
+        saison_id = request.query_params.get("saison")
+
+        synthese = calculer_synthese_benefices(activite, saison_id)
+        html = render_to_string("comptabilite/synthese_benefices.html", preparer_contexte_pdf(synthese, activite))
+
+        tampon = BytesIO()
+        resultat = pisa.CreatePDF(html, dest=tampon, encoding="utf-8")
+        if resultat.err:
+            return Response({"erreur": "Impossible de générer le PDF."}, status=500)
+
+        reponse = HttpResponse(tampon.getvalue(), content_type="application/pdf")
+        nom = slugify(synthese["saison_nom"]) or "saison"
+        reponse["Content-Disposition"] = f'attachment; filename="benefices_{nom}.pdf"'
+        return reponse

@@ -839,7 +839,17 @@
 
   "gerer_frais_personnels": "Manage personal expenses",
 
-  "budget_fonctionnement": "Operating budget"
+  "budget_fonctionnement": "Operating budget",
+
+  
+  "vue_par_associe": "By partner",
+  "vue_recapitulatif": "Summary table",
+  "synthese_part": "Share of global profit",
+  "synthese_dettes": "Total debts",
+  "synthese_difference": "Difference between debt and profit",
+  "synthese_net": "Individual net profit",
+  "generation_pdf": "Generating PDF..."
+
 
 
 

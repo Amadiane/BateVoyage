@@ -440,3 +440,6 @@ class LigneBudgetFonctionnement(models.Model):
     def __str__(self):
         return f"{self.designation} — {self.date}"
 
+
+
+

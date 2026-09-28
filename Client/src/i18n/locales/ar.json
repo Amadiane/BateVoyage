@@ -843,7 +843,17 @@
 
   "gerer_frais_personnels": "إدارة المصاريف الشخصية",
 
-  "budget_fonctionnement": "ميزانية التشغيل"
+  "budget_fonctionnement": "ميزانية التشغيل",
+
+  
+  "vue_par_associe": "حسب الشريك",
+  "vue_recapitulatif": "جدول ملخص",
+  "synthese_part": "الحصة من الربح الإجمالي",
+  "synthese_dettes": "إجمالي الديون",
+  "synthese_difference": "الفرق بين الدين والربح",
+  "synthese_net": "الربح الصافي الفردي",
+  "generation_pdf": "جارٍ إنشاء ملف PDF..."
+
 
 
 

@@ -1,11 +1,20 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
+# from .views import (
+#     BonSortieViewSet, DepenseViewSet, DetteFournisseurViewSet, ResumeComptabiliteView,
+#     CategorieDecaissementViewSet, DecaissementViewSet, TauxChangeView,
+#     SaisonComptableViewSet, EncaissementView, BeneficeGlobalView,
+#     DetteViewSet, AssocieViewSet, BeneficeIndividuelView, DepensePelerinViewSet,
+#     CreanceViewSet, DevisFactureViewSet, LigneBudgetFonctionnementViewSet
+# )
+
 from .views import (
     BonSortieViewSet, DepenseViewSet, DetteFournisseurViewSet, ResumeComptabiliteView,
     CategorieDecaissementViewSet, DecaissementViewSet, TauxChangeView,
     SaisonComptableViewSet, EncaissementView, BeneficeGlobalView,
     DetteViewSet, AssocieViewSet, BeneficeIndividuelView, DepensePelerinViewSet,
-    CreanceViewSet, DevisFactureViewSet, LigneBudgetFonctionnementViewSet
+    CreanceViewSet, DevisFactureViewSet,
+    BeneficeIndividuelSyntheseView, BeneficeIndividuelPdfView,LigneBudgetFonctionnementViewSet,
 )
 
 router = DefaultRouter()
@@ -28,5 +37,7 @@ urlpatterns = [
     path("encaissements/", EncaissementView.as_view(), name="encaissements"),
     path("benefice-global/", BeneficeGlobalView.as_view(), name="benefice-global"),
     path("benefice-individuel/", BeneficeIndividuelView.as_view(), name="benefice-individuel"),
+    path("benefice-individuel/synthese/", BeneficeIndividuelSyntheseView.as_view(), name="benefice-individuel-synthese"),
+    path("benefice-individuel/pdf/", BeneficeIndividuelPdfView.as_view(), name="benefice-individuel-pdf"),
     path("", include(router.urls)),
 ]

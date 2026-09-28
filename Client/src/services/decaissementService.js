@@ -49,4 +49,6 @@ export const decaissementService = {
   modifierLigneBudget: (id, donnees) => api.patch(CONFIG.API_BUDGET_FONCTIONNEMENT_DETAIL(id), donnees),
   supprimerLigneBudget: (id) => api.delete(CONFIG.API_BUDGET_FONCTIONNEMENT_DETAIL(id)),
   obtenirRecapBudget: () => api.get(`${CONFIG.API_BUDGET_FONCTIONNEMENT}recapitulatif/`),
+  obtenirSyntheseBenefices: (activite, saison) => api.get(CONFIG.API_BENEFICE_INDIVIDUEL_SYNTHESE, { params: { activite, saison } }),
+  urlSynthesePdf: (activite, saison) => `${CONFIG.API_BENEFICE_INDIVIDUEL_PDF}?activite=${activite}&saison=${saison}`,
 };

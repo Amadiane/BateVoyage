@@ -116,6 +116,9 @@ const CONFIG = {
   API_BUDGET_FONCTIONNEMENT: `${BASE_URL}/api/comptabilite/budget-fonctionnement/`,
   API_BUDGET_FONCTIONNEMENT_DETAIL: (id) => `${BASE_URL}/api/comptabilite/budget-fonctionnement/${id}/`,
 
+  API_BENEFICE_INDIVIDUEL_SYNTHESE: `${BASE_URL}/api/comptabilite/benefice-individuel/synthese/`,
+  API_BENEFICE_INDIVIDUEL_PDF: `${BASE_URL}/api/comptabilite/benefice-individuel/pdf/`,
+
   // --- Formules / Programmes ---
   API_PROGRAMMES: `${BASE_URL}/api/formules/programmes/`,
 

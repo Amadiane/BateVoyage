@@ -864,7 +864,17 @@
   "sortie_abbr": "sortie",
   "solde": "Solde",
   "type_mouvement": "Type de mouvement",
-  "ex_designation_budget": "Ex: Apport initial, Achat fournitures..."
+  "ex_designation_budget": "Ex: Apport initial, Achat fournitures...",
+
+  
+  "vue_par_associe": "Par associé",
+  "vue_recapitulatif": "Tableau récapitulatif",
+  "synthese_part": "Part du bénéfice global",
+  "synthese_dettes": "Total de ses dettes",
+  "synthese_difference": "Différence entre dette et bénéfice",
+  "synthese_net": "Bénéfice net individuel",
+  "generation_pdf": "Génération du PDF..."
+
 
 
 
