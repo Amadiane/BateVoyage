@@ -1,10 +1,10 @@
-// Utilitaire générique d'export pour les tableaux de Comptabilité (Excel + PDF/Impression).
+// Utilitaire générique d'export pour les tableaux de Comptabilité (Excel + PDF).
 // Utilisé par le composant <BoutonExporter /> sur toutes les pages : Budget de fonctionnement,
 // Bénéfices Global, Bénéfices Individuel, Bénéfices par Pèlerin, Dette, Créance,
 // Devis/Facture, Bons de sortie, Dépenses, Dettes fournisseurs, etc.
 //
-// exceljs est chargé en import dynamique : il n'entre dans le bundle qu'au moment
-// où l'utilisateur clique réellement sur "Exporter en Excel".
+// exceljs / jsPDF sont chargés en import dynamique : ils n'entrent dans le bundle qu'au
+// moment où l'utilisateur clique réellement sur "Exporter".
 
 const COULEUR_ENTETE = "FF10151F"; // navy
 const COULEUR_OR = "FFC9972B"; // or / accent
@@ -158,13 +158,16 @@ export async function exporterTableauExcel({
 }
 
 /**
- * Exporte un tableau en PDF en ouvrant une fenêtre d'impression stylée (le navigateur
- * gère l'enregistrement en PDF via "Imprimer > Enregistrer en PDF"). Évite d'ajouter
- * une librairie PDF lourde côté client puisque le style d'impression natif suffit.
+ * Exporte un tableau en fichier PDF téléchargeable directement (pas d'impression
+ * navigateur). jsPDF + jspdf-autotable sont chargés en import dynamique, comme
+ * exceljs, pour ne pas alourdir le bundle initial.
  *
  * Mêmes options que exporterTableauExcel (colonnes, lignes, totaux).
  */
-export function exporterTableauPdf({ titre, sousTitre = "", colonnes, lignes, totaux = null }) {
+export async function exporterTableauPdf({ titre, sousTitre = "", colonnes, lignes, totaux = null, nomFichier }) {
+  const { jsPDF } = await import("jspdf");
+  const { default: autoTable } = await import("jspdf-autotable");
+
   const formaterValeur = (colonne, valeur) => {
     if (valeur === null || valeur === undefined || valeur === "") return "—";
     if (colonne.format === "date") {
@@ -183,85 +186,57 @@ export function exporterTableauPdf({ titre, sousTitre = "", colonnes, lignes, to
     return String(valeur);
   };
 
-  const theadHtml = `<tr>${colonnes
-    .map((c) => `<th style="text-align:${c.align || (c.format === "nombre" || c.format === "devise" ? "right" : "left")}">${c.entete}</th>`)
-    .join("")}</tr>`;
+  const doc = new jsPDF({ orientation: "landscape", unit: "mm", format: "a4" });
 
-  const tbodyHtml = lignes
-    .map(
-      (ligne, i) =>
-        `<tr class="${i % 2 === 1 ? "alt" : ""}">${colonnes
-          .map(
-            (c) =>
-              `<td style="text-align:${c.align || (c.format === "nombre" || c.format === "devise" ? "right" : "left")}">${formaterValeur(
-                c,
-                ligne[c.cle]
-              )}</td>`
-          )
-          .join("")}</tr>`
-    )
-    .join("");
+  doc.setFontSize(14);
+  doc.setTextColor(16, 21, 31);
+  doc.text(`BateVoyage Guinée — ${titre}`, 14, 15);
 
-  const tfootHtml = totaux
-    ? `<tr class="total">${colonnes
-        .map((c, i) => {
-          if (Object.prototype.hasOwnProperty.call(totaux, c.cle)) {
-            return `<td style="text-align:right">${formaterValeur(c, totaux[c.cle])}</td>`;
-          }
-          return `<td>${i === 0 ? "TOTAL" : ""}</td>`;
-        })
-        .join("")}</tr>`
-    : "";
-
-  const html = `<!DOCTYPE html>
-<html lang="fr">
-<head>
-<meta charset="UTF-8" />
-<title>${titre}</title>
-<style>
-  @page { size: A4 landscape; margin: 1.4cm; }
-  * { box-sizing: border-box; }
-  body { font-family: Helvetica, Arial, sans-serif; color: #10151F; margin: 0; padding: 0; }
-  .entete { display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 2px solid #0B3FA0; padding-bottom: 8px; margin-bottom: 14px; }
-  .entete h1 { font-size: 16px; margin: 0; color: #0B3FA0; }
-  .entete .sous-titre { font-size: 10px; color: #6B7280; margin-top: 3px; }
-  .entete .marque { font-size: 11px; font-weight: bold; color: #C9972B; letter-spacing: 0.5px; text-transform: uppercase; }
-  table { width: 100%; border-collapse: collapse; font-size: 10.5px; }
-  th { background: #10151F; color: #fff; padding: 7px 6px; font-weight: bold; }
-  td { padding: 6px; border-bottom: 1px solid #E5E7EB; font-variant-numeric: tabular-nums; }
-  tr.alt td { background: #FAF9F5; }
-  tr.total td { border-top: 2px solid #C9972B; font-weight: bold; color: #10151F; padding-top: 8px; }
-  .pied { margin-top: 16px; font-size: 9px; color: #9CA3AF; text-align: right; }
-</style>
-</head>
-<body>
-  <div class="entete">
-    <div>
-      <h1>${titre}</h1>
-      ${sousTitre ? `<div class="sous-titre">${sousTitre}</div>` : ""}
-    </div>
-    <div class="marque">BateVoyage Guinée</div>
-  </div>
-  <table>
-    <thead>${theadHtml}</thead>
-    <tbody>${tbodyHtml}</tbody>
-    ${tfootHtml ? `<tfoot>${tfootHtml}</tfoot>` : ""}
-  </table>
-  <div class="pied">Généré le ${new Date().toLocaleDateString("fr-FR")} à ${new Date().toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" })}</div>
-  <script>
-    window.onload = function () {
-      setTimeout(function () { window.print(); }, 200);
-    };
-  </script>
-</body>
-</html>`;
-
-  const fenetre = window.open("", "_blank", "width=1100,height=800");
-  if (!fenetre) {
-    // Bloqueur de pop-up : on informe l'appelant plutôt que d'échouer silencieusement.
-    throw new Error("POPUP_BLOQUEE");
+  let startY = 20;
+  if (sousTitre) {
+    doc.setFontSize(10);
+    doc.setTextColor(107, 114, 128);
+    doc.text(sousTitre, 14, 21);
+    startY = 26;
   }
-  fenetre.document.open();
-  fenetre.document.write(html);
-  fenetre.document.close();
+
+  const head = [colonnes.map((c) => c.entete)];
+  const body = lignes.map((ligne) => colonnes.map((c) => formaterValeur(c, ligne[c.cle])));
+  const foot = totaux
+    ? [
+        colonnes.map((c, i) => {
+          if (Object.prototype.hasOwnProperty.call(totaux, c.cle)) return formaterValeur(c, totaux[c.cle]);
+          return i === 0 ? "TOTAL" : "";
+        }),
+      ]
+    : undefined;
+
+  const colonnesNumeriques = colonnes
+    .map((c, i) => ((c.format === "nombre" || c.format === "devise") ? i : null))
+    .filter((i) => i !== null);
+
+  autoTable(doc, {
+    startY,
+    head,
+    body,
+    foot,
+    styles: { fontSize: 9, cellPadding: 2.2, textColor: [31, 41, 55], font: "helvetica" },
+    headStyles: { fillColor: [16, 21, 31], textColor: 255, fontStyle: "bold" },
+    footStyles: { fillColor: [250, 243, 224], textColor: [16, 21, 31], fontStyle: "bold" },
+    alternateRowStyles: { fillColor: [250, 249, 245] },
+    columnStyles: Object.fromEntries(colonnesNumeriques.map((i) => [i, { halign: "right" }])),
+    didDrawPage: () => {
+      const pageSize = doc.internal.pageSize;
+      const pageHeight = pageSize.getHeight();
+      doc.setFontSize(8);
+      doc.setTextColor(156, 163, 175);
+      doc.text(
+        `Généré le ${new Date().toLocaleDateString("fr-FR")} à ${new Date().toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" })}`,
+        14,
+        pageHeight - 8
+      );
+    },
+  });
+
+  doc.save(formaterNomFichier(nomFichier || titre).replace(/\.xlsx$/, ".pdf"));
 }
