@@ -29,9 +29,120 @@
   font-variant-numeric: tabular-nums;
 }
 
-.ligneEntree td { background-color: rgba(31,122,77,0.04); }
-.ligneSortie td { background-color: rgba(160,61,46,0.04); }
+/* ---------- Lignes du tableau : fond teinté + liseré à gauche ---------- */
+.ligneEntree td { background-color: rgba(31, 122, 77, 0.10); }
+.ligneSortie td { background-color: rgba(160, 61, 46, 0.10); }
+.ligneEntree td:first-child { box-shadow: inset 3px 0 0 #1F7A4D; }
+.ligneSortie td:first-child { box-shadow: inset 3px 0 0 #A03D2E; }
 
+/* ---------- Montants ---------- */
+.montantEntree { color: #165C39; font-weight: 700; }
+.montantSortie { color: #8A2F22; font-weight: 700; }
+
+.montantSolde {
+  font-weight: 700;
+  color: #1E3A7A;
+  font-variant-numeric: tabular-nums;
+}
+
+.cellNumero {
+  font-weight: 600;
+  color: #6B6659;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ============================================================
+   Grille alignée : table-layout fixed + largeurs de colonnes
+   identiques pour tous les mois. Les colonnes tombent donc
+   exactement les unes sous les autres d'un tableau à l'autre.
+   ============================================================ */
+.tableauBudget {
+  table-layout: fixed;
+  width: 100%;
+  min-width: 800px;
+}
+
+.tableauBudget th:nth-child(1) { width: 70px; }
+.tableauBudget th:nth-child(2) { width: auto; }   /* Désignation : prend le reste */
+.tableauBudget th:nth-child(3) { width: 130px; }  /* Date : assez large pour rester sur une ligne */
+.tableauBudget th:nth-child(4) { width: 130px; }
+.tableauBudget th:nth-child(5) { width: 130px; }
+.tableauBudget th:nth-child(6) { width: 140px; }
+.tableauBudget th:nth-child(7) { width: 96px; }
+
+/* Date : toujours sur une seule ligne, jamais coupée aux tirets */
+.tableauBudget th:nth-child(3),
+.tableauBudget td:nth-child(3) {
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Montants : alignés à droite, en-têtes compris */
+.tableauBudget th:nth-child(4),
+.tableauBudget th:nth-child(5),
+.tableauBudget th:nth-child(6),
+.tableauBudget td:nth-child(4),
+.tableauBudget td:nth-child(5),
+.tableauBudget td:nth-child(6) {
+  text-align: right;
+}
+
+/* Désignation trop longue : coupée proprement au lieu de casser la grille */
+.tableauBudget td:nth-child(2) {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Cellule des boutons : une vraie cellule de tableau, pas un flex */
+.tableauBudget .celluleActions {
+  display: table-cell;
+  text-align: right;
+  white-space: nowrap;
+}
+.tableauBudget .celluleActions button {
+  margin-left: 4px;
+}
+
+/* ---------- Choix Entrée / Sortie dans le formulaire ---------- */
+.choixMouvement {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.boutonMouvement {
+  padding: 12px;
+  border: 1.5px solid #E4E1D8;
+  border-radius: 10px;
+  background-color: #FFFFFF;
+  color: #6B6659;
+  font-size: 13.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease, transform 0.1s ease;
+}
+.boutonMouvement:hover { background-color: #FAF9F5; }
+.boutonMouvement:active { transform: scale(0.98); }
+
+/* Bouton sélectionné : fond plein coloré, texte blanc */
+.entreeActive {
+  background-color: #1F7A4D;
+  border-color: #1F7A4D;
+  color: #FFFFFF;
+  box-shadow: 0 3px 10px rgba(31, 122, 77, 0.30);
+}
+.entreeActive:hover { background-color: #1F7A4D; }
+
+.sortieActive {
+  background-color: #A03D2E;
+  border-color: #A03D2E;
+  color: #FFFFFF;
+  box-shadow: 0 3px 10px rgba(160, 61, 46, 0.30);
+}
+.sortieActive:hover { background-color: #A03D2E; }
+
+/* ---------- Responsive ---------- */
 @media (max-width: 700px) {
   .sparkline { width: 100%; height: 40px; }
   .enteteMois { flex-direction: column; align-items: flex-start; gap: 3px; }

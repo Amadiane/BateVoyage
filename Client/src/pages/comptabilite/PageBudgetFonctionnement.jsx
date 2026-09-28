@@ -96,8 +96,8 @@ function PageBudgetFonctionnement({ basePath }) {
 
   if (chargement) return <p className={styles.chargement}>{t("chargement")}</p>;
 
-  // Calcule le solde courant ligne par ligne (ordre chronologique) puis
-  // regroupe le résultat par mois pour l'affichage façon relevé bancaire.
+  // Solde courant calculé ligne par ligne (ordre chronologique), puis
+  // regroupement par mois pour l'affichage façon relevé bancaire.
   let solde = 0;
   const lignesAvecSolde = lignes.map((l, index) => {
     solde += parseFloat(l.montant_entree || 0) - parseFloat(l.montant_sortie || 0);
@@ -113,7 +113,7 @@ function PageBudgetFonctionnement({ basePath }) {
   });
   const groupesOrdonnes = Object.values(groupes).sort((a, b) => (a.annee - b.annee) || (a.mois - b.mois));
 
-  // Points pour la courbe d'évolution du solde (SVG pur, sans librairie).
+  // Courbe d'évolution du solde en SVG pur (aucune librairie).
   const points = lignesAvecSolde.map((l) => l.soldeApres);
   const max = Math.max(...points, 0);
   const min = Math.min(...points, 0);
@@ -123,6 +123,7 @@ function PageBudgetFonctionnement({ basePath }) {
     const y = 50 - ((v - min) / echelle) * 46;
     return `${x},${y}`;
   }).join(" ");
+  const yZero = 50 - ((0 - min) / echelle) * 46;
 
   return (
     <div>
@@ -148,7 +149,7 @@ function PageBudgetFonctionnement({ basePath }) {
           {points.length > 1 && (
             <svg viewBox="0 0 280 50" className={stylesBudget.sparkline}>
               <polyline points={coordonnees} fill="none" stroke="var(--color-gold)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-              <line x1="0" y1={50 - ((0 - min) / echelle) * 46} x2="280" y2={50 - ((0 - min) / echelle) * 46} stroke="rgba(255,255,255,0.15)" strokeDasharray="3,3" />
+              <line x1="0" y1={yZero} x2="280" y2={yZero} stroke="rgba(255,255,255,0.15)" strokeDasharray="3,3" />
             </svg>
           )}
         </div>
@@ -164,13 +165,13 @@ function PageBudgetFonctionnement({ basePath }) {
             <div className={stylesBudget.enteteMois}>
               <span className={stylesBudget.nomMois}>{NOMS_MOIS_FR[groupe.mois]} {groupe.annee}</span>
               <span className={stylesBudget.sousTotalMois}>
-                <span style={{ color: "#2A6B45" }}>+{totalMoisEntree.toLocaleString("fr-FR")}</span>
+                <span style={{ color: "#165C39" }}>+{totalMoisEntree.toLocaleString("fr-FR")}</span>
                 {" · "}
-                <span style={{ color: "#A03D2E" }}>-{totalMoisSortie.toLocaleString("fr-FR")}</span>
+                <span style={{ color: "#8A2F22" }}>-{totalMoisSortie.toLocaleString("fr-FR")}</span>
               </span>
             </div>
             <div className={styles.conteneurTableau}>
-              <table className={styles.tableau}>
+              <table className={`${styles.tableau} ${stylesBudget.tableauBudget}`}>
                 <thead>
                   <tr>
                     <th>{t("numero")}</th>
@@ -185,13 +186,13 @@ function PageBudgetFonctionnement({ basePath }) {
                 <tbody>
                   {groupe.lignes.map((l) => (
                     <tr key={l.id} className={l.montant_entree ? stylesBudget.ligneEntree : stylesBudget.ligneSortie}>
-                      <td className={styles.cellCategorie}>{l.numero}</td>
+                      <td className={stylesBudget.cellNumero}>{l.numero}</td>
                       <td>{l.designation}</td>
                       <td>{l.date}</td>
-                      <td style={{ color: "#1F7A4D", fontWeight: 600 }}>{l.montant_entree ? parseFloat(l.montant_entree).toLocaleString("fr-FR") : "—"}</td>
-                      <td style={{ color: "#A03D2E", fontWeight: 600 }}>{l.montant_sortie ? parseFloat(l.montant_sortie).toLocaleString("fr-FR") : "—"}</td>
-                      <td className={styles.cellMontantListe}>{l.soldeApres.toLocaleString("fr-FR")}</td>
-                      <td className={styles.cellActions}>
+                      <td className={stylesBudget.montantEntree}>{l.montant_entree ? parseFloat(l.montant_entree).toLocaleString("fr-FR") : "—"}</td>
+                      <td className={stylesBudget.montantSortie}>{l.montant_sortie ? parseFloat(l.montant_sortie).toLocaleString("fr-FR") : "—"}</td>
+                      <td className={stylesBudget.montantSolde}>{l.soldeApres.toLocaleString("fr-FR")}</td>
+                      <td className={`${styles.cellActions} ${stylesBudget.celluleActions}`}>
                         <button onClick={() => ouvrirModification(l)} title={t("modifier")}><Pencil size={13} /></button>
                         <button onClick={() => setASupprimer(l)} title={t("supprimer")} className={styles.boutonSupprimer}><Trash2 size={13} /></button>
                       </td>
@@ -218,22 +219,32 @@ function PageBudgetFonctionnement({ basePath }) {
               </div>
               <div className={styles.champ}>
                 <label>{t("type_mouvement")}</label>
-                <div className={styles.choixSensVol}>
-                  <button type="button" className={valeurs.type === "entree" ? styles.boutonTypeActif : styles.boutonType} onClick={() => majChamp("type", "entree")}>
-                    {t("entree")}
+                <div className={stylesBudget.choixMouvement}>
+                  <button
+                    type="button"
+                    className={`${stylesBudget.boutonMouvement} ${valeurs.type === "entree" ? stylesBudget.entreeActive : ""}`}
+                    onClick={() => majChamp("type", "entree")}
+                  >
+                    ↓ {t("entree")}
                   </button>
-                  <button type="button" className={valeurs.type === "sortie" ? styles.boutonTypeActif : styles.boutonType} onClick={() => majChamp("type", "sortie")}>
-                    {t("sortie")}
+                  <button
+                    type="button"
+                    className={`${stylesBudget.boutonMouvement} ${valeurs.type === "sortie" ? stylesBudget.sortieActive : ""}`}
+                    onClick={() => majChamp("type", "sortie")}
+                  >
+                    ↑ {t("sortie")}
                   </button>
                 </div>
               </div>
-              <div className={styles.champ}>
-                <label>{t("montant")} (GNF)</label>
-                <input type="number" step="0.01" min="0" value={valeurs.montant} onChange={(e) => majChamp("montant", e.target.value)} />
-              </div>
-              <div className={styles.champ}>
-                <label>{t("date")}</label>
-                <input type="date" value={valeurs.date} onChange={(e) => majChamp("date", e.target.value)} />
+              <div className={styles.ligneDeux}>
+                <div className={styles.champ}>
+                  <label>{t("montant")} (GNF)</label>
+                  <input type="number" step="0.01" min="0" value={valeurs.montant} onChange={(e) => majChamp("montant", e.target.value)} />
+                </div>
+                <div className={styles.champ}>
+                  <label>{t("date")}</label>
+                  <input type="date" value={valeurs.date} onChange={(e) => majChamp("date", e.target.value)} />
+                </div>
               </div>
               <div className={styles.champ}>
                 <label>{t("notes")}</label>
