@@ -34,15 +34,15 @@ const SECTIONS = [
       { cle: "dettes", label: "dettes_fournisseurs", icone: Building2 },
     ],
   },
-  {
-    cle: "documents_suivi",
-    couleur: "#2F9E5C",
-    boutons: [
-      { cle: "bons-sortie", label: "bons_sortie", icone: Receipt },
-      { cle: "depenses", label: "depenses", icone: Wallet },
-      { cle: "devis-facture", label: "devis_facture", icone: FileText },
-    ],
-  },
+  // {
+  //   cle: "documents_suivi",
+  //   couleur: "#2F9E5C",
+  //   boutons: [
+  //     { cle: "bons-sortie", label: "bons_sortie", icone: Receipt },
+  //     { cle: "depenses", label: "depenses", icone: Wallet },
+  //     { cle: "devis-facture", label: "devis_facture", icone: FileText },
+  //   ],
+  // },
 ];
 
 function PageComptabilite({ basePath }) {
