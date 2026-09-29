@@ -14,6 +14,7 @@ const BOUTONS = [
     categorie: "section_tresorerie",
     icone: TrendingDown,
     couleur: "#2B6CE0",
+    couleurFoncee: "#163E85",
     taille: "grand",
   },
   {
@@ -22,6 +23,7 @@ const BOUTONS = [
     categorie: "section_tresorerie",
     icone: TrendingUp,
     couleur: "#2B6CE0",
+    couleurFoncee: "#163E85",
     taille: "normal",
   },
   {
@@ -30,6 +32,7 @@ const BOUTONS = [
     categorie: "section_tresorerie",
     icone: Wallet2,
     couleur: "#2B6CE0",
+    couleurFoncee: "#163E85",
     taille: "normal",
   },
   {
@@ -38,6 +41,7 @@ const BOUTONS = [
     categorie: "section_rentabilite",
     icone: Users,
     couleur: "#C7A44A",
+    couleurFoncee: "#8A6C1F",
     taille: "normal",
   },
   {
@@ -46,6 +50,7 @@ const BOUTONS = [
     categorie: "section_rentabilite",
     icone: UserCheck,
     couleur: "#C7A44A",
+    couleurFoncee: "#8A6C1F",
     taille: "normal",
   },
   {
@@ -54,6 +59,7 @@ const BOUTONS = [
     categorie: "section_rentabilite",
     icone: PiggyBank,
     couleur: "#C7A44A",
+    couleurFoncee: "#8A6C1F",
     taille: "large",
   },
   {
@@ -62,6 +68,7 @@ const BOUTONS = [
     categorie: "section_dettes_creances",
     icone: UserX,
     couleur: "#D64A8A",
+    couleurFoncee: "#96285C",
     taille: "normal",
   },
   {
@@ -70,6 +77,7 @@ const BOUTONS = [
     categorie: "section_dettes_creances",
     icone: UserPlus,
     couleur: "#D64A8A",
+    couleurFoncee: "#96285C",
     taille: "normal",
   },
 ];
@@ -96,29 +104,46 @@ function PageComptabilite({ basePath }) {
       <div className={styles.bento}>
         {BOUTONS.map((b) => {
           const Icone = b.icone;
+          const pleine = b.taille === "grand" || b.taille === "large";
           return (
             <button
               key={b.cle}
-              className={`${styles.tuile} ${styles[CLASSE_TAILLE[b.taille]] || ""}`}
-              style={{
-                "--couleur": b.couleur,
-                background: `linear-gradient(155deg, ${b.couleur}14, ${b.couleur}05 60%)`,
-                borderColor: `${b.couleur}26`,
-              }}
+              className={`${styles.tuile} ${styles[CLASSE_TAILLE[b.taille]] || ""} ${pleine ? styles.tuilePleine : styles.tuileLegere}`}
+              style={
+                pleine
+                  ? { background: `linear-gradient(145deg, ${b.couleur}, ${b.couleurFoncee})` }
+                  : { background: `linear-gradient(160deg, ${b.couleur}17, ${b.couleur}06 65%)`, borderColor: `${b.couleur}2E` }
+              }
               onClick={() => navigate(`${basePath}/finances/${b.cle}`)}
             >
-              <Icone className={styles.iconeFantome} strokeWidth={1.4} />
+              <Icone
+                className={styles.iconeFantome}
+                strokeWidth={1.3}
+                style={{ color: pleine ? "#fff" : b.couleur }}
+              />
 
-              <span className={styles.categorieTuile} style={{ color: b.couleur }}>
+              <span
+                className={styles.categorieTuile}
+                style={{ color: pleine ? "rgba(255,255,255,0.85)" : b.couleur }}
+              >
                 {t(b.categorie)}
               </span>
 
               <div className={styles.basTuile}>
-                <div className={styles.iconeRonde} style={{ backgroundColor: b.couleur }}>
+                <div
+                  className={styles.iconeRonde}
+                  style={{ backgroundColor: pleine ? "rgba(255,255,255,0.2)" : b.couleur }}
+                >
                   <Icone size={17} color="#fff" strokeWidth={2} />
                 </div>
-                <span className={styles.libelleTuile}>{t(b.label)}</span>
-                <ArrowUpRight size={17} className={styles.flecheTuile} style={{ color: b.couleur }} />
+                <span className={styles.libelleTuile} style={{ color: pleine ? "#fff" : "#10151F" }}>
+                  {t(b.label)}
+                </span>
+                <ArrowUpRight
+                  size={17}
+                  className={styles.flecheTuile}
+                  style={{ color: pleine ? "#fff" : b.couleur }}
+                />
               </div>
             </button>
           );
