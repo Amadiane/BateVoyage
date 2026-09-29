@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { Plus, X, Trash2, Pencil } from "lucide-react";
 import { decaissementService } from "../../services/decaissementService";
 import ModalConfirmation from "../../components/ModalConfirmation/ModalConfirmation";
+import BoutonExporter from "../../components/export/BoutonExporter";
 import styles from "../../theme/pages/comptabilite/PageDecaissementDetail.module.css";
 
 const VALEURS_INITIALES = {
@@ -24,6 +25,17 @@ function PageDettePersonnelle({ basePath }) {
   const [envoi, setEnvoi] = useState(false);
   const [erreur, setErreur] = useState("");
   const [aSupprimer, setASupprimer] = useState(null);
+
+  const COLONNES_EXPORT = [
+    { cle: "date", entete: t("date"), largeur: 14, format: "date" },
+    { cle: "nomComplet", entete: t("nom_complet"), largeur: 24 },
+    { cle: "telephone", entete: t("telephone"), largeur: 16 },
+    { cle: "modePaiement", entete: t("mode_paiement_label"), largeur: 16 },
+    { cle: "associe", entete: t("associe"), largeur: 20 },
+    { cle: "montant", entete: t("montant"), largeur: 16, format: "nombre" },
+    { cle: "devise", entete: t("devise"), largeur: 10 },
+    { cle: "statut", entete: t("statut"), largeur: 14 },
+  ];
 
   const charger = () => {
     setChargement(true);
@@ -95,15 +107,33 @@ function PageDettePersonnelle({ basePath }) {
     charger();
   };
 
+  const lignesExport = dettes.map((d) => ({
+    date: d.date,
+    nomComplet: `${d.prenom} ${d.nom}`,
+    telephone: d.telephone || "",
+    modePaiement: d.mode_paiement || "",
+    associe: d.associe_nom || "",
+    montant: parseFloat(d.montant),
+    devise: d.devise,
+    statut: d.soldee ? t("soldee") : t("non_soldee"),
+  }));
+
   return (
     <div>
       <button className={styles.retour} onClick={() => navigate(`${basePath}/finances`)}>← {t("retour")}</button>
 
       <div className={styles.entete}>
         <h1 className={styles.titre}>{t("dette")}</h1>
-        <button className={styles.boutonPrincipal} onClick={ouvrirNouveau}>
-          <Plus size={16} /> {t("nouvelle_dette")}
-        </button>
+        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+          <BoutonExporter
+            titre={t("dette")}
+            colonnes={COLONNES_EXPORT}
+            lignes={lignesExport}
+          />
+          <button className={styles.boutonPrincipal} onClick={ouvrirNouveau}>
+            <Plus size={16} /> {t("nouvelle_dette")}
+          </button>
+        </div>
       </div>
 
       <div className={styles.barreOutils} style={{ marginBottom: 14 }}>

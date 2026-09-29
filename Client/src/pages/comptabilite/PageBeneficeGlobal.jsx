@@ -2,7 +2,15 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { decaissementService } from "../../services/decaissementService";
+import BoutonExporter from "../../components/export/BoutonExporter";
 import styles from "../../theme/pages/comptabilite/PageDecaissementDetail.module.css";
+
+const COLONNES_EXPORT = [
+  { cle: "designation", entete: "Désignation", largeur: 34 },
+  { cle: "gnf", entete: "GNF", largeur: 16, format: "nombre" },
+  { cle: "usd", entete: "USD", largeur: 12, format: "nombre" },
+  { cle: "sar", entete: "SAR", largeur: 12, format: "nombre" },
+];
 
 function PageBeneficeGlobal({ activite, basePath }) {
   const { t } = useTranslation();
@@ -69,6 +77,17 @@ function PageBeneficeGlobal({ activite, basePath }) {
     }
   };
 
+  const lignesExport = donnees
+    ? donnees.lignes.map((l) => ({
+        designation: l.designation,
+        gnf: l.valeurs.gnf,
+        usd: l.valeurs.usd,
+        sar: l.valeurs.sar,
+      }))
+    : [];
+
+  const nomSaison = saisons.find((s) => s.id === saisonSelectionnee)?.nom || "";
+
   if (chargement) return <p className={styles.chargement}>{t("chargement")}</p>;
 
   return (
@@ -77,11 +96,19 @@ function PageBeneficeGlobal({ activite, basePath }) {
 
       <div className={styles.entete}>
         <h1 className={styles.titre}>{t("benefice_global")}</h1>
-        {saisons.length > 0 && (
-          <select value={saisonSelectionnee || ""} onChange={(e) => changerSaison(Number(e.target.value))} className={styles.selectAnnee}>
-            {saisons.map((s) => <option key={s.id} value={s.id}>{s.nom}</option>)}
-          </select>
-        )}
+        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+          {saisons.length > 0 && (
+            <select value={saisonSelectionnee || ""} onChange={(e) => changerSaison(Number(e.target.value))} className={styles.selectAnnee}>
+              {saisons.map((s) => <option key={s.id} value={s.id}>{s.nom}</option>)}
+            </select>
+          )}
+          <BoutonExporter
+            titre={t("benefice_global")}
+            sousTitre={nomSaison}
+            colonnes={COLONNES_EXPORT}
+            lignes={lignesExport}
+          />
+        </div>
       </div>
 
       {saisons.length === 0 && <p className={styles.etatVide}>{t("aucune_saison")}</p>}

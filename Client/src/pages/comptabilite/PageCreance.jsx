@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { Plus, X, Trash2, Pencil } from "lucide-react";
 import { decaissementService } from "../../services/decaissementService";
 import ModalConfirmation from "../../components/ModalConfirmation/ModalConfirmation";
+import BoutonExporter from "../../components/export/BoutonExporter";
 import styles from "../../theme/pages/comptabilite/PageDecaissementDetail.module.css";
 
 const VALEURS_INITIALES = {
@@ -23,6 +24,16 @@ function PageCreance({ basePath }) {
   const [envoi, setEnvoi] = useState(false);
   const [erreur, setErreur] = useState("");
   const [aSupprimer, setASupprimer] = useState(null);
+
+  const COLONNES_EXPORT = [
+    { cle: "date", entete: t("date"), largeur: 14, format: "date" },
+    { cle: "nomComplet", entete: t("nom_complet"), largeur: 24 },
+    { cle: "telephone", entete: t("telephone"), largeur: 16 },
+    { cle: "modePaiement", entete: t("mode_paiement_label"), largeur: 16 },
+    { cle: "montant", entete: t("montant"), largeur: 16, format: "nombre" },
+    { cle: "devise", entete: t("devise"), largeur: 10 },
+    { cle: "statut", entete: t("statut"), largeur: 14 },
+  ];
 
   const charger = () => {
     setChargement(true);
@@ -88,15 +99,32 @@ function PageCreance({ basePath }) {
     charger();
   };
 
+  const lignesExport = creances.map((c) => ({
+    date: c.date,
+    nomComplet: `${c.prenom} ${c.nom}`,
+    telephone: c.telephone || "",
+    modePaiement: c.mode_paiement || "",
+    montant: parseFloat(c.montant),
+    devise: c.devise,
+    statut: c.soldee ? t("soldee") : t("non_soldee"),
+  }));
+
   return (
     <div>
       <button className={styles.retour} onClick={() => navigate(`${basePath}/finances`)}>← {t("retour")}</button>
 
       <div className={styles.entete}>
         <h1 className={styles.titre}>{t("creance")}</h1>
-        <button className={styles.boutonPrincipal} onClick={ouvrirNouveau}>
-          <Plus size={16} /> {t("nouvelle_creance")}
-        </button>
+        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+          <BoutonExporter
+            titre={t("creance")}
+            colonnes={COLONNES_EXPORT}
+            lignes={lignesExport}
+          />
+          <button className={styles.boutonPrincipal} onClick={ouvrirNouveau}>
+            <Plus size={16} /> {t("nouvelle_creance")}
+          </button>
+        </div>
       </div>
 
       <div className={styles.barreOutils} style={{ marginBottom: 14 }}>

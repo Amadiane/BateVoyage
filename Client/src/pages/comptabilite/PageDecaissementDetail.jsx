@@ -5,6 +5,7 @@ import { Plus, X, Trash2, Pencil, Settings, ChevronDown, History } from "lucide-
 import { decaissementService } from "../../services/decaissementService";
 import ModalConfirmation from "../../components/ModalConfirmation/ModalConfirmation";
 import HistoriqueGenerique from "../../components/HistoriqueGenerique/HistoriqueGenerique";
+import BoutonExporter from "../../components/export/BoutonExporter";
 import styles from "../../theme/pages/comptabilite/PageDecaissementDetail.module.css";
 
 const VALEURS_INITIALES = {
@@ -13,6 +14,13 @@ const VALEURS_INITIALES = {
 };
 
 const VALEURS_SAISON_INITIALES = { nom: "", date_debut: "", date_fin: "" };
+
+const COLONNES_EXPORT_RECAP = [
+  { cle: "designation", entete: "Désignation", largeur: 34 },
+  { cle: "gnf", entete: "GNF", largeur: 16, format: "nombre" },
+  { cle: "usd", entete: "USD", largeur: 12, format: "nombre" },
+  { cle: "sar", entete: "SAR", largeur: 12, format: "nombre" },
+];
 
 function PageDecaissementDetail({ activite, basePath }) {
   const { t } = useTranslation();
@@ -203,6 +211,30 @@ function PageDecaissementDetail({ activite, basePath }) {
     }
   };
 
+  const lignesRecapActuelles = recap
+    ? (ongletActif === "generaux" || !montrerOnglets ? recap.categories : (recap.categories_personnel || []))
+    : [];
+
+  const lignesExportRecap = lignesRecapActuelles.map((c) => ({
+    designation: c.categorie_nom,
+    gnf: c.total_gnf,
+    usd: c.total_usd,
+    sar: c.total_sar,
+  }));
+
+  const totauxExportRecap = lignesRecapActuelles.length
+    ? {
+        gnf: lignesRecapActuelles.reduce((s, c) => s + c.total_gnf, 0),
+        usd: lignesRecapActuelles.reduce((s, c) => s + c.total_usd, 0),
+        sar: lignesRecapActuelles.reduce((s, c) => s + c.total_sar, 0),
+      }
+    : null;
+
+  const nomSaisonActuelle = saisons.find((s) => s.id === saisonSelectionnee)?.nom || "";
+  const sousTitreExport = montrerOnglets
+    ? `${nomSaisonActuelle} — ${ongletActif === "generaux" ? t("frais_generaux") : t("frais_personnels")}`
+    : nomSaisonActuelle;
+
   return (
     <div>
       <button className={styles.retour} onClick={() => navigate(`${basePath}/finances`)}>← {t("retour")}</button>
@@ -224,6 +256,13 @@ function PageDecaissementDetail({ activite, basePath }) {
           <button className={styles.boutonTaux} onClick={ouvrirModalTaux}>
             <Settings size={14} /> {t("modifier_taux")}
           </button>
+          <BoutonExporter
+            titre={t("decaissements")}
+            sousTitre={sousTitreExport}
+            colonnes={COLONNES_EXPORT_RECAP}
+            lignes={lignesExportRecap}
+            totaux={totauxExportRecap}
+          />
           <button className={styles.boutonPrincipal} onClick={ouvrirNouveau} disabled={saisons.length === 0}>
             <Plus size={16} /> {t("nouveau_decaissement")}
           </button>
@@ -268,7 +307,7 @@ function PageDecaissementDetail({ activite, basePath }) {
                 </tr>
               </thead>
               <tbody>
-                {(ongletActif === "generaux" || !montrerOnglets ? recap.categories : (recap.categories_personnel || [])).map((c) => (
+                {lignesRecapActuelles.map((c) => (
                   <tr key={c.categorie_id}>
                     <td className={styles.cellCategorie}>{c.categorie_nom}</td>
                     <td className={styles.cellMontant}>{c.total_gnf.toLocaleString("fr-FR")}</td>
@@ -276,17 +315,12 @@ function PageDecaissementDetail({ activite, basePath }) {
                     <td className={styles.cellMontant}>{c.total_sar.toLocaleString("fr-FR")}</td>
                   </tr>
                 ))}
-                {(() => {
-                  const lignes = ongletActif === "generaux" || !montrerOnglets ? recap.categories : (recap.categories_personnel || []);
-                  return (
-                    <tr className={styles.ligneTotalRecap}>
-                      <td>{t("total")}</td>
-                      <td>{lignes.reduce((s, c) => s + c.total_gnf, 0).toLocaleString("fr-FR")}</td>
-                      <td>{lignes.reduce((s, c) => s + c.total_usd, 0).toLocaleString("fr-FR")}</td>
-                      <td>{lignes.reduce((s, c) => s + c.total_sar, 0).toLocaleString("fr-FR")}</td>
-                    </tr>
-                  );
-                })()}
+                <tr className={styles.ligneTotalRecap}>
+                  <td>{t("total")}</td>
+                  <td>{lignesRecapActuelles.reduce((s, c) => s + c.total_gnf, 0).toLocaleString("fr-FR")}</td>
+                  <td>{lignesRecapActuelles.reduce((s, c) => s + c.total_usd, 0).toLocaleString("fr-FR")}</td>
+                  <td>{lignesRecapActuelles.reduce((s, c) => s + c.total_sar, 0).toLocaleString("fr-FR")}</td>
+                </tr>
               </tbody>
             </table>
           </div>

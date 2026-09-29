@@ -2,7 +2,16 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { decaissementService } from "../../services/decaissementService";
+import BoutonExporter from "../../components/export/BoutonExporter";
 import styles from "../../theme/pages/comptabilite/PageDecaissementDetail.module.css";
+
+const COLONNES_EXPORT = [
+  { cle: "date", entete: "Date", largeur: 14, format: "date" },
+  { cle: "recu", entete: "N° Reçu", largeur: 14 },
+  { cle: "pelerin", entete: "Pèlerin", largeur: 30 },
+  { cle: "mode", entete: "Mode de paiement", largeur: 20 },
+  { cle: "montant", entete: "Montant (GNF)", largeur: 18, format: "nombre" },
+];
 
 function PageEncaissement({ activite, basePath }) {
   const { t } = useTranslation();
@@ -19,6 +28,14 @@ function PageEncaissement({ activite, basePath }) {
     });
   }, [activite]);
 
+  const lignesExport = paiements.map((p) => ({
+    date: p.date_paiement,
+    recu: p.numero_recu,
+    pelerin: `${p.pelerin_nom} (${p.pelerin_numero_id})`,
+    mode: p.mode_paiement_display,
+    montant: parseFloat(p.montant),
+  }));
+
   if (chargement) return <p className={styles.chargement}>{t("chargement")}</p>;
 
   return (
@@ -27,6 +44,12 @@ function PageEncaissement({ activite, basePath }) {
 
       <div className={styles.entete}>
         <h1 className={styles.titre}>{t("encaissements")}</h1>
+        <BoutonExporter
+          titre={t("encaissements")}
+          colonnes={COLONNES_EXPORT}
+          lignes={lignesExport}
+          totaux={{ montant: total }}
+        />
       </div>
 
       <div className={styles.conteneurRecap}>

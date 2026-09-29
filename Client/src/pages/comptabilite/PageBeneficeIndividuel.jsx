@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { Download } from "lucide-react";
 import { decaissementService } from "../../services/decaissementService";
-import { telechargerFichierProtege } from "../../utils/telechargement";
+import BoutonExporter from "../../components/export/BoutonExporter";
 import styles from "../../theme/pages/comptabilite/PageDecaissementDetail.module.css";
 import stylesInd from "../../theme/pages/comptabilite/PageBeneficeIndividuel.module.css";
 
@@ -19,6 +18,13 @@ function CelluleMontant({ valeur }) {
   );
 }
 
+const COLONNES_ASSOCIE = [
+  { cle: "designation", entete: "Désignation", largeur: 32 },
+  { cle: "gnf", entete: "GNF", largeur: 16, format: "nombre" },
+  { cle: "usd", entete: "USD", largeur: 12, format: "nombre" },
+  { cle: "sar", entete: "SAR", largeur: 12, format: "nombre" },
+];
+
 function PageBeneficeIndividuel({ activite, basePath }) {
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -29,7 +35,6 @@ function PageBeneficeIndividuel({ activite, basePath }) {
   const [chargement, setChargement] = useState(true);
   const [associeSelectionne, setAssocieSelectionne] = useState(null);
   const [vue, setVue] = useState("associe");
-  const [exportEnCours, setExportEnCours] = useState(false);
 
   const charger = async (idSaison) => {
     if (!idSaison) {
@@ -70,20 +75,6 @@ function PageBeneficeIndividuel({ activite, basePath }) {
     setChargement(false);
   };
 
-  const exporterPdf = async () => {
-    if (!saisonSelectionnee) return;
-    const nomSaison = saisons.find((s) => s.id === saisonSelectionnee)?.nom || "saison";
-    setExportEnCours(true);
-    try {
-      await telechargerFichierProtege(
-        decaissementService.urlSynthesePdf(activite, saisonSelectionnee),
-        `benefices_${nomSaison}.pdf`
-      );
-    } finally {
-      setExportEnCours(false);
-    }
-  };
-
   if (chargement) return <p className={styles.chargement}>{t("chargement")}</p>;
 
   // Comparaison forcée en nombre des deux côtés : évite tout échec silencieux
@@ -91,6 +82,63 @@ function PageBeneficeIndividuel({ activite, basePath }) {
   const associeAffiche = donnees?.associes.find(
     (a) => Number(a.associe_id) === Number(associeSelectionne)
   );
+
+  const nomSaisonActuelle = saisons.find((s) => s.id === saisonSelectionnee)?.nom || "";
+
+  // Export de la vue "Par associé" : désignation/GNF/USD/SAR pour l'associé sélectionné.
+  const lignesExportAssocie = associeAffiche
+    ? associeAffiche.lignes.map((l) => ({
+        designation: l.designation,
+        gnf: l.valeurs.gnf,
+        usd: l.valeurs.usd,
+        sar: l.valeurs.sar,
+      }))
+    : [];
+
+  // Export de la vue "Récapitulatif" : une colonne GNF/USD/SAR par associé + total,
+  // reconstruite dynamiquement selon le nombre d'associés de la saison.
+  const colonnesExportRecap = synthese
+    ? [
+        { cle: "designation", entete: "Désignation", largeur: 28 },
+        ...synthese.associes.flatMap((a, i) => [
+          { cle: `assoc_${i}_gnf`, entete: `${a.nom} (GNF)`, largeur: 16, format: "nombre" },
+          { cle: `assoc_${i}_usd`, entete: `${a.nom} (USD)`, largeur: 12, format: "nombre" },
+          { cle: `assoc_${i}_sar`, entete: `${a.nom} (SAR)`, largeur: 12, format: "nombre" },
+        ]),
+        { cle: "total_gnf", entete: "Total (GNF)", largeur: 16, format: "nombre" },
+        { cle: "total_usd", entete: "Total (USD)", largeur: 12, format: "nombre" },
+        { cle: "total_sar", entete: "Total (SAR)", largeur: 12, format: "nombre" },
+      ]
+    : [];
+
+  const lignesExportRecap = synthese
+    ? synthese.lignes.map((l) => {
+        const ligne = { designation: t(`synthese_${l.cle}`) };
+        l.valeurs.forEach((v, i) => {
+          ligne[`assoc_${i}_gnf`] = v ? v.gnf : null;
+          ligne[`assoc_${i}_usd`] = v ? v.usd : null;
+          ligne[`assoc_${i}_sar`] = v ? v.sar : null;
+        });
+        ligne.total_gnf = l.total ? l.total.gnf : null;
+        ligne.total_usd = l.total ? l.total.usd : null;
+        ligne.total_sar = l.total ? l.total.sar : null;
+        return ligne;
+      })
+    : [];
+
+  const exportProps = vue === "associe"
+    ? {
+        titre: t("benefice_individuel"),
+        sousTitre: associeAffiche ? `${associeAffiche.nom} — ${nomSaisonActuelle}` : nomSaisonActuelle,
+        colonnes: COLONNES_ASSOCIE,
+        lignes: lignesExportAssocie,
+      }
+    : {
+        titre: `${t("benefice_individuel")} — ${t("vue_recapitulatif")}`,
+        sousTitre: nomSaisonActuelle,
+        colonnes: colonnesExportRecap,
+        lignes: lignesExportRecap,
+      };
 
   return (
     <div>
@@ -104,9 +152,7 @@ function PageBeneficeIndividuel({ activite, basePath }) {
               {saisons.map((s) => <option key={s.id} value={s.id}>{s.nom}</option>)}
             </select>
           )}
-          <button className={styles.boutonPrincipal} onClick={exporterPdf} disabled={exportEnCours || !synthese}>
-            <Download size={15} /> {exportEnCours ? t("generation_pdf") : t("exporter_pdf")}
-          </button>
+          <BoutonExporter {...exportProps} />
         </div>
       </div>
 

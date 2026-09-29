@@ -4,12 +4,22 @@ import { useTranslation } from "react-i18next";
 import { Plus, X, Trash2, Pencil } from "lucide-react";
 import { decaissementService } from "../../services/decaissementService";
 import ModalConfirmation from "../../components/ModalConfirmation/ModalConfirmation";
+import BoutonExporter from "../../components/export/BoutonExporter";
 import styles from "../../theme/pages/comptabilite/PageDecaissementDetail.module.css";
 import stylesBudget from "../../theme/pages/comptabilite/PageBudgetFonctionnement.module.css";
 
 const VALEURS_INITIALES = { designation: "", type: "entree", montant: "", date: new Date().toISOString().slice(0, 10), notes: "" };
 
 const NOMS_MOIS_FR = ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"];
+
+const COLONNES_EXPORT = [
+  { cle: "numero", entete: "N°", largeur: 8 },
+  { cle: "designation", entete: "Désignation", largeur: 32 },
+  { cle: "date", entete: "Date", largeur: 14, format: "date" },
+  { cle: "entree", entete: "Entrée (GNF)", largeur: 16, format: "nombre" },
+  { cle: "sortie", entete: "Sortie (GNF)", largeur: 16, format: "nombre" },
+  { cle: "solde", entete: "Solde (GNF)", largeur: 16, format: "nombre" },
+];
 
 function PageBudgetFonctionnement({ basePath }) {
   const { t } = useTranslation();
@@ -125,15 +135,32 @@ function PageBudgetFonctionnement({ basePath }) {
   }).join(" ");
   const yZero = 50 - ((0 - min) / echelle) * 46;
 
+  const lignesExport = lignesAvecSolde.map((l) => ({
+    numero: l.numero,
+    designation: l.designation,
+    date: l.date,
+    entree: l.montant_entree ? parseFloat(l.montant_entree) : null,
+    sortie: l.montant_sortie ? parseFloat(l.montant_sortie) : null,
+    solde: l.soldeApres,
+  }));
+
   return (
     <div>
       <button className={styles.retour} onClick={() => navigate(`${basePath}/finances`)}>← {t("retour")}</button>
 
       <div className={styles.entete}>
         <h1 className={styles.titre}>{t("budget_fonctionnement")}</h1>
-        <button className={styles.boutonPrincipal} onClick={ouvrirNouveau}>
-          <Plus size={16} /> {t("nouvelle_ligne")}
-        </button>
+        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+          <BoutonExporter
+            titre={t("budget_fonctionnement")}
+            colonnes={COLONNES_EXPORT}
+            lignes={lignesExport}
+            totaux={recap ? { entree: recap.total_entree, sortie: recap.total_sortie, solde: recap.total_restant } : null}
+          />
+          <button className={styles.boutonPrincipal} onClick={ouvrirNouveau}>
+            <Plus size={16} /> {t("nouvelle_ligne")}
+          </button>
+        </div>
       </div>
 
       {recap && (
