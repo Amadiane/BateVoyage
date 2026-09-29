@@ -3,7 +3,6 @@ import { useParams, useNavigate, Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { pelerinService } from "../../services/pelerinService";
 import { paiementService } from "../../services/paiementService";
-import { documentsGeneresService } from "../../services/documentsGeneresService";
 import CONFIG from "../../config/config";
 import { ouvrirFichierProtege, telechargerFichierProtege } from "../../utils/telechargement";
 import HistoriquePelerin from "../../components/HistoriquePelerin/HistoriquePelerin";
@@ -79,8 +78,23 @@ function DetailPelerin() {
     telechargerFichierProtege(CONFIG.API_PELERIN_DOCUMENT(id, champ), nomFichier);
   };
 
-  const telechargerDocumentGenere = (type, nom) => {
-    telechargerFichierProtege(documentsGeneresService.urlDocumentGenere(id, type), `${nom}_${pelerin.numero_id}.pdf`);
+  // Le dernier paiement effectué (par date, puis par id en cas d'égalité) —
+  // sert de base au reçu téléchargé depuis "Documents administratifs".
+  const dernierPaiement = paiements.reduce((plusRecent, p) => {
+    if (!plusRecent) return p;
+    const datePlusRecente = new Date(plusRecent.date_paiement);
+    const dateP = new Date(p.date_paiement);
+    if (dateP > datePlusRecente) return p;
+    if (dateP.getTime() === datePlusRecente.getTime() && p.id > plusRecent.id) return p;
+    return plusRecent;
+  }, null);
+
+  const telechargerRecuPaiement = () => {
+    if (!dernierPaiement) return;
+    telechargerFichierProtege(
+      paiementService.urlRecuPdf(dernierPaiement.id),
+      `recu_${dernierPaiement.numero_recu}.pdf`
+    );
   };
 
   if (chargement) return <p className={styles.chargement}>{t("chargement")}</p>;
@@ -271,23 +285,13 @@ function DetailPelerin() {
 
         <Section titre={t("documents_administratifs")}>
           <div className={styles.actionsDocument}>
-            <button className={styles.lienDocument} onClick={() => telechargerDocumentGenere("attestation_inscription", "attestation_inscription")}>
-              📄 {t("attestation_inscription")}
-            </button>
-          </div>
-          <div className={styles.actionsDocument}>
-            <button className={styles.lienDocument} onClick={() => telechargerDocumentGenere("attestation_paiement", "attestation_paiement")}>
+            <button
+              className={styles.lienDocument}
+              onClick={telechargerRecuPaiement}
+              disabled={!dernierPaiement}
+              title={!dernierPaiement ? t("aucun_paiement") : undefined}
+            >
               📄 {t("attestation_paiement")}
-            </button>
-          </div>
-          <div className={styles.actionsDocument}>
-            <button className={styles.lienDocument} onClick={() => telechargerDocumentGenere("contrat", "contrat")}>
-              📄 {t("contrat")}
-            </button>
-          </div>
-          <div className={styles.actionsDocument}>
-            <button className={styles.lienDocument} onClick={() => telechargerDocumentGenere("attestation_sante", "attestation_sante")}>
-              📄 {t("attestation_sante")}
             </button>
           </div>
         </Section>

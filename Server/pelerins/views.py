@@ -17,7 +17,7 @@ from activite.serializers import EntreeJournalDetailSerializer
 from documents_generes.models import ModeleDocument
 from .models import Pelerin
 from .serializers import PelerinSerializer
-from .pdf_utils import link_callback
+from .pdf_utils import link_callback, envelopper_avec_entete_pied
 
 django_engine = engines["django"]
 
@@ -161,6 +161,7 @@ class PelerinViewSet(viewsets.ModelViewSet):
         if resultat.err:
             return Response({"erreur": "Échec de la génération du PDF."}, status=500)
         return response
+
     @action(detail=True, methods=["get"], url_path="fiche-visa")
     def fiche_visa(self, request, pk=None):
         pelerin = self.get_object()
@@ -190,33 +191,7 @@ class PelerinViewSet(viewsets.ModelViewSet):
             "aujourdhui": timezone.now().date().strftime("%d/%m/%Y"),
         })
 
-        html_complet = f"""
-        <html>
-        <head>
-        <style>
-          @page {{
-            size: A4;
-            margin-top: 4.8cm; margin-bottom: 2.6cm; margin-left: 1.5cm; margin-right: 1.5cm;
-            @frame header_frame {{ -pdf-frame-content: header_content; top: 1cm; left: 1.5cm; right: 1.5cm; height: 3.6cm; }}
-            @frame footer_frame {{ -pdf-frame-content: footer_content; bottom: 0.7cm; left: 1.5cm; right: 1.5cm; height: 1.6cm; }}
-          }}
-          body {{ font-family: Helvetica, Arial, sans-serif; font-size: 11.5px; color: #1F2937; line-height: 1.6; }}
-          #header_content img, #footer_content img {{ width: 100%; }}
-          .titre-doc {{ font-size: 16px; font-weight: bold; color: #0B3FA0; text-align: center; margin: 8px 0 4px; }}
-          .ligne-separation {{ border-bottom: 2px solid #0B3FA0; margin: 4px 0 20px; }}
-          table.champs {{ width: 100%; border-collapse: collapse; margin: 12px 0; }}
-          table.champs td {{ padding: 7px 4px; border-bottom: 1px solid #F0F1F3; font-size: 11.5px; }}
-          table.champs td.label {{ width: 35%; font-weight: bold; color: #4B5563; }}
-          table.champs td.valeur {{ width: 65%; color: #111827; }}
-        </style>
-        </head>
-        <body>
-          <div id="header_content"><img src="/static/pelerins/entete_bvg.png" /></div>
-          <div id="footer_content"><img src="/static/pelerins/pied_bvg.png" /></div>
-          {corps_rendu}
-        </body>
-        </html>
-        """
+        html_complet = envelopper_avec_entete_pied(corps_rendu)
 
         response = HttpResponse(content_type="application/pdf")
         response["Content-Disposition"] = f'attachment; filename="{type_doc}_{pelerin.numero_id}.pdf"'
