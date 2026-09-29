@@ -2,7 +2,10 @@ import { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
-import { Users, FileWarning, FileClock, Wallet, MessageSquareWarning, Plane, Building2, Bell, ChevronDown, LogOut, User } from "lucide-react";
+import {
+  Users, FileWarning, FileClock, Wallet, MessageSquareWarning, Plane, Building2, Bell,
+  ChevronDown, LogOut, User, TrendingUp, TrendingDown, PiggyBank, UserX, UserPlus, ArrowUpRight,
+} from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
 import { pelerinService } from "../../services/pelerinService";
 import { documentService } from "../../services/documentService";
@@ -10,6 +13,7 @@ import { reclamationService } from "../../services/reclamationService";
 import { groupeService } from "../../services/groupeService";
 import { hotelService } from "../../services/hotelService";
 import { paiementService } from "../../services/paiementService";
+import { decaissementService } from "../../services/decaissementService";
 import imageKaaba from "../../assets/images/kaaba.jpg";
 import styles from "../../theme/pages/dashboard/Dashboard.module.css";
 
@@ -22,9 +26,37 @@ const COULEURS_STATUT = {
   cloture: "#6B7280",
 };
 
+// Couleurs fixées en JS (plutôt que via des classes CSS existantes dont on n'a pas
+// le contenu) pour garantir un rendu coloré dès le premier essai.
+const COULEURS_CARTE = {
+  bleu: "#2B6CE0",
+  orange: "#E08A2B",
+  or: "#C9972B",
+  vert: "#1F7A4D",
+  rouge: "#B4433A",
+  violet: "#7C5CBF",
+};
+
 const ROLES_VOIENT_FINANCES = ["fondateur", "admin_general", "comptable", "secretaire"];
 const ROLES_VOIENT_RECLAMATIONS = ["fondateur", "admin_general", "affaires_sociales"];
 const ROLES_VOIENT_LOGISTIQUE = ["fondateur", "admin_general", "secretaire", "guide", "encadreur", "mounazim"];
+
+// Le service pèlerin filtre par "type_voyage" (pelerinage/oumra), pas par "activite"
+// (hajj/oumra) comme le fait le service comptabilité — cf. PageDecaissement.jsx.
+const TYPE_VOYAGE_PAR_ACTIVITE = { hajj: "pelerinage", oumra: "oumra" };
+
+const DEVISES = ["GNF", "USD", "SAR"];
+
+function sommerParDevise(liste) {
+  return DEVISES.reduce((acc, dev) => {
+    acc[dev] = liste.filter((x) => x.devise === dev).reduce((s, x) => s + parseFloat(x.montant), 0);
+    return acc;
+  }, {});
+}
+
+function formaterMontantsNonNuls(totaux) {
+  return DEVISES.filter((d) => totaux[d] > 0).map((d) => `${totaux[d].toLocaleString("fr-FR")} ${d}`).join(" · ") || "0";
+}
 
 function Dashboard() {
   const { t } = useTranslation();
@@ -36,9 +68,16 @@ function Dashboard() {
   const [groupes, setGroupes] = useState([]);
   const [hotels, setHotels] = useState([]);
   const [resumeFinancier, setResumeFinancier] = useState(null);
+  const [dettesOuvertes, setDettesOuvertes] = useState([]);
+  const [creancesOuvertes, setCreancesOuvertes] = useState([]);
   const [chargement, setChargement] = useState(true);
   const [menuOuvert, setMenuOuvert] = useState(false);
   const menuRef = useRef(null);
+
+  // ---------- Sélecteur Global / Hajj / Omra ----------
+  const [activiteVue, setActiviteVue] = useState("global");
+  const [financeActivite, setFinanceActivite] = useState(null);
+  const [chargementFinanceActivite, setChargementFinanceActivite] = useState(false);
 
   const peutVoirFinances = ROLES_VOIENT_FINANCES.includes(utilisateur?.role);
   const peutVoirReclamations = ROLES_VOIENT_RECLAMATIONS.includes(utilisateur?.role);
@@ -49,6 +88,8 @@ function Dashboard() {
     if (peutVoirFinances) {
       requetes.push(documentService.obtenirTableauBord());
       requetes.push(paiementService.obtenirResumeFinancier());
+      requetes.push(decaissementService.listerDettes({ soldee: false }));
+      requetes.push(decaissementService.listerCreances({ soldee: false }));
     }
     if (peutVoirReclamations) requetes.push(reclamationService.lister({ statut: "nouvelle" }));
     if (peutVoirLogistique) {
@@ -62,6 +103,8 @@ function Dashboard() {
       if (peutVoirFinances) {
         setDocs(resultats[i++].data);
         setResumeFinancier(resultats[i++].data);
+        setDettesOuvertes(resultats[i++].data);
+        setCreancesOuvertes(resultats[i++].data);
       }
       if (peutVoirReclamations) setReclamationsOuvertes(resultats[i++].data.length);
       if (peutVoirLogistique) {
@@ -81,6 +124,42 @@ function Dashboard() {
     document.addEventListener("mousedown", fermerSiExterieur);
     return () => document.removeEventListener("mousedown", fermerSiExterieur);
   }, []);
+
+  // Rechargement des pèlerins filtrés + du bloc financier dédié quand on change d'activité.
+  useEffect(() => {
+    if (activiteVue === "global") {
+      pelerinService.lister().then(({ data }) => setPelerins(data));
+      setFinanceActivite(null);
+      return;
+    }
+
+    pelerinService.lister({ type_voyage: TYPE_VOYAGE_PAR_ACTIVITE[activiteVue] }).then(({ data }) => setPelerins(data));
+
+    if (!peutVoirFinances) return;
+
+    setChargementFinanceActivite(true);
+    decaissementService.listerSaisons(activiteVue).then(async ({ data: saisons }) => {
+      const saisonActive = saisons.find((s) => s.est_active) || saisons[0];
+      if (!saisonActive) {
+        setFinanceActivite({ saison: null });
+        setChargementFinanceActivite(false);
+        return;
+      }
+      const [beneficeRes, recapRes, encaissRes] = await Promise.all([
+        decaissementService.obtenirBeneficeGlobal(activiteVue, saisonActive.id),
+        decaissementService.obtenirRecapitulatif(activiteVue, null, saisonActive.id),
+        decaissementService.obtenirEncaissements(activiteVue),
+      ]);
+      const ligneBeneficeReel = beneficeRes.data.lignes.find((l) => l.cle === "benefice_reel");
+      setFinanceActivite({
+        saison: saisonActive,
+        beneficeReel: ligneBeneficeReel?.valeurs || { gnf: 0, usd: 0, sar: 0 },
+        decaisse: recapRes.data.total_general || { gnf: 0, usd: 0, sar: 0 },
+        encaisseGnf: encaissRes.data.total || 0,
+      });
+      setChargementFinanceActivite(false);
+    });
+  }, [activiteVue]);
 
   if (chargement) return <p className={styles.chargement}>{t("chargement")}</p>;
 
@@ -103,6 +182,18 @@ function Dashboard() {
 
   const dateAujourdhui = aujourdhui.toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" });
   const initiales = `${utilisateur?.first_name?.[0] || ""}${utilisateur?.last_name?.[0] || utilisateur?.username?.[0] || ""}`.toUpperCase();
+
+  const dettesOuvertesParDevise = sommerParDevise(dettesOuvertes);
+  const creancesOuvertesParDevise = sommerParDevise(creancesOuvertes);
+
+  const statutSaison = (saison) => {
+    if (!saison) return null;
+    const debut = new Date(saison.date_debut);
+    const fin = new Date(saison.date_fin);
+    if (aujourdhui < debut) return { texte: t("saison_a_venir"), classe: styles.badgeSaisonAVenir };
+    if (aujourdhui > fin) return { texte: t("saison_terminee"), classe: styles.badgeSaisonTerminee };
+    return { texte: t("saison_en_cours"), classe: styles.badgeSaisonEnCours };
+  };
 
   return (
     <div>
@@ -151,12 +242,29 @@ function Dashboard() {
         </div>
       </div>
 
-      {/* ---------- Cartes statistiques (cliquables) ---------- */}
+      {/* ---------- Sélecteur Global / Hajj / Omra ---------- */}
+      <div className={styles.toggleActivite}>
+        {[
+          { cle: "global", label: t("vue_globale") },
+          { cle: "hajj", label: t("hajj") },
+          { cle: "oumra", label: t("oumra") },
+        ].map((opt) => (
+          <button
+            key={opt.cle}
+            className={activiteVue === opt.cle ? styles.toggleActiviteBoutonActif : styles.toggleActiviteBouton}
+            onClick={() => setActiviteVue(opt.cle)}
+          >
+            {opt.label}
+          </button>
+        ))}
+      </div>
+
+      {/* ---------- Cartes statistiques en tuiles dégradées ---------- */}
       <div className={styles.cartesStat}>
         <CarteStat
           icone={Users}
           chiffre={pelerins.length}
-          label={t("total_pelerins")}
+          label={activiteVue === "global" ? t("total_pelerins") : `${t("total_pelerins")} — ${t(activiteVue)}`}
           couleur="bleu"
           onClick={() => navigate("/pelerins")}
         />
@@ -217,9 +325,60 @@ function Dashboard() {
         )}
       </div>
 
+      {/* ---------- Situation financière de l'activité sélectionnée ---------- */}
+      {peutVoirFinances && activiteVue !== "global" && (
+        <div className={styles.cartePrincipale} style={{ marginBottom: 20 }}>
+          <div className={styles.enteteCarteAvecLien}>
+            <h2 className={styles.titreCarte}>
+              {t("situation_financiere")} — {t(activiteVue)}
+              {financeActivite?.saison && (
+                <span className={statutSaison(financeActivite.saison)?.classe} style={{ marginLeft: 10 }}>
+                  {financeActivite.saison.nom} · {statutSaison(financeActivite.saison)?.texte}
+                </span>
+              )}
+            </h2>
+            <button className={styles.lienVoirTout} onClick={() => navigate(`/comptabilite/finances/benefice-global?activite=${activiteVue}`)}>
+              {t("voir_tout")}
+            </button>
+          </div>
+
+          {chargementFinanceActivite && <p className={styles.etatVide}>{t("chargement")}</p>}
+
+          {!chargementFinanceActivite && financeActivite && !financeActivite.saison && (
+            <p className={styles.etatVide}>{t("aucune_saison")}</p>
+          )}
+
+          {!chargementFinanceActivite && financeActivite?.saison && (
+            <div className={styles.blocsFinanceColores}>
+              <div className={`${styles.blocFinanceColore} ${styles.blocFinanceOr}`}>
+                <div className={styles.iconeBlocFinance}><PiggyBank size={18} /></div>
+                <div>
+                  <p className={styles.chiffreFinance}>{financeActivite.beneficeReel.gnf.toLocaleString("fr-FR")} GNF</p>
+                  <p className={styles.labelFinance}>{t("benefice_reel")}</p>
+                </div>
+              </div>
+              <div className={`${styles.blocFinanceColore} ${styles.blocFinanceRouge}`}>
+                <div className={styles.iconeBlocFinance}><TrendingDown size={18} /></div>
+                <div>
+                  <p className={styles.chiffreFinance}>{financeActivite.decaisse.gnf.toLocaleString("fr-FR")} GNF</p>
+                  <p className={styles.labelFinance}>{t("total_decaisse")}</p>
+                </div>
+              </div>
+              <div className={`${styles.blocFinanceColore} ${styles.blocFinanceVert}`}>
+                <div className={styles.iconeBlocFinance}><TrendingUp size={18} /></div>
+                <div>
+                  <p className={styles.chiffreFinance}>{financeActivite.encaisseGnf.toLocaleString("fr-FR")} GNF</p>
+                  <p className={styles.labelFinance}>{t("total_encaisse")}</p>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
       {/* ---------- Grille principale ---------- */}
       <div className={styles.grillePrincipale}>
-        <div className={styles.cartePrincipale}>
+        <div className={`${styles.cartePrincipale} ${styles.accentHautViolet}`}>
           <h2 className={styles.titreCarte}>{t("repartition_statuts")}</h2>
           {repartition.length === 0 ? (
             <p className={styles.etatVide}>{t("aucun_pelerin")}</p>
@@ -248,7 +407,7 @@ function Dashboard() {
         </div>
 
         {peutVoirLogistique && (
-          <div className={styles.cartePrincipale}>
+          <div className={`${styles.cartePrincipale} ${styles.accentHautBleu}`}>
             <div className={styles.enteteCarteAvecLien}>
               <h2 className={styles.titreCarte}>{t("prochains_departs")}</h2>
               <button className={styles.lienVoirTout} onClick={() => navigate("/groupes")}>{t("voir_tout")}</button>
@@ -280,7 +439,7 @@ function Dashboard() {
       {(peutVoirLogistique || peutVoirFinances) && (
         <div className={styles.grilleSecondaire}>
           {peutVoirLogistique && (
-            <div className={styles.cartePrincipale}>
+            <div className={`${styles.cartePrincipale} ${styles.accentHautOr}`}>
               <div className={styles.enteteCarteAvecLien}>
                 <h2 className={styles.titreCarte}>{t("reservations_hotels")}</h2>
                 <button className={styles.lienVoirTout} onClick={() => navigate("/hebergement")}>{t("voir_tout")}</button>
@@ -289,36 +448,86 @@ function Dashboard() {
                 <p className={styles.etatVide}>{t("aucun_hotel_enregistre")}</p>
               ) : (
                 <div className={styles.listeHotels}>
-                  {hotels.slice(0, 3).map((h) => (
-                    <div key={h.id} className={styles.ligneHotel} onClick={() => navigate(`/hebergement/${h.id}`)}>
-                      <div className={`${styles.pointVille} ${styles["ville_" + h.ville]}`} />
-                      <div className={styles.infosHotel}>
-                        <p className={styles.nomHotel}>{h.nom}</p>
-                        <p className={styles.villeHotel}>{t(`ville_${h.ville}`)}</p>
+                  {hotels.slice(0, 3).map((h) => {
+                    const ratio = h.capacite_totale > 0 ? h.occupants_totaux / h.capacite_totale : 0;
+                    const couleurBarre = ratio >= 0.95 ? "#B4433A" : ratio >= 0.75 ? "#C9972B" : "#1F7A4D";
+                    return (
+                      <div key={h.id} className={styles.ligneHotelModerne} onClick={() => navigate(`/hebergement/${h.id}`)}>
+                        <div className={styles.infosHotel}>
+                          <p className={styles.nomHotel}>{h.nom}</p>
+                          <p className={styles.villeHotel}>{t(`ville_${h.ville}`)}</p>
+                        </div>
+                        <div className={styles.occupationModerne}>
+                          <div className={styles.barreOccupation}>
+                            <div
+                              className={styles.barreOccupationRemplie}
+                              style={{ width: `${Math.min(ratio * 100, 100)}%`, backgroundColor: couleurBarre }}
+                            />
+                          </div>
+                          <span className={styles.occupationHotel} style={{ color: couleurBarre }}>
+                            {h.occupants_totaux}/{h.capacite_totale}
+                          </span>
+                        </div>
                       </div>
-                      <span className={styles.occupationHotel}>{h.occupants_totaux}/{h.capacite_totale}</span>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               )}
             </div>
           )}
 
           {peutVoirFinances && resumeFinancier && (
-            <div className={styles.cartePrincipale}>
+            <div className={`${styles.cartePrincipale} ${styles.accentHautVert}`}>
               <h2 className={styles.titreCarte}>{t("resume_financier")}</h2>
-              <div className={styles.blocsFinance}>
-                <div className={styles.blocFinance}>
-                  <p className={styles.chiffreFinance}>{parseFloat(resumeFinancier.total_general).toLocaleString("fr-FR")}</p>
-                  <p className={styles.labelFinance}>{t("total_general_court")} (GNF)</p>
+              <div className={styles.blocsFinanceColores}>
+                <div className={`${styles.blocFinanceColore} ${styles.blocFinanceOr}`}>
+                  <div className={styles.iconeBlocFinance}><Wallet size={18} /></div>
+                  <div>
+                    <p className={styles.chiffreFinance}>{parseFloat(resumeFinancier.total_general).toLocaleString("fr-FR")}</p>
+                    <p className={styles.labelFinance}>{t("total_general_court")} (GNF)</p>
+                  </div>
                 </div>
-                <div className={styles.blocFinance}>
-                  <p className={styles.chiffreFinance}>{parseFloat(resumeFinancier.total_mois_courant).toLocaleString("fr-FR")}</p>
-                  <p className={styles.labelFinance}>{t("ce_mois")} (GNF)</p>
+                <div className={`${styles.blocFinanceColore} ${styles.blocFinanceVert}`}>
+                  <div className={styles.iconeBlocFinance}><TrendingUp size={18} /></div>
+                  <div>
+                    <p className={styles.chiffreFinance}>{parseFloat(resumeFinancier.total_mois_courant).toLocaleString("fr-FR")}</p>
+                    <p className={styles.labelFinance}>{t("ce_mois")} (GNF)</p>
+                  </div>
                 </div>
               </div>
             </div>
           )}
+        </div>
+      )}
+
+      {/* ---------- Dettes & créances ouvertes (toujours global) ---------- */}
+      {peutVoirFinances && (dettesOuvertes.length > 0 || creancesOuvertes.length > 0) && (
+        <div className={styles.grilleSecondaire}>
+          <div className={`${styles.cartePrincipale} ${styles.carteAccentRouge}`}>
+            <div className={styles.enteteCarteAvecLien}>
+              <h2 className={styles.titreCarte}>
+                <span className={styles.iconeCercleModerne} style={{ backgroundColor: "#B4433A18", color: "#B4433A" }}>
+                  <UserX size={15} />
+                </span>
+                {t("dettes_non_soldees")} ({dettesOuvertes.length})
+              </h2>
+              <button className={styles.lienVoirTout} onClick={() => navigate("/comptabilite/finances/dette")}>{t("voir_tout")}</button>
+            </div>
+            <p className={styles.montantAccent} style={{ color: "#B4433A" }}>{formaterMontantsNonNuls(dettesOuvertesParDevise)}</p>
+          </div>
+
+          <div className={`${styles.cartePrincipale} ${styles.carteAccentVert}`}>
+            <div className={styles.enteteCarteAvecLien}>
+              <h2 className={styles.titreCarte}>
+                <span className={styles.iconeCercleModerne} style={{ backgroundColor: "#1F7A4D18", color: "#1F7A4D" }}>
+                  <UserPlus size={15} />
+                </span>
+                {t("creances_non_soldees")} ({creancesOuvertes.length})
+              </h2>
+              <button className={styles.lienVoirTout} onClick={() => navigate("/comptabilite/finances/creance")}>{t("voir_tout")}</button>
+            </div>
+            <p className={styles.montantAccent} style={{ color: "#1F7A4D" }}>{formaterMontantsNonNuls(creancesOuvertesParDevise)}</p>
+          </div>
         </div>
       )}
     </div>
@@ -326,15 +535,24 @@ function Dashboard() {
 }
 
 function CarteStat({ icone: Icone, chiffre, label, couleur, onClick }) {
+  const hex = COULEURS_CARTE[couleur] || "#6B6659";
   return (
-    <div className={styles.carteStat} onClick={onClick} style={onClick ? { cursor: "pointer" } : {}}>
-      <div className={`${styles.iconeCercle} ${styles["cercle_" + couleur]}`}>
-        <Icone size={18} />
+    <div
+      className={styles.carteStatModerne}
+      onClick={onClick}
+      style={{
+        cursor: onClick ? "pointer" : "default",
+        background: `linear-gradient(150deg, ${hex}14, ${hex}05 65%)`,
+        borderColor: `${hex}28`,
+      }}
+    >
+      <Icone className={styles.iconeFantomeStat} style={{ color: hex }} strokeWidth={1.4} />
+      <div className={styles.iconeCercleStat} style={{ backgroundColor: hex }}>
+        <Icone size={17} color="#fff" strokeWidth={2} />
       </div>
-      <div>
-        <p className={styles.chiffreStat}>{chiffre}</p>
-        <p className={styles.labelStat}>{label}</p>
-      </div>
+      <p className={styles.chiffreStat} style={{ color: hex }}>{chiffre}</p>
+      <p className={styles.labelStat}>{label}</p>
+      {onClick && <ArrowUpRight size={15} className={styles.flecheStat} style={{ color: hex }} />}
     </div>
   );
 }

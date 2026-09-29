@@ -205,60 +205,119 @@
   background-color: #FEF2F2;
 }
 
-/* ---------- Cartes statistiques ---------- */
+/* ---------- Sélecteur Global / Hajj / Omra ---------- */
+.toggleActivite {
+  display: inline-flex;
+  gap: 4px;
+  background: linear-gradient(135deg, #EFE9D8, #F6F3EA);
+  padding: 4px;
+  border-radius: 11px;
+  margin: 18px 0 20px;
+  box-shadow: inset 0 1px 3px rgba(16, 21, 31, 0.06);
+}
+
+.toggleActiviteBouton,
+.toggleActiviteBoutonActif {
+  padding: 8px 20px;
+  border: none;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  background: none;
+  color: #7A7261;
+  transition: background 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
+}
+.toggleActiviteBouton:hover { color: #10151F; }
+
+.toggleActiviteBoutonActif {
+  background: linear-gradient(135deg, #0B3FA0, #2B6CE0);
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(11, 63, 160, 0.35);
+}
+
+/* ---------- Badges de statut de saison ---------- */
+.badgeSaisonEnCours,
+.badgeSaisonAVenir,
+.badgeSaisonTerminee {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 999px;
+  vertical-align: middle;
+  letter-spacing: 0.02em;
+}
+.badgeSaisonEnCours { background: #E6F4EA; color: #165C39; }
+.badgeSaisonAVenir { background: #FDF3DC; color: #8A5A00; }
+.badgeSaisonTerminee { background: #F3F1EA; color: #6B6659; }
+
+/* ---------- Cartes statistiques en tuiles dégradées ---------- */
 .cartesStat {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
-  gap: 12px;
-  margin-bottom: 16px;
+  gap: 14px;
+  margin-bottom: 22px;
 }
 
-.carteStat {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  background-color: #fff;
-  border-radius: 12px;
-  padding: 14px;
-  border: 1px solid var(--color-border);
-  transition: box-shadow 0.15s ease, transform 0.15s ease;
+.carteStatModerne {
+  position: relative;
+  overflow: hidden;
+  padding: 18px;
+  border: 1px solid transparent;
+  border-radius: 18px;
+  transition: transform 0.16s ease, box-shadow 0.16s ease;
+}
+.carteStatModerne:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 28px rgba(16, 21, 31, 0.12);
 }
 
-.carteStat:hover {
-  box-shadow: 0 8px 20px rgba(11,14,20,0.08);
-  transform: translateY(-3px);
-  border-color: var(--color-brand);
+.iconeFantomeStat {
+  position: absolute;
+  top: -18px;
+  right: -18px;
+  width: 84px;
+  height: 84px;
+  opacity: 0.16;
+  transform: rotate(-8deg);
+  pointer-events: none;
 }
 
-.iconeCercle {
-  width: 36px;
-  height: 36px;
-  border-radius: 10px;
+.iconeCercleStat {
+  width: 38px;
+  height: 38px;
+  border-radius: 11px;
   display: flex;
   align-items: center;
   justify-content: center;
-  flex-shrink: 0;
+  margin-bottom: 12px;
+  box-shadow: 0 4px 10px rgba(16, 21, 31, 0.22);
+  position: relative;
 }
 
-.cercle_bleu { background-color: #DBEAFE; color: #1E40AF; }
-.cercle_orange { background-color: #FFEDD5; color: #9A3412; }
-.cercle_or { background-color: var(--color-gold-pale); color: var(--color-gold-dark); }
-.cercle_vert { background-color: #DCFCE7; color: #166534; }
-.cercle_rouge { background-color: #FEE2E2; color: #991B1B; }
-.cercle_violet { background-color: #F3E8FF; color: #6B21A8; }
-
 .chiffreStat {
-  font-family: var(--font-display);
-  font-size: 17px;
-  color: var(--color-brand-dark);
-  margin: 0 0 1px;
-  line-height: 1.1;
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  margin: 0 0 3px;
+  font-variant-numeric: tabular-nums;
+  position: relative;
 }
 
 .labelStat {
-  font-size: 11px;
-  color: #6B7280;
+  font-size: 12px;
+  font-weight: 700;
+  color: #4B4638;
   margin: 0;
+  position: relative;
+}
+
+.flecheStat {
+  position: absolute;
+  bottom: 16px;
+  right: 16px;
+  opacity: 0.6;
 }
 
 /* ---------- Grilles principales ---------- */
@@ -280,6 +339,24 @@
   border-radius: 12px;
   padding: 16px;
   border: 1px solid var(--color-border);
+}
+
+/* Accents colorés en haut des panneaux principaux, avec fond teinté en dégradé */
+.accentHautViolet {
+  border-top: 3px solid #7C5CBF;
+  background: linear-gradient(180deg, rgba(124, 92, 191, 0.09), #fff 140px);
+}
+.accentHautBleu {
+  border-top: 3px solid #2B6CE0;
+  background: linear-gradient(180deg, rgba(43, 108, 224, 0.09), #fff 140px);
+}
+.accentHautOr {
+  border-top: 3px solid #C9972B;
+  background: linear-gradient(180deg, rgba(201, 151, 43, 0.11), #fff 140px);
+}
+.accentHautVert {
+  border-top: 3px solid #1F7A4D;
+  background: linear-gradient(180deg, rgba(31, 122, 77, 0.1), #fff 140px);
 }
 
 .enteteCarteAvecLien {
@@ -370,7 +447,7 @@
   flex-shrink: 0;
 }
 
-/* ---------- Réservations hôtels ---------- */
+/* ---------- Réservations hôtels (occupation en barre colorée) ---------- */
 .listeHotels {
   display: flex;
   flex-direction: column;
@@ -379,45 +456,102 @@
   overflow-y: auto;
 }
 
-.ligneHotel {
+.ligneHotelModerne {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 8px;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 10px 8px;
   border-radius: 10px;
+  border-bottom: 1px solid #F1EFE6;
   cursor: pointer;
   transition: background-color 0.15s ease;
 }
-
-.ligneHotel:hover { background-color: #F9FAFB; }
-
-.pointVille { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
-.ville_mecque { background-color: #3730A3; }
-.ville_medine { background-color: #166534; }
+.ligneHotelModerne:last-child { border-bottom: none; }
+.ligneHotelModerne:hover { background-color: #FAF9F4; }
 
 .infosHotel { flex: 1; min-width: 0; }
 .nomHotel { font-size: 12.5px; font-weight: 600; color: var(--color-ink); margin: 0; }
 .villeHotel { font-size: 11px; color: #9CA3AF; margin: 2px 0 0; }
 
+.occupationModerne {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 110px;
+}
+
+.barreOccupation {
+  width: 60px;
+  height: 7px;
+  border-radius: 999px;
+  background: #E9E4D4;
+  overflow: hidden;
+}
+
+.barreOccupationRemplie {
+  height: 100%;
+  border-radius: 999px;
+  transition: width 0.2s ease;
+}
+
 .occupationHotel {
   font-size: 10.5px;
   font-weight: 700;
-  color: var(--color-gold-dark);
-  background-color: var(--color-gold-pale);
   padding: 3px 9px;
   border-radius: 999px;
+  background-color: rgba(0, 0, 0, 0.06);
   flex-shrink: 0;
 }
 
-/* ---------- Résumé financier ---------- */
-.blocsFinance { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-
-.blocFinance {
-  background-color: #F9FAFB;
-  border-radius: 10px;
-  padding: 14px;
-  text-align: center;
+/* ---------- Blocs financiers colorés (situation financière + résumé financier) ---------- */
+.blocsFinanceColores {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 14px;
+  margin-top: 14px;
 }
+
+.blocFinanceColore {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  border-radius: 14px;
+  border: 1px solid transparent;
+  position: relative;
+  overflow: hidden;
+}
+.blocFinanceColore::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; bottom: 0;
+  width: 5px;
+}
+
+.iconeBlocFinance {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  background: rgba(255, 255, 255, 0.85);
+  box-shadow: 0 2px 6px rgba(16, 21, 31, 0.1);
+}
+
+.blocFinanceOr { background: linear-gradient(135deg, #FBE6B4, #FDF3DC); }
+.blocFinanceOr::before { background: #C9972B; }
+.blocFinanceOr .iconeBlocFinance { color: #8A5A00; }
+
+.blocFinanceRouge { background: linear-gradient(135deg, #F5C9C3, #FBECEA); }
+.blocFinanceRouge::before { background: #B4433A; }
+.blocFinanceRouge .iconeBlocFinance { color: #B4433A; }
+
+.blocFinanceVert { background: linear-gradient(135deg, #BEE6CC, #E8F5EC); }
+.blocFinanceVert::before { background: #1F7A4D; }
+.blocFinanceVert .iconeBlocFinance { color: #1F7A4D; }
 
 .chiffreFinance {
   font-family: var(--font-display);
@@ -427,6 +561,35 @@
 }
 
 .labelFinance { font-size: 10.5px; color: #6B7280; margin: 0; }
+
+/* ---------- Cartes dettes/créances ---------- */
+.carteAccentRouge {
+  border-top: 3px solid #B4433A;
+  background: linear-gradient(180deg, rgba(180, 67, 58, 0.09), #fff 130px);
+}
+.carteAccentVert {
+  border-top: 3px solid #1F7A4D;
+  background: linear-gradient(180deg, rgba(31, 122, 77, 0.09), #fff 130px);
+}
+
+.iconeCercleModerne {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 9px;
+  margin-right: 8px;
+  vertical-align: -8px;
+}
+
+.montantAccent {
+  font-size: 23px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  margin: 6px 0 0;
+  letter-spacing: -0.01em;
+}
 
 @media (max-width: 900px) {
   .grillePrincipale, .grilleSecondaire {
