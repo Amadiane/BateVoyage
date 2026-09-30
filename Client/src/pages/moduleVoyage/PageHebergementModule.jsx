@@ -13,7 +13,7 @@ const VALEURS_HOTEL_INITIALES = {
   nombre_chambres_prevu: "", telephone: "", date_debut_sejour: "", date_fin_sejour: "",
 };
 
-function PageHebergementModule({ basePath }) {
+function PageHebergementModule({ typeVoyage, basePath }) {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [villes, setVilles] = useState([]);
@@ -36,7 +36,7 @@ function PageHebergementModule({ basePath }) {
 
   const charger = () => {
     setChargement(true);
-    Promise.all([villeService.lister(), hotelService.lister()]).then(([villesRes, hotelsRes]) => {
+    Promise.all([villeService.lister(), hotelService.lister({ type_voyage: typeVoyage })]).then(([villesRes, hotelsRes]) => {
       setVilles(villesRes.data);
       setHotels(hotelsRes.data);
       if (villesRes.data.length > 0 && !villeActive) setVilleActive(villesRes.data[0].id);
@@ -44,7 +44,7 @@ function PageHebergementModule({ basePath }) {
     });
   };
 
-  useEffect(() => { charger(); }, []);
+  useEffect(() => { charger(); }, [typeVoyage]);
 
   const ouvrirNouvelleVille = () => {
     setVilleAModifier(null);
@@ -109,7 +109,7 @@ function PageHebergementModule({ basePath }) {
     setErreur("");
     setEnvoi(true);
     try {
-      const donnees = { ...valeursHotel };
+      const donnees = { ...valeursHotel, type_voyage: typeVoyage };
       Object.keys(donnees).forEach((k) => { if (donnees[k] === "") delete donnees[k]; });
       if (hotelAModifier) {
         await hotelService.modifier(hotelAModifier.id, donnees);

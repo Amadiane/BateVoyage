@@ -8,7 +8,7 @@ import styles from "../../theme/pages/moduleVoyage/PageCampementsModule.module.c
 
 const VALEURS_INITIALES = { ville: "", tente_camp: "", groupe: "", zone: "", affectation: "", capacite: "", notes: "" };
 
-function PageCampementsModule({ basePath }) {
+function PageCampementsModule({ typeVoyage, basePath }) {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [campements, setCampements] = useState([]);
@@ -22,7 +22,7 @@ function PageCampementsModule({ basePath }) {
 
   const charger = () => {
     setChargement(true);
-    campementService.lister().then(({ data }) => {
+    campementService.lister({ type_voyage: typeVoyage }).then(({ data }) => {
       setCampements(data);
       setChargement(false);
     });
@@ -31,7 +31,7 @@ function PageCampementsModule({ basePath }) {
   useEffect(() => {
     charger();
     villeService.lister().then(({ data }) => setVilles(data));
-  }, []);
+  }, [typeVoyage]);
 
   const ouvrirNouveau = () => {
     setCampementAModifier(null);
@@ -58,7 +58,7 @@ function PageCampementsModule({ basePath }) {
     setErreur("");
     setEnvoi(true);
     try {
-      const donnees = { ...valeurs };
+      const donnees = { ...valeurs, type_voyage: typeVoyage };
       Object.keys(donnees).forEach((k) => { if (donnees[k] === "") delete donnees[k]; });
       if (campementAModifier) {
         await campementService.modifier(campementAModifier.id, donnees);

@@ -4,7 +4,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("groupes_vols", "0004_vol_groupe_type_voyage"),
+        ("groupes_vols", "0009_vol_groupe_type_voyage"),
     ]
 
     operations = [
