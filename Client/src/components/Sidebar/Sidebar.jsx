@@ -69,26 +69,7 @@ const clesAffichees = clesActives
           );
         })}
 
-        {voitModulesFuturs && (
-          <div className={styles.sectionFuture}>
-            <p className={styles.titreSectionFuture}>{t("modules_a_venir_titre")}</p>
-            <div className={styles.lienDesactive}>
-              <Ticket size={17} className={styles.iconeLien} />
-              {t("billetterie")}
-              <span className={styles.badgeBientot}>{t("bientot")}</span>
-            </div>
-            <div className={styles.lienDesactive}>
-              <Car size={17} className={styles.iconeLien} />
-              {t("location")}
-              <span className={styles.badgeBientot}>{t("bientot")}</span>
-            </div>
-            <div className={styles.lienDesactive}>
-              <Package size={17} className={styles.iconeLien} />
-              {t("import_export")}
-              <span className={styles.badgeBientot}>{t("bientot")}</span>
-            </div>
-          </div>
-        )}
+        
       </nav>
 
       <div className={styles.zoneLangue}>
