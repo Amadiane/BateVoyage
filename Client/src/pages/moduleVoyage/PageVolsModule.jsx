@@ -12,7 +12,7 @@ const VALEURS_INITIALES = {
   aeroport_depart: "", aeroport_arrivee: "", numero_billet_reference: "", bagages_autorises_kg: "",
 };
 
-function PageVolsModule({ basePath }) {
+function PageVolsModule({ typeVoyage, basePath }) {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [vols, setVols] = useState([]);
@@ -27,7 +27,7 @@ function PageVolsModule({ basePath }) {
 
   const charger = () => {
     setChargement(true);
-    const params = {};
+    const params = { type_voyage: typeVoyage };
     if (filtreType) params.type_vol = filtreType;
     volService.lister(params).then(({ data }) => {
       setVols(data);
@@ -35,7 +35,7 @@ function PageVolsModule({ basePath }) {
     });
   };
 
-  useEffect(() => { charger(); }, [filtreType]);
+  useEffect(() => { charger(); }, [filtreType, typeVoyage]);
 
   const ouvrirNouveau = () => {
     setVolAModifier(null);
@@ -62,10 +62,11 @@ function PageVolsModule({ basePath }) {
     setErreur("");
     setEnvoi(true);
     try {
+      const donnees = { ...valeurs, type_voyage: typeVoyage };
       if (volAModifier) {
-        await volService.modifier(volAModifier.id, valeurs);
+        await volService.modifier(volAModifier.id, donnees);
       } else {
-        await volService.creer(valeurs);
+        await volService.creer(donnees);
       }
       setModalOuverte(false);
       charger();

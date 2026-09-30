@@ -25,8 +25,6 @@ export const decaissementService = {
   listerAssocies: () => api.get(CONFIG.API_ASSOCIES),
   obtenirBeneficeIndividuel: (activite, saison) => api.get(CONFIG.API_BENEFICE_INDIVIDUEL, { params: { activite, saison } }),
 
-  // Dépenses par pèlerin : "params" accepte { devise, pelerin, ... }. Le pèlerin est
-  // optionnel : une dépense sans pèlerin représente une charge commune à tous les pèlerins.
   listerDepensesPelerin: (params) => api.get(CONFIG.API_DEPENSES_PELERIN, { params }),
   creerDepensePelerin: (donnees) => api.post(CONFIG.API_DEPENSES_PELERIN, donnees),
   modifierDepensePelerin: (id, donnees) => api.patch(`${CONFIG.API_DEPENSES_PELERIN}${id}/`, donnees),
@@ -42,13 +40,13 @@ export const decaissementService = {
   creerDevisFacture: (donnees) => api.post(CONFIG.API_DEVIS_FACTURES, donnees),
   modifierDevisFacture: (id, donnees) => api.patch(CONFIG.API_DEVIS_FACTURE_DETAIL(id), donnees),
   supprimerDevisFacture: (id) => api.delete(CONFIG.API_DEVIS_FACTURE_DETAIL(id)),
-  obtenirImpayes: () => api.get(`${CONFIG.API_DEVIS_FACTURES}impayes/`),
+  obtenirImpayes: (activite) => api.get(`${CONFIG.API_DEVIS_FACTURES}impayes/`, { params: { activite } }),
 
-  listerBudgetFonctionnement: () => api.get(CONFIG.API_BUDGET_FONCTIONNEMENT),
+  listerBudgetFonctionnement: (activite) => api.get(CONFIG.API_BUDGET_FONCTIONNEMENT, { params: { activite } }),
   creerLigneBudget: (donnees) => api.post(CONFIG.API_BUDGET_FONCTIONNEMENT, donnees),
   modifierLigneBudget: (id, donnees) => api.patch(CONFIG.API_BUDGET_FONCTIONNEMENT_DETAIL(id), donnees),
   supprimerLigneBudget: (id) => api.delete(CONFIG.API_BUDGET_FONCTIONNEMENT_DETAIL(id)),
-  obtenirRecapBudget: () => api.get(`${CONFIG.API_BUDGET_FONCTIONNEMENT}recapitulatif/`),
+  obtenirRecapBudget: (activite) => api.get(`${CONFIG.API_BUDGET_FONCTIONNEMENT}recapitulatif/`, { params: { activite } }),
 
   obtenirSyntheseBenefices: (activite, saison) => api.get(CONFIG.API_BENEFICE_INDIVIDUEL_SYNTHESE, { params: { activite, saison } }),
   urlSynthesePdf: (activite, saison) => `${CONFIG.API_BENEFICE_INDIVIDUEL_PDF}?activite=${activite}&saison=${saison}`,

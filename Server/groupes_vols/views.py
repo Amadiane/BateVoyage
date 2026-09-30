@@ -20,7 +20,7 @@ class VolViewSet(viewsets.ModelViewSet):
     queryset = Vol.objects.all()
     serializer_class = VolSerializer
     permission_classes = [EstGestionnaireLogistique]
-    filterset_fields = ["type_vol"]
+    filterset_fields = ["type_vol", "type_voyage"]
 
     def perform_create(self, serializer):
         with set_actor(self.request.user):
@@ -57,7 +57,7 @@ class GroupeViewSet(viewsets.ModelViewSet):
     queryset = Groupe.objects.select_related("programme", "vol_aller", "vol_retour").all()
     serializer_class = GroupeSerializer
     permission_classes = [EstGestionnaireLogistique]
-    filterset_fields = ["vol_aller", "vol_retour", "programme"]
+    filterset_fields = ["vol_aller", "vol_retour", "programme", "type_voyage"]
     
 
     def perform_create(self, serializer):

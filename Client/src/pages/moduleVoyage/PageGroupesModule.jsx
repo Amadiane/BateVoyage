@@ -9,7 +9,7 @@ import styles from "../../theme/pages/moduleVoyage/PageGroupesModule.module.css"
 
 const VALEURS_INITIALES = { nom: "", sensVol: "", volId: "", encadreur: "", responsable_medical: "", capacite_max: "", notes: "" };
 
-function PageGroupesModule({ basePath }) {
+function PageGroupesModule({ typeVoyage, basePath }) {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [groupes, setGroupes] = useState([]);
@@ -24,7 +24,7 @@ function PageGroupesModule({ basePath }) {
 
   const charger = () => {
     setChargement(true);
-    groupeService.lister().then(({ data }) => {
+    groupeService.lister({ type_voyage: typeVoyage }).then(({ data }) => {
       setGroupes(data);
       setChargement(false);
     });
@@ -32,8 +32,8 @@ function PageGroupesModule({ basePath }) {
 
   useEffect(() => {
     charger();
-    volService.lister().then(({ data }) => setVols(data));
-  }, []);
+    volService.lister({ type_voyage: typeVoyage }).then(({ data }) => setVols(data));
+  }, [typeVoyage]);
 
   const ouvrirNouveau = () => {
     setGroupeAModifier(null);
@@ -69,6 +69,7 @@ function PageGroupesModule({ basePath }) {
         capacite_max: valeurs.capacite_max || null, notes: valeurs.notes,
         vol_aller: valeurs.sensVol === "aller" ? valeurs.volId : null,
         vol_retour: valeurs.sensVol === "retour" ? valeurs.volId : null,
+        type_voyage: typeVoyage,
       };
       Object.keys(donnees).forEach((k) => { if (donnees[k] === "") donnees[k] = null; });
 

@@ -9,7 +9,7 @@ import styles from "../../theme/pages/comptabilite/PageDecaissementDetail.module
 
 const VALEURS_INITIALES = { type_document: "devis", pelerin: "", client_nom: "", montant: "", devise: "GNF", date_emission: new Date().toISOString().slice(0, 10), notes: "" };
 
-function PageDevisFacture({ basePath }) {
+function PageDevisFacture({ activite, basePath }) {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [documents, setDocuments] = useState([]);
@@ -28,13 +28,13 @@ function PageDevisFacture({ basePath }) {
   const charger = () => {
     setChargement(true);
     if (vueImpayes) {
-      decaissementService.obtenirImpayes().then(({ data }) => {
+      decaissementService.obtenirImpayes(activite).then(({ data }) => {
         setDocuments(data.documents);
         setTotalImpaye(data.total_impaye);
         setChargement(false);
       });
     } else {
-      const params = {};
+      const params = { activite };
       if (filtreType) params.type_document = filtreType;
       decaissementService.listerDevisFactures(params).then(({ data }) => {
         setDocuments(data);
@@ -43,8 +43,12 @@ function PageDevisFacture({ basePath }) {
     }
   };
 
-  useEffect(() => { charger(); }, [filtreType, vueImpayes]);
-  useEffect(() => { pelerinService.lister({ type_voyage: "pelerinage" }).then(({ data }) => setPelerins(data)); }, []);
+  useEffect(() => { charger(); }, [filtreType, vueImpayes, activite]);
+
+  useEffect(() => {
+    const typeVoyage = activite === "oumra" ? "oumra" : "pelerinage";
+    pelerinService.lister({ type_voyage: typeVoyage }).then(({ data }) => setPelerins(data));
+  }, [activite]);
 
   const ouvrirNouveau = () => {
     setDocumentAModifier(null);
@@ -73,7 +77,7 @@ function PageDevisFacture({ basePath }) {
     }
     setEnvoi(true);
     try {
-      const donnees = { ...valeurs };
+      const donnees = { ...valeurs, activite };
       if (!donnees.pelerin) delete donnees.pelerin;
       if (documentAModifier) {
         await decaissementService.modifierDevisFacture(documentAModifier.id, donnees);

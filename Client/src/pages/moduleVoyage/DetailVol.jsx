@@ -9,7 +9,7 @@ import { telechargerFichierProtege } from "../../utils/telechargement";
 import ModalAjoutPelerinsGroupe from "../../components/ModalAjoutPelerinsGroupe/ModalAjoutPelerinsGroupe";
 import styles from "../../theme/pages/moduleVoyage/DetailVol.module.css";
 
-function DetailVol({ basePath }) {
+function DetailVol({ typeVoyage, basePath }) {
   const { id } = useParams();
   const navigate = useNavigate();
   const { t } = useTranslation();
@@ -27,7 +27,7 @@ function DetailVol({ basePath }) {
     const { data: volData } = await volService.obtenir(id);
     setVol(volData);
 
-    const { data: groupesData } = await groupeService.lister();
+    const { data: groupesData } = await groupeService.lister({ type_voyage: typeVoyage });
     setTousGroupes(groupesData);
 
     const groupeLie = groupesData.find((g) => String(g.vol_aller) === String(id) || String(g.vol_retour) === String(id));

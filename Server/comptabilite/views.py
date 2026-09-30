@@ -514,7 +514,7 @@ class DevisFactureViewSet(viewsets.ModelViewSet):
     queryset = DevisFacture.objects.select_related("pelerin", "enregistre_par").all()
     serializer_class = DevisFactureSerializer
     permission_classes = [EstGestionnaireFinancier]
-    filterset_fields = ["type_document", "paye", "devise"]
+    filterset_fields = ["type_document", "paye", "devise", "activite"]
 
     def perform_create(self, serializer):
         with set_actor(self.request.user):
@@ -530,7 +530,10 @@ class DevisFactureViewSet(viewsets.ModelViewSet):
 
     @action(detail=False, methods=["get"], url_path="impayes")
     def impayes(self, request):
+        activite = request.query_params.get("activite")
         impayes = self.get_queryset().filter(type_document__in=["facture", "devis"], paye=False)
+        if activite:
+            impayes = impayes.filter(activite=activite)
         serializer = self.get_serializer(impayes, many=True)
         total = sum(float(d.montant) for d in impayes)
         return Response({"documents": serializer.data, "total_impaye": total})
@@ -540,6 +543,7 @@ class LigneBudgetFonctionnementViewSet(viewsets.ModelViewSet):
     queryset = LigneBudgetFonctionnement.objects.select_related("enregistre_par").all()
     serializer_class = LigneBudgetFonctionnementSerializer
     permission_classes = [EstGestionnaireFinancier]
+    filterset_fields = ["activite"]
 
     def perform_create(self, serializer):
         with set_actor(self.request.user):
@@ -555,7 +559,10 @@ class LigneBudgetFonctionnementViewSet(viewsets.ModelViewSet):
 
     @action(detail=False, methods=["get"], url_path="recapitulatif")
     def recapitulatif(self, request):
+        activite = request.query_params.get("activite")
         lignes = LigneBudgetFonctionnement.objects.all()
+        if activite:
+            lignes = lignes.filter(activite=activite)
         total_entree = sum(float(l.montant_entree or 0) for l in lignes)
         total_sortie = sum(float(l.montant_sortie or 0) for l in lignes)
         total_restant = total_entree - total_sortie
@@ -564,7 +571,6 @@ class LigneBudgetFonctionnementViewSet(viewsets.ModelViewSet):
             "total_sortie": round(total_sortie, 2),
             "total_restant": round(total_restant, 2),
         })
-
 
 class BeneficeIndividuelSyntheseView(APIView):
     permission_classes = [EstGestionnaireFinancier]

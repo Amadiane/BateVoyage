@@ -252,6 +252,7 @@ class DevisFacture(models.Model):
         AVOIR = "avoir", "Avoir"
 
     type_document = models.CharField(max_length=10, choices=TypeDocument.choices)
+    activite = models.CharField(max_length=15, choices=CategorieDecaissement.Activite.choices, default=CategorieDecaissement.Activite.HAJJ)
     numero = models.CharField(max_length=30, unique=True, editable=False, blank=True)
     pelerin = models.ForeignKey("pelerins.Pelerin", on_delete=models.SET_NULL, null=True, blank=True, related_name="devis_factures")
     client_nom = models.CharField(max_length=150, blank=True, help_text="Si pas lié à un pèlerin")
@@ -431,6 +432,7 @@ class DepensePelerin(models.Model):
 
 
 class LigneBudgetFonctionnement(models.Model):
+    activite = models.CharField(max_length=15, choices=CategorieDecaissement.Activite.choices, default=CategorieDecaissement.Activite.HAJJ)
     designation = models.CharField(max_length=255)
     montant_entree = models.DecimalField(max_digits=14, decimal_places=2, null=True, blank=True)
     montant_sortie = models.DecimalField(max_digits=14, decimal_places=2, null=True, blank=True)
@@ -445,7 +447,5 @@ class LigneBudgetFonctionnement(models.Model):
 
     def __str__(self):
         return f"{self.designation} — {self.date}"
-
-
 
 

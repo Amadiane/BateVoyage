@@ -21,7 +21,7 @@ const COLONNES_EXPORT = [
   { cle: "solde", entete: "Solde (GNF)", largeur: 16, format: "nombre" },
 ];
 
-function PageBudgetFonctionnement({ basePath }) {
+function PageBudgetFonctionnement({ activite, basePath }) {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [lignes, setLignes] = useState([]);
@@ -37,15 +37,15 @@ function PageBudgetFonctionnement({ basePath }) {
   const charger = async () => {
     setChargement(true);
     const [lignesRes, recapRes] = await Promise.all([
-      decaissementService.listerBudgetFonctionnement(),
-      decaissementService.obtenirRecapBudget(),
+      decaissementService.listerBudgetFonctionnement(activite),
+      decaissementService.obtenirRecapBudget(activite),
     ]);
     setLignes(lignesRes.data);
     setRecap(recapRes.data);
     setChargement(false);
   };
 
-  useEffect(() => { charger(); }, []);
+  useEffect(() => { charger(); }, [activite]);
 
   const ouvrirNouveau = () => {
     setLigneAModifier(null);
@@ -83,6 +83,7 @@ function PageBudgetFonctionnement({ basePath }) {
         notes: valeurs.notes,
         montant_entree: valeurs.type === "entree" ? valeurs.montant : null,
         montant_sortie: valeurs.type === "sortie" ? valeurs.montant : null,
+        activite,
       };
       if (ligneAModifier) {
         await decaissementService.modifierLigneBudget(ligneAModifier.id, donnees);
@@ -106,8 +107,6 @@ function PageBudgetFonctionnement({ basePath }) {
 
   if (chargement) return <p className={styles.chargement}>{t("chargement")}</p>;
 
-  // Solde courant calculé ligne par ligne (ordre chronologique), puis
-  // regroupement par mois pour l'affichage façon relevé bancaire.
   let solde = 0;
   const lignesAvecSolde = lignes.map((l, index) => {
     solde += parseFloat(l.montant_entree || 0) - parseFloat(l.montant_sortie || 0);
@@ -123,7 +122,6 @@ function PageBudgetFonctionnement({ basePath }) {
   });
   const groupesOrdonnes = Object.values(groupes).sort((a, b) => (a.annee - b.annee) || (a.mois - b.mois));
 
-  // Courbe d'évolution du solde en SVG pur (aucune librairie).
   const points = lignesAvecSolde.map((l) => l.soldeApres);
   const max = Math.max(...points, 0);
   const min = Math.min(...points, 0);

@@ -47,6 +47,7 @@ import PageCreance from "./pages/comptabilite/PageCreance";
 import PageDevisFacture from "./pages/comptabilite/PageDevisFacture";
 import PageBudgetFonctionnement from "./pages/comptabilite/PageBudgetFonctionnement";
 
+
 import "./globals.css";
 
 const ROLES_FINANCIERS = ["fondateur", "admin_general", "comptable", "secretaire"];
@@ -80,22 +81,16 @@ function App() {
           <Route path="/hajj/pelerins/liste" element={<ListePelerins typeVoyageFixe="pelerinage" titreCle="menu_hajj" retourPath="/hajj/pelerins" />} />
           <Route path="/hajj/forfaits" element={<PageForfaitsModule typeVoyage="pelerinage" basePath="/hajj" />} />
           <Route path="/hajj/visa_doc" element={<PageVisaDocModule typeVoyage="pelerinage" basePath="/hajj" />} />
-          <Route path="/hajj/vols" element={<PageVolsModule basePath="/hajj" />} />
-          <Route path="/hajj/vols/:id" element={<DetailVol basePath="/hajj" />} />
-          <Route path="/hajj/groupes" element={<PageGroupesModule basePath="/hajj" />} />
-          <Route path="/hajj/groupes/:id" element={<DetailGroupe />} />
+          <Route path="/hajj/vols" element={<PageVolsModule typeVoyage="pelerinage" basePath="/hajj" />} />
+          <Route path="/hajj/vols/:id" element={<DetailVol typeVoyage="pelerinage" basePath="/hajj" />} />
+          <Route path="/hajj/groupes" element={<PageGroupesModule typeVoyage="pelerinage" basePath="/hajj" />} />
+          <Route path="/hajj/groupes/:id" element={<DetailGroupe typeVoyage="pelerinage" />} />
           <Route path="/hajj/hebergement" element={<PageHebergementModule basePath="/hajj" />} />
           <Route path="/hajj/hebergement/:id" element={<DetailHotel />} />
           <Route path="/hajj/campements" element={<PageCampementsModule basePath="/hajj" />} />
           <Route path="/hajj/campements/:id" element={<DetailCampement />} />
           <Route path="/hajj/transport" element={<PageTransportModule basePath="/hajj" />} />
           <Route path="/hajj/transport/:id" element={<DetailVehicule />} />
-          <Route path="/hajj/finances" element={<PageComptabilite basePath="/hajj" />} />
-          <Route path="/hajj/finances/decaissement" element={<PageDecaissementDetail activite="hajj" basePath="/hajj" />} />
-          <Route path="/oumra/finances/decaissement" element={<PageDecaissementDetail activite="oumra" basePath="/oumra" />} />
-          <Route path="/hajj/finances/encaissement" element={<PageEncaissement activite="hajj" basePath="/hajj" />} />
-          <Route path="/hajj/finances/frais-personnels" element={<PageDecaissementDetail activite="personnel" basePath="/hajj" />} />
-
           <Route path="/hajj/finances" element={<PageComptabilite basePath="/hajj" />} />
           <Route path="/hajj/finances/decaissement" element={<PageDecaissementDetail activite="hajj" basePath="/hajj" />} />
           <Route path="/hajj/finances/encaissement" element={<PageEncaissement activite="hajj" basePath="/hajj" />} />
@@ -105,8 +100,8 @@ function App() {
           <Route path="/hajj/finances/benefice-individuel" element={<PageBeneficeIndividuel activite="hajj" basePath="/hajj" />} />
           <Route path="/hajj/finances/benefice-pelerin" element={<PageBeneficePelerin basePath="/hajj" />} />
           <Route path="/hajj/finances/creance" element={<PageCreance basePath="/hajj" />} />
-          <Route path="/hajj/finances/devis-facture" element={<PageDevisFacture basePath="/hajj" />} />
-          <Route path="/hajj/finances/budget-fonctionnement" element={<PageBudgetFonctionnement basePath="/hajj" />} />
+          <Route path="/hajj/finances/devis-facture" element={<PageDevisFacture activite="hajj" basePath="/hajj" />} />
+          <Route path="/hajj/finances/budget-fonctionnement" element={<PageBudgetFonctionnement activite="hajj" basePath="/hajj" />} />
 
           {/* Module Oumra */}
           <Route path="/oumra" element={<PageModuleVoyage typeVoyage="oumra" basePath="/oumra" titreCle="menu_oumra" />} />
@@ -114,10 +109,10 @@ function App() {
           <Route path="/oumra/pelerins/liste" element={<ListePelerins typeVoyageFixe="oumra" titreCle="menu_oumra" retourPath="/oumra/pelerins" />} />
           <Route path="/oumra/forfaits" element={<PageForfaitsModule typeVoyage="oumra" basePath="/oumra" />} />
           <Route path="/oumra/visa_doc" element={<PageVisaDocModule typeVoyage="oumra" basePath="/oumra" />} />
-          <Route path="/oumra/vols" element={<PageVolsModule basePath="/oumra" />} />
-          <Route path="/oumra/vols/:id" element={<DetailVol basePath="/oumra" />} />
-          <Route path="/oumra/groupes" element={<PageGroupesModule basePath="/oumra" />} />
-          <Route path="/oumra/groupes/:id" element={<DetailGroupe />} />
+          <Route path="/oumra/vols" element={<PageVolsModule typeVoyage="oumra" basePath="/oumra" />} />
+          <Route path="/oumra/vols/:id" element={<DetailVol typeVoyage="oumra" basePath="/oumra" />} />
+          <Route path="/oumra/groupes" element={<PageGroupesModule typeVoyage="oumra" basePath="/oumra" />} />
+          <Route path="/oumra/groupes/:id" element={<DetailGroupe typeVoyage="oumra" />} />
           <Route path="/oumra/hebergement" element={<PageHebergementModule basePath="/oumra" />} />
           <Route path="/oumra/hebergement/:id" element={<DetailHotel />} />
           <Route path="/oumra/campements" element={<PageCampementsModule basePath="/oumra" />} />
@@ -125,6 +120,16 @@ function App() {
           <Route path="/oumra/transport" element={<PageTransportModule basePath="/oumra" />} />
           <Route path="/oumra/transport/:id" element={<DetailVehicule />} />
           <Route path="/oumra/finances" element={<PageComptabilite basePath="/oumra" />} />
+          <Route path="/oumra/finances/decaissement" element={<PageDecaissementDetail activite="oumra" basePath="/oumra" />} />
+          <Route path="/oumra/finances/encaissement" element={<PageEncaissement activite="oumra" basePath="/oumra" />} />
+          <Route path="/oumra/finances/frais-personnels" element={<PageDecaissementDetail activite="personnel" basePath="/oumra" />} />
+          <Route path="/oumra/finances/benefice-global" element={<PageBeneficeGlobal activite="oumra" basePath="/oumra" />} />
+          <Route path="/oumra/finances/dette" element={<PageDettePersonnelle basePath="/oumra" />} />
+          <Route path="/oumra/finances/benefice-individuel" element={<PageBeneficeIndividuel activite="oumra" basePath="/oumra" />} />
+          <Route path="/oumra/finances/benefice-pelerin" element={<PageBeneficePelerin basePath="/oumra" />} />
+          <Route path="/oumra/finances/creance" element={<PageCreance basePath="/oumra" />} />
+          <Route path="/oumra/finances/devis-facture" element={<PageDevisFacture activite="oumra" basePath="/oumra" />} />
+          <Route path="/oumra/finances/budget-fonctionnement" element={<PageBudgetFonctionnement activite="oumra" basePath="/oumra" />} />
 
           {/* Documents (conformité dossiers) */}
           <Route path="/documents" element={<PageDocuments />} />

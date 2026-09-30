@@ -6,6 +6,11 @@ from django.conf import settings
 
 
 class Vol(models.Model):
+    class TypeVoyage(models.TextChoices):
+        PELERINAGE = "pelerinage", "Hajj"
+        OUMRA = "oumra", "Oumra"
+
+    type_voyage = models.CharField(max_length=15, choices=TypeVoyage.choices, default=TypeVoyage.PELERINAGE)
     compagnie = models.CharField(max_length=100)
     numero_vol = models.CharField(max_length=20)
     date_vol = models.DateField()
@@ -31,6 +36,11 @@ class Vol(models.Model):
 
 
 class Groupe(models.Model):
+    class TypeVoyage(models.TextChoices):
+        PELERINAGE = "pelerinage", "Hajj"
+        OUMRA = "oumra", "Oumra"
+
+    type_voyage = models.CharField(max_length=15, choices=TypeVoyage.choices, default=TypeVoyage.PELERINAGE)
     nom = models.CharField(max_length=150)
     programme = models.ForeignKey(
         "formules.Programme", on_delete=models.SET_NULL, null=True, blank=True, related_name="groupes"
@@ -46,7 +56,6 @@ class Groupe(models.Model):
     capacite_max = models.PositiveIntegerField(null=True, blank=True, help_text="Nombre maximum de pèlerins pour ce groupe")
     notes = models.TextField(blank=True)
     date_creation = models.DateTimeField(auto_now_add=True)
-
 
     class Meta:
         ordering = ["-date_creation"]
