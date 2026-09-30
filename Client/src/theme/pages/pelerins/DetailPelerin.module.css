@@ -19,20 +19,21 @@
 }
 
 .retour:hover {
-  color: var(--color-brand);
+  color: #0B3FA0;
 }
 
 .entete {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  background-color: #fff;
-  border: 1px solid var(--color-border);
-  border-radius: 12px;
+  background: linear-gradient(135deg, #10151F 0%, #1B2436 55%, #2B3A5C 100%);
+  border-radius: 14px;
   padding: 24px;
   margin-bottom: 24px;
   flex-wrap: wrap;
   gap: 16px;
+  border-left: 6px solid #C9972B;
+  box-shadow: 0 6px 18px rgba(16, 21, 31, 0.18);
 }
 
 .identiteEntete {
@@ -46,25 +47,27 @@
   height: 72px;
   border-radius: 50%;
   object-fit: cover;
+  border: 3px solid rgba(255, 255, 255, 0.2);
 }
 
 .photoPlaceholder {
   width: 72px;
   height: 72px;
   border-radius: 50%;
-  background-color: var(--color-brand-pale);
-  color: var(--color-brand);
+  background: linear-gradient(135deg, #2B6CE0, #0B3FA0);
+  color: #fff;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 22px;
   font-weight: 700;
+  border: 3px solid rgba(255, 255, 255, 0.2);
 }
 
 .numeroId {
   font-family: monospace;
   font-size: 12px;
-  color: var(--color-brand);
+  color: #C9972B;
   font-weight: 700;
   margin: 0 0 2px;
 }
@@ -72,7 +75,7 @@
 .nomComplet {
   font-family: var(--font-display);
   font-size: 22px;
-  color: var(--color-brand-dark);
+  color: #fff;
   margin: 0 0 8px;
 }
 
@@ -87,62 +90,66 @@
   padding: 3px 10px;
   border-radius: 999px;
   font-size: 11px;
-  font-weight: 600;
+  font-weight: 700;
   background-color: #F3F4F6;
   color: #4B5563;
 }
 
-.badge_valide, .badgeVisa_obtenu, .badgeComplet { background-color: #DCFCE7; color: #166534; }
-.badge_en_voyage { background-color: #DBEAFE; color: #1E40AF; }
+.badge_valide, .badgeVisa_obtenu, .badgeComplet { background: linear-gradient(135deg, #DCFCE7, #BBF7D0); color: #166534; }
+.badge_en_voyage { background: linear-gradient(135deg, #DBEAFE, #BFDBFE); color: #1E40AF; }
 .badge_retourne, .badge_cloture { background-color: #F3F4F6; color: #4B5563; }
-.badge_en_preparation, .badgeVisa_en_cours { background-color: #FEF3C7; color: #92400E; }
-.badgeVisa_refuse { background-color: #FEE2E2; color: #991B1B; }
+.badge_en_preparation, .badgeVisa_en_cours { background: linear-gradient(135deg, #FEF3C7, #FDE68A); color: #92400E; }
+.badgeVisa_refuse { background: linear-gradient(135deg, #FEE2E2, #FECACA); color: #991B1B; }
 
 .actionsEntete {
   display: flex;
   gap: 8px;
   align-items: flex-start;
+  flex-wrap: wrap;
 }
 
 .boutonPrincipal, .boutonSecondaire, .boutonDanger {
   padding: 8px 16px;
   border-radius: 8px;
   font-size: 13px;
-  font-weight: 600;
+  font-weight: 700;
   cursor: pointer;
   text-decoration: none;
   border: 1px solid transparent;
   display: inline-flex;
   align-items: center;
+  transition: background-color 0.15s ease;
 }
 
 .boutonPrincipal {
-  background-color: var(--color-brand-dark);
-  color: #fff;
+  background: linear-gradient(135deg, #E0B24F, #C9972B);
+  color: #10151F;
 }
 
 .boutonPrincipal:hover {
-  background-color: var(--color-brand);
+  filter: brightness(1.08);
 }
 
 .boutonSecondaire {
-  background-color: #fff;
-  border-color: var(--color-border);
-  color: var(--color-ink);
+  background-color: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.35);
+  color: #fff;
 }
 
 .boutonSecondaire:hover {
-  background-color: #F9FAFB;
+  background-color: rgba(255, 255, 255, 0.22);
 }
 
 .boutonDanger {
-  background-color: #fff;
-  border-color: #FCA5A5;
-  color: #DC2626;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-color: #F87171;
+  color: #FCA5A5;
 }
 
 .boutonDanger:hover {
-  background-color: #FEF2F2;
+  background-color: #DC2626;
+  border-color: #DC2626;
+  color: #fff;
 }
 
 .grilleSections {
@@ -156,14 +163,45 @@
   border: 1px solid var(--color-border);
   border-radius: 12px;
   padding: 20px;
+  border-left: 4px solid #E5E7EB;
+  transition: box-shadow 0.15s ease, transform 0.1s ease;
 }
+
+.carteSection:hover {
+  box-shadow: 0 4px 14px rgba(16, 21, 31, 0.1);
+  transform: translateY(-1px);
+}
+
+/* Accent de couleur distinct par section (fond teinté + liseré + titre), dans l'ordre d'affichage */
+.grilleSections .carteSection:nth-child(1) { border-left-color: #2B6CE0; background: linear-gradient(180deg, rgba(43, 108, 224, 0.07), #fff 55%); }
+.grilleSections .carteSection:nth-child(1) .titreSection { color: #2B6CE0; }
+
+.grilleSections .carteSection:nth-child(2) { border-left-color: #C9972B; background: linear-gradient(180deg, rgba(201, 151, 43, 0.09), #fff 55%); }
+.grilleSections .carteSection:nth-child(2) .titreSection { color: #C9972B; }
+
+.grilleSections .carteSection:nth-child(3) { border-left-color: #1F7A4D; background: linear-gradient(180deg, rgba(31, 122, 77, 0.07), #fff 55%); }
+.grilleSections .carteSection:nth-child(3) .titreSection { color: #1F7A4D; }
+
+.grilleSections .carteSection:nth-child(4) { border-left-color: #7C5CBF; background: linear-gradient(180deg, rgba(124, 92, 191, 0.08), #fff 55%); }
+.grilleSections .carteSection:nth-child(4) .titreSection { color: #7C5CBF; }
+
+.grilleSections .carteSection:nth-child(5) { border-left-color: #B4433A; background: linear-gradient(180deg, rgba(180, 67, 58, 0.07), #fff 55%); }
+.grilleSections .carteSection:nth-child(5) .titreSection { color: #B4433A; }
+
+.grilleSections .carteSection:nth-child(6) { border-left-color: #E08A2B; background: linear-gradient(180deg, rgba(224, 138, 43, 0.09), #fff 55%); }
+.grilleSections .carteSection:nth-child(6) .titreSection { color: #E08A2B; }
+
+.grilleSections .carteSection:nth-child(7) { border-left-color: #0E7C86; background: linear-gradient(180deg, rgba(14, 124, 134, 0.08), #fff 55%); }
+.grilleSections .carteSection:nth-child(7) .titreSection { color: #0E7C86; }
+
+.grilleSections .carteSection:nth-child(8) { border-left-color: #10151F; background: linear-gradient(180deg, rgba(16, 21, 31, 0.06), #fff 55%); }
+.grilleSections .carteSection:nth-child(8) .titreSection { color: #10151F; }
 
 .titreSection {
   font-size: 13px;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.03em;
-  color: var(--color-brand);
   margin: 0 0 14px;
 }
 
@@ -194,9 +232,9 @@
   display: inline-block;
   margin-top: 4px;
   font-size: 13px;
-  color: var(--color-brand);
+  color: #0B3FA0;
   text-decoration: none;
-  font-weight: 600;
+  font-weight: 700;
 }
 
 .lienDocument:hover {
@@ -231,9 +269,9 @@ button.lienDocument {
   border: none;
   cursor: pointer;
   font-family: inherit;
-  color: var(--color-brand);
+  color: #0B3FA0;
   font-size: 13px;
-  font-weight: 600;
+  font-weight: 700;
   padding: 0;
 }
 
@@ -241,13 +279,10 @@ button.lienDocument:hover {
   text-decoration: underline;
 }
 
-.lignePaiement {
-  display: flex;
-  justify-content: space-between;
-  gap: 12px;
-  font-size: 13px;
-  padding: 6px 0;
-  border-bottom: 1px solid #F3F4F6;
+button.lienDocument:disabled {
+  color: #9CA3AF;
+  cursor: default;
+  text-decoration: none;
 }
 
 .etatVideMini {
@@ -261,26 +296,12 @@ button.lienDocument:hover {
   justify-content: space-between;
   align-items: center;
   padding: 10px 12px;
-  background-color: var(--color-brand-pale);
+  background: linear-gradient(135deg, #2B6CE0, #0B3FA0);
   border-radius: 8px;
   margin-bottom: 10px;
   font-size: 13.5px;
-  color: var(--color-brand-dark);
-}
-
-.lignePaiement {
-  display: flex;
-  justify-content: space-between;
-  gap: 12px;
-  font-size: 13px;
-  padding: 6px 0;
-  border-bottom: 1px solid #F3F4F6;
-}
-
-.etatVideMini {
-  font-size: 13px;
-  color: #9CA3AF;
-  margin: 8px 0;
+  color: #fff;
+  font-weight: 600;
 }
 
 .resteAPayer {
@@ -288,22 +309,28 @@ button.lienDocument:hover {
   justify-content: space-between;
   align-items: center;
   padding: 10px 12px;
-  background-color: #FFF7ED;
+  background: linear-gradient(135deg, #FFF7ED, #FED7AA);
   border-radius: 8px;
   margin-bottom: 10px;
   font-size: 13.5px;
 }
 
-.resteRouge { color: #B91C1C; }
-.resteVert { color: #166534; }
+.resteRouge { color: #B91C1C; font-weight: 700; }
+.resteVert { color: #166534; font-weight: 700; }
 
 .lignePaiementDetail {
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 8px;
-  padding: 8px 0;
+  padding: 8px 6px;
   border-bottom: 1px solid #F3F4F6;
+  border-radius: 6px;
+  transition: background-color 0.12s ease;
+}
+
+.lignePaiementDetail:hover {
+  background-color: #FAFAF8;
 }
 
 .infoPaiement {
@@ -324,15 +351,17 @@ button.lienDocument:hover {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid var(--color-border);
-  border-radius: 6px;
-  background: #fff;
+  border: 1px solid #DDE3F0;
+  border-radius: 999px;
+  background: #EFF4FF;
+  color: #0B3FA0;
   cursor: pointer;
   font-size: 12px;
+  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
 }
 
-.miniBouton:hover { background-color: #F9FAFB; }
-.miniBoutonDanger:hover { background-color: #FEE2E2; border-color: #FCA5A5; }
+.miniBouton:hover { background-color: #2B6CE0; border-color: #2B6CE0; color: #fff; }
+.miniBoutonDanger:hover { background-color: #DC2626; border-color: #DC2626; color: #fff; }
 
 .infoDepart {
   font-size: 12px;
