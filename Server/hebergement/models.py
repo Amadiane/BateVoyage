@@ -14,12 +14,17 @@ class Ville(models.Model):
 
 
 class Hotel(models.Model):
+    class TypeVoyage(models.TextChoices):
+        PELERINAGE = "pelerinage", "Hajj"
+        OUMRA = "oumra", "Oumra"
+
     class Categorie(models.TextChoices):
         ECONOMIQUE = "economique", "Économique"
         STANDARD = "standard", "Standard"
         SUPERIEUR = "superieur", "Supérieur"
         LUXE = "luxe", "Luxe"
 
+    type_voyage = models.CharField(max_length=15, choices=TypeVoyage.choices, default=TypeVoyage.PELERINAGE)
     nom = models.CharField(max_length=150)
     ville = models.ForeignKey(Ville, on_delete=models.PROTECT, related_name="hotels")
     adresse = models.CharField(max_length=255, blank=True)
@@ -39,7 +44,6 @@ class Hotel(models.Model):
 
     def __str__(self):
         return f"{self.nom} ({self.ville})"
-
 
 class Chambre(models.Model):
     class TypeChambre(models.TextChoices):
@@ -103,6 +107,11 @@ class Campement(models.Model):
     libres (numérotation de tente/zone pouvant mélanger chiffres et
     lettres, ex: "T-12A")."""
 
+    class TypeVoyage(models.TextChoices):
+        PELERINAGE = "pelerinage", "Hajj"
+        OUMRA = "oumra", "Oumra"
+
+    type_voyage = models.CharField(max_length=15, choices=TypeVoyage.choices, default=TypeVoyage.PELERINAGE)
     ville = models.ForeignKey(Ville, on_delete=models.PROTECT, related_name="campements")
     tente_camp = models.CharField(max_length=50, help_text="Numéro ou nom de la tente/camp (ex: T-12A)")
     groupe = models.CharField(max_length=100, blank=True, help_text="Nom du groupe affecté")

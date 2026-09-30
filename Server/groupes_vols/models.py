@@ -67,12 +67,17 @@ class Groupe(models.Model):
 
 
 class Vehicule(models.Model):
+    class TypeVoyage(models.TextChoices):
+        PELERINAGE = "pelerinage", "Hajj"
+        OUMRA = "oumra", "Oumra"
+
     class TypeVehicule(models.TextChoices):
         BUS = "bus", "Bus"
         MINIBUS = "minibus", "Minibus"
         VOITURE = "voiture", "Voiture"
         AUTRE = "autre", "Autre"
 
+    type_voyage = models.CharField(max_length=15, choices=TypeVoyage.choices, default=TypeVoyage.PELERINAGE)
     numero_bus = models.CharField(max_length=20, unique=True, help_text="Numéro ou nom du bus (ex: Bus 01)")
     type_vehicule = models.CharField(max_length=15, choices=TypeVehicule.choices, default=TypeVehicule.BUS)
     plaque_immatriculation = models.CharField(max_length=30, blank=True)

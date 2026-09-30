@@ -31,6 +31,7 @@ class ChambreSerializer(serializers.ModelSerializer):
 class HotelSerializer(serializers.ModelSerializer):
     ville_nom = serializers.CharField(source="ville.nom", read_only=True)
     categorie_display = serializers.CharField(source="get_categorie_display", read_only=True)
+    type_voyage_display = serializers.CharField(source="get_type_voyage_display", read_only=True)
     nb_chambres = serializers.SerializerMethodField()
     capacite_totale = serializers.SerializerMethodField()
     occupants_totaux = serializers.SerializerMethodField()
@@ -55,6 +56,7 @@ class HotelSerializer(serializers.ModelSerializer):
 
 class CampementSerializer(serializers.ModelSerializer):
     ville_nom = serializers.CharField(source="ville.nom", read_only=True)
+    type_voyage_display = serializers.CharField(source="get_type_voyage_display", read_only=True)
 
     class Meta:
         model = Campement

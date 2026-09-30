@@ -30,7 +30,7 @@ class HotelViewSet(viewsets.ModelViewSet):
     queryset = Hotel.objects.select_related("ville").all()
     serializer_class = HotelSerializer
     permission_classes = [EstGestionnaireLogistique]
-    filterset_fields = ["ville", "categorie"]
+    filterset_fields = ["ville", "categorie", "type_voyage"]
 
     def perform_create(self, serializer):
         with set_actor(self.request.user):
@@ -93,8 +93,9 @@ class CampementViewSet(viewsets.ModelViewSet):
     queryset = Campement.objects.select_related("ville").all()
     serializer_class = CampementSerializer
     permission_classes = [EstGestionnaireLogistique]
-    filterset_fields = ["ville"]
+    filterset_fields = ["ville", "type_voyage"]
 
+    
     def perform_create(self, serializer):
         with set_actor(self.request.user):
             serializer.save()

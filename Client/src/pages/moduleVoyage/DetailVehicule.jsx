@@ -9,7 +9,7 @@ import ModalAjoutPelerinsVehicule from "../../components/ModalAjoutPelerinsVehic
 import ModalConfirmation from "../../components/ModalConfirmation/ModalConfirmation";
 import styles from "../../theme/pages/moduleVoyage/DetailVehicule.module.css";
 
-function DetailVehicule() {
+function DetailVehicule({ typeVoyage }) {
   const { id } = useParams();
   const navigate = useNavigate();
   const { t } = useTranslation();
@@ -31,7 +31,7 @@ function DetailVehicule() {
     const { data: pelerinsData } = await pelerinService.lister({ vehicule: id });
     setPelerins(pelerinsData);
 
-    const { data: groupesData } = await groupeService.lister();
+    const { data: groupesData } = await groupeService.lister({ type_voyage: typeVoyage });
     setTousGroupes(groupesData);
 
     setChargement(false);

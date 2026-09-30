@@ -11,7 +11,7 @@ const VALEURS_INITIALES = {
   date_debut_utilisation: "", date_fin_utilisation: "", cout_location: "", notes: "",
 };
 
-function PageTransportModule({ basePath }) {
+function PageTransportModule({ typeVoyage, basePath }) {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [vehicules, setVehicules] = useState([]);
@@ -25,7 +25,7 @@ function PageTransportModule({ basePath }) {
 
   const charger = () => {
     setChargement(true);
-    const params = {};
+    const params = { type_voyage: typeVoyage };
     if (filtreType) params.type_vehicule = filtreType;
     vehiculeService.lister(params).then(({ data }) => {
       setVehicules(data);
@@ -33,7 +33,7 @@ function PageTransportModule({ basePath }) {
     });
   };
 
-  useEffect(() => { charger(); }, [filtreType]);
+  useEffect(() => { charger(); }, [filtreType, typeVoyage]);
 
   const ouvrirNouveau = () => {
     setVehiculeAModifier(null);
@@ -62,7 +62,7 @@ function PageTransportModule({ basePath }) {
     setErreur("");
     setEnvoi(true);
     try {
-      const donnees = { ...valeurs };
+      const donnees = { ...valeurs, type_voyage: typeVoyage };
       Object.keys(donnees).forEach((k) => { if (donnees[k] === "") delete donnees[k]; });
       if (vehiculeAModifier) {
         await vehiculeService.modifier(vehiculeAModifier.id, donnees);
