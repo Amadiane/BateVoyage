@@ -337,8 +337,9 @@ class DetteViewSet(viewsets.ModelViewSet):
     queryset = Dette.objects.select_related("associe", "enregistre_par").all()
     serializer_class = DetteSerializer
     permission_classes = [EstGestionnaireFinancier]
-    filterset_fields = ["soldee", "associe", "devise"]
+    filterset_fields = ["soldee", "associe", "devise", "activite"]
     search_fields = ["nom", "prenom"]
+    
 
     def perform_create(self, serializer):
         with set_actor(self.request.user):
@@ -494,9 +495,10 @@ class CreanceViewSet(viewsets.ModelViewSet):
     queryset = Creance.objects.select_related("enregistre_par").all()
     serializer_class = CreanceSerializer
     permission_classes = [EstGestionnaireFinancier]
-    filterset_fields = ["soldee", "devise"]
+    filterset_fields = ["soldee", "devise", "activite"]
     search_fields = ["nom", "prenom"]
-
+    
+    
     def perform_create(self, serializer):
         with set_actor(self.request.user):
             serializer.save(enregistre_par=self.request.user)

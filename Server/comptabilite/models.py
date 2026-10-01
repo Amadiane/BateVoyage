@@ -1,13 +1,12 @@
 from django.db import models
-
-# Create your models here.
-from django.db import models
 from django.conf import settings
+
 
 class Activite(models.TextChoices):
     HAJJ = "hajj", "Hajj"
     OUMRA = "oumra", "Oumra"
     GENERAL = "general", "Général (agence)"
+
 
 class BonSortie(models.Model):
     numero_bon = models.CharField(max_length=20, unique=True, editable=False, blank=True)
@@ -77,12 +76,16 @@ class Depense(models.Model):
 class DetteFournisseur(models.Model):
     nom_fournisseur = models.CharField(max_length=150, help_text="Ex: Makkah Towers, Air Guinée")
     montant_du = models.DecimalField(max_digits=12, decimal_places=2)
-    activite = models.CharField(max_length=20, choices=Activite.choices, default=Activite.GENERAL)
     motif = models.CharField(max_length=255)
     date_echeance = models.DateField(null=True, blank=True)
     soldee = models.BooleanField(default=False)
     date_paiement = models.DateField(null=True, blank=True)
     notes = models.TextField(blank=True)
+    activite = models.CharField(
+        max_length=10,
+        choices=[("hajj", "Hajj"), ("oumra", "Oumra")],
+        default="hajj",
+    )
     enregistre_par = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.PROTECT, related_name="dettes_fournisseur_enregistrees"
     )
@@ -95,10 +98,6 @@ class DetteFournisseur(models.Model):
 
     def __str__(self):
         return f"{self.nom_fournisseur} — {self.montant_du} GNF"
-
-
-
-from django.db import models
 
 
 class Devise(models.TextChoices):
@@ -172,14 +171,14 @@ class Decaissement(models.Model):
 
 
 class Dette(models.Model):
-    """Ce que l'agence doit à quelqu'un (personne physique, différent de
-    DetteFournisseur qui existait déjà pour les fournisseurs)."""
+    """Ce que l'agence doit à quelqu'un (personne physique)."""
 
     class ModePaiement(models.TextChoices):
         ESPECES = "especes", "Espèces"
         ORANGE_MONEY = "orange_money", "Orange Money"
         VIREMENT = "virement", "Virement bancaire"
 
+    activite = models.CharField(max_length=15, choices=CategorieDecaissement.Activite.choices, default=CategorieDecaissement.Activite.HAJJ)
     date = models.DateField()
     nom = models.CharField(max_length=100)
     prenom = models.CharField(max_length=100)
@@ -188,9 +187,13 @@ class Dette(models.Model):
     adresse = models.CharField(max_length=255, blank=True)
     telephone = models.CharField(max_length=20, blank=True)
     mode_paiement = models.CharField(max_length=20, choices=ModePaiement.choices, blank=True)
+    associe = models.ForeignKey(
+        "Associe", on_delete=models.SET_NULL, null=True, blank=True, related_name="dettes",
+        help_text="Si cette dette concerne un des associés (pour Bénéfices Individuels)"
+    )
     soldee = models.BooleanField(default=False)
     notes = models.TextField(blank=True)
-    enregistre_par = models.ForeignKey("utilisateurs.Utilisateur", on_delete=models.PROTECT, related_name="dettes_enregistrees")
+    enregistre_par = models.ForeignKey("utilisateurs.Utilisateur", on_delete=models.PROTECT, related_name="dettes_personnelles_enregistrees")
     date_creation = models.DateTimeField(auto_now_add=True)
 
     class Meta:
@@ -209,6 +212,7 @@ class Creance(models.Model):
         ORANGE_MONEY = "orange_money", "Orange Money"
         VIREMENT = "virement", "Virement bancaire"
 
+    activite = models.CharField(max_length=15, choices=CategorieDecaissement.Activite.choices, default=CategorieDecaissement.Activite.HAJJ)
     date = models.DateField()
     nom = models.CharField(max_length=100)
     prenom = models.CharField(max_length=100)
@@ -281,62 +285,6 @@ class DevisFacture(models.Model):
         return self.numero
 
 
-
-
-from django.db import migrations
-
-CATEGORIES_HAJJ = [
-    "Charges communes", "Charges particulières IBAN", "Charges particulières CONSULAT",
-    "Transports Mounazim", "Prime Mounazim", "Frais du scan des passeports pour le visa",
-    "Frais docteur", "Frais des médicaments des pèlerins", "Cotisation annuelle UNAPO",
-    "Frais DNP", "Taux d'échange", "Prime Consulat", "Frais de mouton", "Prime des Guides",
-]
-
-CATEGORIES_OUMRA = [
-    "Hôtel", "Billets", "Transport", "Visa", "Restauration",
-    "Fournisseurs", "Salaires", "Missions", "Communication",
-]
-
-CATEGORIES_PERSONNEL = [
-    "Budget de fonctionnement", "Impôt Etax", "Cotisation CNSS",
-    "Recharge box wifi", "Loyer du bureau", "Frais prélèvement annuel UBA",
-    "Badge pèlerins", "Réunion Guide-pèlerins", "Sacrifice annuel",
-    "Facture Électricité", "Facture Eau", "Étiquettes bagage",
-    "Étiquette passeport", "Écharpe pèlerin",
-]
-
-
-def creer_categories(apps, schema_editor):
-    CategorieDecaissement = apps.get_model("comptabilite", "CategorieDecaissement")
-    for i, nom in enumerate(CATEGORIES_HAJJ):
-        CategorieDecaissement.objects.get_or_create(activite="hajj", nom=nom, defaults={"ordre": i})
-    for i, nom in enumerate(CATEGORIES_OUMRA):
-        CategorieDecaissement.objects.get_or_create(activite="oumra", nom=nom, defaults={"ordre": i})
-    for i, nom in enumerate(CATEGORIES_PERSONNEL):
-        CategorieDecaissement.objects.get_or_create(activite="personnel", nom=nom, defaults={"ordre": i})
-
-
-class Migration(migrations.Migration):
-    dependencies = [("comptabilite", "0001_initial")]  # ajuste selon ta numérotation réelle
-    operations = [migrations.RunPython(creer_categories, migrations.RunPython.noop)]
-
-
-
-from django.db import migrations
-
-
-def creer_associes(apps, schema_editor):
-    Associe = apps.get_model("comptabilite", "Associe")
-    Associe.objects.get_or_create(nom_complet="N'FAMBA IBRAHIMA KABA", defaults={"pourcentage_part": 30, "ordre": 1})
-    Associe.objects.get_or_create(nom_complet="Mohamed Ahmad Diallo", defaults={"pourcentage_part": 30, "ordre": 2})
-    Associe.objects.get_or_create(nom_complet="Aboubacar Ahmad Diallo", defaults={"pourcentage_part": 30, "ordre": 3})
-    Associe.objects.get_or_create(nom_complet="La caisse", defaults={"pourcentage_part": 10, "est_caisse": True, "ordre": 4})
-
-
-class Migration(migrations.Migration):
-    dependencies = [("comptabilite", "0002_seed_categories_decaissement")]  # ajuste
-    operations = [migrations.RunPython(creer_associes, migrations.RunPython.noop)]
-
 class TauxChange(models.Model):
     taux_usd = models.DecimalField(max_digits=10, decimal_places=2, help_text="Nombre de GNF pour 1 USD")
     taux_sar = models.DecimalField(max_digits=10, decimal_places=2, help_text="Nombre de GNF pour 1 SAR")
@@ -348,6 +296,7 @@ class TauxChange(models.Model):
     def __str__(self):
         return f"1 USD = {self.taux_usd} GNF — 1 SAR = {self.taux_sar} GNF"
 
+
 class ObservationBeneficeGlobal(models.Model):
     saison = models.OneToOneField(SaisonComptable, on_delete=models.CASCADE, related_name="observation_benefice")
     texte = models.TextField(blank=True)
@@ -355,37 +304,6 @@ class ObservationBeneficeGlobal(models.Model):
 
     class Meta:
         verbose_name = "Observation Bénéfice Global"
-
-
-class Dette(models.Model):
-    class ModePaiement(models.TextChoices):
-        ESPECES = "especes", "Espèces"
-        ORANGE_MONEY = "orange_money", "Orange Money"
-        VIREMENT = "virement", "Virement bancaire"
-
-    date = models.DateField()
-    nom = models.CharField(max_length=100)
-    prenom = models.CharField(max_length=100)
-    montant = models.DecimalField(max_digits=14, decimal_places=2)
-    devise = models.CharField(max_length=3, choices=Devise.choices, default=Devise.GNF)
-    adresse = models.CharField(max_length=255, blank=True)
-    telephone = models.CharField(max_length=20, blank=True)
-    mode_paiement = models.CharField(max_length=20, choices=ModePaiement.choices, blank=True)
-    associe = models.ForeignKey(
-        "Associe", on_delete=models.SET_NULL, null=True, blank=True, related_name="dettes",
-        help_text="Si cette dette concerne un des associés (pour Bénéfices Individuels)"
-    )
-    soldee = models.BooleanField(default=False)
-    notes = models.TextField(blank=True)
-    enregistre_par = models.ForeignKey("utilisateurs.Utilisateur", on_delete=models.PROTECT, related_name="dettes_personnelles_enregistrees")
-    date_creation = models.DateTimeField(auto_now_add=True)
-
-    class Meta:
-        ordering = ["-date"]
-        verbose_name = "Dette"
-
-    def __str__(self):
-        return f"{self.prenom} {self.nom} — {self.montant} {self.devise}"
 
 
 class DepensePelerin(models.Model):
@@ -408,16 +326,17 @@ class DepensePelerin(models.Model):
         AUTRE = "autre", "Autres dépenses"
 
     pelerin = models.ForeignKey(
-    "pelerins.Pelerin",
-    on_delete=models.CASCADE,
-    related_name="depenses_individuelles",
-    null=True,
-    blank=True,
-)
+        "pelerins.Pelerin",
+        on_delete=models.CASCADE,
+        related_name="depenses_individuelles",
+        null=True,
+        blank=True,
+    )
     categorie = models.CharField(max_length=30, choices=Categorie.choices)
     libelle_complementaire = models.CharField(max_length=255, blank=True)
     montant = models.DecimalField(max_digits=14, decimal_places=2)
     devise = models.CharField(max_length=3, choices=Devise.choices, default=Devise.GNF)
+    activite = models.CharField(max_length=10, choices=[("hajj", "Hajj"), ("oumra", "Oumra")], default="hajj")
     date = models.DateField()
     enregistre_par = models.ForeignKey("utilisateurs.Utilisateur", on_delete=models.PROTECT, related_name="depenses_pelerin_enregistrees")
     date_creation = models.DateTimeField(auto_now_add=True)
@@ -428,7 +347,6 @@ class DepensePelerin(models.Model):
 
     def __str__(self):
         return f"{self.pelerin} — {self.get_categorie_display()} — {self.montant} {self.devise}"
-
 
 
 class LigneBudgetFonctionnement(models.Model):
@@ -447,5 +365,3 @@ class LigneBudgetFonctionnement(models.Model):
 
     def __str__(self):
         return f"{self.designation} — {self.date}"
-
-

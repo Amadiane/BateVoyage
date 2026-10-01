@@ -12,7 +12,7 @@ const VALEURS_INITIALES = {
   adresse: "", telephone: "", mode_paiement: "", associe: "", notes: "",
 };
 
-function PageDettePersonnelle({ basePath }) {
+function PageDettePersonnelle({ activite, basePath }) {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [dettes, setDettes] = useState([]);
@@ -39,7 +39,7 @@ function PageDettePersonnelle({ basePath }) {
 
   const charger = () => {
     setChargement(true);
-    const params = {};
+    const params = { activite };
     if (filtreSoldee !== "") params.soldee = filtreSoldee;
     decaissementService.listerDettes(params).then(({ data }) => {
       setDettes(data);
@@ -50,7 +50,7 @@ function PageDettePersonnelle({ basePath }) {
   useEffect(() => {
     charger();
     decaissementService.listerAssocies().then(({ data }) => setAssocies(data));
-  }, [filtreSoldee]);
+  }, [filtreSoldee, activite]);
 
   const ouvrirNouveau = () => {
     setDetteAModifier(null);
@@ -80,7 +80,7 @@ function PageDettePersonnelle({ basePath }) {
     }
     setEnvoi(true);
     try {
-      const donnees = { ...valeurs };
+      const donnees = { ...valeurs, activite };
       if (!donnees.associe) delete donnees.associe;
       if (detteAModifier) {
         await decaissementService.modifierDette(detteAModifier.id, donnees);

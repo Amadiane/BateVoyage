@@ -12,7 +12,7 @@ const VALEURS_INITIALES = {
   adresse: "", telephone: "", mode_paiement: "", notes: "",
 };
 
-function PageCreance({ basePath }) {
+function PageCreance({ activite, basePath }) {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [creances, setCreances] = useState([]);
@@ -37,7 +37,7 @@ function PageCreance({ basePath }) {
 
   const charger = () => {
     setChargement(true);
-    const params = {};
+    const params = { activite };
     if (filtreSoldee !== "") params.soldee = filtreSoldee;
     decaissementService.listerCreances(params).then(({ data }) => {
       setCreances(data);
@@ -45,7 +45,7 @@ function PageCreance({ basePath }) {
     });
   };
 
-  useEffect(() => { charger(); }, [filtreSoldee]);
+  useEffect(() => { charger(); }, [filtreSoldee, activite]);
 
   const ouvrirNouveau = () => {
     setCreanceAModifier(null);
@@ -74,10 +74,11 @@ function PageCreance({ basePath }) {
     }
     setEnvoi(true);
     try {
+      const donnees = { ...valeurs, activite };
       if (creanceAModifier) {
-        await decaissementService.modifierCreance(creanceAModifier.id, valeurs);
+        await decaissementService.modifierCreance(creanceAModifier.id, donnees);
       } else {
-        await decaissementService.creerCreance(valeurs);
+        await decaissementService.creerCreance(donnees);
       }
       setModalOuverte(false);
       charger();
