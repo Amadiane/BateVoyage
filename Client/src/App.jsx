@@ -96,10 +96,10 @@ function App() {
           <Route path="/hajj/finances/encaissement" element={<PageEncaissement activite="hajj" basePath="/hajj" />} />
           <Route path="/hajj/finances/frais-personnels" element={<PageDecaissementDetail activite="personnel" basePath="/hajj" />} />
           <Route path="/hajj/finances/benefice-global" element={<PageBeneficeGlobal activite="hajj" basePath="/hajj" />} />
-          <Route path="/hajj/finances/dette" element={<PageDettePersonnelle basePath="/hajj" />} />
+          <Route path="/hajj/finances/dette" element={<PageDettePersonnelle activite="hajj" basePath="/hajj" />} />
           <Route path="/hajj/finances/benefice-individuel" element={<PageBeneficeIndividuel activite="hajj" basePath="/hajj" />} />
-          <Route path="/hajj/finances/benefice-pelerin" element={<PageBeneficePelerin basePath="/hajj" />} />
-          <Route path="/hajj/finances/creance" element={<PageCreance basePath="/hajj" />} />
+          <Route path="/hajj/finances/benefice-pelerin" element={<PageBeneficePelerin activite="hajj" basePath="/hajj" />} />
+          <Route path="/hajj/finances/creance" element={<PageCreance activite="hajj" basePath="/hajj" />} />
           <Route path="/hajj/finances/devis-facture" element={<PageDevisFacture activite="hajj" basePath="/hajj" />} />
           <Route path="/hajj/finances/budget-fonctionnement" element={<PageBudgetFonctionnement activite="hajj" basePath="/hajj" />} />
 
@@ -124,10 +124,10 @@ function App() {
           <Route path="/oumra/finances/encaissement" element={<PageEncaissement activite="oumra" basePath="/oumra" />} />
           <Route path="/oumra/finances/frais-personnels" element={<PageDecaissementDetail activite="personnel" basePath="/oumra" />} />
           <Route path="/oumra/finances/benefice-global" element={<PageBeneficeGlobal activite="oumra" basePath="/oumra" />} />
-          <Route path="/oumra/finances/dette" element={<PageDettePersonnelle basePath="/oumra" />} />
+          <Route path="/oumra/finances/dette" element={<PageDettePersonnelle activite="oumra" basePath="/oumra" />} />
           <Route path="/oumra/finances/benefice-individuel" element={<PageBeneficeIndividuel activite="oumra" basePath="/oumra" />} />
-          <Route path="/oumra/finances/benefice-pelerin" element={<PageBeneficePelerin basePath="/oumra" />} />
-          <Route path="/oumra/finances/creance" element={<PageCreance basePath="/oumra" />} />
+          <Route path="/oumra/finances/benefice-pelerin" element={<PageBeneficePelerin activite="oumra" basePath="/oumra" />} />
+          <Route path="/oumra/finances/creance" element={<PageCreance activite="oumra" basePath="/oumra" />} />
           <Route path="/oumra/finances/devis-facture" element={<PageDevisFacture activite="oumra" basePath="/oumra" />} />
           <Route path="/oumra/finances/budget-fonctionnement" element={<PageBudgetFonctionnement activite="oumra" basePath="/oumra" />} />
 

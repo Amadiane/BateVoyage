@@ -447,7 +447,7 @@ class DepensePelerinViewSet(viewsets.ModelViewSet):
     queryset = DepensePelerin.objects.select_related("pelerin").all()
     serializer_class = DepensePelerinSerializer
     permission_classes = [EstGestionnaireFinancier]
-    filterset_fields = ["pelerin", "categorie"]
+    filterset_fields = ["pelerin", "categorie", "activite"]
 
     def perform_create(self, serializer):
         with set_actor(self.request.user):
@@ -498,7 +498,7 @@ class CreanceViewSet(viewsets.ModelViewSet):
     filterset_fields = ["soldee", "devise", "activite"]
     search_fields = ["nom", "prenom"]
     
-    
+
     def perform_create(self, serializer):
         with set_actor(self.request.user):
             serializer.save(enregistre_par=self.request.user)
