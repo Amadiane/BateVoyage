@@ -29,7 +29,7 @@ const VALEURS_INITIALES = {
   date: new Date().toISOString().slice(0, 10),
 };
 
-function PageBeneficePelerin({ basePath }) {
+function PageBeneficePelerin({ activite, basePath }) {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [depenses, setDepenses] = useState([]);
@@ -44,13 +44,13 @@ function PageBeneficePelerin({ basePath }) {
 
   const charger = () => {
     setChargement(true);
-    decaissementService.listerDepensesPelerin().then(({ data }) => {
+    decaissementService.listerDepensesPelerin({ activite }).then(({ data }) => {
       setDepenses(data);
       setChargement(false);
     });
   };
 
-  useEffect(() => { charger(); }, []);
+  useEffect(() => { charger(); }, [activite]);
 
   const ouvrirNouveau = () => {
     setDepenseAModifier(null);
@@ -79,10 +79,11 @@ function PageBeneficePelerin({ basePath }) {
     setErreur("");
     setEnvoi(true);
     try {
+      const donnees = { ...valeurs, activite };
       if (depenseAModifier) {
-        await decaissementService.modifierDepensePelerin(depenseAModifier.id, valeurs);
+        await decaissementService.modifierDepensePelerin(depenseAModifier.id, donnees);
       } else {
-        await decaissementService.creerDepensePelerin(valeurs);
+        await decaissementService.creerDepensePelerin(donnees);
       }
       setModalOuverte(false);
       charger();
