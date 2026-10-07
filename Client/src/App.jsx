@@ -46,6 +46,7 @@ import PageBeneficePelerin from "./pages/comptabilite/PageBeneficePelerin";
 import PageCreance from "./pages/comptabilite/PageCreance";
 import PageDevisFacture from "./pages/comptabilite/PageDevisFacture";
 import PageBudgetFonctionnement from "./pages/comptabilite/PageBudgetFonctionnement";
+import PageProgrammesOumra from "./pages/moduleVoyage/PageProgrammesOumra";
 
 
 import "./globals.css";
@@ -129,7 +130,8 @@ function App() {
           <Route path="/oumra/finances/benefice-pelerin" element={<PageBeneficePelerin activite="oumra" basePath="/oumra" />} />
           <Route path="/oumra/finances/creance" element={<PageCreance activite="oumra" basePath="/oumra" />} />
           <Route path="/oumra/finances/devis-facture" element={<PageDevisFacture activite="oumra" basePath="/oumra" />} />
-          <Route path="/oumra/finances/budget-fonctionnement" element={<PageBudgetFonctionnement activite="oumra" basePath="/oumra" />} />
+          <Route path="/oumra/programmes" element={<PageProgrammesOumra basePath="/oumra" />} />
+          {/* <Route path="/oumra/finances/budget-fonctionnement" element={<PageBudgetFonctionnement activite="oumra" basePath="/oumra" />} /> */}
 
           {/* Documents (conformité dossiers) */}
           <Route path="/documents" element={<PageDocuments />} />

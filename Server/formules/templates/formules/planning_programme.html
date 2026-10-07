@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  @page { size: A4; margin: 1.5cm; }
+  body { font-family: Helvetica, Arial, sans-serif; font-size: 11px; color: #10151F; }
+  h1 { font-size: 20px; color: #163E85; margin: 0; }
+  h2 { font-size: 14px; color: #163E85; margin: 14px 0 4px 0; }
+  h3 { font-size: 12px; margin: 12px 0 4px 0; background-color: #EEF2FB; padding: 4px 6px; }
+  .sous-titre { color: #555; margin: 2px 0 10px 0; }
+  table { width: 100%; border-collapse: collapse; margin-bottom: 6px; }
+  th { background-color: #163E85; color: #fff; text-align: left; padding: 4px 6px; font-size: 10px; }
+  td { border-bottom: 1px solid #D5DAE5; padding: 4px 6px; vertical-align: top; }
+  .pied { margin-top: 18px; font-size: 9px; color: #777; text-align: center; }
+</style>
+</head>
+<body>
+  <h1>BATE VOYAGE GUINÉE</h1>
+  <p class="sous-titre">
+    Programme : <strong>{{ p.nom }}</strong>{% if p.reference %} — Réf. {{ p.reference }}{% endif %}<br>
+    Départ : {{ p.date_depart|date:"d/m/Y" }} — Retour : {{ p.date_retour|date:"d/m/Y" }}
+    ({{ p.duree_jours }} jours / {{ p.duree_nuits }} nuits)
+    {% if p.responsable %}<br>Responsable : {{ p.responsable }}{% endif %}
+  </p>
+
+  {% if sejours %}
+  <h2>Hébergement</h2>
+  <table>
+    <tr><th>Ville</th><th>Hôtel</th><th>Arrivée</th><th>Départ</th><th>Nuits</th></tr>
+    {% for s in sejours %}
+    <tr>
+      <td>{{ s.get_ville_display }}</td>
+      <td>{{ s.hotel_nom }}{% if s.hotel_adresse %}<br>{{ s.hotel_adresse }}{% endif %}</td>
+      <td>{{ s.date_arrivee|date:"d/m/Y" }}</td>
+      <td>{{ s.date_depart|date:"d/m/Y" }}</td>
+      <td>{{ s.nombre_nuits|default_if_none:"" }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+  {% endif %}
+
+  <h2>Planning journalier</h2>
+  {% regroup planning by date as jours %}
+  {% for jour in jours %}
+    <h3>{{ jour.grouper|date:"l d F Y" }}</h3>
+    <table>
+      <tr><th style="width:12%">Heure</th><th style="width:16%">Ville</th><th>Activité</th><th style="width:22%">Lieu</th><th style="width:18%">Responsable</th></tr>
+      {% for a in jour.list %}
+      <tr>
+        <td>{{ a.heure|time:"H:i" }}</td>
+        <td>{{ a.ville }}</td>
+        <td>{{ a.activite }}</td>
+        <td>{{ a.lieu }}</td>
+        <td>{{ a.responsable }}</td>
+      </tr>
+      {% endfor %}
+    </table>
+  {% empty %}
+    <p>Aucune activité planifiée.</p>
+  {% endfor %}
+
+  <p class="pied">BATE VOYAGE GUINÉE — Guinée, Conakry — Matoto marché — Tél. 620-116-076 / 622-656-040</p>
+</body>
+</html>

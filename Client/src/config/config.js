@@ -119,6 +119,8 @@ const CONFIG = {
   API_BENEFICE_INDIVIDUEL_SYNTHESE: `${BASE_URL}/api/comptabilite/benefice-individuel/synthese/`,
   API_BENEFICE_INDIVIDUEL_PDF: `${BASE_URL}/api/comptabilite/benefice-individuel/pdf/`,
 
+  API_PROGRAMME_DETAIL: (id) => `${BASE_URL}/api/formules/programmes/${id}/`,
+
   // --- Formules / Programmes ---
   API_PROGRAMMES: `${BASE_URL}/api/formules/programmes/`,
 

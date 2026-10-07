@@ -17,7 +17,7 @@ const AGENCES_PARTENAIRES = [
   "WARASSIMASSA",
 ];
 
-const INSCRIPTEURS = [
+const INSCRIPTEURS_HAJJ = [
   "Nfamba Kaba",
   "Laye Mady Diallo",
   "Laye Abou Diallo",
@@ -26,6 +26,15 @@ const INSCRIPTEURS = [
   "Boh Kabinet",
   "Hadja Fatou Diallo",
   "Hadja Fanta Oulen",
+];
+
+const INSCRIPTEURS_OUMRA = [
+  "Mohamed Ahmed Diallo",
+  "Aboubacar Diallo",
+  "N'famba Ibrahima kaba",
+  "Sekou N'bah koita",
+  "Souleymane Sacko",
+  "Minata Mady kaba",
 ];
 
 const LABELS_TYPE_VOYAGE = {
@@ -190,6 +199,11 @@ function FormulairePelerin() {
   };
 
   const estManquant = (champ) => champsManquants.includes(champ);
+
+  // Liste des inscripteurs selon le type de voyage : Oumra a sa propre liste,
+  // Hajj (et tout autre type) garde la liste d'origine.
+  const typeVoyageActif = typeVoyageFixe || valeurs.type_voyage;
+  const listeInscripteurs = typeVoyageActif === "oumra" ? INSCRIPTEURS_OUMRA : INSCRIPTEURS_HAJJ;
 
   if (chargementInitial) {
     return <p className={styles.chargement}>{t("chargement")}</p>;
@@ -401,7 +415,7 @@ function FormulairePelerin() {
               <Champ label={t("inscripteur")} manquant={estManquant("inscripteur")}>
                 <select value={valeurs.inscripteur} onChange={(e) => majChamp("inscripteur", e.target.value)}>
                   <option value="">—</option>
-                  {INSCRIPTEURS.map((nom) => (
+                  {listeInscripteurs.map((nom) => (
                     <option key={nom} value={nom}>{nom}</option>
                   ))}
                 </select>

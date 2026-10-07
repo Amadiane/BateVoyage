@@ -116,7 +116,19 @@ class Pelerin(models.Model):
         HADJA_FATOU_DIALLO = "Hadja Fatou Diallo", "Hadja Fatou Diallo"
         HADJA_FANTA_OULEN = "Hadja Fanta Oulen", "Hadja Fanta Oulen"
 
-    inscripteur = models.CharField(max_length=50, choices=Inscripteur.choices, blank=True)
+    class InscripteurOumra(models.TextChoices):
+        MOHAMED_AHMED_DIALLO = "Mohamed Ahmed Diallo", "Mohamed Ahmed Diallo"
+        ABOUBACAR_DIALLO = "Aboubacar Diallo", "Aboubacar Diallo"
+        NFAMBA_IBRAHIMA_KABA = "N'famba Ibrahima kaba", "N'famba Ibrahima kaba"
+        SEKOU_NBAH_KOITA = "Sekou N'bah koita", "Sekou N'bah koita"
+        SOULEYMANE_SACKO = "Souleymane Sacko", "Souleymane Sacko"
+        MINATA_MADY_KABA = "Minata Mady kaba", "Minata Mady kaba"
+
+    inscripteur = models.CharField(
+        max_length=50,
+        choices=Inscripteur.choices + InscripteurOumra.choices,
+        blank=True,
+    )
 
     # ---------- 15. Correspondant (= téléphone d'urgence) ----------
     nom_correspondant = models.CharField(max_length=150)

@@ -1,13 +1,3 @@
-from rest_framework import viewsets, permissions
-from rest_framework.decorators import action
-from rest_framework.response import Response
-from auditlog.context import set_actor
-from utilisateurs.permissions import EstGestionnaireFinancier
-from .models import Programme
-from .serializers import ProgrammeSerializer
-from .models import Programme, Forfait
-from .serializers import ProgrammeSerializer, ForfaitSerializer
-
 from django.http import HttpResponse
 from django.template.loader import render_to_string
 from rest_framework import viewsets
@@ -25,7 +15,14 @@ class ProgrammeViewSet(viewsets.ModelViewSet):
     queryset = Programme.objects.all().order_by("-annee", "-date_depart")
     serializer_class = ProgrammeSerializer
     permission_classes = [EstGestionnaireFinancier]
-    filterset_fields = ["type_programme", "annee", "est_archive"]
+    filterset_fields = ["type_programme", "annee", "est_archive", "statut"]
+
+    def get_queryset(self):
+        qs = super().get_queryset().prefetch_related("sejours", "transports", "planning")
+        # ?famille=oumra → tous les types Oumra (classique, Ramadan, spéciale)
+        if self.request.query_params.get("famille") == "oumra":
+            qs = qs.filter(type_programme__startswith="oumra")
+        return qs
 
     def perform_create(self, serializer):
         with set_actor(self.request.user):
@@ -56,11 +53,24 @@ class ProgrammeViewSet(viewsets.ModelViewSet):
             Pelerin.objects.filter(id=pelerin_id, programme_id=pk).update(programme=None)
         return Response({"detail": "Pèlerin retiré de cette activité."})
 
+    @action(detail=True, methods=["get"], url_path="planning-pdf")
+    def planning_pdf(self, request, pk=None):
+        programme = self.get_object()
+        if not programme.planning_valide:
+            return Response({"erreur": "Le planning doit être validé avant l'export."}, status=400)
 
+        html = render_to_string(
+            "formules/planning_programme.html",
+            {"p": programme, "planning": programme.planning.all(), "sejours": programme.sejours.all()},
+        )
+        response = HttpResponse(content_type="application/pdf")
+        nom_fichier = programme.reference or f"programme_{programme.pk}"
+        response["Content-Disposition"] = f'attachment; filename="planning_{nom_fichier}.pdf"'
 
-from django.template.loader import render_to_string
-from xhtml2pdf import pisa
-from pelerins.pdf_utils import link_callback
+        resultat = pisa.CreatePDF(html, dest=response, link_callback=link_callback)
+        if resultat.err:
+            return Response({"erreur": "Échec de la génération du PDF."}, status=500)
+        return response
 
 
 class ForfaitViewSet(viewsets.ModelViewSet):

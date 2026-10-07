@@ -112,9 +112,16 @@ function PageForfaitsModule({ typeVoyage, basePath }) {
 
       <div className={styles.entete}>
         <h1 className={styles.titre}>{t("sous_module_forfaits")}</h1>
-        <button className={styles.boutonPrincipal} onClick={ouvrirNouveau}>
-          <Plus size={16} /> {t("nouveau_forfait")}
-        </button>
+        <div style={{ display: "flex", gap: 10 }}>
+          {typeVoyage === "oumra" && (
+            <button className={styles.boutonSecondaire} onClick={() => navigate(`${basePath}/programmes?nouveau=1`)}>
+              <Plus size={16} /> {t("nouveau_programme", "Nouveau programme")}
+            </button>
+          )}
+          <button className={styles.boutonPrincipal} onClick={ouvrirNouveau}>
+            <Plus size={16} /> {t("nouveau_forfait")}
+          </button>
+        </div>
       </div>
 
       <div className={styles.grilleCartes}>
