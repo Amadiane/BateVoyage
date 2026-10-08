@@ -49,7 +49,7 @@ function PageDettePersonnelle({ activite, basePath }) {
 
   useEffect(() => {
     charger();
-    decaissementService.listerAssocies().then(({ data }) => setAssocies(data));
+    decaissementService.listerAssocies({ activite }).then(({ data }) => setAssocies(data));
   }, [filtreSoldee, activite]);
 
   const ouvrirNouveau = () => {

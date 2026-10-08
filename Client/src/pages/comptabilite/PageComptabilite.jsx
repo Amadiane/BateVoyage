@@ -34,6 +34,7 @@ const BOUTONS = [
     couleur: "#2B6CE0",
     couleurFoncee: "#163E85",
     taille: "normal",
+    masquerPour: ["/oumra"],
   },
   {
     cle: "benefice-individuel",
@@ -92,6 +93,10 @@ function PageComptabilite({ basePath }) {
   const { t } = useTranslation();
   const navigate = useNavigate();
 
+  // Certaines tuiles sont masquées pour un module précis (ex : Budget de
+  // fonctionnement n'existe plus côté Oumra).
+  const boutonsVisibles = BOUTONS.filter((b) => !(b.masquerPour || []).includes(basePath));
+
   return (
     <div className={styles.page}>
       {basePath && (
@@ -102,7 +107,7 @@ function PageComptabilite({ basePath }) {
       <p className={styles.sousTitre}>{t("comptabilite_description")}</p>
 
       <div className={styles.bento}>
-        {BOUTONS.map((b) => {
+        {boutonsVisibles.map((b) => {
           const Icone = b.icone;
           const pleine = b.taille === "grand" || b.taille === "large";
           return (

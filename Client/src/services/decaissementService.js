@@ -50,4 +50,6 @@ export const decaissementService = {
 
   obtenirSyntheseBenefices: (activite, saison) => api.get(CONFIG.API_BENEFICE_INDIVIDUEL_SYNTHESE, { params: { activite, saison } }),
   urlSynthesePdf: (activite, saison) => `${CONFIG.API_BENEFICE_INDIVIDUEL_PDF}?activite=${activite}&saison=${saison}`,
+
+  listerAssocies: (params) => api.get(CONFIG.API_ASSOCIES, { params }),
 };

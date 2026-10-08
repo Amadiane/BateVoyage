@@ -3,7 +3,7 @@ from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from django.db.models import Sum
+from django.db.models import Sum, Count
 from auditlog.context import set_actor
 from django.contrib.contenttypes.models import ContentType
 from auditlog.models import LogEntry
@@ -358,7 +358,7 @@ class AssocieViewSet(viewsets.ModelViewSet):
     queryset = Associe.objects.all()
     serializer_class = AssocieSerializer
     permission_classes = [EstGestionnaireFinancier]
-
+    filterset_fields = ["activite"]
 
 class BeneficeIndividuelView(APIView):
     permission_classes = [EstGestionnaireFinancier]
@@ -401,18 +401,40 @@ class BeneficeIndividuelView(APIView):
         def convertir(montant_gnf):
             return convertir_depuis_gnf(montant_gnf, taux)
 
-        associes = Associe.objects.all().order_by("ordre")
+        est_oumra = activite == "oumra"
+        associes = list(Associe.objects.filter(activite="oumra" if est_oumra else "hajj").order_by("ordre"))
+
+        # Oumra : la part de chaque inscripteur dépend du nombre de pèlerins qu'il a inscrits.
+        compteurs, total_inscrits, non_attribues = {}, 0, 0
+        if est_oumra:
+            from pelerins.models import Pelerin
+            noms = [a.nom_complet for a in associes]
+            compteurs = dict(
+                Pelerin.objects.filter(type_voyage="oumra", inscripteur__in=noms)
+                .order_by().values_list("inscripteur").annotate(n=Count("id"))
+            )
+            total_inscrits = sum(compteurs.values())
+            non_attribues = Pelerin.objects.filter(type_voyage="oumra").exclude(inscripteur__in=noms).count()
+
         resultats = []
         for a in associes:
-            part_benefice_gnf = benefice_reel * (float(a.pourcentage_part) / 100)
+            if est_oumra:
+                nb = compteurs.get(a.nom_complet, 0)
+                pourcentage = (nb / total_inscrits * 100) if total_inscrits else 0.0
+                libelle_part = f"Part du Bénéfice global ({nb} pèlerin(s) inscrit(s) sur {total_inscrits} — {pourcentage:.1f}%)"
+            else:
+                pourcentage = float(a.pourcentage_part)
+                libelle_part = f"{a.pourcentage_part}% du Bénéfice global"
+
+            part_benefice_gnf = benefice_reel * (pourcentage / 100)
 
             if a.est_caisse:
                 resultats.append({
                     "associe_id": a.id,
                     "nom": a.nom_complet,
-                    "pourcentage": float(a.pourcentage_part),
+                    "pourcentage": pourcentage,
                     "lignes": [
-                        {"designation": f"{a.pourcentage_part}% du Bénéfice global", "valeurs": convertir(part_benefice_gnf)},
+                        {"designation": libelle_part, "valeurs": convertir(part_benefice_gnf)},
                     ],
                 })
                 continue
@@ -428,9 +450,9 @@ class BeneficeIndividuelView(APIView):
             resultats.append({
                 "associe_id": a.id,
                 "nom": a.nom_complet,
-                "pourcentage": float(a.pourcentage_part),
+                "pourcentage": pourcentage,
                 "lignes": [
-                    {"designation": f"{a.pourcentage_part}% du Bénéfice global", "valeurs": convertir(part_benefice_gnf)},
+                    {"designation": libelle_part, "valeurs": convertir(part_benefice_gnf)},
                     {"designation": "Total de ses dettes", "valeurs": convertir(total_dettes_associe_gnf)},
                     {"designation": "Différence entre Dette et Bénéfice", "valeurs": convertir(difference_dette_benefice)},
                     {"designation": "Bénéfice net individuel", "valeurs": convertir(benefice_net_individuel)},
@@ -440,8 +462,10 @@ class BeneficeIndividuelView(APIView):
         return Response({
             "benefice_reel_global": convertir(benefice_reel),
             "associes": resultats,
+            "mode_repartition": "inscripteurs" if est_oumra else "pourcentages_fixes",
+            "total_pelerins_inscrits": total_inscrits,
+            "pelerins_non_attribues": non_attribues,
         })
-
 
 class DepensePelerinViewSet(viewsets.ModelViewSet):
     queryset = DepensePelerin.objects.select_related("pelerin").all()

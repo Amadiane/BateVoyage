@@ -235,9 +235,10 @@ class Creance(models.Model):
 
 
 class Associe(models.Model):
-    """Les 3 associés + la caisse, pour la répartition des bénéfices individuels."""
+    """Les associés (Hajj) ou les inscripteurs (Oumra), pour la répartition des bénéfices individuels."""
+    activite = models.CharField(max_length=10, choices=[("hajj", "Hajj"), ("oumra", "Oumra")], default="hajj")
     nom_complet = models.CharField(max_length=150)
-    pourcentage_part = models.DecimalField(max_digits=5, decimal_places=2, help_text="Ex: 30.00 pour 30%")
+    pourcentage_part = models.DecimalField(max_digits=5, decimal_places=2, help_text="Ex: 30.00 pour 30%. Ignoré pour Oumra (calculé selon les inscriptions)")
     est_caisse = models.BooleanField(default=False, help_text="Coché uniquement pour 'La caisse'")
     ordre = models.PositiveIntegerField(default=0)
 
@@ -247,7 +248,6 @@ class Associe(models.Model):
 
     def __str__(self):
         return f"{self.nom_complet} ({self.pourcentage_part}%)"
-
 
 class DevisFacture(models.Model):
     class TypeDocument(models.TextChoices):
