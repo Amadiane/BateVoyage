@@ -245,7 +245,7 @@ function PageBeneficePelerin({ activite, basePath }) {
 
       <div className={styles.entete}>
         <h2 className={styles.titre}>{t("benefice_pelerin")}</h2>
-        <div style={{ display: "flex", gap: 10 }}>
+        <div className={styles.actions}>
           <BoutonExporter
             titre={t("benefice_pelerin", "Bénéfice par Pèlerin")}
             colonnes={colonnesExport}
@@ -258,13 +258,13 @@ function PageBeneficePelerin({ activite, basePath }) {
       </div>
 
       {estOumra && (
-        <div className={styles.conteneurRecap} style={{ padding: 12, marginBottom: 14 }}>
-          <div style={{ display: "flex", gap: 12, alignItems: "flex-end", flexWrap: "wrap" }}>
-            <div className={styles.champ} style={{ minWidth: 160 }}>
+        <div className={`${styles.conteneurRecap} ${styles.tauxBloc}`}>
+          <div className={styles.tauxLigne}>
+            <div className={`${styles.champ} ${styles.tauxChamp}`}>
               <label>{t("taux_usd", "1 USD = ... GNF")}</label>
               <input type="number" step="0.01" min="0" value={tauxUsd} onChange={(e) => setTauxUsd(e.target.value)} />
             </div>
-            <div className={styles.champ} style={{ minWidth: 160 }}>
+            <div className={`${styles.champ} ${styles.tauxChamp}`}>
               <label>{t("taux_sar", "1 SAR = ... GNF")}</label>
               <input type="number" step="0.01" min="0" value={tauxSar} onChange={(e) => setTauxSar(e.target.value)} />
             </div>
@@ -327,7 +327,7 @@ function PageBeneficePelerin({ activite, basePath }) {
 
       {historiqueOuvert && (
         <div className={styles.conteneurTableau}>
-          <table className={styles.tableau}>
+          <table className={`${styles.tableau} ${styles.tableHistorique}`}>
             <thead>
               <tr>
                 <th>{t("date")}</th>
@@ -340,9 +340,9 @@ function PageBeneficePelerin({ activite, basePath }) {
               {depenses.length === 0 && <tr><td colSpan={4} className={styles.etatVide}>{t("aucun_resultat")}</td></tr>}
               {depenses.map((d) => (
                 <tr key={d.id}>
-                  <td>{d.date}</td>
-                  <td>{libelleDepense(d)}</td>
-                  <td className={`${styles.cellMontant} ${styles[CLASSE_MONTANT[d.devise]] || ""}`}>
+                  <td data-label={t("date")}>{d.date}</td>
+                  <td data-label={t("categorie")}>{libelleDepense(d)}</td>
+                  <td data-label={t("montant")} className={`${styles.cellMontant} ${styles[CLASSE_MONTANT[d.devise]] || ""}`}>
                     {fmt(d.montant)} {d.devise}
                   </td>
                   <td className={styles.cellActions}>

@@ -485,3 +485,62 @@
 .chevronOuvert {
   transform: rotate(180deg);
 }
+
+/* ===== Responsive (à ajouter à la fin de PageBeneficePelerin.module.css) ===== */
+.actions { display: flex; gap: 10px; }
+
+.tauxBloc { padding: 12px; }
+.tauxLigne { display: grid; grid-template-columns: 1fr 1fr auto; gap: 12px; align-items: end; }
+.tauxChamp { min-width: 0; }
+.tauxChamp input { width: 100%; box-sizing: border-box; }
+
+/* Tablette et mobile : l'historique devient une liste de cartes */
+@media (max-width: 899px) {
+  .tableHistorique { min-width: 0; }
+  .tableHistorique,
+  .tableHistorique tbody { display: block; width: 100%; }
+  .tableHistorique thead { display: none; }
+  .tableHistorique tbody tr,
+  .tableHistorique tbody tr:nth-child(even) {
+    display: block;
+    margin: 10px;
+    padding: 10px 12px;
+    border: 1px solid #ECE7DA;
+    border-radius: 10px;
+    background: #fff;
+  }
+  .tableHistorique td {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 4px 0;
+    text-align: right;
+  }
+  .tableHistorique td[data-label]::before {
+    content: attr(data-label);
+    font-weight: 700;
+    color: #6B7280;
+    text-align: left;
+    flex-shrink: 0;
+  }
+  .tableHistorique td[colspan] { display: block; text-align: center; }
+}
+
+/* Mobile */
+@media (max-width: 640px) {
+  .entete { align-items: stretch; }
+  .actions { flex-direction: column; width: 100%; }
+  .actions > * { width: 100%; justify-content: center; box-sizing: border-box; }
+
+  .tauxLigne { grid-template-columns: 1fr; }
+  .tauxLigne button { width: 100%; }
+
+  .tableauRecap { min-width: 440px; }
+  .tableauRecap td, .tableauRecap thead th { padding: 9px 10px; font-size: 12.5px; }
+
+  .superposition { align-items: flex-end; padding: 0; }
+  .panneau { max-width: 100%; max-height: 92vh; border-radius: 16px 16px 0 0; }
+  .formulaire { padding: 16px; }
+  .navigationModal { flex-direction: column-reverse; }
+  .navigationModal button { width: 100%; }
+}
