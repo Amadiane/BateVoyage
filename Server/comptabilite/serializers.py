@@ -118,12 +118,22 @@ class DepensePelerinSerializer(serializers.ModelSerializer):
     class Meta:
         model = DepensePelerin
         fields = "__all__"
-        read_only_fields = ["enregistre_par", "date_creation"]
+        extra_kwargs = {
+            "categorie": {"required": False, "allow_blank": True},
+            "libelle_complementaire": {"required": False, "allow_blank": True},
+            "enregistre_par": {"read_only": True},
+        }
 
     def get_pelerin_nom(self, obj):
         if obj.pelerin_id:
             return f"{obj.pelerin.prenom} {obj.pelerin.nom}"
         return None
+
+    def create(self, validated_data):
+        request = self.context.get("request")
+        if request and request.user.is_authenticated:
+            validated_data["enregistre_par"] = request.user
+        return super().create(validated_data)
 
 class CreanceSerializer(serializers.ModelSerializer):
     enregistre_par_nom = serializers.SerializerMethodField()

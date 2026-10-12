@@ -332,7 +332,8 @@ class DepensePelerin(models.Model):
         null=True,
         blank=True,
     )
-    categorie = models.CharField(max_length=30, choices=Categorie.choices)
+    # categorie = models.CharField(max_length=30, choices=Categorie.choices)
+    categorie = models.CharField(max_length=30, choices=Categorie.choices, blank=True, default="")
     libelle_complementaire = models.CharField(max_length=255, blank=True)
     montant = models.DecimalField(max_digits=14, decimal_places=2)
     devise = models.CharField(max_length=3, choices=Devise.choices, default=Devise.GNF)
