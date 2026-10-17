@@ -55,12 +55,11 @@ const VALEURS_INITIALES = {
 
 const CHAMPS_FICHIERS = ["photo", "scan_passeport", "scan_visa", "scan_certificat_medical", "scan_recu_versement"];
 
-const CHAMPS_REQUIS_PAR_ETAPE = {
-  0: ["prenom", "nom", "sexe", "date_naissance", "lieu_naissance",
-      "numero_passeport", "date_emission_passeport", "date_expiration_passeport"],
-  1: ["commune", "quartier", "telephone", "nom_correspondant", "telephone_correspondant"],
-  2: ["inscripteur"],
-};
+// Tous les champs sont facultatifs (demande du client) : plus aucune validation bloquante.
+const CHAMPS_REQUIS_PAR_ETAPE = { 0: [], 1: [], 2: [] };
+
+// Champs qui ne doivent jamais être envoyés vides (valeur par défaut côté serveur).
+const CHAMPS_JAMAIS_VIDES = ["statut_visa", "type_voyage"];
 
 function FormulairePelerin() {
   const { t } = useTranslation();
@@ -164,6 +163,9 @@ function FormulairePelerin() {
         }
         if (val !== null && val !== undefined && val !== "") {
           formData.append(champ, val);
+        } else if (modeEdition && !CHAMPS_JAMAIS_VIDES.includes(champ)) {
+          // En modification, un champ vidé doit être effacé côté serveur.
+          formData.append(champ, "");
         }
       });
 
