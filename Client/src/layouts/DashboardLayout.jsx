@@ -3,12 +3,15 @@ import { Outlet } from "react-router-dom";
 import { Menu, X } from "lucide-react";
 import Sidebar from "../components/Sidebar/Sidebar";
 import styles from "../theme/layouts/DashboardLayout.module.css";
+import DeconnexionInactivite from "../components/DeconnexionInactivite/DeconnexionInactivite";
 
 function DashboardLayout() {
   const [sidebarOuverte, setSidebarOuverte] = useState(false);
 
   return (
     <div className={styles.conteneur}>
+      <DeconnexionInactivite />
+
       <button className={styles.boutonMenuMobile} onClick={() => setSidebarOuverte(true)}>
         <Menu size={20} />
       </button>
