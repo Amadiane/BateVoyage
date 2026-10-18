@@ -59,9 +59,9 @@ class Pelerin(models.Model):
     numero_id = models.CharField(max_length=20, unique=True, editable=False)
 
     # ---------- 2-4. Identité ----------
-    prenom = models.CharField(max_length=100)
-    nom = models.CharField(max_length=100)
-    sexe = models.CharField(max_length=1, choices=Sexe.choices)
+    prenom = models.CharField(max_length=100, blank=True, default="")
+    nom = models.CharField(max_length=100, blank=True, default="")
+    sexe = models.CharField(max_length=1, choices=Sexe.choices, blank=True, default="")
     check_in_effectue = models.BooleanField(default=False)
     campement = models.ForeignKey(
         "hebergement.Campement", on_delete=models.SET_NULL, null=True, blank=True, related_name="pelerins"
@@ -71,9 +71,9 @@ class Pelerin(models.Model):
     )
 
     # ---------- 5,8,9. Passeport ----------
-    numero_passeport = models.CharField(max_length=30)
-    date_emission_passeport = models.DateField()
-    date_expiration_passeport = models.DateField()
+    numero_passeport = models.CharField(max_length=30, blank=True, default="")
+    date_emission_passeport = models.DateField(null=True, blank=True)
+    date_expiration_passeport = models.DateField(null=True, blank=True)
     scan_passeport = models.FileField(
         upload_to="pelerins/passeports/", storage=RawMediaCloudinaryStorage(),
         blank=True, null=True
@@ -86,12 +86,12 @@ class Pelerin(models.Model):
     statut_visa = models.CharField(max_length=20, choices=StatutVisa.choices, default=StatutVisa.NON_DEMANDE)
 
     # ---------- 6-7. Naissance ----------
-    date_naissance = models.DateField()
-    lieu_naissance = models.CharField(max_length=150)
+    date_naissance = models.DateField(null=True, blank=True)
+    lieu_naissance = models.CharField(max_length=150, blank=True, default="")
 
     # ---------- 10-11. Adresse ----------
-    commune = models.CharField(max_length=100)
-    quartier = models.CharField(max_length=100)
+    commune = models.CharField(max_length=100, blank=True, default="")
+    quartier = models.CharField(max_length=100, blank=True, default="")
 
     # ---------- 12. Filiation ----------
     nom_pere = models.CharField("Nom du père", max_length=150, blank=True)
@@ -131,8 +131,8 @@ class Pelerin(models.Model):
     )
 
     # ---------- 15. Correspondant (= téléphone d'urgence) ----------
-    nom_correspondant = models.CharField(max_length=150)
-    telephone_correspondant = models.CharField(max_length=20)
+    nom_correspondant = models.CharField(max_length=150, blank=True, default="")
+    telephone_correspondant = models.CharField(max_length=20, blank=True, default="")
 
     # ---------- 16. Agence partenaire ----------
     agence_partenaire = models.CharField(
@@ -141,7 +141,7 @@ class Pelerin(models.Model):
     )
 
     # ---------- 17. Téléphone ----------
-    telephone = models.CharField(max_length=20)
+    telephone = models.CharField(max_length=20, blank=True, default="")
 
     # ---------- 19. Photo ----------
     photo = models.ImageField(upload_to="pelerins/photos/", blank=True, null=True)
@@ -156,7 +156,7 @@ class Pelerin(models.Model):
     groupe_sanguin = models.CharField(max_length=3, choices=GroupeSanguin.choices, blank=True)
     probleme_sante = models.TextField(blank=True)
 
-    # ---------- Type de voyage (obligatoire) ----------
+    # ---------- Type de voyage (fixé par le bouton Hajj/Oumra, pas saisi) ----------
     type_voyage = models.CharField(max_length=20, choices=TypeVoyage.choices)
 
    
@@ -253,4 +253,3 @@ class Pelerin(models.Model):
             sequence.dernier_numero += 1
             sequence.save()
             return f"BVG-{sequence.dernier_numero:03d}-P{annee_courante}"
-    
