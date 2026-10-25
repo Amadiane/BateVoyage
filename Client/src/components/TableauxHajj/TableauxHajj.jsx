@@ -14,6 +14,10 @@ const C = {
   orClair: "#F6EEDB",
   positif: "#047857",
   negatif: "#B91C1C",
+  // Teintes par type de ligne (Tableau 2)
+  partFond: "#EFF6FF", partTexte: "#1E3A8A", partBord: "#3B82F6",
+  detteFond: "#FEF2F2", detteTexte: "#B91C1C", detteBord: "#EF4444",
+  netFond: "#ECFDF5", netTexte: "#047857", netBord: "#10B981",
 };
 
 const styleCarte = {
@@ -58,10 +62,12 @@ const Colonnes = () => (
   </colgroup>
 );
 const styleTh = {
-  textAlign: "right", fontSize: 11, fontWeight: 700, color: C.discret, textTransform: "uppercase",
-  letterSpacing: 0.4, padding: "8px 10px", borderBottom: `1px solid ${C.bordure}`, whiteSpace: "nowrap",
+  textAlign: "right", fontSize: 11, fontWeight: 700, color: C.encre, textTransform: "uppercase",
+  letterSpacing: 0.4, padding: "9px 10px", background: "#F1F5F9", borderBottom: `2px solid ${C.or}`, whiteSpace: "nowrap",
 };
 const styleThGauche = { ...styleTh, textAlign: "left" };
+// En-tête sombre (Tableau 1)
+const styleThSombre = { background: C.encre, color: "#fff", borderBottom: `2px solid ${C.or}` };
 const styleTd = { textAlign: "right", padding: "9px 10px", borderBottom: `1px solid ${C.bordure}`, whiteSpace: "nowrap" };
 const styleTdGauche = { ...styleTd, textAlign: "left", whiteSpace: "normal", color: C.texte };
 
@@ -83,7 +89,7 @@ function EnteteMonnaies({ premier = "" }) {
 }
 
 /* Trois cellules GNF / USD / SAR pour un montant { gnf, usd, sar } */
-function CellulesMontant({ valeur, fort, signe, fond }) {
+function CellulesMontant({ valeur, fort, signe, fond, couleur: couleurImposee }) {
   const style = (extra = {}) => ({ ...styleTd, background: fond || "transparent", ...extra });
   if (!valeur) {
     return (
@@ -94,7 +100,7 @@ function CellulesMontant({ valeur, fort, signe, fond }) {
       </>
     );
   }
-  const couleur = signe ? (valeur.gnf < 0 ? C.negatif : C.positif) : couleurMontant(valeur.gnf);
+  const couleur = couleurImposee || (signe ? (valeur.gnf < 0 ? C.negatif : C.positif) : couleurMontant(valeur.gnf));
   const poids = fort ? 800 : 600;
   return (
     <>
@@ -160,12 +166,12 @@ export function TableauAgences({ synthese }) {
           <table style={styleTable}>
             <thead>
               <tr>
-                <th style={{ ...styleThGauche, padding: "8px 20px" }}>{t("agence", "Agence")}</th>
-                <th style={styleTh}>{t("pelerins", "Pèlerins")}</th>
-                <th style={styleTh}>%</th>
-                <th style={styleTh}>GNF</th>
-                <th style={styleTh}>USD</th>
-                <th style={styleTh}>
+                <th style={{ ...styleThGauche, ...styleThSombre, padding: "10px 20px" }}>{t("agence", "Agence")}</th>
+                <th style={{ ...styleTh, ...styleThSombre }}>{t("pelerins", "Pèlerins")}</th>
+                <th style={{ ...styleTh, ...styleThSombre }}>%</th>
+                <th style={{ ...styleTh, ...styleThSombre }}>GNF</th>
+                <th style={{ ...styleTh, ...styleThSombre }}>USD</th>
+                <th style={{ ...styleTh, ...styleThSombre }}>
                   SAR
                   <div style={{ fontSize: 9, fontWeight: 500, textTransform: "none", letterSpacing: 0 }}>
                     {t("riyal_saoudien", "riyal saoudien")}
@@ -174,9 +180,11 @@ export function TableauAgences({ synthese }) {
               </tr>
             </thead>
             <tbody>
-              {groupes.map((g) => (
-                <tr key={g.nom}>
-                  <td style={{ ...styleTdGauche, padding: "12px 20px", minWidth: 180 }}>
+              {groupes.map((g, idx) => {
+                const fondLigne = idx % 2 === 1 ? C.fond : "#fff";
+                return (
+                <tr key={g.nom} style={{ background: fondLigne }}>
+                  <td style={{ ...styleTdGauche, padding: "12px 20px", minWidth: 180, borderLeft: `4px solid ${C.or}` }}>
                     <div style={{ fontWeight: 700, color: C.encre }}>{g.nom}</div>
                     <div style={{ height: 6, background: "#EFE9DA", borderRadius: 999, marginTop: 6, overflow: "hidden", maxWidth: 220 }}>
                       <div style={{ width: `${Math.min(100, g.pourcentage)}%`, height: "100%", background: C.or }} />
@@ -186,10 +194,11 @@ export function TableauAgences({ synthese }) {
                   <td style={styleTd}>{g.pourcentage.toLocaleString("fr-FR")} %</td>
                   <CellulesMontant valeur={g.benefice} fort signe />
                 </tr>
-              ))}
+                );
+              })}
               {total && (
                 <tr>
-                  <td style={{ ...styleTdGauche, padding: "12px 20px", fontWeight: 800, background: C.orClair }}>{t("total", "Total")}</td>
+                  <td style={{ ...styleTdGauche, padding: "12px 20px", fontWeight: 800, background: C.orClair, borderTop: `2px solid ${C.or}`, borderLeft: `4px solid ${C.or}` }}>{t("total", "Total")}</td>
                   <td style={{ ...styleTd, fontWeight: 800, background: C.orClair }}>{total.nb_pelerins}</td>
                   <td style={{ ...styleTd, background: C.orClair }}>100 %</td>
                   <CellulesMontant valeur={total.benefice} fort signe fond={C.orClair} />
@@ -250,6 +259,19 @@ export function TableauRepartitionAssocies({ synthese }) {
         </ol>
       </div>
 
+      {/* Légende des couleurs */}
+      <div style={{ display: "flex", flexWrap: "wrap", gap: 8, margin: "0 0 14px" }}>
+        {[
+          [t("part_benefice", "Part du bénéfice"), C.partFond, C.partTexte, C.partBord],
+          [t("dettes_deduire", "Dettes à déduire"), C.detteFond, C.detteTexte, C.detteBord],
+          [t("net_recevoir", "Net à recevoir"), C.netFond, C.netTexte, C.netBord],
+        ].map(([texte, fond, couleur, bord]) => (
+          <span key={texte} style={{ background: fond, color: couleur, border: `1px solid ${bord}`, borderRadius: 999, padding: "3px 12px", fontSize: 12, fontWeight: 700 }}>
+            {texte}
+          </span>
+        ))}
+      </div>
+
       {groupes.map((g) => {
         const totalPart = somme(g.membres.map((m) => m.part));
         const totalNet = somme(g.membres.map((m) => m.net));
@@ -277,8 +299,8 @@ export function TableauRepartitionAssocies({ synthese }) {
 
             {/* Un bloc par associé, chiffres colonne par colonne */}
             {g.membres.map((m, i) => (
-              <div key={m.id} className="bvg-bloc" style={{ padding: "16px 20px 6px", borderTop: i === 0 ? "none" : `1px solid ${C.bordure}` }}>
-                <div style={{ display: "flex", gap: 12, alignItems: "center", marginBottom: 6 }}>
+              <div key={m.id} className="bvg-bloc" style={{ padding: "0 20px 10px", borderTop: i === 0 ? "none" : `3px solid ${C.bordure}` }}>
+                <div style={{ display: "flex", gap: 12, alignItems: "center", margin: "0 -20px 8px", padding: "12px 20px", background: C.orClair, borderBottom: `1px solid ${C.bordure}` }}>
                   <div style={{
                     width: 40, height: 40, borderRadius: "50%", flexShrink: 0,
                     background: m.est_caisse ? C.orClair : "#E8EDF5", color: m.est_caisse ? C.or : C.encre,
@@ -302,18 +324,18 @@ export function TableauRepartitionAssocies({ synthese }) {
                     <thead><EnteteMonnaies /></thead>
                     <tbody>
                       <tr>
-                        <td style={styleTdGauche}>{t("part_benefice", "Part du bénéfice")}</td>
-                        <CellulesMontant valeur={m.part} />
+                        <td style={{ ...styleTdGauche, background: C.partFond, color: C.partTexte, fontWeight: 700, borderLeft: `4px solid ${C.partBord}` }}>{t("part_benefice", "Part du bénéfice")}</td>
+                        <CellulesMontant valeur={m.part} fond={C.partFond} couleur={C.partTexte} />
                       </tr>
                       {!m.est_caisse && (
                         <tr>
-                          <td style={styleTdGauche}>{t("dettes_deduire", "Dettes à déduire")}</td>
-                          <CellulesMontant valeur={m.dette} />
+                          <td style={{ ...styleTdGauche, background: C.detteFond, color: C.detteTexte, fontWeight: 700, borderLeft: `4px solid ${C.detteBord}` }}>{t("dettes_deduire", "Dettes à déduire")}</td>
+                          <CellulesMontant valeur={m.dette} fond={C.detteFond} couleur={C.detteTexte} />
                         </tr>
                       )}
                       <tr>
-                        <td style={{ ...styleTdGauche, fontWeight: 800, color: C.encre, background: C.orClair }}>{t("net_recevoir", "Net à recevoir")}</td>
-                        <CellulesMontant valeur={m.net} fort signe fond={C.orClair} />
+                        <td style={{ ...styleTdGauche, fontWeight: 800, color: C.netTexte, background: C.netFond, borderLeft: `4px solid ${C.netBord}` }}>{t("net_recevoir", "Net à recevoir")}</td>
+                        <CellulesMontant valeur={m.net} fort signe fond={C.netFond} />
                       </tr>
                     </tbody>
                   </table>
@@ -331,12 +353,12 @@ export function TableauRepartitionAssocies({ synthese }) {
                     <thead><EnteteMonnaies /></thead>
                     <tbody>
                       <tr>
-                        <td style={styleTdGauche}>{t("part_benefice", "Part du bénéfice")}</td>
-                        <CellulesMontant valeur={totalPart} />
+                        <td style={{ ...styleTdGauche, background: C.partFond, color: C.partTexte, fontWeight: 700, borderLeft: `4px solid ${C.partBord}` }}>{t("part_benefice", "Part du bénéfice")}</td>
+                        <CellulesMontant valeur={totalPart} fond={C.partFond} couleur={C.partTexte} />
                       </tr>
                       <tr>
-                        <td style={{ ...styleTdGauche, fontWeight: 800, color: C.encre }}>{t("net_recevoir", "Net à recevoir")}</td>
-                        <CellulesMontant valeur={totalNet} fort signe />
+                        <td style={{ ...styleTdGauche, fontWeight: 800, color: C.netTexte, background: C.netFond, borderLeft: `4px solid ${C.netBord}` }}>{t("net_recevoir", "Net à recevoir")}</td>
+                        <CellulesMontant valeur={totalNet} fort signe fond={C.netFond} />
                       </tr>
                     </tbody>
                   </table>

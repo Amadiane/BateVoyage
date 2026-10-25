@@ -11,6 +11,20 @@ const COULEUR_OR = "FFC9972B"; // or / accent
 const COULEUR_FOND_ALT = "FFFAF9F5"; // papier
 const COULEUR_TEXTE_TOTAL = "FF10151F";
 
+// Styles de ligne facultatifs : une ligne peut porter "_style" pour être colorée dans
+// l'Excel ET dans le PDF (ex. tableaux de répartition par agence / par associé).
+// Les lignes sans "_style" gardent exactement l'ancien rendu.
+const STYLES_LIGNE = {
+  agence: { fondArgb: "FF10151F", texteArgb: "FFFFFFFF", fond: [16, 21, 31], texte: [255, 255, 255], gras: true },
+  associe: { fondArgb: "FFF6EEDB", texteArgb: "FF10151F", fond: [246, 238, 219], texte: [16, 21, 31], gras: true },
+  part: { fondArgb: "FFEFF6FF", texteArgb: "FF1E3A8A", fond: [239, 246, 255], texte: [30, 58, 138], gras: false },
+  dette: { fondArgb: "FFFEF2F2", texteArgb: "FFB91C1C", fond: [254, 242, 242], texte: [185, 28, 28], gras: false },
+  net: { fondArgb: "FFECFDF5", texteArgb: "FF047857", fond: [236, 253, 245], texte: [4, 120, 87], gras: true },
+  total: { fondArgb: "FFFAF3E0", texteArgb: "FF10151F", fond: [250, 243, 224], texte: [16, 21, 31], gras: true },
+};
+// Une ligne "associe" est un simple titre : on n'affiche rien dans les colonnes de montants.
+const estLigneTitre = (ligne) => ligne && (ligne._style === "associe");
+
 function formaterNomFichier(base) {
   const date = new Date();
   const pad = (n) => String(n).padStart(2, "0");
@@ -125,7 +139,13 @@ export async function exporterTableauExcel({
         vertical: "middle",
       };
 
-      if (indexLigne % 2 === 1) {
+      const styleLigne = STYLES_LIGNE[ligne._style];
+      if (styleLigne) {
+        if (estLigneTitre(ligne) && i > 0) cell.value = null;
+        cell.fill = { type: "pattern", pattern: "solid", fgColor: { argb: styleLigne.fondArgb } };
+        cell.font = { bold: styleLigne.gras, color: { argb: styleLigne.texteArgb } };
+        if (ligne._style === "agence") cell.border = { bottom: { style: "medium", color: { argb: COULEUR_OR } } };
+      } else if (indexLigne % 2 === 1) {
         cell.fill = { type: "pattern", pattern: "solid", fgColor: { argb: COULEUR_FOND_ALT } };
       }
     });
@@ -227,7 +247,9 @@ export async function exporterTableauPdf({ titre, sousTitre = "", colonnes, lign
   doc.line(MARGE, startY - 3, largeurPage - MARGE, startY - 3);
 
   const head = [colonnes.map((c) => c.entete)];
-  const body = lignes.map((ligne) => colonnes.map((c) => formaterValeur(c, ligne[c.cle])));
+  const body = lignes.map((ligne) =>
+    colonnes.map((c, i) => (estLigneTitre(ligne) && i > 0 ? "" : formaterValeur(c, ligne[c.cle])))
+  );
   const foot = totaux
     ? [
         colonnes.map((c, i) => {
@@ -297,6 +319,25 @@ export async function exporterTableauPdf({ titre, sousTitre = "", colonnes, lign
     },
     alternateRowStyles: { fillColor: [250, 249, 245] },
     columnStyles,
+    // Couleurs par type de ligne (agence, associé, part, dette, net, total)
+    didParseCell: (data) => {
+      if (data.section === "foot") {
+        const col = colonnes[data.column.index];
+        if (col && (col.format === "nombre" || col.format === "devise")) data.cell.styles.halign = "right";
+        return;
+      }
+      if (data.section !== "body") return;
+      const ligne = lignes[data.row.index];
+      const styleLigne = ligne && STYLES_LIGNE[ligne._style];
+      if (!styleLigne) return;
+      data.cell.styles.fillColor = styleLigne.fond;
+      data.cell.styles.textColor = styleLigne.texte;
+      data.cell.styles.fontStyle = styleLigne.gras ? "bold" : "normal";
+      if (ligne._style === "agence") {
+        data.cell.styles.fontSize = 9.5;
+        data.cell.styles.cellPadding = { top: 3, right: 3.5, bottom: 3, left: 3.5 };
+      }
+    },
     didDrawPage: () => {
       const pageSize = doc.internal.pageSize;
       const pageHeight = pageSize.getHeight();

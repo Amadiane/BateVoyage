@@ -31,11 +31,13 @@ const COLONNES_AGENCES = [
 // En-tête d'un associé dans l'export : nom + agence (Hajj)
 const libelleAssocie = (a) => (a.groupe ? `${a.nom} — ${a.groupe}` : a.nom);
 
-const COLONNES_DETAIL_AGENCE = [
+// Export détaillé (Tableau 2 et exports par agence) : une ligne par information,
+// trois colonnes de montants. Les lignes portent un "_style" (couleur) géré par l'export.
+const COLONNES_DETAIL = [
   { cle: "designation", entete: "Désignation", largeur: 52 },
-  { cle: "gnf", entete: "GNF", largeur: 16, format: "nombre" },
-  { cle: "usd", entete: "USD", largeur: 14, format: "nombre" },
-  { cle: "sar", entete: "SAR (riyal saoudien)", largeur: 18, format: "nombre" },
+  { cle: "gnf", entete: "GNF", largeur: 18, format: "nombre" },
+  { cle: "usd", entete: "USD", largeur: 14, format: "nombre", decimales: 2 },
+  { cle: "sar", entete: "SAR (riyal saoudien)", largeur: 18, format: "nombre", decimales: 2 },
 ];
 
 const GROUPE_PRINCIPAL = "BATE VOYAGE GUINÉE";
@@ -114,7 +116,8 @@ function PageBeneficeIndividuel({ activite, basePath }) {
 
   // Export de la vue "Par associé" : désignation/GNF/USD/SAR pour l'associé sélectionné.
   const lignesExportAssocie = associeAffiche
-    ? associeAffiche.lignes.map((l) => ({
+    ? associeAffiche.lignes.map((l, i, tout) => ({
+        _style: i === tout.length - 1 ? "net" : undefined,
         designation: l.designation,
         gnf: l.valeurs.gnf,
         usd: l.valeurs.usd,
@@ -171,38 +174,88 @@ function PageBeneficeIndividuel({ activite, basePath }) {
       }
     : null;
 
-  // Export d'UNE agence : son bénéfice et uniquement ses propres associés.
-  // Les associés des autres agences n'y figurent jamais.
-  const exportDeLAgence = (g) => {
+  // Construit les lignes colorées de l'export détaillé : pour chaque agence, son bénéfice,
+  // puis pour chacun de ses associés la part, les dettes et le net à recevoir.
+  // `nomsAgences` : liste des agences à inclure (null = toutes, pour le Tableau 2 interne).
+  const detailAssocies = (nomsAgences) => {
     const valeurs = (cle) => synthese.lignes.find((l) => l.cle === cle)?.valeurs || [];
     const parts = valeurs("part");
     const dettes = valeurs("dettes");
     const nets = valeurs("net");
-    const lignes = [
-      {
-        designation: `Bénéfice de l'agence (${g.nb_pelerins} pèlerins · ${g.pourcentage} %)`,
-        gnf: g.benefice.gnf, usd: g.benefice.usd, sar: g.benefice.sar,
-      },
-    ];
-    const netsAgence = [];
+
+    // Regroupement par agence, dans l'ordre d'apparition (comme à l'écran)
+    const groupes = [];
     synthese.associes.forEach((a, i) => {
-      if (a.groupe !== g.nom) return;
-      const ajouter = (libelle, v) => {
-        if (v) lignes.push({ designation: `${a.nom} — ${libelle}`, gnf: v.gnf, usd: v.usd, sar: v.sar });
-      };
-      ajouter(`part (${a.pourcentage} %)`, parts[i]);
-      if (!a.est_caisse) ajouter("dettes à déduire", dettes[i]);
-      ajouter("net à recevoir", nets[i]);
-      if (nets[i]) netsAgence.push(nets[i]);
+      if (nomsAgences && !nomsAgences.includes(a.groupe)) return;
+      let g = groupes.find((x) => x.nom === a.groupe);
+      if (!g) {
+        g = { nom: a.groupe, membres: [], info: (synthese.groupes || []).find((x) => x.nom === a.groupe) };
+        groupes.push(g);
+      }
+      g.membres.push({ a, part: parts[i], dette: dettes[i], net: nets[i] });
     });
-    const totaux = netsAgence.reduce(
+
+    const lignes = [];
+    const tousNets = [];
+    groupes.forEach((g) => {
+      const info = g.info;
+      lignes.push({
+        _style: "agence",
+        designation: info
+          ? `${g.nom} — ${info.nb_pelerins} pèlerins · ${info.pourcentage} % — bénéfice de l'agence`
+          : g.nom,
+        gnf: info ? info.benefice.gnf : null,
+        usd: info ? info.benefice.usd : null,
+        sar: info ? info.benefice.sar : null,
+      });
+      const netsAgence = [];
+      g.membres.forEach(({ a, part, dette, net }) => {
+        lignes.push({ _style: "associe", designation: `${a.nom} (${a.pourcentage} % de l'agence)` });
+        const ajouter = (style, libelle, v) => {
+          if (v) lignes.push({ _style: style, designation: `    ${libelle}`, gnf: v.gnf, usd: v.usd, sar: v.sar });
+        };
+        ajouter("part", "Part du bénéfice", part);
+        if (!a.est_caisse) ajouter("dette", "Dettes à déduire", dette);
+        ajouter("net", "Net à recevoir", net);
+        if (net) netsAgence.push(net);
+      });
+      const totalAgence = netsAgence.reduce(
+        (acc, v) => ({ gnf: acc.gnf + v.gnf, usd: acc.usd + v.usd, sar: acc.sar + v.sar }),
+        { gnf: 0, usd: 0, sar: 0 }
+      );
+      if (g.membres.length > 1) {
+        lignes.push({ _style: "total", designation: `Total net de l'agence ${g.nom}`, ...totalAgence });
+      }
+      tousNets.push(...netsAgence);
+    });
+
+    const totaux = tousNets.reduce(
       (acc, v) => ({ gnf: acc.gnf + v.gnf, usd: acc.usd + v.usd, sar: acc.sar + v.sar }),
       { gnf: 0, usd: 0, sar: 0 }
     );
+    return { lignes, totaux };
+  };
+
+  // Export d'UNE agence : son bénéfice et uniquement ses propres associés.
+  // Les associés des autres agences n'y figurent jamais.
+  const exportDeLAgence = (g) => {
+    const { lignes, totaux } = detailAssocies([g.nom]);
     return {
       titre: `${t("benefice_individuel")} — ${g.nom}`,
       sousTitre: `${nomSaisonActuelle} — ${g.nb_pelerins} pèlerins`,
-      colonnes: COLONNES_DETAIL_AGENCE,
+      colonnes: COLONNES_DETAIL,
+      lignes,
+      totaux,
+    };
+  };
+
+  // Export du Tableau 2 (interne) : toutes les agences, mêmes lignes colorées que l'écran.
+  const exportTableau2 = () => {
+    const { lignes, totaux } = detailAssocies(null);
+    return {
+      titre: `${t("benefice_individuel")} — ${t("vue_associes_hajj", "Tableau 2 · Associés")}`,
+      sousTitre: `${nomSaisonActuelle} — usage interne`,
+      colonnes: COLONNES_DETAIL,
       lignes,
       totaux,
     };
@@ -224,9 +277,11 @@ function PageBeneficeIndividuel({ activite, basePath }) {
       lignes: lignesExportAgences,
       totaux: totauxExportAgences,
     };
+  } else if (!estOumra && synthese) {
+    exportProps = exportTableau2();
   } else {
     exportProps = {
-      titre: `${t("benefice_individuel")} — ${estOumra ? t("vue_recapitulatif") : t("vue_associes_hajj", "Tableau 2 · Associés")}`,
+      titre: `${t("benefice_individuel")} — ${t("vue_recapitulatif")}`,
       sousTitre: nomSaisonActuelle,
       colonnes: colonnesExportRecap,
       lignes: lignesExportRecap,
