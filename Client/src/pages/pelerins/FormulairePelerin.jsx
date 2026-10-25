@@ -44,6 +44,7 @@ const LABELS_TYPE_VOYAGE = {
 };
 
 const VALEURS_INITIALES = {
+  numero_individuel: "",
   prenom: "", nom: "", sexe: "", date_naissance: "", lieu_naissance: "",
   numero_passeport: "", date_emission_passeport: "", date_expiration_passeport: "", statut_visa: "non_demande",
   biometrie_effectuee: false, date_biometrie: "",
@@ -55,11 +56,18 @@ const VALEURS_INITIALES = {
 
 const CHAMPS_FICHIERS = ["photo", "scan_passeport", "scan_visa", "scan_certificat_medical", "scan_recu_versement"];
 
-// Tous les champs sont facultatifs (demande du client) : plus aucune validation bloquante.
-const CHAMPS_REQUIS_PAR_ETAPE = { 0: [], 1: [], 2: [] };
+// Tous les champs de saisie sont facultatifs (demande du client, Hajj et Oumra).
+const CHAMPS_REQUIS_PAR_ETAPE = {
+  0: [],
+  1: [],
+  2: [],
+};
 
-// Champs qui ne doivent jamais être envoyés vides (valeur par défaut côté serveur).
+// Champs qui ne doivent jamais être envoyés vides en modification.
 const CHAMPS_JAMAIS_VIDES = ["statut_visa", "type_voyage"];
+
+// Préfixe et code d'année de l'identifiant (ex : BVG-001-P26)
+const CODE_ANNEE = String(new Date().getFullYear()).slice(-2);
 
 function FormulairePelerin() {
   const { t } = useTranslation();
@@ -154,6 +162,8 @@ function FormulairePelerin() {
       const formData = new FormData();
       Object.keys(VALEURS_INITIALES).forEach((champ) => {
         if (modeEdition && (champ === "montant_verse" || champ === "mode_paiement")) return;
+        // Le numéro individuel se saisit uniquement à la création
+        if (champ === "numero_individuel" && modeEdition) return;
         if (champ === "date_biometrie" && !valeurs.biometrie_effectuee) return;
 
         const val = valeurs[champ];
@@ -164,7 +174,7 @@ function FormulairePelerin() {
         if (val !== null && val !== undefined && val !== "") {
           formData.append(champ, val);
         } else if (modeEdition && !CHAMPS_JAMAIS_VIDES.includes(champ)) {
-          // En modification, un champ vidé doit être effacé côté serveur.
+          // En modification, un champ vidé doit réellement être effacé en base
           formData.append(champ, "");
         }
       });
@@ -187,6 +197,11 @@ function FormulairePelerin() {
       }
     } catch (err) {
       const donneesErreur = err.response?.data;
+      if (donneesErreur && typeof donneesErreur === "object" && donneesErreur.numero_individuel) {
+        // Numéro déjà utilisé ou invalide : on revient sur l'étape où il se saisit
+        setEtape(0);
+        setChampsManquants(["numero_individuel"]);
+      }
       if (donneesErreur && typeof donneesErreur === "object") {
         const messages = Object.entries(donneesErreur)
           .map(([champ, msgs]) => `${champ} : ${Array.isArray(msgs) ? msgs.join(" ") : msgs}`)
@@ -251,6 +266,22 @@ function FormulairePelerin() {
           <>
             <div className={styles.sectionTitre}>{t("etape_identite")}</div>
             <div className={styles.grille}>
+              {!modeEdition && (
+                <Champ label={t("numero_individuel", "Numéro individuel")} manquant={estManquant("numero_individuel")}>
+                  <input
+                    inputMode="numeric"
+                    maxLength={6}
+                    placeholder="001"
+                    value={valeurs.numero_individuel}
+                    onChange={(e) => majChamp("numero_individuel", e.target.value.replace(/\D/g, ""))}
+                  />
+                  <p style={{ margin: "4px 0 0", fontSize: 12, color: "#6B7280" }}>
+                    {valeurs.numero_individuel
+                      ? `${t("identifiant_final", "Identifiant")} : BVG-${valeurs.numero_individuel.padStart(3, "0")}-P${CODE_ANNEE}`
+                      : t("numero_individuel_aide", "Laissez vide pour un numéro automatique")}
+                  </p>
+                </Champ>
+              )}
               <Champ label={t("prenom")} manquant={estManquant("prenom")}>
                 <input value={valeurs.prenom} onChange={(e) => majChamp("prenom", e.target.value)} />
               </Champ>

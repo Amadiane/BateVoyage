@@ -250,6 +250,11 @@ class Pelerin(models.Model):
             sequence, _ = SequenceInscription.objects.select_for_update().get_or_create(
                 annee=annee_courante, defaults={"dernier_numero": 0}
             )
-            sequence.dernier_numero += 1
+            # On saute les numéros déjà pris (par exemple saisis à la main)
+            while True:
+                sequence.dernier_numero += 1
+                candidat = f"BVG-{sequence.dernier_numero:03d}-P{annee_courante}"
+                if not Pelerin.objects.filter(numero_id=candidat).exists():
+                    break
             sequence.save()
-            return f"BVG-{sequence.dernier_numero:03d}-P{annee_courante}"
+            return candidat
