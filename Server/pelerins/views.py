@@ -1,5 +1,6 @@
 import requests
 import django_filters
+from django.db import transaction
 from django.http import HttpResponse, Http404
 from django.template.loader import render_to_string
 from django.template import engines
@@ -7,6 +8,7 @@ from django.utils import timezone
 from django.contrib.contenttypes.models import ContentType
 from rest_framework import viewsets, permissions
 from rest_framework.decorators import action
+from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
 from xhtml2pdf import pisa
 from openpyxl import Workbook
@@ -15,11 +17,56 @@ from auditlog.context import set_actor
 
 from activite.serializers import EntreeJournalDetailSerializer
 from documents_generes.models import ModeleDocument
-from .models import Pelerin
+from .models import Pelerin, QuotaInscription, HistoriqueQuota
 from .serializers import PelerinSerializer
 from .pdf_utils import link_callback, envelopper_avec_entete_pied
 
 django_engine = engines["django"]
+
+# ---------- Quotas d'inscription (Hajj / Oumra, remis à zéro chaque année) ----------
+TYPE_VOYAGE_PAR_ACTIVITE = {"hajj": "pelerinage", "oumra": "oumra"}
+ACTIVITE_PAR_TYPE_VOYAGE = {v: k for k, v in TYPE_VOYAGE_PAR_ACTIVITE.items()}
+
+# Rôles autorisés à modifier le quota (en plus des super-utilisateurs).
+# À adapter aux noms de rôles réels de l'application.
+ROLES_AUTORISES_QUOTA = ("fondateur", "administrateur", "admin")
+
+MESSAGE_QUOTA_ATTEINT = (
+    "Vous avez atteint le nombre maximal de pèlerins autorisé. "
+    "Pour enregistrer un nouveau pèlerin, veuillez d'abord modifier le quota dans les paramètres."
+)
+
+
+def peut_modifier_quota(user):
+    return bool(
+        user.is_authenticated
+        and (user.is_superuser or getattr(user, "role", "") in ROLES_AUTORISES_QUOTA)
+    )
+
+
+def etat_quota(activite, annee):
+    """Retourne (objet quota ou None, dictionnaire d'état) pour une activité et une année."""
+    inscrits = Pelerin.objects.filter(
+        type_voyage=TYPE_VOYAGE_PAR_ACTIVITE[activite], date_inscription__year=annee
+    ).count()
+    quota_obj = QuotaInscription.objects.filter(activite=activite, annee=annee).first()
+    quota = quota_obj.quota if quota_obj else None
+    return quota_obj, {
+        "activite": activite,
+        "annee": annee,
+        "quota": quota,
+        "inscrits": inscrits,
+        "restantes": max(quota - inscrits, 0) if quota is not None else None,
+        "atteint": quota is not None and inscrits >= quota,
+    }
+
+
+def nom_utilisateur(user):
+    if not user:
+        return None
+    nom = user.get_full_name()
+    return nom if nom and nom.strip() else user.get_username()
+
 
 CHAMPS_DOCUMENTS = ["photo", "scan_passeport", "scan_visa", "scan_certificat_medical", "scan_recu_versement"]
 
@@ -41,19 +88,35 @@ class PelerinViewSet(viewsets.ModelViewSet):
     filterset_class = PelerinFilter
     search_fields = ["nom", "prenom", "numero_id", "numero_passeport", "telephone", "inscripteur"]
 
+    def _verifier_quota(self, type_voyage):
+        """Bloque l'inscription si le quota de l'année en cours est atteint."""
+        activite = ACTIVITE_PAR_TYPE_VOYAGE.get(type_voyage)
+        if not activite:
+            return
+        annee = timezone.now().year
+        # Verrou sur la ligne du quota : deux inscriptions simultanées ne peuvent pas dépasser la limite.
+        quota = QuotaInscription.objects.select_for_update().filter(activite=activite, annee=annee).first()
+        if quota is None:
+            return
+        _, etat = etat_quota(activite, annee)
+        if etat["inscrits"] >= quota.quota:
+            raise ValidationError({"quota_atteint": [MESSAGE_QUOTA_ATTEINT]})
+
     def perform_create(self, serializer):
         with set_actor(self.request.user):
-            pelerin = serializer.save()
-            if pelerin.montant_verse and float(pelerin.montant_verse) > 0:
-                from paiements.models import Paiement
-                Paiement.objects.create(
-                    pelerin=pelerin,
-                    montant=pelerin.montant_verse,
-                    mode_paiement=pelerin.mode_paiement or Paiement.ModePaiement.ESPECES,
-                    date_paiement=timezone.now().date(),
-                    enregistre_par=self.request.user,
-                    notes="Versement initial à l'inscription",
-                )
+            with transaction.atomic():
+                self._verifier_quota(serializer.validated_data.get("type_voyage"))
+                pelerin = serializer.save()
+                if pelerin.montant_verse and float(pelerin.montant_verse) > 0:
+                    from paiements.models import Paiement
+                    Paiement.objects.create(
+                        pelerin=pelerin,
+                        montant=pelerin.montant_verse,
+                        mode_paiement=pelerin.mode_paiement or Paiement.ModePaiement.ESPECES,
+                        date_paiement=timezone.now().date(),
+                        enregistre_par=self.request.user,
+                        notes="Versement initial à l'inscription",
+                    )
 
     def perform_update(self, serializer):
         with set_actor(self.request.user):
@@ -62,6 +125,68 @@ class PelerinViewSet(viewsets.ModelViewSet):
     def perform_destroy(self, instance):
         with set_actor(self.request.user):
             instance.delete()
+
+    def _reponse_quota(self, activite, annee, statut=200):
+        _, etat = etat_quota(activite, annee)
+        historique = HistoriqueQuota.objects.filter(
+            quota_inscription__activite=activite
+        ).select_related("modifie_par", "quota_inscription")[:30]
+        etat["peut_modifier"] = peut_modifier_quota(self.request.user)
+        etat["historique"] = [
+            {
+                "annee": h.quota_inscription.annee,
+                "ancien_quota": h.ancien_quota,
+                "nouveau_quota": h.nouveau_quota,
+                "date": h.date_modification.isoformat(),
+                "utilisateur": nom_utilisateur(h.modifie_par),
+            }
+            for h in historique
+        ]
+        return Response(etat, status=statut)
+
+    @action(detail=False, methods=["get", "post"], url_path="quota")
+    def quota(self, request):
+        """GET : état du quota (activite=hajj|oumra). POST : définir ou modifier le quota."""
+        source = request.data if request.method == "POST" else request.query_params
+        activite = source.get("activite")
+        if activite not in TYPE_VOYAGE_PAR_ACTIVITE:
+            return Response({"erreur": "Activité invalide : hajj ou oumra."}, status=400)
+        annee = timezone.now().year
+
+        if request.method == "GET":
+            return self._reponse_quota(activite, annee)
+
+        if not peut_modifier_quota(request.user):
+            return Response({"erreur": "Vous n'avez pas l'autorisation de modifier le quota."}, status=403)
+        try:
+            nouveau = int(request.data.get("quota"))
+        except (TypeError, ValueError):
+            return Response({"erreur": "Le quota doit être un nombre entier."}, status=400)
+        if nouveau < 1:
+            return Response({"erreur": "Le quota doit être au moins 1."}, status=400)
+
+        with transaction.atomic():
+            quota_obj = QuotaInscription.objects.select_for_update().filter(activite=activite, annee=annee).first()
+            _, etat = etat_quota(activite, annee)
+            if nouveau < etat["inscrits"]:
+                return Response(
+                    {"erreur": f"Le quota ne peut pas être inférieur au nombre de pèlerins déjà inscrits ({etat['inscrits']})."},
+                    status=400,
+                )
+            ancien = quota_obj.quota if quota_obj else None
+            if quota_obj is None:
+                quota_obj = QuotaInscription.objects.create(activite=activite, annee=annee, quota=nouveau)
+            elif ancien != nouveau:
+                quota_obj.quota = nouveau
+                quota_obj.save()
+            if ancien != nouveau:
+                HistoriqueQuota.objects.create(
+                    quota_inscription=quota_obj,
+                    ancien_quota=ancien,
+                    nouveau_quota=nouveau,
+                    modifie_par=request.user,
+                )
+        return self._reponse_quota(activite, annee)
 
     @action(detail=True, methods=["get"], url_path="fiche-pdf")
     def fiche_pdf(self, request, pk=None):

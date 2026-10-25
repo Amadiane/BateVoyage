@@ -258,3 +258,36 @@ class Pelerin(models.Model):
                     break
             sequence.save()
             return candidat
+
+
+class QuotaInscription(models.Model):
+    """Nombre maximal de pèlerins pour un module (Hajj ou Oumra) et une année."""
+    class Activite(models.TextChoices):
+        HAJJ = "hajj", "Hajj"
+        OUMRA = "oumra", "Omra"
+
+    activite = models.CharField(max_length=10, choices=Activite.choices)
+    annee = models.PositiveSmallIntegerField()
+    quota = models.PositiveIntegerField()
+
+    class Meta:
+        unique_together = [("activite", "annee")]
+        ordering = ["-annee", "activite"]
+        verbose_name = "Quota d'inscription"
+
+    def __str__(self):
+        return f"{self.get_activite_display()} {self.annee} : {self.quota}"
+
+
+class HistoriqueQuota(models.Model):
+    quota_inscription = models.ForeignKey(QuotaInscription, on_delete=models.CASCADE, related_name="historique")
+    ancien_quota = models.PositiveIntegerField(null=True, blank=True)
+    nouveau_quota = models.PositiveIntegerField()
+    modifie_par = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True, related_name="+"
+    )
+    date_modification = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["-date_modification"]
+        verbose_name = "Historique de quota"

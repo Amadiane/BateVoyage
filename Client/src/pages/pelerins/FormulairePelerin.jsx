@@ -3,6 +3,9 @@ import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { pelerinService } from "../../services/pelerinService";
 import ChampFichier from "../../components/ChampFichier/ChampFichier";
+import { AlerteQuotaAtteint } from "../../components/QuotaPelerins/QuotaPelerins";
+import api from "../../services/api";
+import CONFIG from "../../config/config";
 import styles from "../../theme/pages/pelerins/FormulairePelerin.module.css";
 
 const ETAPES = ["identite_passeport", "adresse_contact", "sante_inscription"];
@@ -94,6 +97,7 @@ function FormulairePelerin() {
   const [champsManquants, setChampsManquants] = useState([]);
   const [chargementInitial, setChargementInitial] = useState(modeEdition);
   const [pelerinEnregistre, setPelerinEnregistre] = useState(null);
+  const [quotaAtteint, setQuotaAtteint] = useState(false);
 
   useEffect(() => {
     if (modeEdition) {
@@ -118,6 +122,17 @@ function FormulairePelerin() {
       setValeurs((v) => ({ ...v, type_voyage: typeVoyageFixe }));
     }
   }, [id]);
+
+  // Création : on vérifie d'abord que le quota du module n'est pas atteint
+  useEffect(() => {
+    if (modeEdition || !typeVoyageFixe) return;
+    const activite = typeVoyageFixe === "pelerinage" ? "hajj" : typeVoyageFixe === "oumra" ? "oumra" : null;
+    if (!activite) return;
+    api
+      .get(`${CONFIG.API_PELERINS}quota/`, { params: { activite } })
+      .then(({ data }) => setQuotaAtteint(Boolean(data.atteint)))
+      .catch(() => {});
+  }, [modeEdition, typeVoyageFixe]);
 
   const majChamp = (champ, valeur) => {
     setValeurs((v) => ({ ...v, [champ]: valeur }));
@@ -197,6 +212,11 @@ function FormulairePelerin() {
       }
     } catch (err) {
       const donneesErreur = err.response?.data;
+      if (donneesErreur && typeof donneesErreur === "object" && donneesErreur.quota_atteint) {
+        // Le serveur refuse : quota atteint (par exemple atteint pendant la saisie)
+        setQuotaAtteint(true);
+        return;
+      }
       if (donneesErreur && typeof donneesErreur === "object" && donneesErreur.numero_individuel) {
         // Numéro déjà utilisé ou invalide : on revient sur l'étape où il se saisit
         setEtape(0);
@@ -224,6 +244,17 @@ function FormulairePelerin() {
 
   if (chargementInitial) {
     return <p className={styles.chargement}>{t("chargement")}</p>;
+  }
+
+  if (quotaAtteint) {
+    return (
+      <div className={styles.page}>
+        <AlerteQuotaAtteint
+          onFermer={() => navigate(cheminRetour())}
+          libelleBouton={`← ${t("retour")}`}
+        />
+      </div>
+    );
   }
 
   if (!modeEdition && !typeVoyageFixe) {

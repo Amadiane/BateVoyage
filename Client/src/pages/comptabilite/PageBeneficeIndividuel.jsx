@@ -36,18 +36,22 @@ function PageBeneficeIndividuel({ activite, basePath }) {
   const [associeSelectionne, setAssocieSelectionne] = useState(null);
   const [vue, setVue] = useState("associe");
 
+  // Le tableau récapitulatif n'existe que pour l'Oumra (demande du client).
+  // Le Hajj n'affiche que la vue "Par associé".
+  const afficherRecap = activite === "oumra";
+  const vueEffective = afficherRecap ? vue : "associe";
+
   const charger = async (idSaison) => {
     if (!idSaison) {
       setDonnees(null);
       setSynthese(null);
       return;
     }
-    const [indRes, synthRes] = await Promise.all([
-      decaissementService.obtenirBeneficeIndividuel(activite, idSaison),
-      decaissementService.obtenirSyntheseBenefices(activite, idSaison),
-    ]);
+    const requetes = [decaissementService.obtenirBeneficeIndividuel(activite, idSaison)];
+    if (afficherRecap) requetes.push(decaissementService.obtenirSyntheseBenefices(activite, idSaison));
+    const [indRes, synthRes] = await Promise.all(requetes);
     setDonnees(indRes.data);
-    setSynthese(synthRes.data);
+    setSynthese(synthRes ? synthRes.data : null);
     // Sélectionne toujours le premier associé après un rechargement,
     // pour éviter un ID sélectionné qui ne correspondrait plus à rien.
     if (indRes.data.associes.length > 0) {
@@ -126,7 +130,7 @@ function PageBeneficeIndividuel({ activite, basePath }) {
       })
     : [];
 
-  const exportProps = vue === "associe"
+  const exportProps = vueEffective === "associe"
     ? {
         titre: t("benefice_individuel"),
         sousTitre: associeAffiche ? `${associeAffiche.nom} — ${nomSaisonActuelle}` : nomSaisonActuelle,
@@ -162,16 +166,18 @@ function PageBeneficeIndividuel({ activite, basePath }) {
             {t("benefice_reel_global")} : {donnees.benefice_reel_global.gnf.toLocaleString("fr-FR")} GNF
           </p>
 
-          <div className={styles.ongletsSection}>
-            <button className={vue === "associe" ? styles.ongletActif : styles.onglet} onClick={() => setVue("associe")}>
-              {t("vue_par_associe")}
-            </button>
-            <button className={vue === "recap" ? styles.ongletActif : styles.onglet} onClick={() => setVue("recap")}>
-              {t("vue_recapitulatif")}
-            </button>
-          </div>
+          {afficherRecap && (
+            <div className={styles.ongletsSection}>
+              <button className={vue === "associe" ? styles.ongletActif : styles.onglet} onClick={() => setVue("associe")}>
+                {t("vue_par_associe")}
+              </button>
+              <button className={vue === "recap" ? styles.ongletActif : styles.onglet} onClick={() => setVue("recap")}>
+                {t("vue_recapitulatif")}
+              </button>
+            </div>
+          )}
 
-          {vue === "associe" && (
+          {vueEffective === "associe" && (
             <>
               <div className={styles.groupeBoutons} style={{ marginBottom: 18, flexWrap: "wrap" }}>
                 {donnees.associes.map((a) => (
@@ -209,12 +215,12 @@ function PageBeneficeIndividuel({ activite, basePath }) {
                   </table>
                 </div>
               ) : (
-                <p className={styles.etatVide}>{t("aucun_associe_selectionne")}</p>
+                <p className={styles.etatVide}>{t("aucun_associe_selectionne", "Aucun associé défini pour cette saison.")}</p>
               )}
             </>
           )}
 
-          {vue === "recap" && synthese && (
+          {vueEffective === "recap" && synthese && (
             <div className={styles.conteneurRecap}>
               <table className={stylesInd.tableauSynthese}>
                 <thead>

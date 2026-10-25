@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { pelerinService } from "../../services/pelerinService";
 import { telechargerFichierProtege } from "../../utils/telechargement";
 import BadgeStatutPaiement from "../../components/BadgeStatutPaiement/BadgeStatutPaiement";
+import QuotaPelerins, { AlerteQuotaAtteint } from "../../components/QuotaPelerins/QuotaPelerins";
 import CONFIG from "../../config/config";
 import styles from "../../theme/pages/pelerins/ListePelerins.module.css";
 
@@ -24,6 +25,20 @@ function ListePelerins({ typeVoyageFixe, titreCle, retourPath }) {
   const [filtreStatutPaiement, setFiltreStatutPaiement] = useState("");
   const [filtreAnnee, setFiltreAnnee] = useState("");
   const [filtreInscripteur, setFiltreInscripteur] = useState("");
+
+  // Quota d'inscription : uniquement dans les listes Hajj et Oumra
+  const activiteQuota = typeVoyageFixe === "pelerinage" ? "hajj" : typeVoyageFixe === "oumra" ? "oumra" : null;
+  const [quota, setQuota] = useState(null);
+  const [versionQuota, setVersionQuota] = useState(0);
+  const [alerteQuota, setAlerteQuota] = useState(false);
+
+  const nouveauPelerin = () => {
+    if (quota?.atteint) {
+      setAlerteQuota(true);
+      return;
+    }
+    navigate(typeVoyageFixe ? `/pelerins/nouveau?type=${typeVoyageFixe}` : "/pelerins/nouveau");
+  };
 
   const charger = async () => {
     setChargement(true);
@@ -54,6 +69,7 @@ function ListePelerins({ typeVoyageFixe, titreCle, retourPath }) {
     e.stopPropagation();
     if (!window.confirm(t("confirmer_suppression"))) return;
     await pelerinService.supprimer(id);
+    setVersionQuota((v) => v + 1);
     charger();
   };
 
@@ -88,12 +104,19 @@ function ListePelerins({ typeVoyageFixe, titreCle, retourPath }) {
           <button className={styles.boutonSecondaire} onClick={exporterPdf}>⬇ PDF</button>
           <button
             className={styles.boutonPrincipal}
-            onClick={() => navigate(typeVoyageFixe ? `/pelerins/nouveau?type=${typeVoyageFixe}` : "/pelerins/nouveau")}
+            onClick={nouveauPelerin}
+            style={quota?.atteint ? { opacity: 0.6 } : undefined}
           >
             + {t("nouveau_pelerin")}
           </button>
         </div>
       </div>
+
+      {activiteQuota && (
+        <QuotaPelerins activite={activiteQuota} onChange={setQuota} version={versionQuota} />
+      )}
+
+      {alerteQuota && <AlerteQuotaAtteint onFermer={() => setAlerteQuota(false)} />}
 
       <div className={styles.barreOutils}>
         <input
