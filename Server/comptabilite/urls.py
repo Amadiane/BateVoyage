@@ -1,12 +1,6 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-# from .views import (
-#     BonSortieViewSet, DepenseViewSet, DetteFournisseurViewSet, ResumeComptabiliteView,
-#     CategorieDecaissementViewSet, DecaissementViewSet, TauxChangeView,
-#     SaisonComptableViewSet, EncaissementView, BeneficeGlobalView,
-#     DetteViewSet, AssocieViewSet, BeneficeIndividuelView, DepensePelerinViewSet,
-#     CreanceViewSet, DevisFactureViewSet, LigneBudgetFonctionnementViewSet
-# )
+
 
 from .views import (
     BonSortieViewSet, DepenseViewSet, DetteFournisseurViewSet, ResumeComptabiliteView,

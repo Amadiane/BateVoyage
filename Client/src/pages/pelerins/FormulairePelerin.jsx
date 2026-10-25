@@ -21,23 +21,23 @@ const AGENCES_PARTENAIRES = [
 ];
 
 const INSCRIPTEURS_HAJJ = [
-  "Nfamba Kaba",
-  "Laye Mady Diallo",
-  "Laye Abou Diallo",
+  "N'famba Ibrahima Kaba",
+  "Mohamed Ahmad Diallo",
+  "Aboubacar Ahmad Diallo",
   "Nfamba Keïta",
-  "Minata Mady",
+  "Minata Mady Kaba",
   "Boh Kabinet",
   "Hadja Fatou Diallo",
   "Hadja Fanta Oulen",
 ];
 
 const INSCRIPTEURS_OUMRA = [
-  "Mohamed Ahmed Diallo",
-  "Aboubacar Diallo",
-  "N'famba Ibrahima kaba",
+  "N'famba Ibrahima Kaba",
+  "Mohamed Ahmad Diallo",
+  "Aboubacar Ahmad Diallo",
   "Sekou N'bah koita",
   "Souleymane Sacko",
-  "Minata Mady kaba",
+  "Minata Mady Kaba",
 ];
 
 const LABELS_TYPE_VOYAGE = {

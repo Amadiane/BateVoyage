@@ -8,9 +8,24 @@ import QuotaPelerins, { AlerteQuotaAtteint } from "../../components/QuotaPelerin
 import CONFIG from "../../config/config";
 import styles from "../../theme/pages/pelerins/ListePelerins.module.css";
 
-const INSCRIPTEURS = [
-  "Nfamba Kaba", "Laye Mady Diallo", "Laye Abou Diallo", "Nfamba Keïta",
-  "Minata Mady", "Boh Kabinet", "Hadja Fatou Diallo", "Hadja Fanta Oulen",
+const INSCRIPTEURS_HAJJ = [
+  "N'famba Ibrahima Kaba",
+  "Mohamed Ahmad Diallo",
+  "Aboubacar Ahmad Diallo",
+  "Nfamba Keïta",
+  "Minata Mady Kaba",
+  "Boh Kabinet",
+  "Hadja Fatou Diallo",
+  "Hadja Fanta Oulen",
+];
+
+const INSCRIPTEURS_OUMRA = [
+  "N'famba Ibrahima Kaba",
+  "Mohamed Ahmad Diallo",
+  "Aboubacar Ahmad Diallo",
+  "Sekou N'bah koita",
+  "Souleymane Sacko",
+  "Minata Mady Kaba",
 ];
 
 const ANNEES = [2024, 2025, 2026, 2027];
@@ -25,6 +40,9 @@ function ListePelerins({ typeVoyageFixe, titreCle, retourPath }) {
   const [filtreStatutPaiement, setFiltreStatutPaiement] = useState("");
   const [filtreAnnee, setFiltreAnnee] = useState("");
   const [filtreInscripteur, setFiltreInscripteur] = useState("");
+
+  // Liste des inscripteurs selon le module (Oumra a sa propre liste)
+  const INSCRIPTEURS = typeVoyageFixe === "oumra" ? INSCRIPTEURS_OUMRA : INSCRIPTEURS_HAJJ;
 
   // Quota d'inscription : uniquement dans les listes Hajj et Oumra
   const activiteQuota = typeVoyageFixe === "pelerinage" ? "hajj" : typeVoyageFixe === "oumra" ? "oumra" : null;
@@ -163,16 +181,17 @@ function ListePelerins({ typeVoyageFixe, titreCle, retourPath }) {
               <th>{t("visa")}</th>
               <th>{t("statut_paiement_label")}</th>
               <th>{t("inscripteur")}</th>
+              <th>{t("agence_partenaire")}</th>
               <th>{t("dossier")}</th>
               <th></th>
             </tr>
           </thead>
           <tbody>
             {chargement && (
-              <tr><td colSpan={10} className={styles.etatVide}>{t("chargement")}</td></tr>
+              <tr><td colSpan={11} className={styles.etatVide}>{t("chargement")}</td></tr>
             )}
             {!chargement && pelerinsAffiches.length === 0 && (
-              <tr><td colSpan={10} className={styles.etatVide}>{t("aucun_pelerin")}</td></tr>
+              <tr><td colSpan={11} className={styles.etatVide}>{t("aucun_pelerin")}</td></tr>
             )}
             {!chargement && pelerinsAffiches.map((p) => (
               <tr key={p.id} className={styles.ligneCliquable} onClick={() => navigate(`/pelerins/${p.id}`)}>
@@ -198,6 +217,7 @@ function ListePelerins({ typeVoyageFixe, titreCle, retourPath }) {
                 </td>
                 <td><BadgeStatutPaiement statut={p.statut_paiement} /></td>
                 <td className={styles.cellInscripteur}>{p.inscripteur || "—"}</td>
+                <td>{p.agence_partenaire || "BATE VOYAGE GUINÉE"}</td>
                 <td>
                   {p.elements_manquants && p.elements_manquants.length > 0 ? (
                     <span className={styles.badgeIncomplet} title={p.elements_manquants.map((el) => t(`manquant_${el}`)).join(", ")}>

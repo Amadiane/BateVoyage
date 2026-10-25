@@ -241,6 +241,10 @@ class Associe(models.Model):
     pourcentage_part = models.DecimalField(max_digits=5, decimal_places=2, help_text="Ex: 30.00 pour 30%. Ignoré pour Oumra (calculé selon les inscriptions)")
     est_caisse = models.BooleanField(default=False, help_text="Coché uniquement pour 'La caisse'")
     ordre = models.PositiveIntegerField(default=0)
+    groupe_agence = models.CharField(
+        max_length=60, blank=True, default="",
+        help_text="Hajj : agence à laquelle l'associé appartient (BATE VOYAGE GUINÉE, INTER-DJIGUI, MANDEN VOYAGE)",
+    )
 
     class Meta:
         ordering = ["ordre"]

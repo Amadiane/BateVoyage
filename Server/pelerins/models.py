@@ -107,26 +107,27 @@ class Pelerin(models.Model):
 
     # ---------- 14. Inscripteur ----------
     class Inscripteur(models.TextChoices):
-        NFAMBA_KABA = "Nfamba Kaba", "Nfamba Kaba"
-        LAYE_MADY_DIALLO = "Laye Mady Diallo", "Laye Mady Diallo"
-        LAYE_ABOU_DIALLO = "Laye Abou Diallo", "Laye Abou Diallo"
+        NFAMBA_IBRAHIMA_KABA = "N'famba Ibrahima Kaba", "N'famba Ibrahima Kaba"
+        MOHAMED_AHMAD_DIALLO = "Mohamed Ahmad Diallo", "Mohamed Ahmad Diallo"
+        ABOUBACAR_AHMAD_DIALLO = "Aboubacar Ahmad Diallo", "Aboubacar Ahmad Diallo"
         NFAMBA_KEITA = "Nfamba Keïta", "Nfamba Keïta"
-        MINATA_MADY = "Minata Mady", "Minata Mady"
+        MINATA_MADY_KABA = "Minata Mady Kaba", "Minata Mady Kaba"
         BOH_KABINET = "Boh Kabinet", "Boh Kabinet"
         HADJA_FATOU_DIALLO = "Hadja Fatou Diallo", "Hadja Fatou Diallo"
         HADJA_FANTA_OULEN = "Hadja Fanta Oulen", "Hadja Fanta Oulen"
 
     class InscripteurOumra(models.TextChoices):
-        MOHAMED_AHMED_DIALLO = "Mohamed Ahmed Diallo", "Mohamed Ahmed Diallo"
-        ABOUBACAR_DIALLO = "Aboubacar Diallo", "Aboubacar Diallo"
-        NFAMBA_IBRAHIMA_KABA = "N'famba Ibrahima kaba", "N'famba Ibrahima kaba"
+        NFAMBA_IBRAHIMA_KABA = "N'famba Ibrahima Kaba", "N'famba Ibrahima Kaba"
+        MOHAMED_AHMAD_DIALLO = "Mohamed Ahmad Diallo", "Mohamed Ahmad Diallo"
+        ABOUBACAR_AHMAD_DIALLO = "Aboubacar Ahmad Diallo", "Aboubacar Ahmad Diallo"
         SEKOU_NBAH_KOITA = "Sekou N'bah koita", "Sekou N'bah koita"
         SOULEYMANE_SACKO = "Souleymane Sacko", "Souleymane Sacko"
-        MINATA_MADY_KABA = "Minata Mady kaba", "Minata Mady kaba"
+        MINATA_MADY_KABA = "Minata Mady Kaba", "Minata Mady Kaba"
 
+    # Plusieurs noms sont communs au Hajj et à l'Oumra : on évite les doublons dans la liste.
     inscripteur = models.CharField(
         max_length=50,
-        choices=Inscripteur.choices + InscripteurOumra.choices,
+        choices=list(dict.fromkeys(Inscripteur.choices + InscripteurOumra.choices)),
         blank=True,
     )
 
@@ -262,6 +263,7 @@ class Pelerin(models.Model):
 
 class QuotaInscription(models.Model):
     """Nombre maximal de pèlerins pour un module (Hajj ou Oumra) et une année."""
+
     class Activite(models.TextChoices):
         HAJJ = "hajj", "Hajj"
         OUMRA = "oumra", "Omra"

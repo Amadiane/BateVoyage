@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { decaissementService } from "../../services/decaissementService";
 import BoutonExporter from "../../components/export/BoutonExporter";
+import { TableauAgences, TableauRepartitionAssocies } from "../../components/TableauxHajj/TableauxHajj";
 import styles from "../../theme/pages/comptabilite/PageDecaissementDetail.module.css";
 import stylesInd from "../../theme/pages/comptabilite/PageBeneficeIndividuel.module.css";
 
@@ -17,6 +18,27 @@ function CelluleMontant({ valeur }) {
     </>
   );
 }
+
+const COLONNES_AGENCES = [
+  { cle: "agence", entete: "Agence", largeur: 30 },
+  { cle: "pelerins", entete: "Pèlerins", largeur: 12, format: "nombre" },
+  { cle: "pourcentage", entete: "% des pèlerins", largeur: 14, format: "nombre" },
+  { cle: "gnf", entete: "Bénéfice (GNF)", largeur: 18, format: "nombre" },
+  { cle: "usd", entete: "Bénéfice (USD)", largeur: 14, format: "nombre" },
+  { cle: "sar", entete: "Bénéfice (SAR)", largeur: 14, format: "nombre" },
+];
+
+// En-tête d'un associé dans l'export : nom + agence (Hajj)
+const libelleAssocie = (a) => (a.groupe ? `${a.nom} — ${a.groupe}` : a.nom);
+
+const COLONNES_DETAIL_AGENCE = [
+  { cle: "designation", entete: "Désignation", largeur: 52 },
+  { cle: "gnf", entete: "GNF", largeur: 16, format: "nombre" },
+  { cle: "usd", entete: "USD", largeur: 14, format: "nombre" },
+  { cle: "sar", entete: "SAR (riyal saoudien)", largeur: 18, format: "nombre" },
+];
+
+const GROUPE_PRINCIPAL = "BATE VOYAGE GUINÉE";
 
 const COLONNES_ASSOCIE = [
   { cle: "designation", entete: "Désignation", largeur: 32 },
@@ -36,10 +58,10 @@ function PageBeneficeIndividuel({ activite, basePath }) {
   const [associeSelectionne, setAssocieSelectionne] = useState(null);
   const [vue, setVue] = useState("associe");
 
-  // Le tableau récapitulatif n'existe que pour l'Oumra (demande du client).
-  // Le Hajj n'affiche que la vue "Par associé".
-  const afficherRecap = activite === "oumra";
-  const vueEffective = afficherRecap ? vue : "associe";
+  // Oumra : uniquement le tableau récapitulatif (pourcentages selon les inscriptions).
+  // Hajj : trois boutons — "Par associé", "Tableau 1 · Agences", "Tableau 2 · Associés".
+  const estOumra = activite === "oumra";
+  const vueEffective = estOumra ? "recap" : vue;
 
   const charger = async (idSaison) => {
     if (!idSaison) {
@@ -47,11 +69,12 @@ function PageBeneficeIndividuel({ activite, basePath }) {
       setSynthese(null);
       return;
     }
-    const requetes = [decaissementService.obtenirBeneficeIndividuel(activite, idSaison)];
-    if (afficherRecap) requetes.push(decaissementService.obtenirSyntheseBenefices(activite, idSaison));
-    const [indRes, synthRes] = await Promise.all(requetes);
+    const [indRes, synthRes] = await Promise.all([
+      decaissementService.obtenirBeneficeIndividuel(activite, idSaison),
+      decaissementService.obtenirSyntheseBenefices(activite, idSaison),
+    ]);
     setDonnees(indRes.data);
-    setSynthese(synthRes ? synthRes.data : null);
+    setSynthese(synthRes.data);
     // Sélectionne toujours le premier associé après un rechargement,
     // pour éviter un ID sélectionné qui ne correspondrait plus à rien.
     if (indRes.data.associes.length > 0) {
@@ -105,9 +128,9 @@ function PageBeneficeIndividuel({ activite, basePath }) {
     ? [
         { cle: "designation", entete: "Désignation", largeur: 28 },
         ...synthese.associes.flatMap((a, i) => [
-          { cle: `assoc_${i}_gnf`, entete: `${a.nom} (GNF)`, largeur: 16, format: "nombre" },
-          { cle: `assoc_${i}_usd`, entete: `${a.nom} (USD)`, largeur: 12, format: "nombre" },
-          { cle: `assoc_${i}_sar`, entete: `${a.nom} (SAR)`, largeur: 12, format: "nombre" },
+          { cle: `assoc_${i}_gnf`, entete: `${libelleAssocie(a)} (GNF)`, largeur: 16, format: "nombre" },
+          { cle: `assoc_${i}_usd`, entete: `${libelleAssocie(a)} (USD)`, largeur: 12, format: "nombre" },
+          { cle: `assoc_${i}_sar`, entete: `${libelleAssocie(a)} (SAR)`, largeur: 12, format: "nombre" },
         ]),
         { cle: "total_gnf", entete: "Total (GNF)", largeur: 16, format: "nombre" },
         { cle: "total_usd", entete: "Total (USD)", largeur: 12, format: "nombre" },
@@ -130,19 +153,85 @@ function PageBeneficeIndividuel({ activite, basePath }) {
       })
     : [];
 
-  const exportProps = vueEffective === "associe"
+  // Export du Tableau 1 (Hajj) : une ligne par agence + total
+  const lignesExportAgences = (synthese?.groupes || []).map((g) => ({
+    agence: g.nom,
+    pelerins: g.nb_pelerins,
+    pourcentage: g.pourcentage,
+    gnf: g.benefice.gnf,
+    usd: g.benefice.usd,
+    sar: g.benefice.sar,
+  }));
+  const totauxExportAgences = synthese?.total_groupes
     ? {
-        titre: t("benefice_individuel"),
-        sousTitre: associeAffiche ? `${associeAffiche.nom} — ${nomSaisonActuelle}` : nomSaisonActuelle,
-        colonnes: COLONNES_ASSOCIE,
-        lignes: lignesExportAssocie,
+        pelerins: synthese.total_groupes.nb_pelerins,
+        gnf: synthese.total_groupes.benefice.gnf,
+        usd: synthese.total_groupes.benefice.usd,
+        sar: synthese.total_groupes.benefice.sar,
       }
-    : {
-        titre: `${t("benefice_individuel")} — ${t("vue_recapitulatif")}`,
-        sousTitre: nomSaisonActuelle,
-        colonnes: colonnesExportRecap,
-        lignes: lignesExportRecap,
+    : null;
+
+  // Export d'UNE agence : son bénéfice et uniquement ses propres associés.
+  // Les associés des autres agences n'y figurent jamais.
+  const exportDeLAgence = (g) => {
+    const valeurs = (cle) => synthese.lignes.find((l) => l.cle === cle)?.valeurs || [];
+    const parts = valeurs("part");
+    const dettes = valeurs("dettes");
+    const nets = valeurs("net");
+    const lignes = [
+      {
+        designation: `Bénéfice de l'agence (${g.nb_pelerins} pèlerins · ${g.pourcentage} %)`,
+        gnf: g.benefice.gnf, usd: g.benefice.usd, sar: g.benefice.sar,
+      },
+    ];
+    const netsAgence = [];
+    synthese.associes.forEach((a, i) => {
+      if (a.groupe !== g.nom) return;
+      const ajouter = (libelle, v) => {
+        if (v) lignes.push({ designation: `${a.nom} — ${libelle}`, gnf: v.gnf, usd: v.usd, sar: v.sar });
       };
+      ajouter(`part (${a.pourcentage} %)`, parts[i]);
+      if (!a.est_caisse) ajouter("dettes à déduire", dettes[i]);
+      ajouter("net à recevoir", nets[i]);
+      if (nets[i]) netsAgence.push(nets[i]);
+    });
+    const totaux = netsAgence.reduce(
+      (acc, v) => ({ gnf: acc.gnf + v.gnf, usd: acc.usd + v.usd, sar: acc.sar + v.sar }),
+      { gnf: 0, usd: 0, sar: 0 }
+    );
+    return {
+      titre: `${t("benefice_individuel")} — ${g.nom}`,
+      sousTitre: `${nomSaisonActuelle} — ${g.nb_pelerins} pèlerins`,
+      colonnes: COLONNES_DETAIL_AGENCE,
+      lignes,
+      totaux,
+    };
+  };
+
+  let exportProps;
+  if (vueEffective === "associe") {
+    exportProps = {
+      titre: t("benefice_individuel"),
+      sousTitre: associeAffiche ? `${associeAffiche.nom} — ${nomSaisonActuelle}` : nomSaisonActuelle,
+      colonnes: COLONNES_ASSOCIE,
+      lignes: lignesExportAssocie,
+    };
+  } else if (vueEffective === "agences") {
+    exportProps = {
+      titre: `${t("benefice_individuel")} — ${t("vue_agences", "Tableau 1 · Agences")}`,
+      sousTitre: nomSaisonActuelle,
+      colonnes: COLONNES_AGENCES,
+      lignes: lignesExportAgences,
+      totaux: totauxExportAgences,
+    };
+  } else {
+    exportProps = {
+      titre: `${t("benefice_individuel")} — ${estOumra ? t("vue_recapitulatif") : t("vue_associes_hajj", "Tableau 2 · Associés")}`,
+      sousTitre: nomSaisonActuelle,
+      colonnes: colonnesExportRecap,
+      lignes: lignesExportRecap,
+    };
+  }
 
   return (
     <div>
@@ -156,7 +245,7 @@ function PageBeneficeIndividuel({ activite, basePath }) {
               {saisons.map((s) => <option key={s.id} value={s.id}>{s.nom}</option>)}
             </select>
           )}
-          <BoutonExporter {...exportProps} />
+          {vueEffective !== "agences" && <BoutonExporter {...exportProps} />}
         </div>
       </div>
 
@@ -166,13 +255,16 @@ function PageBeneficeIndividuel({ activite, basePath }) {
             {t("benefice_reel_global")} : {donnees.benefice_reel_global.gnf.toLocaleString("fr-FR")} GNF
           </p>
 
-          {afficherRecap && (
+          {!estOumra && (
             <div className={styles.ongletsSection}>
               <button className={vue === "associe" ? styles.ongletActif : styles.onglet} onClick={() => setVue("associe")}>
                 {t("vue_par_associe")}
               </button>
+              <button className={vue === "agences" ? styles.ongletActif : styles.onglet} onClick={() => setVue("agences")}>
+                {t("vue_agences", "Tableau 1 · Agences")}
+              </button>
               <button className={vue === "recap" ? styles.ongletActif : styles.onglet} onClick={() => setVue("recap")}>
-                {t("vue_recapitulatif")}
+                {t("vue_associes_hajj", "Tableau 2 · Associés")}
               </button>
             </div>
           )}
@@ -220,7 +312,59 @@ function PageBeneficeIndividuel({ activite, basePath }) {
             </>
           )}
 
-          {vueEffective === "recap" && synthese && (
+          {vueEffective === "agences" && synthese && (
+            <>
+              <TableauAgences synthese={synthese} />
+
+              <div style={{ background: "#fff", border: "1px solid #E7E2D6", borderRadius: 16, padding: "16px 20px", marginTop: 18 }}>
+                <div style={{ fontWeight: 800, color: "#0F172A" }}>
+                  📤 {t("exports_agences", "Exporter pour les agences")}
+                </div>
+                <p style={{ margin: "6px 0 12px", fontSize: 13, color: "#6B7280", lineHeight: 1.5 }}>
+                  {t(
+                    "exports_agences_aide",
+                    "Ces exports ne montrent jamais les intérêts individuels des associés d'une autre agence. L'export de BATE VOYAGE GUINÉE détaille ses propres associés : à garder en interne."
+                  )}
+                </p>
+
+                <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "center", justifyContent: "space-between", padding: "10px 0", borderTop: "1px solid #E7E2D6" }}>
+                  <div>
+                    <div style={{ fontWeight: 700 }}>{t("export_trois_agences", "Les trois agences")}</div>
+                    <div style={{ fontSize: 12, color: "#6B7280" }}>
+                      {t("export_trois_agences_aide", "Pèlerins et bénéfice de chaque agence, sans le détail des associés.")}
+                    </div>
+                  </div>
+                  <BoutonExporter {...exportProps} />
+                </div>
+
+                {(synthese.groupes || []).map((g) => (
+                  <div key={g.nom} style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "center", justifyContent: "space-between", padding: "10px 0", borderTop: "1px solid #E7E2D6" }}>
+                    <div>
+                      <div style={{ fontWeight: 700 }}>{g.nom}</div>
+                      <div style={{ fontSize: 12, color: g.nom === GROUPE_PRINCIPAL ? "#B45309" : "#6B7280" }}>
+                        {g.nb_pelerins} {t("pelerins", "pèlerins")}
+                        {g.nom === GROUPE_PRINCIPAL
+                          ? ` · ${t("export_interne", "détail de ses associés — usage interne, à ne pas transmettre aux partenaires")}`
+                          : ` · ${t("export_agence_aide", "bénéfice et part de ses associés uniquement")}`}
+                      </div>
+                    </div>
+                    <BoutonExporter {...exportDeLAgence(g)} />
+                  </div>
+                ))}
+              </div>
+            </>
+          )}
+
+          {vueEffective === "recap" && synthese && !estOumra && (
+            <>
+              <p style={{ margin: "0 0 12px", fontSize: 12, color: "#B45309" }}>
+                🔒 {t("tableau2_interne", "Ce tableau et son export contiennent les intérêts individuels de tous les associés : usage interne. Pour les agences partenaires, utilisez le Tableau 1.")}
+              </p>
+              <TableauRepartitionAssocies synthese={synthese} />
+            </>
+          )}
+
+          {vueEffective === "recap" && synthese && estOumra && (
             <div className={styles.conteneurRecap}>
               <table className={stylesInd.tableauSynthese}>
                 <thead>
@@ -250,6 +394,12 @@ function PageBeneficeIndividuel({ activite, basePath }) {
             </div>
           )}
         </>
+      )}
+
+      {!donnees && (
+        <p className={styles.etatVide}>
+          {t("aucune_saison_creee", "Aucune saison n'est créée pour cette activité. Créez-en une dans Décaissements (« Nouvelle saison »).")}
+        </p>
       )}
     </div>
   );

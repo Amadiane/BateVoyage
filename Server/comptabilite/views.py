@@ -25,7 +25,7 @@ from django.http import HttpResponse
 from django.template.loader import render_to_string
 from django.utils.text import slugify
 from xhtml2pdf import pisa
-from .synthese import calculer_synthese_benefices, preparer_contexte_pdf
+from .synthese import calculer_synthese_benefices, preparer_contexte_pdf, associes_avec_base
 
 
 class BonSortieViewSet(viewsets.ModelViewSet):
@@ -402,37 +402,30 @@ class BeneficeIndividuelView(APIView):
             return convertir_depuis_gnf(montant_gnf, taux)
 
         est_oumra = activite == "oumra"
-        associes = list(Associe.objects.filter(activite="oumra" if est_oumra else "hajj").order_by("ordre"))
-
-        # Oumra : la part de chaque inscripteur dépend du nombre de pèlerins qu'il a inscrits.
-        compteurs, total_inscrits, non_attribues = {}, 0, 0
-        if est_oumra:
-            from pelerins.models import Pelerin
-            noms = [a.nom_complet for a in associes]
-            compteurs = dict(
-                Pelerin.objects.filter(type_voyage="oumra", inscripteur__in=noms)
-                .order_by().values_list("inscripteur").annotate(n=Count("id"))
-            )
-            total_inscrits = sum(compteurs.values())
-            non_attribues = Pelerin.objects.filter(type_voyage="oumra").exclude(inscripteur__in=noms).count()
+        # Associés de l'activité uniquement. Oumra : part selon les inscriptions de chaque inscripteur.
+        # Hajj : pourcentage fixe appliqué au bénéfice du groupe d'agence de l'associé.
+        elements, infos = associes_avec_base(activite, benefice_reel, saison_id)
+        total_inscrits = infos["total"]
+        non_attribues = infos["hors_groupes"]
 
         resultats = []
-        for a in associes:
+        for e in elements:
+            a = e["associe"]
+            pourcentage = e["pourcentage"]
+            nb = e["nb_pelerins"]
             if est_oumra:
-                nb = compteurs.get(a.nom_complet, 0)
-                pourcentage = (nb / total_inscrits * 100) if total_inscrits else 0.0
                 libelle_part = f"Part du Bénéfice global ({nb} pèlerin(s) inscrit(s) sur {total_inscrits} — {pourcentage:.1f}%)"
             else:
-                pourcentage = float(a.pourcentage_part)
-                libelle_part = f"{a.pourcentage_part}% du Bénéfice global"
+                libelle_part = f"{a.pourcentage_part}% du bénéfice de {e['groupe']} ({nb} pèlerin(s))"
 
-            part_benefice_gnf = benefice_reel * (pourcentage / 100)
+            part_benefice_gnf = e["base"] * (pourcentage / 100)
 
             if a.est_caisse:
                 resultats.append({
                     "associe_id": a.id,
                     "nom": a.nom_complet,
                     "pourcentage": pourcentage,
+                    "groupe": e["groupe"],
                     "lignes": [
                         {"designation": libelle_part, "valeurs": convertir(part_benefice_gnf)},
                     ],
@@ -451,6 +444,7 @@ class BeneficeIndividuelView(APIView):
                 "associe_id": a.id,
                 "nom": a.nom_complet,
                 "pourcentage": pourcentage,
+                "groupe": e["groupe"],
                 "lignes": [
                     {"designation": libelle_part, "valeurs": convertir(part_benefice_gnf)},
                     {"designation": "Total de ses dettes", "valeurs": convertir(total_dettes_associe_gnf)},
@@ -465,6 +459,7 @@ class BeneficeIndividuelView(APIView):
             "mode_repartition": "inscripteurs" if est_oumra else "pourcentages_fixes",
             "total_pelerins_inscrits": total_inscrits,
             "pelerins_non_attribues": non_attribues,
+            "perimetre_pelerins": infos["perimetre"],
         })
 
 class DepensePelerinViewSet(viewsets.ModelViewSet):
