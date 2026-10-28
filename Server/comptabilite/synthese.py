@@ -4,12 +4,13 @@ from django.utils import timezone
 from .models import (
     Associe, BonSortie, Decaissement, Dette, DetteFournisseur, SaisonComptable, TauxChange,
 )
+from .totaux import totaux_creances_dettes
 from .utils import convertir_depuis_gnf, convertir_vers_gnf
 
 
 def _benefice_reel_gnf(activite, saison_id, taux):
     """Même logique que BeneficeGlobalView : encaissé - décaissé (frais généraux
-    + frais personnels), corrigé par créances - dettes fournisseurs."""
+    + frais personnels), corrigé par créances - dettes (voir totaux.py)."""
     from paiements.models import Paiement
 
     type_voyage = "pelerinage" if activite == "hajj" else "oumra"
@@ -29,8 +30,7 @@ def _benefice_reel_gnf(activite, saison_id, taux):
         perso = Decaissement.objects.filter(activite="personnel", saison=saison_personnel)
         total_decaisse += sum(convertir_vers_gnf(d.montant, d.devise, taux) for d in perso)
 
-    total_creance = float(BonSortie.objects.filter(activite=activite, justifie=False).aggregate(t=Sum("montant"))["t"] or 0)
-    total_dette = float(DetteFournisseur.objects.filter(activite=activite, soldee=False).aggregate(t=Sum("montant_du"))["t"] or 0)
+    total_creance, total_dette, _ = totaux_creances_dettes(activite, taux)
 
     return (total_encaisse - total_decaisse) - (total_creance - total_dette)
 

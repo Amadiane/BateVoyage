@@ -25,6 +25,7 @@ from django.http import HttpResponse
 from django.template.loader import render_to_string
 from django.utils.text import slugify
 from xhtml2pdf import pisa
+from .totaux import totaux_creances_dettes
 from .synthese import calculer_synthese_benefices, preparer_contexte_pdf, associes_avec_base
 
 
@@ -294,8 +295,7 @@ class BeneficeGlobalView(APIView):
             total_decaisse += sum(convertir_vers_gnf(d.montant, d.devise, taux) for d in decaissements_personnel)
 
         # --- Créances / Dettes ---
-        total_creance = float(BonSortie.objects.filter(activite=activite, justifie=False).aggregate(t=Sum("montant"))["t"] or 0)
-        total_dette = float(DetteFournisseur.objects.filter(activite=activite, soldee=False).aggregate(t=Sum("montant_du"))["t"] or 0)
+        total_creance, total_dette, details_cd = totaux_creances_dettes(activite, taux)
 
         benefice_provisoire = total_encaisse - total_decaisse
         difference = total_creance - total_dette
@@ -314,11 +314,18 @@ class BeneficeGlobalView(APIView):
                 {"designation": "Total encaissé", "cle": "total_encaisse", "valeurs": convertir(total_encaisse), "avertissement": avertissement_encaisse},
                 {"designation": "Total décaissé", "cle": "total_decaisse", "valeurs": convertir(total_decaisse), "avertissement": "Inclut les Frais généraux de la saison sélectionnée et les Frais personnels de la saison active."},
                 {"designation": "Bénéfice provisoire", "cle": "benefice_provisoire", "valeurs": convertir(benefice_provisoire)},
-                {"designation": "Total créances", "cle": "total_creance", "valeurs": convertir(total_creance), "avertissement": "Bons de sortie non justifiés, toutes saisons confondues pour cette activité."},
-                {"designation": "Total dettes", "cle": "total_dette", "valeurs": convertir(total_dette), "avertissement": "Dettes fournisseurs non soldées, toutes saisons confondues pour cette activité."},
+                {"designation": "Total créances", "cle": "total_creance", "valeurs": convertir(total_creance),
+                 "details": [{"libelle": l, "valeurs": convertir(m)} for l, m in details_cd["creance"]],
+                 "avertissement": "Bons de sortie non justifiés + créances non soldées, toutes saisons confondues pour cette activité."},
+                {"designation": "Total dettes", "cle": "total_dette", "valeurs": convertir(total_dette),
+                 "details": [{"libelle": l, "valeurs": convertir(m)} for l, m in details_cd["dette"]],
+                 "avertissement": "Dettes fournisseurs + dettes non soldées (hors dettes d'associés, déduites dans Bénéfices individuels), toutes saisons confondues."},
                 {"designation": "Différence", "cle": "difference", "valeurs": convertir(difference)},
                 {"designation": "BÉNÉFICE RÉEL", "cle": "benefice_reel", "valeurs": convertir(benefice_reel)},
             ],
+            "dettes_associes": (
+                convertir(details_cd["dettes_associes"]) if details_cd["dettes_associes"] else None
+            ),
             "observation": observation,
         })
 
@@ -391,8 +398,7 @@ class BeneficeIndividuelView(APIView):
             decaissements_personnel = Decaissement.objects.filter(activite="personnel", saison=saison_personnel)
             total_decaisse += sum(convertir_vers_gnf(d.montant, d.devise, taux) for d in decaissements_personnel)
 
-        total_creance = float(BonSortie.objects.filter(activite=activite, justifie=False).aggregate(t=Sum("montant"))["t"] or 0)
-        total_dette_fournisseur = float(DetteFournisseur.objects.filter(activite=activite, soldee=False).aggregate(t=Sum("montant_du"))["t"] or 0)
+        total_creance, total_dette_fournisseur, _ = totaux_creances_dettes(activite, taux)
 
         benefice_provisoire = total_encaisse - total_decaisse
         difference = total_creance - total_dette_fournisseur

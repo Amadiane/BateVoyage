@@ -30,6 +30,9 @@ const INSCRIPTEURS_OUMRA = [
 
 const ANNEES = [2024, 2025, 2026, 2027];
 
+// Agences proposées dans le filtre (un pèlerin sans agence partenaire est un pèlerin BATE VOYAGE GUINÉE).
+const AGENCES = ["BATE VOYAGE GUINÉE", "INTER-DJIGUI", "MANDEN VOYAGE"];
+
 function ListePelerins({ typeVoyageFixe, titreCle, retourPath }) {
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -40,6 +43,8 @@ function ListePelerins({ typeVoyageFixe, titreCle, retourPath }) {
   const [filtreStatutPaiement, setFiltreStatutPaiement] = useState("");
   const [filtreAnnee, setFiltreAnnee] = useState("");
   const [filtreInscripteur, setFiltreInscripteur] = useState("");
+  const [filtreGenre, setFiltreGenre] = useState("");
+  const [filtreAgence, setFiltreAgence] = useState("");
 
   // Liste des inscripteurs selon le module (Oumra a sa propre liste)
   const INSCRIPTEURS = typeVoyageFixe === "oumra" ? INSCRIPTEURS_OUMRA : INSCRIPTEURS_HAJJ;
@@ -58,16 +63,23 @@ function ListePelerins({ typeVoyageFixe, titreCle, retourPath }) {
     navigate(typeVoyageFixe ? `/pelerins/nouveau?type=${typeVoyageFixe}` : "/pelerins/nouveau");
   };
 
+  // Filtres actifs : utilisés pour la liste ET pour les exports Excel / PDF.
+  const construireParams = () => {
+    const params = {};
+    if (recherche.trim()) params.search = recherche.trim();
+    if (filtreStatut) params.statut = filtreStatut;
+    if (typeVoyageFixe) params.type_voyage = typeVoyageFixe;
+    if (filtreAnnee) params.annee = filtreAnnee;
+    if (filtreInscripteur) params.inscripteur = filtreInscripteur;
+    if (filtreGenre) params.sexe = filtreGenre;
+    if (filtreAgence) params.agence = filtreAgence;
+    return params;
+  };
+
   const charger = async () => {
     setChargement(true);
     try {
-      const params = {};
-      if (recherche) params.search = recherche;
-      if (filtreStatut) params.statut = filtreStatut;
-      if (typeVoyageFixe) params.type_voyage = typeVoyageFixe;
-      if (filtreAnnee) params.annee = filtreAnnee;
-      if (filtreInscripteur) params.inscripteur = filtreInscripteur;
-      const { data } = await pelerinService.lister(params);
+      const { data } = await pelerinService.lister(construireParams());
       setPelerins(data);
     } finally {
       setChargement(false);
@@ -77,7 +89,7 @@ function ListePelerins({ typeVoyageFixe, titreCle, retourPath }) {
   useEffect(() => {
     const delai = setTimeout(charger, 300);
     return () => clearTimeout(delai);
-  }, [recherche, filtreStatut, typeVoyageFixe, filtreAnnee, filtreInscripteur]);
+  }, [recherche, filtreStatut, typeVoyageFixe, filtreAnnee, filtreInscripteur, filtreGenre, filtreAgence]);
 
   const pelerinsAffiches = filtreStatutPaiement
     ? pelerins.filter((p) => p.statut_paiement === filtreStatutPaiement)
@@ -96,12 +108,18 @@ function ListePelerins({ typeVoyageFixe, titreCle, retourPath }) {
     telechargerFichierProtege(pelerinService.urlFichePdf(p.id), `fiche_${p.numero_id}.pdf`);
   };
 
+  // Les exports reprennent les filtres de la liste (module, recherche, genre, agence...).
+  const urlExport = (chemin) => {
+    const texte = new URLSearchParams(construireParams()).toString();
+    return `${CONFIG.API_PELERINS}${chemin}/${texte ? `?${texte}` : ""}`;
+  };
+
   const exporterExcel = () => {
-    telechargerFichierProtege(`${CONFIG.API_PELERINS}export-excel/`, "pelerins_export.xlsx");
+    telechargerFichierProtege(urlExport("export-excel"), "pelerins_export.xlsx");
   };
 
   const exporterPdf = () => {
-    telechargerFichierProtege(`${CONFIG.API_PELERINS}export-pdf/`, "liste_pelerins.pdf");
+    telechargerFichierProtege(urlExport("export-pdf"), "liste_pelerins.pdf");
   };
 
   return (
@@ -166,6 +184,15 @@ function ListePelerins({ typeVoyageFixe, titreCle, retourPath }) {
         <select value={filtreInscripteur} onChange={(e) => setFiltreInscripteur(e.target.value)} className={styles.selectFiltre}>
           <option value="">{t("tous_inscripteurs")}</option>
           {INSCRIPTEURS.map((n) => <option key={n} value={n}>{n}</option>)}
+        </select>
+        <select value={filtreGenre} onChange={(e) => setFiltreGenre(e.target.value)} className={styles.selectFiltre}>
+          <option value="">{t("tous_genres", "Tous les genres")}</option>
+          <option value="M">{t("homme", "Homme")}</option>
+          <option value="F">{t("femme", "Femme")}</option>
+        </select>
+        <select value={filtreAgence} onChange={(e) => setFiltreAgence(e.target.value)} className={styles.selectFiltre}>
+          <option value="">{t("toutes_agences", "Toutes les agences")}</option>
+          {AGENCES.map((a) => <option key={a} value={a}>{a}</option>)}
         </select>
       </div>
 

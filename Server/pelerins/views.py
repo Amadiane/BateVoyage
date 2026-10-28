@@ -1,12 +1,15 @@
 import requests
 import django_filters
 from django.db import transaction
+from django.db.models import Q
 from django.http import HttpResponse, Http404
 from django.template.loader import render_to_string
 from django.template import engines
 from django.utils import timezone
 from django.contrib.contenttypes.models import ContentType
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets, permissions
+from rest_framework.filters import SearchFilter
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
@@ -27,9 +30,9 @@ django_engine = engines["django"]
 TYPE_VOYAGE_PAR_ACTIVITE = {"hajj": "pelerinage", "oumra": "oumra"}
 ACTIVITE_PAR_TYPE_VOYAGE = {v: k for k, v in TYPE_VOYAGE_PAR_ACTIVITE.items()}
 
-# Rôles autorisés à modifier le quota (en plus des super-utilisateurs).
-# À adapter aux noms de rôles réels de l'application.
-ROLES_AUTORISES_QUOTA = ("fondateur", "administrateur", "admin")
+# Rôles autorisés à créer / modifier le quota (en plus des super-utilisateurs).
+# "admin_general" = l'administrateur général de l'application.
+ROLES_AUTORISES_QUOTA = ("fondateur", "admin_general", "administrateur", "admin")
 
 MESSAGE_QUOTA_ATTEINT = (
     "Vous avez atteint le nombre maximal de pèlerins autorisé. "
@@ -71,20 +74,41 @@ def nom_utilisateur(user):
 CHAMPS_DOCUMENTS = ["photo", "scan_passeport", "scan_visa", "scan_certificat_medical", "scan_recu_versement"]
 
 
+# Agences : un pèlerin sans agence partenaire appartient à BATE VOYAGE GUINÉE.
+# Chaque nom regroupe les différentes écritures possibles du champ "agence_partenaire".
+AGENCES_FILTRE = {
+    "BATE VOYAGE GUINÉE": ["", "BATE VOYAGE GUINÉE"],
+    "INTER-DJIGUI": ["INTER-DJIGUI"],
+    "MANDEN VOYAGE": ["MANDENG VOYAGE GUINÉE", "MANDEN VOYAGE"],
+}
+
+
 class PelerinFilter(django_filters.FilterSet):
-    annee = django_filters.NumberFilter(field_name="date_creation", lookup_expr="year")
+    annee = django_filters.NumberFilter(field_name="date_inscription", lookup_expr="year")
     guide = django_filters.NumberFilter(field_name="groupe__encadreur_id")
+    agence = django_filters.CharFilter(method="filtrer_agence")
+
+    def filtrer_agence(self, queryset, name, value):
+        valeurs = AGENCES_FILTRE.get(value)
+        if valeurs is None:
+            return queryset.filter(agence_partenaire__iexact=value)
+        if "" in valeurs:
+            return queryset.filter(Q(agence_partenaire__in=valeurs) | Q(agence_partenaire__isnull=True))
+        return queryset.filter(agence_partenaire__in=valeurs)
 
     class Meta:
         model = Pelerin
         fields = ["statut", "statut_visa", "sexe", "type_voyage", "inscripteur",
-                  "programme", "groupe", "chambre", "vehicule", "campement", "annee", "guide"]
+                  "programme", "groupe", "chambre", "vehicule", "campement", "annee", "guide", "agence"]
 
 
 class PelerinViewSet(viewsets.ModelViewSet):
     queryset = Pelerin.objects.select_related("programme", "groupe", "chambre").all()
     serializer_class = PelerinSerializer
     permission_classes = [permissions.IsAuthenticated]
+    # SearchFilter doit être déclaré ici : les réglages globaux n'activent que DjangoFilterBackend,
+    # sinon le paramètre ?search= est ignoré.
+    filter_backends = [DjangoFilterBackend, SearchFilter]
     filterset_class = PelerinFilter
     search_fields = ["nom", "prenom", "numero_id", "numero_passeport", "telephone", "inscripteur"]
 
@@ -261,12 +285,13 @@ class PelerinViewSet(viewsets.ModelViewSet):
         wb = Workbook()
         ws = wb.active
         ws.title = "Pèlerins"
-        ws.append(["N° Dossier", "Nom", "Prénom", "Téléphone", "N° Passeport", "Type", "Statut", "Inscripteur"])
+        ws.append(["N° Dossier", "Nom", "Prénom", "Sexe", "Téléphone", "N° Passeport", "Type", "Statut", "Inscripteur", "Agence"])
 
         for p in queryset:
             ws.append([
-                p.numero_id, p.nom, p.prenom, p.telephone, p.numero_passeport,
+                p.numero_id, p.nom, p.prenom, p.get_sexe_display(), p.telephone, p.numero_passeport,
                 p.get_type_voyage_display(), p.get_statut_display(), p.inscripteur or "",
+                p.agence_partenaire or "BATE VOYAGE GUINÉE",
             ])
 
         response = HttpResponse(content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")

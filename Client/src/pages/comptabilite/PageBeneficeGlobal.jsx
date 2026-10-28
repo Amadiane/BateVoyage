@@ -2,15 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { decaissementService } from "../../services/decaissementService";
-import BoutonExporter from "../../components/export/BoutonExporter";
 import styles from "../../theme/pages/comptabilite/PageDecaissementDetail.module.css";
-
-const COLONNES_EXPORT = [
-  { cle: "designation", entete: "Désignation", largeur: 34 },
-  { cle: "gnf", entete: "GNF", largeur: 16, format: "nombre" },
-  { cle: "usd", entete: "USD", largeur: 12, format: "nombre" },
-  { cle: "sar", entete: "SAR", largeur: 12, format: "nombre" },
-];
 
 function PageBeneficeGlobal({ activite, basePath }) {
   const { t } = useTranslation();
@@ -77,17 +69,6 @@ function PageBeneficeGlobal({ activite, basePath }) {
     }
   };
 
-  const lignesExport = donnees
-    ? donnees.lignes.map((l) => ({
-        designation: l.designation,
-        gnf: l.valeurs.gnf,
-        usd: l.valeurs.usd,
-        sar: l.valeurs.sar,
-      }))
-    : [];
-
-  const nomSaison = saisons.find((s) => s.id === saisonSelectionnee)?.nom || "";
-
   if (chargement) return <p className={styles.chargement}>{t("chargement")}</p>;
 
   return (
@@ -96,19 +77,11 @@ function PageBeneficeGlobal({ activite, basePath }) {
 
       <div className={styles.entete}>
         <h1 className={styles.titre}>{t("benefice_global")}</h1>
-        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          {saisons.length > 0 && (
-            <select value={saisonSelectionnee || ""} onChange={(e) => changerSaison(Number(e.target.value))} className={styles.selectAnnee}>
-              {saisons.map((s) => <option key={s.id} value={s.id}>{s.nom}</option>)}
-            </select>
-          )}
-          <BoutonExporter
-            titre={t("benefice_global")}
-            sousTitre={nomSaison}
-            colonnes={COLONNES_EXPORT}
-            lignes={lignesExport}
-          />
-        </div>
+        {saisons.length > 0 && (
+          <select value={saisonSelectionnee || ""} onChange={(e) => changerSaison(Number(e.target.value))} className={styles.selectAnnee}>
+            {saisons.map((s) => <option key={s.id} value={s.id}>{s.nom}</option>)}
+          </select>
+        )}
       </div>
 
       {saisons.length === 0 && <p className={styles.etatVide}>{t("aucune_saison")}</p>}
@@ -131,6 +104,16 @@ function PageBeneficeGlobal({ activite, basePath }) {
                 <tr key={l.cle} className={l.cle === "benefice_reel" ? styles.ligneTotalRecap : ""}>
                   <td className={styles.cellCategorie}>
                     {l.designation}
+                    {l.details && l.details.length > 0 && (
+                      <div style={{ marginTop: 6, display: "grid", gap: 2 }}>
+                        {l.details.map((d) => (
+                          <div key={d.libelle} style={{ fontSize: 12, fontWeight: 400, color: "#6B7280", display: "flex", justifyContent: "space-between", gap: 12, maxWidth: 360 }}>
+                            <span>— {d.libelle}</span>
+                            <span>{d.valeurs.gnf.toLocaleString("fr-FR")} GNF</span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
                     {l.avertissement && <div className={styles.avertissementLigne}>⚠️ {l.avertissement}</div>}
                   </td>
                   <td className={styles.cellMontant}>{l.valeurs.gnf.toLocaleString("fr-FR")}</td>
@@ -140,6 +123,16 @@ function PageBeneficeGlobal({ activite, basePath }) {
               ))}
             </tbody>
           </table>
+          {donnees.dettes_associes && (
+            <p style={{ marginTop: 12, fontSize: 13, color: "#6B7280", lineHeight: 1.5 }}>
+              ℹ️ {t("dettes_associes_info", "Dettes non soldées des associés")} :{" "}
+              <strong style={{ color: "#374151" }}>
+                {donnees.dettes_associes.gnf.toLocaleString("fr-FR")} GNF · {donnees.dettes_associes.usd.toLocaleString("fr-FR")} USD · {donnees.dettes_associes.sar.toLocaleString("fr-FR")} SAR
+              </strong>
+              <br />
+              {t("dettes_associes_precision", "Elles sont déduites de la part de chaque associé dans « Bénéfices individuels » et ne sont pas comprises dans le bénéfice réel ci-dessus.")}
+            </p>
+          )}
         </div>
       )}
 
