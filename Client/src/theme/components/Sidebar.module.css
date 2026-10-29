@@ -106,28 +106,64 @@
   padding: 12px 4px;
 }
 
+/* ---------- Pied : utilisateur connecté + déconnexion ---------- */
 .pied {
   padding: 14px 4px 16px;
   border-top: 1px solid rgba(255, 255, 255, 0.08);
   margin: 0 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.carteUtilisateur {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.avatarUtilisateur {
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  flex-shrink: 0;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--color-gold);
+  color: var(--color-brand-dark);
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.photoUtilisateur {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.infosUtilisateur {
+  min-width: 0;
 }
 
 .nomUtilisateur {
   font-size: 13px;
   font-weight: 600;
   margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .role {
   font-size: 11px;
   color: var(--color-gold);
-  margin: 2px 0 10px;
-}
-
-.pied {
-  padding: 14px 6px 16px;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
-  margin: 0 4px;
+  margin: 2px 0 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .boutonDeconnexion {
@@ -136,20 +172,22 @@
   align-items: center;
   justify-content: center;
   gap: 8px;
-  padding: 9px 12px;
-  border-radius: 8px;
-  border: none;
-  background-color: rgba(255, 255, 255, 0.06);
-  color: rgba(255, 255, 255, 0.75);
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background-color: rgba(255, 255, 255, 0.05);
+  color: rgba(255, 255, 255, 0.82);
   font-size: 12.5px;
   font-weight: 600;
   cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
 }
 
 .boutonDeconnexion:hover {
-  background-color: rgba(255, 255, 255, 0.12);
+  background-color: rgba(220, 38, 38, 0.18);
+  border-color: rgba(248, 113, 113, 0.5);
+  color: #fecaca;
 }
-
 
 /* ---------- Responsive : off-canvas sur mobile ---------- */
 @media (max-width: 900px) {

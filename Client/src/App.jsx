@@ -26,7 +26,7 @@ import PageComptabilite from "./pages/comptabilite/PageComptabilite";
 import ListePersonnel from "./pages/personnel/ListePersonnel";
 import FormulairePersonnel from "./pages/personnel/FormulairePersonnel";
 import PageModelesDocuments from "./pages/modeles-documents/PageModelesDocuments";
-import PageModulesVisibles from "./pages/parametres/PageModulesVisibles";
+// import PageModulesVisibles from "./pages/parametres/PageModulesVisibles";
 import PageForfaitsModule from "./pages/moduleVoyage/PageForfaitsModule";
 import PageVisaDocModule from "./pages/moduleVoyage/PageVisaDocModule";
 import PageVolsModule from "./pages/moduleVoyage/PageVolsModule";
@@ -265,14 +265,14 @@ function App() {
           />
 
           {/* Paramètres — modules visibles (toujours accessible Fondateur/Admin) */}
-          <Route
+          {/* <Route
             path="/parametres/modules"
             element={
               <ProtectedRoute rolesAutorises={ROLES_ADMIN}>
                 <PageModulesVisibles />
               </ProtectedRoute>
             }
-          />
+          /> */}
         </Route>
 
         <Route path="/" element={<Navigate to="/dashboard" replace />} />
