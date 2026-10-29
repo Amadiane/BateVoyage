@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
 import {
   Users, FileWarning, FileClock, Wallet, MessageSquareWarning, Plane, Building2, Bell,
-  ChevronDown, LogOut, User, TrendingUp, TrendingDown, PiggyBank, UserX, UserPlus, ArrowUpRight,
+  User, TrendingUp, TrendingDown, PiggyBank, UserX, UserPlus, ArrowUpRight,
 } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
 import { pelerinService } from "../../services/pelerinService";
@@ -74,6 +74,12 @@ const ORDRE_VISA = ["obtenu", "en_cours", "non_demande", "refuse", "expire"];
 // "vedette" se replie automatiquement sur "equilibre" quand le nombre de cartes ne s'y prête pas.
 const DISPOSITION_CARTES = "equilibre";
 
+// Disposition du bandeau d'accueil :
+//  "A" = identité en haut, chiffres clés en bas à gauche ;
+//  "B" = identité à gauche, panneau de chiffres clés à droite ;
+//  "C" = identité en haut, bande de chiffres clés sur toute la largeur en bas.
+
+
 // Hauteur minimale du bandeau d'accueil (px)
 const HAUTEUR_BANDEAU = 190;
 
@@ -106,9 +112,11 @@ function formaterMontantsNonNuls(totaux) {
 }
 
 function Dashboard() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  // Langue des dates (mois, jours) : suit la langue choisie ; chiffres latins en arabe pour rester cohérents avec le reste de l'interface
+  const localeDates = { fr: "fr-FR", en: "en-GB", ar: "ar-u-nu-latn" }[(i18n.language || "fr").slice(0, 2)] || "fr-FR";
   const navigate = useNavigate();
-  const { utilisateur, deconnecter } = useAuth();
+  const { utilisateur } = useAuth();
   const [pelerins, setPelerins] = useState([]);
   const [docs, setDocs] = useState(null);
   const [reclamationsOuvertes, setReclamationsOuvertes] = useState(0);
@@ -118,8 +126,10 @@ function Dashboard() {
   const [dettesOuvertes, setDettesOuvertes] = useState([]);
   const [creancesOuvertes, setCreancesOuvertes] = useState([]);
   const [chargement, setChargement] = useState(true);
-  const [menuOuvert, setMenuOuvert] = useState(false);
-  const menuRef = useRef(null);
+  const [notifOuvert, setNotifOuvert] = useState(false);
+  const [notifPos, setNotifPos] = useState({ top: 0, right: 0 });
+  const notifRef = useRef(null);
+  const notifBoutonRef = useRef(null);
 
   // ---------- Sélecteur Global / Hajj / Omra ----------
   const [activiteVue, setActiviteVue] = useState("global");
@@ -162,15 +172,26 @@ function Dashboard() {
     });
   }, []);
 
+  // Ferme le menu des alertes au clic extérieur, au défilement ou à Échap
   useEffect(() => {
-    function fermerSiExterieur(e) {
-      if (menuRef.current && !menuRef.current.contains(e.target)) {
-        setMenuOuvert(false);
-      }
-    }
-    document.addEventListener("mousedown", fermerSiExterieur);
-    return () => document.removeEventListener("mousedown", fermerSiExterieur);
-  }, []);
+    if (!notifOuvert) return undefined;
+    const fermer = () => setNotifOuvert(false);
+    const clicExterieur = (e) => {
+      if (notifRef.current?.contains(e.target) || notifBoutonRef.current?.contains(e.target)) return;
+      fermer();
+    };
+    const echap = (e) => { if (e.key === "Escape") fermer(); };
+    document.addEventListener("mousedown", clicExterieur);
+    document.addEventListener("keydown", echap);
+    window.addEventListener("scroll", fermer, true);
+    window.addEventListener("resize", fermer);
+    return () => {
+      document.removeEventListener("mousedown", clicExterieur);
+      document.removeEventListener("keydown", echap);
+      window.removeEventListener("scroll", fermer, true);
+      window.removeEventListener("resize", fermer);
+    };
+  }, [notifOuvert]);
 
   // Rechargement des pèlerins filtrés + du bloc financier dédié quand on change d'activité.
   useEffect(() => {
@@ -286,7 +307,7 @@ function Dashboard() {
   // Inscriptions des 6 derniers mois (nécessite la date d'inscription dans la liste)
   const moisAffiches = Array.from({ length: 6 }, (_, i) => {
     const d = new Date(new Date().getFullYear(), new Date().getMonth() - (5 - i), 1);
-    return { annee: d.getFullYear(), mois: d.getMonth(), libelle: d.toLocaleDateString("fr-FR", { month: "short" }), valeur: 0 };
+    return { annee: d.getFullYear(), mois: d.getMonth(), libelle: d.toLocaleDateString(localeDates, { month: "short" }), valeur: 0 };
   });
   let aDatesInscription = false;
   pelerins.forEach((p) => {
@@ -311,11 +332,60 @@ function Dashboard() {
     .sort((a, b) => new Date(a.vol_aller_detail.date_vol) - new Date(b.vol_aller_detail.date_vol))
     .slice(0, 4);
 
-  const dateAujourdhui = aujourdhui.toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" });
+  const dateAujourdhui = aujourdhui.toLocaleDateString(localeDates, { day: "numeric", month: "long", year: "numeric" });
   const initiales = `${utilisateur?.first_name?.[0] || ""}${utilisateur?.last_name?.[0] || utilisateur?.username?.[0] || ""}`.toUpperCase();
 
   const dettesOuvertesParDevise = sommerParDevise(dettesOuvertes);
   const creancesOuvertesParDevise = sommerParDevise(creancesOuvertes);
+
+  // ---------- Alertes (cloche) : calculées à partir des données déjà chargées, selon le rôle ----------
+  const MS_JOUR = 24 * 60 * 60 * 1000;
+  const departsProches = peutVoirLogistique
+    ? groupes
+        .filter((g) => g.vol_aller_detail)
+        .map((g) => ({ g, jours: Math.ceil((new Date(g.vol_aller_detail.date_vol) - aujourdhui) / MS_JOUR) }))
+        .filter(({ jours }) => jours >= 0 && jours <= 7)
+        .sort((a, b) => a.jours - b.jours)
+    : [];
+  const nbPaiementsEnRetard = peutVoirFinances ? pelerins.filter((p) => p.statut_paiement === "en_retard").length : 0;
+  const nbVisasAttente = peutVoirFinances ? docs?.visas_en_attente?.length ?? 0 : 0;
+  const nbDossiersIncomplets = peutVoirFinances ? docs?.total_dossiers_incomplets ?? docs?.dossiers_incomplets?.length ?? 0 : 0;
+  const alertes = [
+    ...(peutVoirReclamations && reclamationsOuvertes > 0
+      ? [{ cle: "reclam", niveau: "rouge", icone: MessageSquareWarning, chemin: "/reclamations",
+          texte: `${reclamationsOuvertes} ${t("reclamations_nouvelles", "réclamation(s) nouvelle(s)")}` }]
+      : []),
+    ...(nbPaiementsEnRetard > 0
+      ? [{ cle: "retard", niveau: "rouge", icone: Wallet, chemin: "/paiements",
+          texte: `${nbPaiementsEnRetard} ${t("alerte_paiements_retard", "pèlerin(s) en retard de paiement")}` }]
+      : []),
+    ...departsProches.map(({ g, jours }) => ({
+      cle: `dep${g.id}`, niveau: jours <= 2 ? "rouge" : "orange", icone: Plane, chemin: `/groupes/${g.id}`,
+      texte: `${g.nom} — ${jours === 0 ? t("alerte_depart_aujourdhui", "départ aujourd'hui") : `${t("alerte_depart_dans", "départ dans")} ${jours} ${jours > 1 ? t("jours", "jours") : t("jour", "jour")}`}`,
+    })),
+    ...(nbVisasAttente > 0
+      ? [{ cle: "visas", niveau: "orange", icone: FileClock, chemin: "/documents",
+          texte: `${nbVisasAttente} ${t("visas_en_attente", "visa(s) en attente")}` }]
+      : []),
+    ...(nbDossiersIncomplets > 0
+      ? [{ cle: "incomplets", niveau: "orange", icone: FileWarning, chemin: "/documents",
+          texte: `${nbDossiersIncomplets} ${t("dossiers_incomplets", "dossier(s) incomplet(s)")}` }]
+      : []),
+    ...(peutVoirFinances && dettesOuvertes.length > 0
+      ? [{ cle: "dettes", niveau: "bleu", icone: TrendingDown, chemin: "/comptabilite/finances/dette",
+          texte: `${dettesOuvertes.length} ${t("dettes_non_soldees", "dette(s) non soldée(s)")}` }]
+      : []),
+    ...(peutVoirFinances && creancesOuvertes.length > 0
+      ? [{ cle: "creances", niveau: "bleu", icone: TrendingUp, chemin: "/comptabilite/finances/creance",
+          texte: `${creancesOuvertes.length} ${t("creances_non_soldees", "créance(s) non soldée(s)")}` }]
+      : []),
+  ];
+  const COULEURS_ALERTE = { rouge: "#B4433A", orange: "#E08A2B", bleu: "#2F5FA8" };
+  const ouvrirAlertes = () => {
+    const r = notifBoutonRef.current?.getBoundingClientRect();
+    if (r) setNotifPos({ top: r.bottom + 10, right: Math.max(12, window.innerWidth - r.right) });
+    setNotifOuvert((v) => !v);
+  };
 
   const statutSaison = (saison) => {
     if (!saison) return null;
@@ -325,6 +395,129 @@ function Dashboard() {
     if (aujourdhui > fin) return { texte: t("saison_terminee"), classe: styles.badgeSaisonTerminee };
     return { texte: t("saison_en_cours"), classe: styles.badgeSaisonEnCours };
   };
+
+
+  // ---------- Éléments du bandeau d'accueil ----------
+  const prenomAffiche = utilisateur?.first_name || utilisateur?.username;
+  const chiffresBandeau = [
+    { cle: "pelerins", icone: Users, valeur: pelerins.length, libelle: t("total_pelerins") },
+    ...(peutVoirFinances
+      ? [
+          { cle: "visas", icone: FileClock, valeur: docs?.visas_en_attente?.length ?? 0, libelle: t("visas_en_attente") },
+          { cle: "incomplets", icone: FileWarning, valeur: docs?.total_dossiers_incomplets ?? docs?.dossiers_incomplets?.length ?? 0, libelle: t("dossiers_incomplets") },
+        ]
+      : []),
+  ];
+  const avatarBandeau = (taille) => (
+    <div
+      style={{
+        width: taille, height: taille, borderRadius: Math.round(taille * 0.29), flexShrink: 0, overflow: "hidden",
+        background: "#fff", color: "#0B3FA0", display: "flex", alignItems: "center", justifyContent: "center",
+        fontSize: Math.round(taille * 0.37), fontWeight: 800, boxShadow: "0 8px 22px rgba(0,0,0,0.28)",
+      }}
+    >
+      {utilisateur?.photo ? (
+        <img src={utilisateur.photo} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+      ) : (
+        initiales || <User size={Math.round(taille * 0.4)} />
+      )}
+    </div>
+  );
+  const versetBandeau = (
+    <p className={styles.heroVerset} style={{ margin: "0 0 6px", textAlign: "left" }}>وَأَتِمُّوا الْحَجَّ وَالْعُمْرَةَ لِلَّهِ</p>
+  );
+  const titreBandeau = (
+    <h1 className={styles.heroTitre} style={{ margin: 0, lineHeight: 1.15, overflowWrap: "anywhere" }}>
+      {t("bienvenue_virgule")} {prenomAffiche}
+    </h1>
+  );
+  const pastillesBandeau = (
+    <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginTop: 12 }}>
+      <span style={stylePastilleHero}>
+        <span style={{ width: 7, height: 7, borderRadius: "50%", background: "#34D399" }} />
+        {t("connecte_en_tant_que")} {utilisateur?.role_display}
+      </span>
+      <span style={stylePastilleHero}>{dateAujourdhui}</span>
+    </div>
+  );
+  const controlesBandeau = (
+    <>
+      <button
+        ref={notifBoutonRef}
+        className={styles.heroBoutonNotif}
+        aria-label={t("notifications", "Notifications")}
+        aria-expanded={notifOuvert}
+        onClick={ouvrirAlertes}
+        style={{ position: "relative" }}
+      >
+        <Bell size={18} />
+        {alertes.length > 0 && (
+          <span
+            style={{
+              position: "absolute", top: -6, right: -6, minWidth: 20, height: 20, padding: "0 5px", borderRadius: 10,
+              background: "#DC2626", color: "#fff", fontSize: 11, fontWeight: 800, display: "flex",
+              alignItems: "center", justifyContent: "center", border: "2px solid #fff", boxSizing: "border-box",
+            }}
+          >
+            {alertes.length > 9 ? "9+" : alertes.length}
+          </span>
+        )}
+      </button>
+
+      {notifOuvert && (
+        <div
+          ref={notifRef}
+          role="menu"
+          style={{
+            position: "fixed", top: notifPos.top, right: notifPos.right, zIndex: 1000, width: "min(360px, calc(100vw - 24px))",
+            maxHeight: "70vh", overflowY: "auto", background: "#fff", color: "#111827", borderRadius: 16,
+            boxShadow: "0 18px 48px rgba(15,23,42,0.28)", border: "1px solid #E5E7EB",
+          }}
+        >
+          <div style={{ padding: "14px 16px", borderBottom: "1px solid #F1F5F9", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <strong style={{ fontSize: 15 }}>{t("notifications", "Notifications")}</strong>
+            <span style={{ fontSize: 12, color: "#6B7280" }}>{alertes.length}</span>
+          </div>
+          {alertes.length === 0 ? (
+            <p style={{ margin: 0, padding: "28px 16px", textAlign: "center", color: "#6B7280", fontSize: 14 }}>
+              {t("aucune_alerte", "Tout est à jour, aucune alerte.")}
+            </p>
+          ) : (
+            alertes.map((a) => {
+              const couleur = COULEURS_ALERTE[a.niveau];
+              return (
+                <button
+                  key={a.cle}
+                  role="menuitem"
+                  onClick={() => { setNotifOuvert(false); navigate(a.chemin); }}
+                  style={{
+                    display: "flex", alignItems: "center", gap: 12, width: "100%", padding: "12px 16px", border: "none",
+                    background: "transparent", cursor: "pointer", textAlign: "left", borderBottom: "1px solid #F8FAFC", font: "inherit",
+                  }}
+                >
+                  <span style={{ width: 36, height: 36, borderRadius: 10, background: `${couleur}1A`, color: couleur, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                    <a.icone size={18} />
+                  </span>
+                  <span style={{ flex: 1, minWidth: 0, fontSize: 14, fontWeight: 600, color: "#1F2937", overflowWrap: "anywhere" }}>{a.texte}</span>
+                  <ArrowUpRight size={15} style={{ color: "#9CA3AF", flexShrink: 0 }} />
+                </button>
+              );
+            })
+          )}
+        </div>
+      )}
+    </>
+  );
+  const identiteBandeau = (taille) => (
+    <div style={{ display: "flex", alignItems: "center", gap: 20, minWidth: 0, flexWrap: "wrap" }}>
+      {avatarBandeau(taille)}
+      <div style={{ minWidth: 0, flex: "1 1 220px" }}>
+        {versetBandeau}
+        {titreBandeau}
+        {pastillesBandeau}
+      </div>
+    </div>
+  );
 
   // Colonne de droite (départs + paiements + visas + dossiers) : vide pour les rôles qui n'y voient rien
   const colonneDroiteVide = !peutVoirLogistique && !(peutVoirFinances && totalPelerins > 0);
@@ -358,84 +551,36 @@ function Dashboard() {
       {/* ---------- Bandeau héro ---------- */}
       <div
         className={styles.hero}
-        style={{ backgroundImage: `url(${imageKaaba})`, minHeight: HAUTEUR_BANDEAU, display: "flex", alignItems: "center" }}
+        style={{ backgroundImage: `url(${imageKaaba})`, minHeight: HAUTEUR_BANDEAU, display: "flex", alignItems: "center", overflow: "hidden" }}
       >
         <div className={styles.heroOverlay} />
 
         <div
           className={styles.heroLigne}
-          style={{ width: "100%", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 24, flexWrap: "wrap", padding: "18px 0" }}
+          style={{
+            width: "100%", boxSizing: "border-box", maxWidth: 1400, margin: "0 auto",
+            padding: "28px clamp(20px, 4vw, 44px)",
+          }}
         >
-          {/* Identité : avatar, salutation, rôle et date */}
-          <div style={{ display: "flex", alignItems: "center", gap: 20, minWidth: 0 }}>
-            <div
-              style={{
-                width: 76, height: 76, borderRadius: 22, flexShrink: 0, overflow: "hidden",
-                background: "#fff", color: "#0B3FA0", display: "flex", alignItems: "center", justifyContent: "center",
-                fontSize: 28, fontWeight: 800, boxShadow: "0 8px 22px rgba(0,0,0,0.28)",
-              }}
-            >
-              {utilisateur?.photo ? (
-                <img src={utilisateur.photo} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-              ) : (
-                initiales || <User size={30} />
-              )}
-            </div>
-            <div style={{ minWidth: 0 }}>
-              <p className={styles.heroVerset} style={{ margin: "0 0 6px", textAlign: "left" }}>وَأَتِمُّوا الْحَجَّ وَالْعُمْرَةَ لِلَّهِ</p>
-              <h1 className={styles.heroTitre} style={{ margin: 0, lineHeight: 1.15, overflowWrap: "anywhere" }}>
-                {t("bienvenue_virgule")} {utilisateur?.first_name || utilisateur?.username}
-              </h1>
-              <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginTop: 12 }}>
-                <span style={stylePastilleHero}>
-                  <span style={{ width: 7, height: 7, borderRadius: "50%", background: "#34D399" }} />
-                  {t("connecte_en_tant_que")} {utilisateur?.role_display}
-                </span>
-                <span style={stylePastilleHero}>{dateAujourdhui}</span>
-              </div>
-            </div>
-          </div>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 24, flexWrap: "wrap", width: "100%", minWidth: 0 }}>
+            <div style={{ flex: "1 1 340px", minWidth: 0 }}>{identiteBandeau(88)}</div>
 
-          {/* Chiffres clés + notifications + profil */}
-          <div style={{ display: "flex", alignItems: "center", gap: 14, flexWrap: "wrap", justifyContent: "flex-end" }}>
-            <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
-              <ChiffreHero icone={Users} valeur={pelerins.length} libelle={t("total_pelerins")} />
-              {peutVoirFinances && (
-                <>
-                  <ChiffreHero icone={FileClock} valeur={docs?.visas_en_attente?.length ?? 0} libelle={t("visas_en_attente")} />
-                  <ChiffreHero icone={FileWarning} valeur={docs?.total_dossiers_incomplets ?? docs?.dossiers_incomplets?.length ?? 0} libelle={t("dossiers_incomplets")} />
-                </>
-              )}
-            </div>
-
-            <div className={styles.heroDroite}>
-              <button className={styles.heroBoutonNotif}>
-                <Bell size={16} />
-              </button>
-
-            <div className={styles.heroMenuProfil} ref={menuRef}>
-              <button className={styles.heroBoutonProfil} onClick={() => setMenuOuvert((v) => !v)}>
-                {utilisateur?.photo ? (
-                  <img src={utilisateur.photo} alt="" className={styles.heroPhotoProfil} />
-                ) : (
-                  <div className={styles.heroAvatarInitiales}>{initiales || <User size={14} />}</div>
-                )}
-                <span className={styles.heroNomProfil}>{utilisateur?.first_name || utilisateur?.username}</span>
-                <ChevronDown size={13} className={`${styles.heroChevron} ${menuOuvert ? styles.heroChevronOuvert : ""}`} />
-              </button>
-
-              {menuOuvert && (
-                <div className={styles.heroDropdown}>
-                  <div className={styles.heroDropdownEntete}>
-                    <p className={styles.heroDropdownNom}>{utilisateur?.first_name} {utilisateur?.last_name}</p>
-                    <p className={styles.heroDropdownRole}>{utilisateur?.role_display}</p>
+            <div className="bvg-hero-droite" style={{ display: "flex", alignItems: "center", gap: 14, flex: "0 1 auto", maxWidth: "100%", marginLeft: "auto" }}>
+              <div
+                style={{
+                  display: "flex", borderRadius: 18, overflow: "hidden", background: "rgba(15,23,42,0.58)", flex: "1 1 auto",
+                  border: "1px solid rgba(255,255,255,0.2)", backdropFilter: "blur(10px)", color: "#fff", maxWidth: "100%",
+                }}
+              >
+                {chiffresBandeau.map((c, i) => (
+                  <div key={c.cle} className="bvg-hero-kpi" style={{ padding: "14px 22px", minWidth: 104, textAlign: "center", borderLeft: i ? "1px solid rgba(255,255,255,0.16)" : "none" }}>
+                    <c.icone size={17} style={{ opacity: 0.85 }} />
+                    <div style={{ fontSize: 26, fontWeight: 800, lineHeight: 1.1, marginTop: 4 }}>{c.valeur}</div>
+                    <div style={{ fontSize: 11, opacity: 0.78, marginTop: 2 }}>{c.libelle}</div>
                   </div>
-                  <button className={styles.heroDropdownDeconnexion} onClick={deconnecter}>
-                    <LogOut size={14} /> {t("se_deconnecter")}
-                  </button>
-                </div>
-              )}
-            </div>
+                ))}
+              </div>
+              {controlesBandeau}
             </div>
           </div>
         </div>
@@ -588,7 +733,7 @@ function Dashboard() {
                     <div key={g.id} className={styles.ligneDepart} onClick={() => navigate(`/groupes/${g.id}`)}>
                       <div className={styles.dateDepart}>
                         <span className={styles.jourDepart}>{new Date(g.vol_aller_detail.date_vol).getDate()}</span>
-                        <span className={styles.moisDepart}>{new Date(g.vol_aller_detail.date_vol).toLocaleDateString("fr-FR", { month: "short" })}</span>
+                        <span className={styles.moisDepart}>{new Date(g.vol_aller_detail.date_vol).toLocaleDateString(localeDates, { month: "short" })}</span>
                       </div>
                       <div className={styles.infosDepart}>
                         <p className={styles.nomGroupeDepart}>{g.nom}</p>
@@ -804,6 +949,10 @@ const STYLE_CARTES = `
 @media (max-width: 520px) {
   .bvg-cartes-ligne, .bvg-cartes-vedette { grid-template-columns: minmax(0, 1fr); }
   .bvg-cartes-vedette > :first-child { grid-column: auto; }
+}
+@media (max-width: 640px) {
+  .bvg-hero-droite { width: 100%; }
+  .bvg-hero-kpi { flex: 1 1 0; min-width: 0 !important; padding: 12px 8px !important; }
 }
 `;
 

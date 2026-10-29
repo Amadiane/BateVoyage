@@ -873,7 +873,37 @@
   "synthese_dettes": "Total de ses dettes",
   "synthese_difference": "Différence entre dette et bénéfice",
   "synthese_net": "Bénéfice net individuel",
-  "generation_pdf": "Génération du PDF..."
+  "generation_pdf": "Génération du PDF...",
+
+  "alerte_depart_aujourdhui": "départ aujourd'hui",
+    "alerte_depart_dans": "départ dans",
+    "alerte_paiements_retard": "pèlerin(s) en retard de paiement",
+    "aucune_alerte": "Tout est à jour, aucune alerte.",
+    "notifications": "Notifications",
+    "jour": "jour",
+    "jours": "jours",
+    "dossiers_complets": "Dossiers complets",
+    "etat_des_dossiers": "État des dossiers",
+    "hommes": "Hommes",
+    "femmes": "Femmes",
+    "non_renseigne": "Non renseigné",
+    "pelerins": "Pèlerins",
+    "repartition_genre": "Répartition par genre",
+    "repartition_agences": "Répartition par agence",
+    "top_inscripteurs": "Inscriptions par inscripteur",
+    "inscriptions_par_mois": "Inscriptions des 6 derniers mois",
+    "situation_paiements": "Situation des paiements",
+    "situation_visas": "Situation des visas",
+    "reclamations_nouvelles": "Réclamations nouvelles",
+    "visas_en_attente": "Visas en attente",
+    "dettes_non_soldees": "Dettes non soldées",
+    "creances_non_soldees": "Créances non soldées",
+    "statut_paiement_complet": "Paiement complet",
+    "statut_paiement_normal": "Paiement normal",
+    "statut_paiement_a_surveiller": "À surveiller",
+    "statut_paiement_en_retard": "En retard",
+    "statut_paiement_indetermine": "Échéance non définie",
+    "statut_paiement_archive": "Programme archivé"
 
 
 
