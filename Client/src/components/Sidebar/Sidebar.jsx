@@ -1,42 +1,17 @@
-import { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { X, LogOut, User } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
 import { MENU_PAR_ROLE, ITEMS_MENU, ENTREPRISE } from "../../config/config";
-import { configurationService } from "../../services/configurationService";
 import LanguageSwitcher from "../LanguageSwitcher/LanguageSwitcher";
 import styles from "../../theme/components/Sidebar.module.css";
-
-// "dashboard" et "modules_visibles" restent toujours visibles, quel que soit l'état des modules.
-const CLES_TOUJOURS_VISIBLES = ["dashboard", "modules_visibles"];
 
 function Sidebar({ ouverte, onFermer }) {
   const { t } = useTranslation();
   const { utilisateur, deconnecter } = useAuth();
-  const [clesActives, setClesActives] = useState(null);
 
-  const chargerModulesActifs = () => {
-    configurationService
-      .listerModules()
-      .then(({ data }) => {
-        setClesActives(new Set(data.filter((m) => m.actif).map((m) => m.cle)));
-      })
-      .catch(() => {
-        setClesActives(null);
-      });
-  };
-
-  useEffect(() => {
-    chargerModulesActifs();
-    window.addEventListener("modules-systeme-modifies", chargerModulesActifs);
-    return () => window.removeEventListener("modules-systeme-modifies", chargerModulesActifs);
-  }, []);
-
-  const clesRole = MENU_PAR_ROLE[utilisateur?.role] || [];
-  const clesAffichees = clesActives
-    ? clesRole.filter((cle) => CLES_TOUJOURS_VISIBLES.includes(cle) || clesActives.has(cle))
-    : clesRole;
+  // Le menu est entièrement défini dans config/config.js (MENU_PAR_ROLE) : aucune dépendance à la base de données.
+  const clesAffichees = MENU_PAR_ROLE[utilisateur?.role] || [];
 
   const nomComplet = [utilisateur?.first_name, utilisateur?.last_name].filter(Boolean).join(" ") || utilisateur?.username;
   const initiales = `${utilisateur?.first_name?.[0] || ""}${utilisateur?.last_name?.[0] || utilisateur?.username?.[0] || ""}`.toUpperCase();
