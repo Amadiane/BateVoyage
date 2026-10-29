@@ -37,6 +37,53 @@ const COULEURS_CARTE = {
   violet: "#7C5CBF",
 };
 
+const COULEURS_GENRE = { M: "#2B6CE0", F: "#D6458B", inconnu: "#9CA3AF" };
+
+const COULEURS_PAIEMENT = {
+  complet: "#1F7A4D",
+  normal: "#2B6CE0",
+  a_surveiller: "#E08A2B",
+  en_retard: "#B4433A",
+  indetermine: "#9CA3AF",
+  archive: "#6B7280",
+};
+const LIBELLES_PAIEMENT = {
+  complet: "Paiement complet",
+  normal: "Paiement normal",
+  a_surveiller: "À surveiller",
+  en_retard: "En retard",
+  indetermine: "Échéance non définie",
+  archive: "Programme archivé",
+};
+
+const COULEURS_VISA = {
+  obtenu: "#1F7A4D",
+  en_cours: "#E08A2B",
+  non_demande: "#9CA3AF",
+  refuse: "#B4433A",
+  expire: "#7C5CBF",
+};
+
+const ORDRE_STATUTS = ["inscrit", "en_preparation", "valide", "en_voyage", "retourne", "cloture"];
+const ORDRE_PAIEMENT = ["complet", "normal", "a_surveiller", "en_retard", "indetermine", "archive"];
+const ORDRE_VISA = ["obtenu", "en_cours", "non_demande", "refuse", "expire"];
+
+// Disposition des cartes de statistiques :
+//  "vedette"   = la première carte (Total pèlerins) est grande, les autres forment une grille à côté ;
+//  "equilibre" = deux lignes de cartes de même largeur, sans case vide.
+// "vedette" se replie automatiquement sur "equilibre" quand le nombre de cartes ne s'y prête pas.
+const DISPOSITION_CARTES = "equilibre";
+
+// Hauteur minimale du bandeau d'accueil (px)
+const HAUTEUR_BANDEAU = 180;
+
+// Couleurs volontairement différentes de celles des statuts (anneau extérieur)
+const COULEURS_ACTIVITE = { hajj: "#0E7490", oumra: "#7C5CBF" };
+
+const PALETTE = ["#0B3FA0", "#C9972B", "#1F7A4D", "#7C5CBF", "#E08A2B", "#2B6CE0", "#B4433A"];
+const AGENCE_PRINCIPALE = "BATE VOYAGE GUINÉE";
+const ALIAS_AGENCES = { "MANDENG VOYAGE GUINÉE": "MANDEN VOYAGE" };
+
 const ROLES_VOIENT_FINANCES = ["fondateur", "admin_general", "comptable", "secretaire"];
 const ROLES_VOIENT_RECLAMATIONS = ["fondateur", "admin_general", "affaires_sociales"];
 const ROLES_VOIENT_LOGISTIQUE = ["fondateur", "admin_general", "secretaire", "guide", "encadreur", "mounazim"];
@@ -163,12 +210,96 @@ function Dashboard() {
 
   if (chargement) return <p className={styles.chargement}>{t("chargement")}</p>;
 
-  const repartition = Object.entries(
+  // ---------- Statistiques calculées à partir des pèlerins déjà chargés ----------
+  const totalPelerins = pelerins.length;
+  const compter = (fonctionCle) =>
     pelerins.reduce((acc, p) => {
-      acc[p.statut] = (acc[p.statut] || 0) + 1;
+      const cle = fonctionCle(p);
+      acc[cle] = (acc[cle] || 0) + 1;
       return acc;
-    }, {})
-  ).map(([statut, valeur]) => ({ statut, valeur }));
+    }, {});
+  const ordonner = (comptage, ordre) => [
+    ...ordre.filter((k) => comptage[k]),
+    ...Object.keys(comptage).filter((k) => !ordre.includes(k)),
+  ];
+
+  const parStatut = compter((p) => p.statut);
+  const repartition = ordonner(parStatut, ORDRE_STATUTS).map((statut) => ({
+    statut,
+    cle: statut,
+    libelle: t(`statut_${statut}`),
+    valeur: parStatut[statut],
+    couleur: COULEURS_STATUT[statut] || "#9CA3AF",
+    sousTexte:
+      activiteVue === "global"
+        ? `${t("hajj")} ${pelerins.filter((p) => p.statut === statut && p.type_voyage === "pelerinage").length} · ${t("oumra")} ${pelerins.filter((p) => p.statut === statut && p.type_voyage === "oumra").length}`
+        : null,
+  }));
+
+  const nbHommes = pelerins.filter((p) => p.sexe === "M").length;
+  const nbFemmes = pelerins.filter((p) => p.sexe === "F").length;
+  const nbSexeInconnu = totalPelerins - nbHommes - nbFemmes;
+  const repartitionGenre = [
+    { cle: "M", libelle: t("hommes", "Hommes"), valeur: nbHommes, couleur: COULEURS_GENRE.M },
+    { cle: "F", libelle: t("femmes", "Femmes"), valeur: nbFemmes, couleur: COULEURS_GENRE.F },
+    ...(nbSexeInconnu > 0
+      ? [{ cle: "inconnu", libelle: t("non_renseigne", "Non renseigné"), valeur: nbSexeInconnu, couleur: COULEURS_GENRE.inconnu }]
+      : []),
+  ];
+
+  const parPaiement = compter((p) => p.statut_paiement || "indetermine");
+  const repartitionPaiement = ordonner(parPaiement, ORDRE_PAIEMENT).map((k) => ({
+    cle: k,
+    libelle: t(`statut_paiement_${k}`, LIBELLES_PAIEMENT[k] || k),
+    valeur: parPaiement[k],
+    couleur: COULEURS_PAIEMENT[k] || "#9CA3AF",
+  }));
+
+  const parVisa = compter((p) => p.statut_visa || "non_demande");
+  const repartitionVisa = ordonner(parVisa, ORDRE_VISA).map((k) => ({
+    cle: k,
+    libelle: t(`visa_${k}`),
+    valeur: parVisa[k],
+    couleur: COULEURS_VISA[k] || "#9CA3AF",
+  }));
+
+  const nbIncomplets = pelerins.filter((p) => p.elements_manquants && p.elements_manquants.length > 0).length;
+  const repartitionDossiers = [
+    { cle: "complets", libelle: t("dossiers_complets", "Dossiers complets"), valeur: totalPelerins - nbIncomplets, couleur: "#1F7A4D" },
+    { cle: "incomplets", libelle: t("dossiers_incomplets"), valeur: nbIncomplets, couleur: "#E08A2B" },
+  ];
+
+  const parAgence = compter((p) => {
+    const brut = (p.agence_partenaire || "").trim();
+    return ALIAS_AGENCES[brut] || brut || AGENCE_PRINCIPALE;
+  });
+  const repartitionAgences = Object.entries(parAgence)
+    .sort((a, b) => b[1] - a[1])
+    .map(([nom, valeur], i) => ({ cle: nom, libelle: nom, valeur, couleur: PALETTE[i % PALETTE.length] }));
+
+  const parInscripteur = compter((p) => (p.inscripteur || "").trim() || t("non_renseigne", "Non renseigné"));
+  const repartitionInscripteurs = Object.entries(parInscripteur)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 6)
+    .map(([nom, valeur], i) => ({ cle: nom, libelle: nom, valeur, couleur: PALETTE[i % PALETTE.length] }));
+
+  // Inscriptions des 6 derniers mois (nécessite la date d'inscription dans la liste)
+  const moisAffiches = Array.from({ length: 6 }, (_, i) => {
+    const d = new Date(new Date().getFullYear(), new Date().getMonth() - (5 - i), 1);
+    return { annee: d.getFullYear(), mois: d.getMonth(), libelle: d.toLocaleDateString("fr-FR", { month: "short" }), valeur: 0 };
+  });
+  let aDatesInscription = false;
+  pelerins.forEach((p) => {
+    if (!p.date_inscription) return;
+    aDatesInscription = true;
+    const d = new Date(p.date_inscription);
+    const cible = moisAffiches.find((m) => m.annee === d.getFullYear() && m.mois === d.getMonth());
+    if (cible) cible.valeur += 1;
+  });
+  const maxMois = Math.max(1, ...moisAffiches.map((m) => m.valeur));
+
+  const nbHajj = pelerins.filter((p) => p.type_voyage === "pelerinage").length;
+  const nbOumra = pelerins.filter((p) => p.type_voyage === "oumra").length;
 
   const montantTotal = peutVoirFinances
     ? pelerins.reduce((s, p) => s + parseFloat(p.montant_total_verse || 0), 0)
@@ -195,13 +326,40 @@ function Dashboard() {
     return { texte: t("saison_en_cours"), classe: styles.badgeSaisonEnCours };
   };
 
+  // Cartes de statistiques affichées selon le rôle de l'utilisateur
+  const cartesStat = [
+    {
+      cle: "total", icone: Users, chiffre: pelerins.length, couleur: "bleu", chemin: "/pelerins",
+      label: activiteVue === "global" ? t("total_pelerins") : `${t("total_pelerins")} — ${t(activiteVue)}`,
+    },
+    ...(peutVoirFinances
+      ? [
+          { cle: "incomplets", icone: FileWarning, chiffre: docs?.total_dossiers_incomplets ?? docs?.dossiers_incomplets?.length ?? 0, label: t("dossiers_incomplets"), couleur: "orange", chemin: "/documents" },
+          { cle: "visas", icone: FileClock, chiffre: docs?.visas_en_attente?.length ?? 0, label: t("visas_en_attente"), couleur: "or", chemin: "/documents" },
+          { cle: "verse", icone: Wallet, chiffre: `${montantTotal.toLocaleString("fr-FR")} GNF`, label: t("montant_total_verse"), couleur: "vert", chemin: "/paiements" },
+        ]
+      : []),
+    ...(peutVoirReclamations
+      ? [{ cle: "reclamations", icone: MessageSquareWarning, chiffre: reclamationsOuvertes, label: t("reclamations_nouvelles"), couleur: "rouge", chemin: "/reclamations" }]
+      : []),
+    ...(peutVoirLogistique
+      ? [
+          { cle: "groupes", icone: Plane, chiffre: groupes.length, label: t("groupes_actifs"), couleur: "violet", chemin: "/groupes" },
+          { cle: "hotels", icone: Building2, chiffre: hotels.length, label: t("hotels_enregistres"), couleur: "bleu", chemin: "/hebergement" },
+        ]
+      : []),
+  ].map((c) => ({ ...c, onClick: () => navigate(c.chemin) }));
+
   return (
     <div>
       {/* ---------- Bandeau héro ---------- */}
-      <div className={styles.hero} style={{ backgroundImage: `url(${imageKaaba})` }}>
+      <div
+        className={styles.hero}
+        style={{ backgroundImage: `url(${imageKaaba})`, minHeight: HAUTEUR_BANDEAU, display: "flex", alignItems: "center" }}
+      >
         <div className={styles.heroOverlay} />
 
-        <div className={styles.heroLigne}>
+        <div className={styles.heroLigne} style={{ width: "100%" }}>
           <div className={styles.heroContenu}>
             <p className={styles.heroVerset}>وَأَتِمُّوا الْحَجَّ وَالْعُمْرَةَ لِلَّهِ</p>
             <h1 className={styles.heroTitre}>{t("bienvenue_virgule")} {utilisateur?.first_name || utilisateur?.username}</h1>
@@ -260,70 +418,8 @@ function Dashboard() {
       </div>
 
       {/* ---------- Cartes statistiques en tuiles dégradées ---------- */}
-      <div className={styles.cartesStat}>
-        <CarteStat
-          icone={Users}
-          chiffre={pelerins.length}
-          label={activiteVue === "global" ? t("total_pelerins") : `${t("total_pelerins")} — ${t(activiteVue)}`}
-          couleur="bleu"
-          onClick={() => navigate("/pelerins")}
-        />
-
-        {peutVoirFinances && (
-          <>
-            <CarteStat
-              icone={FileWarning}
-              chiffre={docs?.total_dossiers_incomplets ?? docs?.dossiers_incomplets?.length ?? 0}
-              label={t("dossiers_incomplets")}
-              couleur="orange"
-              onClick={() => navigate("/documents")}
-            />
-            <CarteStat
-              icone={FileClock}
-              chiffre={docs?.visas_en_attente?.length ?? 0}
-              label={t("visas_en_attente")}
-              couleur="or"
-              onClick={() => navigate("/documents")}
-            />
-            <CarteStat
-              icone={Wallet}
-              chiffre={`${montantTotal.toLocaleString("fr-FR")} GNF`}
-              label={t("montant_total_verse")}
-              couleur="vert"
-              onClick={() => navigate("/paiements")}
-            />
-          </>
-        )}
-
-        {peutVoirReclamations && (
-          <CarteStat
-            icone={MessageSquareWarning}
-            chiffre={reclamationsOuvertes}
-            label={t("reclamations_nouvelles")}
-            couleur="rouge"
-            onClick={() => navigate("/reclamations")}
-          />
-        )}
-
-        {peutVoirLogistique && (
-          <>
-            <CarteStat
-              icone={Plane}
-              chiffre={groupes.length}
-              label={t("groupes_actifs")}
-              couleur="violet"
-              onClick={() => navigate("/groupes")}
-            />
-            <CarteStat
-              icone={Building2}
-              chiffre={hotels.length}
-              label={t("hotels_enregistres")}
-              couleur="bleu"
-              onClick={() => navigate("/hebergement")}
-            />
-          </>
-        )}
-      </div>
+      <style>{STYLE_CARTES}</style>
+      <DispositionCartes cartes={cartesStat} />
 
       {/* ---------- Situation financière de l'activité sélectionnée ---------- */}
       {peutVoirFinances && activiteVue !== "global" && (
@@ -377,31 +473,43 @@ function Dashboard() {
       )}
 
       {/* ---------- Grille principale ---------- */}
-      <div className={styles.grillePrincipale}>
+      <div className={styles.grillePrincipale} style={{ alignItems: "start" }}>
         <div className={`${styles.cartePrincipale} ${styles.accentHautViolet}`}>
           <h2 className={styles.titreCarte}>{t("repartition_statuts")}</h2>
+          {activiteVue === "global" && totalPelerins > 0 && (
+            <div style={{ display: "flex", gap: 12, marginBottom: 14 }}>
+              {[
+                { cle: "hajj", libelle: t("hajj"), valeur: nbHajj },
+                { cle: "oumra", libelle: t("oumra"), valeur: nbOumra },
+              ].map((a) => (
+                <div
+                  key={a.cle}
+                  style={{ flex: 1, background: `${COULEURS_ACTIVITE[a.cle]}14`, border: `1px solid ${COULEURS_ACTIVITE[a.cle]}30`, borderRadius: 12, padding: "10px 14px" }}
+                >
+                  <div style={{ fontSize: 26, fontWeight: 700, color: COULEURS_ACTIVITE[a.cle], lineHeight: 1.1 }}>{a.valeur}</div>
+                  <div style={{ fontSize: 12, color: "#6B7280", marginTop: 2 }}>{a.libelle} · {pourcentage(a.valeur, totalPelerins)} %</div>
+                </div>
+              ))}
+            </div>
+          )}
           {repartition.length === 0 ? (
             <p className={styles.etatVide}>{t("aucun_pelerin")}</p>
           ) : (
-            <div className={styles.zoneGraphique}>
-              <ResponsiveContainer width="100%" height={200}>
-                <PieChart>
-                  <Pie data={repartition} dataKey="valeur" nameKey="statut" innerRadius={50} outerRadius={80} paddingAngle={2}>
-                    {repartition.map((entry) => (
-                      <Cell key={entry.statut} fill={COULEURS_STATUT[entry.statut] || "#9CA3AF"} />
-                    ))}
-                  </Pie>
-                  <Tooltip />
-                </PieChart>
-              </ResponsiveContainer>
-              <div className={styles.legende}>
-                {repartition.map((entry) => (
-                  <div key={entry.statut} className={styles.itemLegende}>
-                    <span className={styles.pucelegende} style={{ backgroundColor: COULEURS_STATUT[entry.statut] || "#9CA3AF" }} />
-                    {t(`statut_${entry.statut}`)} ({entry.valeur})
-                  </div>
-                ))}
-              </div>
+            <div style={{ display: "grid", gap: 16 }}>
+              <DonutCentre
+                donnees={
+                  activiteVue === "global"
+                    ? [
+                        { cle: "hajj", libelle: t("hajj"), valeur: nbHajj, couleur: COULEURS_ACTIVITE.hajj },
+                        { cle: "oumra", libelle: t("oumra"), valeur: nbOumra, couleur: COULEURS_ACTIVITE.oumra },
+                      ]
+                    : repartition
+                }
+                total={totalPelerins}
+                libelleTotal={t("pelerins", "Pèlerins")}
+                hauteur={190}
+              />
+              <BarresRepartition lignes={repartition} total={totalPelerins} />
             </div>
           )}
         </div>
@@ -435,9 +543,78 @@ function Dashboard() {
         )}
       </div>
 
+      {/* ---------- Profil des pèlerins : genre, paiements, visas, agences ---------- */}
+      {totalPelerins > 0 && (
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: 20, marginBottom: 20, alignItems: "start" }}>
+          <div className={`${styles.cartePrincipale} ${styles.accentHautBleu}`}>
+            <h2 className={styles.titreCarte}>{t("repartition_genre", "Répartition par genre")}</h2>
+            <div style={{ display: "flex", gap: 12, marginBottom: 12 }}>
+              {repartitionGenre.filter((g) => g.cle !== "inconnu").map((g) => (
+                <div key={g.cle} style={{ flex: 1, background: `${g.couleur}14`, border: `1px solid ${g.couleur}30`, borderRadius: 12, padding: "10px 14px" }}>
+                  <div style={{ fontSize: 26, fontWeight: 700, color: g.couleur, lineHeight: 1.1 }}>{g.valeur}</div>
+                  <div style={{ fontSize: 12, color: "#6B7280", marginTop: 2 }}>{g.libelle} · {pourcentage(g.valeur, totalPelerins)} %</div>
+                </div>
+              ))}
+            </div>
+            <DonutCentre donnees={repartitionGenre} total={totalPelerins} libelleTotal={t("pelerins", "Pèlerins")} hauteur={170} />
+          </div>
+
+          {peutVoirFinances && (
+            <div className={`${styles.cartePrincipale} ${styles.accentHautVert}`}>
+              <h2 className={styles.titreCarte}>{t("situation_paiements", "Situation des paiements")}</h2>
+              <BarresRepartition lignes={repartitionPaiement} total={totalPelerins} />
+            </div>
+          )}
+
+          {peutVoirFinances && (
+            <div className={`${styles.cartePrincipale} ${styles.accentHautOr}`}>
+              <h2 className={styles.titreCarte}>{t("situation_visas", "Situation des visas")}</h2>
+              <BarresRepartition lignes={repartitionVisa} total={totalPelerins} />
+              <h3 style={{ fontSize: 13, color: "#6B7280", fontWeight: 600, margin: "16px 0 8px" }}>{t("etat_des_dossiers", "État des dossiers")}</h3>
+              <BarresRepartition lignes={repartitionDossiers} total={totalPelerins} />
+            </div>
+          )}
+
+          {peutVoirFinances && (
+            <div className={`${styles.cartePrincipale} ${styles.accentHautViolet}`}>
+              <h2 className={styles.titreCarte}>{t("repartition_agences", "Répartition par agence")}</h2>
+              <BarresRepartition lignes={repartitionAgences} total={totalPelerins} />
+            </div>
+          )}
+
+          {peutVoirFinances && (
+            <div className={`${styles.cartePrincipale} ${styles.accentHautBleu}`}>
+              <h2 className={styles.titreCarte}>{t("top_inscripteurs", "Inscriptions par inscripteur")}</h2>
+              <BarresRepartition lignes={repartitionInscripteurs} total={totalPelerins} />
+            </div>
+          )}
+
+          {peutVoirFinances && aDatesInscription && (
+            <div className={`${styles.cartePrincipale} ${styles.accentHautVert}`}>
+              <h2 className={styles.titreCarte}>{t("inscriptions_par_mois", "Inscriptions des 6 derniers mois")}</h2>
+              <div style={{ display: "flex", alignItems: "flex-end", gap: 10, height: 150, paddingTop: 8 }}>
+                {moisAffiches.map((m) => (
+                  <div key={`${m.annee}-${m.mois}`} style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "flex-end", height: "100%" }}>
+                    <span style={{ fontSize: 12, fontWeight: 700, color: "#374151", marginBottom: 4 }}>{m.valeur}</span>
+                    <div
+                      style={{
+                        width: "100%", maxWidth: 38, borderRadius: "8px 8px 2px 2px",
+                        height: `${Math.max((m.valeur / maxMois) * 100, m.valeur ? 6 : 2)}%`,
+                        background: m.valeur ? "linear-gradient(180deg, #2B6CE0, #0B3FA0)" : "#E5E7EB",
+                      }}
+                    />
+                    <span style={{ fontSize: 11, color: "#6B7280", marginTop: 6, textTransform: "capitalize" }}>{m.libelle}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
       {/* ---------- Grille secondaire ---------- */}
       {(peutVoirLogistique || peutVoirFinances) && (
-        <div className={styles.grilleSecondaire}>
+        <div className={styles.grilleSecondaire} style={{ alignItems: "start" }}>
           {peutVoirLogistique && (
             <div className={`${styles.cartePrincipale} ${styles.accentHautOr}`}>
               <div className={styles.enteteCarteAvecLien}>
@@ -502,7 +679,7 @@ function Dashboard() {
 
       {/* ---------- Dettes & créances ouvertes (toujours global) ---------- */}
       {peutVoirFinances && (dettesOuvertes.length > 0 || creancesOuvertes.length > 0) && (
-        <div className={styles.grilleSecondaire}>
+        <div className={styles.grilleSecondaire} style={{ alignItems: "start" }}>
           <div className={`${styles.cartePrincipale} ${styles.carteAccentRouge}`}>
             <div className={styles.enteteCarteAvecLien}>
               <h2 className={styles.titreCarte}>
@@ -534,7 +711,122 @@ function Dashboard() {
   );
 }
 
-function CarteStat({ icone: Icone, chiffre, label, couleur, onClick }) {
+const STYLE_CARTES = `
+.bvg-cartes-ligne { display: grid; grid-template-columns: repeat(var(--cols), minmax(0, 1fr)); gap: 16px; margin-bottom: 16px; }
+.bvg-cartes-vedette { display: grid; grid-template-columns: minmax(0, 1.25fr) repeat(var(--cols), minmax(0, 1fr)); gap: 16px; margin-bottom: 20px; }
+.bvg-cartes-vedette > :first-child { grid-row: span 2; }
+@media (max-width: 1000px) {
+  .bvg-cartes-ligne, .bvg-cartes-vedette { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .bvg-cartes-vedette > :first-child { grid-row: auto; grid-column: span 2; }
+}
+@media (max-width: 520px) {
+  .bvg-cartes-ligne, .bvg-cartes-vedette { grid-template-columns: minmax(0, 1fr); }
+  .bvg-cartes-vedette > :first-child { grid-column: auto; }
+}
+`;
+
+// Range les cartes sans case vide : "vedette" (1 grande + grille) ou deux lignes équilibrées.
+function DispositionCartes({ cartes }) {
+  const n = cartes.length;
+  if (n === 0) return null;
+  const rend = (c, grande) => <CarteStat key={c.cle} {...c} grande={grande} />;
+
+  if (DISPOSITION_CARTES === "vedette" && n >= 3 && (n - 1) % 2 === 0) {
+    const reste = cartes.slice(1);
+    return (
+      <div className="bvg-cartes-vedette" style={{ "--cols": reste.length / 2 }}>
+        {rend(cartes[0], true)}
+        {reste.map((c) => rend(c, false))}
+      </div>
+    );
+  }
+
+  const lignes = n <= 4 ? [cartes] : [cartes.slice(0, Math.ceil(n / 2)), cartes.slice(Math.ceil(n / 2))];
+  return (
+    <>
+      {lignes.map((ligne, i) => (
+        <div key={i} className="bvg-cartes-ligne" style={{ "--cols": ligne.length }}>
+          {ligne.map((c) => rend(c, false))}
+        </div>
+      ))}
+    </>
+  );
+}
+
+function pourcentage(valeur, total) {
+  return total ? Math.round((valeur / total) * 1000) / 10 : 0;
+}
+
+function stylePuce(couleur) {
+  return {
+    background: `${couleur}16`, color: couleur, border: `1px solid ${couleur}33`,
+    borderRadius: 999, padding: "3px 11px", fontSize: 12, fontWeight: 600,
+  };
+}
+
+// Anneau avec le total au centre.
+// Si "donneesInterieur" est fourni (ex. Hajj / Oumra), un second anneau plein est dessiné à l'intérieur.
+function DonutCentre({ donnees, total, libelleTotal, hauteur = 200, donneesInterieur = null }) {
+  const donneesNonVides = donnees.filter((d) => d.valeur > 0);
+  const interieur = donneesInterieur ? donneesInterieur.filter((d) => d.valeur > 0) : null;
+  return (
+    <div style={{ position: "relative" }}>
+      <ResponsiveContainer width="100%" height={hauteur}>
+        <PieChart>
+          <Pie
+            data={donneesNonVides} dataKey="valeur" nameKey="libelle"
+            innerRadius={interieur ? "72%" : "58%"} outerRadius="92%" paddingAngle={2} stroke="none"
+          >
+            {donneesNonVides.map((d) => <Cell key={d.cle} fill={d.couleur} />)}
+          </Pie>
+          {interieur && (
+            <Pie data={interieur} dataKey="valeur" nameKey="libelle" innerRadius="46%" outerRadius="66%" paddingAngle={3} stroke="none">
+              {interieur.map((d) => <Cell key={d.cle} fill={d.couleur} />)}
+            </Pie>
+          )}
+          <Tooltip />
+        </PieChart>
+      </ResponsiveContainer>
+      <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", pointerEvents: "none" }}>
+        <span style={{ fontSize: 26, fontWeight: 700, color: "#111827", lineHeight: 1 }}>{total}</span>
+        <span style={{ fontSize: 11, color: "#6B7280", marginTop: 3 }}>{libelleTotal}</span>
+      </div>
+    </div>
+  );
+}
+
+// Lignes colorées : pastille, libellé, barre proportionnelle, effectif et pourcentage.
+function BarresRepartition({ lignes, total }) {
+  return (
+    <div style={{ display: "grid", gap: 10 }}>
+      {lignes.map((l) => {
+        const part = pourcentage(l.valeur, total);
+        return (
+          <div key={l.cle}>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, fontSize: 13 }}>
+              <span style={{ display: "flex", alignItems: "center", gap: 8, color: "#374151", minWidth: 0 }}>
+                <span style={{ width: 10, height: 10, borderRadius: 3, background: l.couleur, flexShrink: 0 }} />
+                <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                  {l.libelle}
+                  {l.sousTexte && <span style={{ marginLeft: 8, fontSize: 11, color: "#9CA3AF" }}>{l.sousTexte}</span>}
+                </span>
+              </span>
+              <span style={{ whiteSpace: "nowrap" }}>
+                <strong style={{ color: l.couleur }}>{l.valeur}</strong>
+                <span style={{ color: "#9CA3AF", marginLeft: 6 }}>{part} %</span>
+              </span>
+            </div>
+            <div style={{ height: 6, background: "#F3F4F6", borderRadius: 999, marginTop: 5, overflow: "hidden" }}>
+              <div style={{ width: `${part}%`, height: "100%", background: l.couleur, borderRadius: 999 }} />
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+function CarteStat({ icone: Icone, chiffre, label, couleur, onClick, grande }) {
   const hex = COULEURS_CARTE[couleur] || "#6B6659";
   return (
     <div
@@ -544,13 +836,15 @@ function CarteStat({ icone: Icone, chiffre, label, couleur, onClick }) {
         cursor: onClick ? "pointer" : "default",
         background: `linear-gradient(150deg, ${hex}14, ${hex}05 65%)`,
         borderColor: `${hex}28`,
+        height: "100%",
+        boxSizing: "border-box",
       }}
     >
       <Icone className={styles.iconeFantomeStat} style={{ color: hex }} strokeWidth={1.4} />
       <div className={styles.iconeCercleStat} style={{ backgroundColor: hex }}>
         <Icone size={17} color="#fff" strokeWidth={2} />
       </div>
-      <p className={styles.chiffreStat} style={{ color: hex }}>{chiffre}</p>
+      <p className={styles.chiffreStat} style={grande ? { color: hex, fontSize: 46, lineHeight: 1.1 } : { color: hex }}>{chiffre}</p>
       <p className={styles.labelStat}>{label}</p>
       {onClick && <ArrowUpRight size={15} className={styles.flecheStat} style={{ color: hex }} />}
     </div>
