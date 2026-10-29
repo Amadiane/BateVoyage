@@ -75,7 +75,7 @@ const ORDRE_VISA = ["obtenu", "en_cours", "non_demande", "refuse", "expire"];
 const DISPOSITION_CARTES = "equilibre";
 
 // Hauteur minimale du bandeau d'accueil (px)
-const HAUTEUR_BANDEAU = 180;
+const HAUTEUR_BANDEAU = 190;
 
 // Couleurs volontairement différentes de celles des statuts (anneau extérieur)
 const COULEURS_ACTIVITE = { hajj: "#0E7490", oumra: "#7C5CBF" };
@@ -326,6 +326,9 @@ function Dashboard() {
     return { texte: t("saison_en_cours"), classe: styles.badgeSaisonEnCours };
   };
 
+  // Colonne de droite (départs + paiements + visas + dossiers) : vide pour les rôles qui n'y voient rien
+  const colonneDroiteVide = !peutVoirLogistique && !(peutVoirFinances && totalPelerins > 0);
+
   // Cartes de statistiques affichées selon le rôle de l'utilisateur
   const cartesStat = [
     {
@@ -359,19 +362,56 @@ function Dashboard() {
       >
         <div className={styles.heroOverlay} />
 
-        <div className={styles.heroLigne} style={{ width: "100%" }}>
-          <div className={styles.heroContenu}>
-            <p className={styles.heroVerset}>وَأَتِمُّوا الْحَجَّ وَالْعُمْرَةَ لِلَّهِ</p>
-            <h1 className={styles.heroTitre}>{t("bienvenue_virgule")} {utilisateur?.first_name || utilisateur?.username}</h1>
-            <p className={styles.heroSousTitre}>{t("connecte_en_tant_que")} {utilisateur?.role_display}</p>
+        <div
+          className={styles.heroLigne}
+          style={{ width: "100%", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 24, flexWrap: "wrap", padding: "18px 0" }}
+        >
+          {/* Identité : avatar, salutation, rôle et date */}
+          <div style={{ display: "flex", alignItems: "center", gap: 20, minWidth: 0 }}>
+            <div
+              style={{
+                width: 76, height: 76, borderRadius: 22, flexShrink: 0, overflow: "hidden",
+                background: "#fff", color: "#0B3FA0", display: "flex", alignItems: "center", justifyContent: "center",
+                fontSize: 28, fontWeight: 800, boxShadow: "0 8px 22px rgba(0,0,0,0.28)",
+              }}
+            >
+              {utilisateur?.photo ? (
+                <img src={utilisateur.photo} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+              ) : (
+                initiales || <User size={30} />
+              )}
+            </div>
+            <div style={{ minWidth: 0 }}>
+              <p className={styles.heroVerset} style={{ margin: "0 0 6px", textAlign: "left" }}>وَأَتِمُّوا الْحَجَّ وَالْعُمْرَةَ لِلَّهِ</p>
+              <h1 className={styles.heroTitre} style={{ margin: 0, lineHeight: 1.15, overflowWrap: "anywhere" }}>
+                {t("bienvenue_virgule")} {utilisateur?.first_name || utilisateur?.username}
+              </h1>
+              <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginTop: 12 }}>
+                <span style={stylePastilleHero}>
+                  <span style={{ width: 7, height: 7, borderRadius: "50%", background: "#34D399" }} />
+                  {t("connecte_en_tant_que")} {utilisateur?.role_display}
+                </span>
+                <span style={stylePastilleHero}>{dateAujourdhui}</span>
+              </div>
+            </div>
           </div>
 
-          <div className={styles.heroDroite}>
-            <span className={styles.heroDate}>{dateAujourdhui}</span>
+          {/* Chiffres clés + notifications + profil */}
+          <div style={{ display: "flex", alignItems: "center", gap: 14, flexWrap: "wrap", justifyContent: "flex-end" }}>
+            <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+              <ChiffreHero icone={Users} valeur={pelerins.length} libelle={t("total_pelerins")} />
+              {peutVoirFinances && (
+                <>
+                  <ChiffreHero icone={FileClock} valeur={docs?.visas_en_attente?.length ?? 0} libelle={t("visas_en_attente")} />
+                  <ChiffreHero icone={FileWarning} valeur={docs?.total_dossiers_incomplets ?? docs?.dossiers_incomplets?.length ?? 0} libelle={t("dossiers_incomplets")} />
+                </>
+              )}
+            </div>
 
-            <button className={styles.heroBoutonNotif}>
-              <Bell size={16} />
-            </button>
+            <div className={styles.heroDroite}>
+              <button className={styles.heroBoutonNotif}>
+                <Bell size={16} />
+              </button>
 
             <div className={styles.heroMenuProfil} ref={menuRef}>
               <button className={styles.heroBoutonProfil} onClick={() => setMenuOuvert((v) => !v)}>
@@ -395,6 +435,7 @@ function Dashboard() {
                   </button>
                 </div>
               )}
+            </div>
             </div>
           </div>
         </div>
@@ -472,127 +513,132 @@ function Dashboard() {
         </div>
       )}
 
-      {/* ---------- Grille principale ---------- */}
-      <div className={styles.grillePrincipale} style={{ alignItems: "start" }}>
-        <div className={`${styles.cartePrincipale} ${styles.accentHautViolet}`}>
-          <h2 className={styles.titreCarte}>{t("repartition_statuts")}</h2>
-          {activiteVue === "global" && totalPelerins > 0 && (
-            <div style={{ display: "flex", gap: 12, marginBottom: 14 }}>
-              {[
-                { cle: "hajj", libelle: t("hajj"), valeur: nbHajj },
-                { cle: "oumra", libelle: t("oumra"), valeur: nbOumra },
-              ].map((a) => (
-                <div
-                  key={a.cle}
-                  style={{ flex: 1, background: `${COULEURS_ACTIVITE[a.cle]}14`, border: `1px solid ${COULEURS_ACTIVITE[a.cle]}30`, borderRadius: 12, padding: "10px 14px" }}
-                >
-                  <div style={{ fontSize: 26, fontWeight: 700, color: COULEURS_ACTIVITE[a.cle], lineHeight: 1.1 }}>{a.valeur}</div>
-                  <div style={{ fontSize: 12, color: "#6B7280", marginTop: 2 }}>{a.libelle} · {pourcentage(a.valeur, totalPelerins)} %</div>
-                </div>
-              ))}
-            </div>
-          )}
-          {repartition.length === 0 ? (
-            <p className={styles.etatVide}>{t("aucun_pelerin")}</p>
-          ) : (
-            <div style={{ display: "grid", gap: 16 }}>
-              <DonutCentre
-                donnees={
-                  activiteVue === "global"
-                    ? [
-                        { cle: "hajj", libelle: t("hajj"), valeur: nbHajj, couleur: COULEURS_ACTIVITE.hajj },
-                        { cle: "oumra", libelle: t("oumra"), valeur: nbOumra, couleur: COULEURS_ACTIVITE.oumra },
-                      ]
-                    : repartition
-                }
-                total={totalPelerins}
-                libelleTotal={t("pelerins", "Pèlerins")}
-                hauteur={190}
-              />
-              <BarresRepartition lignes={repartition} total={totalPelerins} />
+      {/* ---------- Grille principale : statut + genre | départs + paiements + visas + dossiers ---------- */}
+      <div className={colonneDroiteVide ? undefined : "bvg-deux-colonnes"}>
+        <div className="bvg-pile">
+          <div className={`${styles.cartePrincipale} ${styles.accentHautViolet}`}>
+            <h2 className={styles.titreCarte}>{t("repartition_statuts")}</h2>
+            {activiteVue === "global" && totalPelerins > 0 && (
+              <div style={{ display: "flex", gap: 12, marginBottom: 14 }}>
+                {[
+                  { cle: "hajj", libelle: t("hajj"), valeur: nbHajj },
+                  { cle: "oumra", libelle: t("oumra"), valeur: nbOumra },
+                ].map((a) => (
+                  <div
+                    key={a.cle}
+                    style={{ flex: 1, background: `${COULEURS_ACTIVITE[a.cle]}14`, border: `1px solid ${COULEURS_ACTIVITE[a.cle]}30`, borderRadius: 12, padding: "10px 14px" }}
+                  >
+                    <div style={{ fontSize: 26, fontWeight: 700, color: COULEURS_ACTIVITE[a.cle], lineHeight: 1.1 }}>{a.valeur}</div>
+                    <div style={{ fontSize: 12, color: "#6B7280", marginTop: 2 }}>{a.libelle} · {pourcentage(a.valeur, totalPelerins)} %</div>
+                  </div>
+                ))}
+              </div>
+            )}
+            {repartition.length === 0 ? (
+              <p className={styles.etatVide}>{t("aucun_pelerin")}</p>
+            ) : (
+              <div style={{ display: "grid", gap: 16 }}>
+                <DonutCentre
+                  donnees={
+                    activiteVue === "global"
+                      ? [
+                          { cle: "hajj", libelle: t("hajj"), valeur: nbHajj, couleur: COULEURS_ACTIVITE.hajj },
+                          { cle: "oumra", libelle: t("oumra"), valeur: nbOumra, couleur: COULEURS_ACTIVITE.oumra },
+                        ]
+                      : repartition
+                  }
+                  total={totalPelerins}
+                  libelleTotal={t("pelerins", "Pèlerins")}
+                  hauteur={190}
+                />
+                <BarresRepartition lignes={repartition} total={totalPelerins} />
+              </div>
+            )}
+          </div>
+
+          {totalPelerins > 0 && (
+            <div className={`${styles.cartePrincipale} ${styles.accentHautBleu}`}>
+              <h2 className={styles.titreCarte}>{t("repartition_genre", "Répartition par genre")}</h2>
+              <div style={{ display: "flex", gap: 12, marginBottom: 12 }}>
+                {repartitionGenre.filter((g) => g.cle !== "inconnu").map((g) => (
+                  <div key={g.cle} style={{ flex: 1, background: `${g.couleur}14`, border: `1px solid ${g.couleur}30`, borderRadius: 12, padding: "10px 14px" }}>
+                    <div style={{ fontSize: 26, fontWeight: 700, color: g.couleur, lineHeight: 1.1 }}>{g.valeur}</div>
+                    <div style={{ fontSize: 12, color: "#6B7280", marginTop: 2 }}>{g.libelle} · {pourcentage(g.valeur, totalPelerins)} %</div>
+                  </div>
+                ))}
+              </div>
+              <DonutCentre donnees={repartitionGenre} total={totalPelerins} libelleTotal={t("pelerins", "Pèlerins")} hauteur={170} />
             </div>
           )}
         </div>
 
-        {peutVoirLogistique && (
-          <div className={`${styles.cartePrincipale} ${styles.accentHautBleu}`}>
-            <div className={styles.enteteCarteAvecLien}>
-              <h2 className={styles.titreCarte}>{t("prochains_departs")}</h2>
-              <button className={styles.lienVoirTout} onClick={() => navigate("/groupes")}>{t("voir_tout")}</button>
-            </div>
-            {prochainsDeparts.length === 0 ? (
-              <p className={styles.etatVide}>{t("aucun_depart_a_venir")}</p>
-            ) : (
-              <div className={styles.listeDeparts}>
-                {prochainsDeparts.map((g) => (
-                  <div key={g.id} className={styles.ligneDepart} onClick={() => navigate(`/groupes/${g.id}`)}>
-                    <div className={styles.dateDepart}>
-                      <span className={styles.jourDepart}>{new Date(g.vol_aller_detail.date_vol).getDate()}</span>
-                      <span className={styles.moisDepart}>{new Date(g.vol_aller_detail.date_vol).toLocaleDateString("fr-FR", { month: "short" })}</span>
-                    </div>
-                    <div className={styles.infosDepart}>
-                      <p className={styles.nomGroupeDepart}>{g.nom}</p>
-                      <p className={styles.trajetDepart}>{g.vol_aller_detail.aeroport_depart} → {g.vol_aller_detail.aeroport_arrivee}</p>
-                    </div>
-                    <span className={styles.nbPelerinsDepart}>{g.nb_pelerins}</span>
-                  </div>
-                ))}
+        {!colonneDroiteVide && (
+          <div className="bvg-pile">
+          {peutVoirLogistique && (
+            <div className={`${styles.cartePrincipale} ${styles.accentHautBleu}`}>
+              <div className={styles.enteteCarteAvecLien}>
+                <h2 className={styles.titreCarte}>{t("prochains_departs")}</h2>
+                <button className={styles.lienVoirTout} onClick={() => navigate("/groupes")}>{t("voir_tout")}</button>
               </div>
+              {prochainsDeparts.length === 0 ? (
+                <p className={styles.etatVide}>{t("aucun_depart_a_venir")}</p>
+              ) : (
+                <div className={styles.listeDeparts}>
+                  {prochainsDeparts.map((g) => (
+                    <div key={g.id} className={styles.ligneDepart} onClick={() => navigate(`/groupes/${g.id}`)}>
+                      <div className={styles.dateDepart}>
+                        <span className={styles.jourDepart}>{new Date(g.vol_aller_detail.date_vol).getDate()}</span>
+                        <span className={styles.moisDepart}>{new Date(g.vol_aller_detail.date_vol).toLocaleDateString("fr-FR", { month: "short" })}</span>
+                      </div>
+                      <div className={styles.infosDepart}>
+                        <p className={styles.nomGroupeDepart}>{g.nom}</p>
+                        <p className={styles.trajetDepart}>{g.vol_aller_detail.aeroport_depart} → {g.vol_aller_detail.aeroport_arrivee}</p>
+                      </div>
+                      <span className={styles.nbPelerinsDepart}>{g.nb_pelerins}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+
+            {peutVoirFinances && totalPelerins > 0 && (
+              <>
+            <div className={`${styles.cartePrincipale} ${styles.accentHautVert}`}>
+              <h2 className={styles.titreCarte}>{t("situation_paiements", "Situation des paiements")}</h2>
+              <BarresRepartition lignes={repartitionPaiement} total={totalPelerins} />
+            </div>
+            <div className={`${styles.cartePrincipale} ${styles.accentHautOr}`}>
+              <h2 className={styles.titreCarte}>{t("situation_visas", "Situation des visas")}</h2>
+              <BarresRepartition lignes={repartitionVisa} total={totalPelerins} />
+            </div>
+            <div className={`${styles.cartePrincipale} ${styles.accentHautVert}`}>
+              <h2 className={styles.titreCarte}>{t("etat_des_dossiers", "État des dossiers")}</h2>
+              <BarresRepartition lignes={repartitionDossiers} total={totalPelerins} />
+            </div>
+              </>
             )}
           </div>
         )}
       </div>
 
-      {/* ---------- Profil des pèlerins : genre, paiements, visas, agences ---------- */}
-      {totalPelerins > 0 && (
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: 20, marginBottom: 20, alignItems: "start" }}>
-          <div className={`${styles.cartePrincipale} ${styles.accentHautBleu}`}>
-            <h2 className={styles.titreCarte}>{t("repartition_genre", "Répartition par genre")}</h2>
-            <div style={{ display: "flex", gap: 12, marginBottom: 12 }}>
-              {repartitionGenre.filter((g) => g.cle !== "inconnu").map((g) => (
-                <div key={g.cle} style={{ flex: 1, background: `${g.couleur}14`, border: `1px solid ${g.couleur}30`, borderRadius: 12, padding: "10px 14px" }}>
-                  <div style={{ fontSize: 26, fontWeight: 700, color: g.couleur, lineHeight: 1.1 }}>{g.valeur}</div>
-                  <div style={{ fontSize: 12, color: "#6B7280", marginTop: 2 }}>{g.libelle} · {pourcentage(g.valeur, totalPelerins)} %</div>
-                </div>
-              ))}
-            </div>
-            <DonutCentre donnees={repartitionGenre} total={totalPelerins} libelleTotal={t("pelerins", "Pèlerins")} hauteur={170} />
+      {/* ---------- Agences, inscripteurs, inscriptions par mois (3 cartes de même taille) ---------- */}
+      {peutVoirFinances && totalPelerins > 0 && (
+        <div className="bvg-trois-colonnes" style={{ "--cols": aDatesInscription ? 3 : 2 }}>
+          <div className={`${styles.cartePrincipale} ${styles.accentHautViolet}`} style={styleCarteEgale}>
+            <h2 className={styles.titreCarte}>{t("repartition_agences", "Répartition par agence")}</h2>
+            <BarresRepartition lignes={repartitionAgences} total={totalPelerins} />
           </div>
 
-          {peutVoirFinances && (
-            <div className={`${styles.cartePrincipale} ${styles.accentHautVert}`}>
-              <h2 className={styles.titreCarte}>{t("situation_paiements", "Situation des paiements")}</h2>
-              <BarresRepartition lignes={repartitionPaiement} total={totalPelerins} />
-            </div>
-          )}
+          <div className={`${styles.cartePrincipale} ${styles.accentHautBleu}`} style={styleCarteEgale}>
+            <h2 className={styles.titreCarte}>{t("top_inscripteurs", "Inscriptions par inscripteur")}</h2>
+            <BarresRepartition lignes={repartitionInscripteurs} total={totalPelerins} />
+          </div>
 
-          {peutVoirFinances && (
-            <div className={`${styles.cartePrincipale} ${styles.accentHautOr}`}>
-              <h2 className={styles.titreCarte}>{t("situation_visas", "Situation des visas")}</h2>
-              <BarresRepartition lignes={repartitionVisa} total={totalPelerins} />
-              <h3 style={{ fontSize: 13, color: "#6B7280", fontWeight: 600, margin: "16px 0 8px" }}>{t("etat_des_dossiers", "État des dossiers")}</h3>
-              <BarresRepartition lignes={repartitionDossiers} total={totalPelerins} />
-            </div>
-          )}
-
-          {peutVoirFinances && (
-            <div className={`${styles.cartePrincipale} ${styles.accentHautViolet}`}>
-              <h2 className={styles.titreCarte}>{t("repartition_agences", "Répartition par agence")}</h2>
-              <BarresRepartition lignes={repartitionAgences} total={totalPelerins} />
-            </div>
-          )}
-
-          {peutVoirFinances && (
-            <div className={`${styles.cartePrincipale} ${styles.accentHautBleu}`}>
-              <h2 className={styles.titreCarte}>{t("top_inscripteurs", "Inscriptions par inscripteur")}</h2>
-              <BarresRepartition lignes={repartitionInscripteurs} total={totalPelerins} />
-            </div>
-          )}
-
-          {peutVoirFinances && aDatesInscription && (
-            <div className={`${styles.cartePrincipale} ${styles.accentHautVert}`}>
+          {aDatesInscription && (
+            <div className={`${styles.cartePrincipale} ${styles.accentHautVert}`} style={styleCarteEgale}>
               <h2 className={styles.titreCarte}>{t("inscriptions_par_mois", "Inscriptions des 6 derniers mois")}</h2>
-              <div style={{ display: "flex", alignItems: "flex-end", gap: 10, height: 150, paddingTop: 8 }}>
+              <div style={{ flex: 1, display: "flex", alignItems: "flex-end", gap: 10, minHeight: 170, paddingTop: 8 }}>
                 {moisAffiches.map((m) => (
                   <div key={`${m.annee}-${m.mois}`} style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "flex-end", height: "100%" }}>
                     <span style={{ fontSize: 12, fontWeight: 700, color: "#374151", marginBottom: 4 }}>{m.valeur}</span>
@@ -711,10 +757,46 @@ function Dashboard() {
   );
 }
 
+// Cartes de même hauteur dans une même ligne (agences / inscripteurs / mois)
+const styleCarteEgale = { display: "flex", flexDirection: "column", boxSizing: "border-box", height: "100%" };
+
+const stylePastilleHero = {
+  display: "inline-flex", alignItems: "center", gap: 8, padding: "5px 13px", borderRadius: 999, fontSize: 12.5, fontWeight: 600,
+  color: "#fff", background: "rgba(255,255,255,0.16)", border: "1px solid rgba(255,255,255,0.28)", backdropFilter: "blur(6px)",
+};
+
+// Petit bloc de chiffre clé affiché dans le bandeau d'accueil
+function ChiffreHero({ icone: Icone, valeur, libelle }) {
+  return (
+    <div
+      style={{
+        display: "flex", alignItems: "center", gap: 10, padding: "9px 14px", borderRadius: 14, color: "#fff",
+        background: "rgba(15,23,42,0.55)", border: "1px solid rgba(255,255,255,0.2)", backdropFilter: "blur(8px)",
+      }}
+    >
+      <Icone size={18} strokeWidth={2} style={{ opacity: 0.9, flexShrink: 0 }} />
+      <div style={{ lineHeight: 1.15 }}>
+        <div style={{ fontSize: 20, fontWeight: 700 }}>{valeur}</div>
+        <div style={{ fontSize: 11, opacity: 0.8, whiteSpace: "nowrap" }}>{libelle}</div>
+      </div>
+    </div>
+  );
+}
+
 const STYLE_CARTES = `
 .bvg-cartes-ligne { display: grid; grid-template-columns: repeat(var(--cols), minmax(0, 1fr)); gap: 16px; margin-bottom: 16px; }
 .bvg-cartes-vedette { display: grid; grid-template-columns: minmax(0, 1.25fr) repeat(var(--cols), minmax(0, 1fr)); gap: 16px; margin-bottom: 20px; }
 .bvg-cartes-vedette > :first-child { grid-row: span 2; }
+.bvg-deux-colonnes { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; align-items: start; margin-bottom: 20px; }
+.bvg-pile { display: grid; gap: 20px; align-content: start; margin-bottom: 20px; }
+.bvg-deux-colonnes > .bvg-pile { margin-bottom: 0; }
+.bvg-trois-colonnes { display: grid; grid-template-columns: repeat(var(--cols), minmax(0, 1fr)); gap: 20px; align-items: stretch; margin-bottom: 20px; }
+@media (max-width: 1100px) {
+  .bvg-trois-colonnes { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 900px) {
+  .bvg-deux-colonnes, .bvg-trois-colonnes { grid-template-columns: minmax(0, 1fr); }
+}
 @media (max-width: 1000px) {
   .bvg-cartes-ligne, .bvg-cartes-vedette { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .bvg-cartes-vedette > :first-child { grid-row: auto; grid-column: span 2; }
